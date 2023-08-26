@@ -1,20 +1,18 @@
-# Valor 6800 - 2023 Code Repository
-
-[![Build Status](https://dev.azure.com/mray190/ViperbotsValor6800/_apis/build/status/Valor6800.FRC-6800-2023-code?branchName=dev)](https://dev.azure.com/mray190/ViperbotsValor6800/_build/latest?definitionId=5&branchName=dev)
+# Valor 6800 - 2024 Code Repository
 
 ## Making Your First Pull Request
 Here's the jist:  When you write a new feature, you're going to make a branch that's just for that feature.  You're going to make a branch off `dev`, write some code, commit it to your branch, test the code, make changes, commit it to your branch, etc until you're satisfied with your code.  When you're satisfied with your code, you're going to make a "pull request" against `dev`.  A "pull request" is like saying "hey Kyle, you should accept these changes as your own".  Generally, after you merge your PR, you'll close your branch. Over the season, you'll make a dozen-ish branches.
 
 ### Cloning the Repo
-Go to https://github.com/Valor6800/FRC-6800-2023-code.  See the green box in the upper right that says `Clone or download`?  Yeah that.  Click that.  See the URL in the box? Click the little pastebin icon to the right of it. You should see a popup that says `copied` once you click it.  See it?  Good.
+Go to https://git.valor6800.com/valor6800/2024/robot.  See the green box in the upper right that says `Clone or download`?  Yeah that.  Click that.  See the URL in the box? Click the little pastebin icon to the right of it. You should see a popup that says `copied` once you click it.  See it?  Good.
 
 Open terminal on your computer.  Where do you want to keep your repository?  Probably your home dir.  If you want to keep your repository somewhere else, cd to that location.
 
 Type the following command: `git clone <WHATEVER URL WAS IN YOUR CLIPBOARD>`.  Don't actually type the `<WHATEVER URL WAS IN YOUR CLIPBOARD>`.  Put the thing that was in your clipboard there.  You might find that typing contorl v does funky stuff.  If that's the case, try right clicking and clicking paste.  Press enter.  You might need to type in your github username and password.  It should be the same username and password you used to log into github.com.
 
-Type `ls`.  What do you see?  You see whatever was in your directory before plus a new directory called `FRC-6800-2023-code`.
+Type `ls`.  What do you see?  You see whatever was in your directory before plus a new directory called `robot`.
 
-Type `cd FRC-6800-2023-code`. This will change your current directory to FRC-6800-2023-code.  This is like in file explorer when you click on a folder and it moves you into that folder.  Good stuff.
+Type `cd robot`. This will change your current directory to robot.  This is like in file explorer when you click on a folder and it moves you into that folder.  Good stuff.
 
 Type `ls`.  What do you see?  Probably docs, lib, src, third_party, tools, Dockerfile, install.sh, README.md, StyleGuide.md, WORKSPACE.  I would hope so at least... these are the files in the repo.  Good stuff.
 
@@ -69,7 +67,7 @@ Git will probably ask you to give a username and password.  This is the username
 This step takes the commit that you made and sends it up to the github server.
 
 ### Make a PR
-Open your favorite web browser (unless it's IE6) and go to https://github.com/Valor6800/FRC-6800-2023-code.  That's a short enough url that you should memorize it eventually.  You will probably see a link that says `New pull request`.  Click that link.  Make sure that the pull request is against `dev` and not `master`.
+Open your favorite web browser (unless it's IE6) and go to https://github.com/Valor6800/robot.  That's a short enough url that you should memorize it eventually.  You will probably see a link that says `New pull request`.  Click that link.  Make sure that the pull request is against `dev` and not `master`.
 
 Write a short summary of what your branch is all about and click the big green button.
 
