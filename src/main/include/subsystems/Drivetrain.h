@@ -257,12 +257,15 @@ public:
      void setDriveMotorNeutralMode(ValorNeutralMode mode);
 
 private:
+     
      double driveMaxSpeed;
+     units::meter_t swerveModuleDiff;
      double rotMaxSpeed;
      double autoMaxSpeed;
      double autoMaxAccel;
      double rotMaxAccel;
-
+     WPI_Pigeon2 pigeon;
+     
      wpi::array<frc::SwerveModuleState, SWERVE_COUNT> getModuleStates(units::velocity::meters_per_second_t,
                                                            units::velocity::meters_per_second_t,
                                                            units::angular_velocity::radians_per_second_t,
@@ -276,13 +279,11 @@ private:
      std::vector<SwerveAzimuthMotor *> azimuthControllers;
      std::vector<SwerveDriveMotor *> driveControllers;
 
-     units::meter_t swerveModuleDiff;
-
      wpi::array<frc::Translation2d, SWERVE_COUNT> motorLocations;
 
      wpi::array<frc::SwerveModulePosition, SWERVE_COUNT> initPositions;
 
-     WPI_Pigeon2 pigeon;
+
 
      frc::SwerveDriveKinematics<SWERVE_COUNT> * kinematics;
      frc::SwerveDrivePoseEstimator<SWERVE_COUNT> * estimator;

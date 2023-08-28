@@ -65,7 +65,7 @@ std::vector<std::string> listDirectory(std::string path_name){
 frc2::SequentialCommandGroup* ValorAuto::compileCommands(std::vector<ValorAutoAction> actions) {
     frc2::SequentialCommandGroup * commandGroup = new frc2::SequentialCommandGroup();
 
-    for (int i = 0; i < actions.size(); i ++) {
+    for (size_t i = 0; i < actions.size(); i ++) {
         ValorAutoAction & action = actions[i];
 
         // Error encountered: stop trying to compile and output error

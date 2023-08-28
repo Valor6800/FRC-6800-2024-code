@@ -179,7 +179,7 @@ private:
      */
     double minAngle(bool);
     bool minFloorAngle();
-
+     Intake *intake;
      ValorNeoController carriageMotors;
      ValorFalconController armRotateMotor;
 
@@ -201,8 +201,8 @@ private:
     ValorPIDF rotatePID;
     ValorPIDF autoRotatePID;
     ValorPIDF wristPID;
-     
-     double manualMaxCarriageSpeed;
+
      double manualMaxArmSpeed;
+     double manualMaxCarriageSpeed;
      double carriageStallPower;
 };

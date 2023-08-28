@@ -10,8 +10,8 @@ std::vector<std::string> ValorAutoAction::parseCSVLine(std::string line)
     int pointerPos = 0;
     std::vector<std::string> items;
 
-    while (pointerPos >= 0 && pointerPos < line.length()) {
-        int returnPos = line.find_first_of(",", pointerPos);
+    while (pointerPos >= 0 && pointerPos < int(line.length())) {
+        size_t returnPos = line.find_first_of(",", pointerPos);
         if (returnPos != std::string::npos) {
             items.push_back(line.substr(pointerPos,returnPos-pointerPos));
             pointerPos = returnPos + 1;
@@ -134,7 +134,7 @@ ValorAutoAction::ValorAutoAction(std::string line)
             maxAccel = stod(items[1]);
         }
         else
-            maxAccel = NULL;
+            maxAccel = 0;
         
         if (items.size() == 3 && items[2] == "multiplier")
             accelMultiplier = stod(items[1]);
@@ -152,7 +152,7 @@ ValorAutoAction::ValorAutoAction(std::string line)
         }
     } else if (type == ValorAutoAction::Type::INTAKE) {
         if (items.size() < 2){
-            error + ValorAutoAction::SIZE_MISMATCH;
+            error = ValorAutoAction::SIZE_MISMATCH;
             error_message = "received " + std::to_string(items.size());
             return;
         }

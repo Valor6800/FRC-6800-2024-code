@@ -20,6 +20,7 @@ public:
 
     void init();
     void reset();
+    void setNeutralMode(ValorNeutralMode mode);
 
     double getPosition();
     double getSpeed();
