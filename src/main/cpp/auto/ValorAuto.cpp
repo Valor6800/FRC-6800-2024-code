@@ -216,7 +216,7 @@ frc2::SequentialCommandGroup* ValorAuto::makeAuto(std::string filename, bool blu
                     last_angle = trajPoses.back().Rotation();
                 
                 double s_vel = 0, e_vel = 0;
-                int ei = i - 1, si = i - 1;
+                size_t ei = i - 1, si = i - 1;
                 while (actions[si].type == ValorAutoAction::TRAJECTORY && actions[si].reversed == trajReversed)
                     si--;
                 si++;
@@ -347,10 +347,7 @@ frc2::SequentialCommandGroup* ValorAuto::makeAuto(std::string filename, bool blu
                drivetrain->setAutoMaxAcceleration(action.maxAccel, action.accelMultiplier);
             }
             else if (action.type == ValorAutoAction::ELEVARM){
-                Piece pieceState = elevarm->stringToPieceState(action.values[0]);
-                Direction directionState = elevarm->stringToDirectionState(action.values[1]);
-                Position positionState = elevarm->stringToPositionState(action.values[2]);
-
+                
                 if (!elevarmTable->GetBoolean("Pit Mode", false))
                     currentGroup->AddCommands(
                         std::move(*elevarm->getAutoCommand(
@@ -384,7 +381,7 @@ frc2::SequentialCommandGroup* ValorAuto::makeAuto(std::string filename, bool blu
         int i = actions.size() - 1;
         double s_vel = 0, e_vel = 0;
 
-        int ei = i - 1, si = i - 1;
+        size_t ei = i - 1, si = i - 1;
         while (actions[si].type == ValorAutoAction::TRAJECTORY && actions[si].reversed == trajReversed)
             si--;
         si++;
