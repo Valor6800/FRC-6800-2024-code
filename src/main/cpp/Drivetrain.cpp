@@ -759,7 +759,6 @@ valor::PIDF Drivetrain::getThetaPIDF() {
 }
 
 void Drivetrain::setAutoMaxAcceleration(double acceleration, double multiplier)  {
-
 }
 
 void Drivetrain::setXMode(){
