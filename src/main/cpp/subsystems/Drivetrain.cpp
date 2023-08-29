@@ -276,7 +276,7 @@ void Drivetrain::analyzeDashboard()
             state.visionPose = frc::Pose2d{botpose.X(), botpose.Y(), getPose_m().Rotation()};
 
             state.visionOdomDiff = (botpose - getPose_m()).Translation().Norm().to<double>();
-            double visionStd = table->GetNumber("Vision Std", 3.0);
+            // double visionStd = table->GetNumber("Vision Std", 3.0);
 
             if (((x < AUTO_VISION_THRESHOLD && x > 0) || 
                 (x > (FIELD_LENGTH - AUTO_VISION_THRESHOLD) && x < FIELD_LENGTH)) &&
@@ -527,7 +527,7 @@ ValorPIDF  Drivetrain::getYPIDF() {
 }
 
 void Drivetrain::setAutoMaxAcceleration(double acceleration, double multiplier)  {
-    autoMaxAccel = multiplier * (acceleration == NULL ? AUTO_MAX_ACCEL : acceleration);
+    autoMaxAccel = multiplier * (acceleration == 0 ? AUTO_MAX_ACCEL : acceleration);
     if (config == NULL) {
         delete config;
     }

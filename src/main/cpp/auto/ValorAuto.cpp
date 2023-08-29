@@ -143,7 +143,7 @@ frc2::SequentialCommandGroup* ValorAuto::makeAuto(std::string filename, bool blu
 
     int trajCount = 0;
 
-    drivetrain->setAutoMaxAcceleration(NULL, 1.0);
+    drivetrain->setAutoMaxAcceleration(0, 1.0);
     
     currentGroup->AddCommands(std::move(*elevarm->getRotatePIDSetterCommand(true)));
 
