@@ -147,7 +147,7 @@ frc2::SequentialCommandGroup* ValorAuto::makeAuto(std::string filename, bool blu
     
     currentGroup->AddCommands(std::move(*elevarm->getRotatePIDSetterCommand(true)));
 
-    for (int i = 0; i < actions.size(); i ++){
+    for (size_t i = 0; i < actions.size(); i ++){
         table->PutString("Action " + std::to_string(i), commandToStringMap[actions[i].type]);
         ValorAutoAction & action = actions[i];
 
@@ -171,7 +171,7 @@ frc2::SequentialCommandGroup* ValorAuto::makeAuto(std::string filename, bool blu
                         last_angle = trajPoses.back().Rotation();
 
                     double s_vel = 0, e_vel = 0;
-                    int ei = i - 1, si = i - 1;
+                    size_t ei = i - 1, si = i - 1;
                     while (actions[si].type == ValorAutoAction::TRAJECTORY && actions[si].reversed == trajReversed)
                         si--;
                     si++;
