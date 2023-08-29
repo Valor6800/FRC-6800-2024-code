@@ -247,7 +247,7 @@ private:
 
 
      void configSwerveModule(int);
-
+     WPI_Pigeon2 pigeon;
      std::vector<valor::Swerve<SwerveAzimuthMotor, SwerveDriveMotor> *> swerveModules;
      std::vector<SwerveAzimuthMotor *> azimuthControllers;
      std::vector<SwerveDriveMotor *> driveControllers;
@@ -258,7 +258,7 @@ private:
 
      wpi::array<frc::SwerveModulePosition, SWERVE_COUNT> initPositions;
 
-     WPI_Pigeon2 pigeon;
+     
 
      frc::SwerveDriveKinematics<SWERVE_COUNT> * kinematics;
      frc::SwerveDrivePoseEstimator<SWERVE_COUNT> * estimator;
