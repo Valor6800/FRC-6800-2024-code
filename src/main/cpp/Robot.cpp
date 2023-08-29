@@ -55,7 +55,7 @@ void Robot::DisabledPeriodic() { }
 void Robot::AutonomousInit() {
     drivetrain.resetState();
     elevarm.resetState();
-    drivetrain.setDriveMotorNeutralMode(ValorNeutralMode::Brake);
+    drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Brake);
     drivetrain.pullSwerveModuleZeroReference();
 
     autoCommand = autonomous.getCurrentAuto();
@@ -82,7 +82,7 @@ void Robot::AutonomousPeriodic(){
 
 void Robot::TeleopInit() {
     drivetrain.pullSwerveModuleZeroReference();
-    drivetrain.setDriveMotorNeutralMode(ValorNeutralMode::Coast);
+    drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Coast);
     elevarm.setArmPIDF(false);
 
     if (autoCommand != nullptr) {

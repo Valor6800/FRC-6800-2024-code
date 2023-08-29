@@ -1,0 +1,35 @@
+{
+    "fileName": "ValkyrieLib.json",
+    "name": "ValkyrieLib",
+    "version": "2024.0.6",
+    "uuid": "abcaeed8-c3ff-11ed-afa1-0242ac120002",
+    "mavenUrls": [
+        "https://valor6800.docs.valor6800.com/valkyrielib"
+    ],
+    "jsonUrl": "https://valor6800.docs.valor6800.com/valkyrielib/ValkyrieLib.json",
+    "javaDependencies": [
+        {
+            "groupId": "com.valor.lib",
+            "artifactId": "ValkyrieLib-cpp",
+            "version": "2024.0.6"
+        }
+    ],
+    "jniDependencies": [],
+    "cppDependencies": [
+        {
+            "groupId": "com.valor.lib",
+            "artifactId": "ValkyrieLib-cpp",
+            "version": "2024.0.6",
+            "libName": "ValkyrieLib",
+            "headerClassifier": "headers",
+            "sharedLibrary": false,
+            "skipInvalidPlatforms": true,
+            "binaryPlatforms": [
+                "windowsx86-64",
+                "linuxx86-64",
+                "osxuniversal",
+                "linuxathena"
+            ]
+        }
+    ]
+}

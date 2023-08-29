@@ -1,17 +1,10 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2019 FIRST. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 #pragma once
 
-#include "ValorSubsystem.h"
+#include <BaseSubsystem.h>
 #include "Constants.h"
-#include "controllers/ValorFalconController.h"
-#include "controllers/ValorNeoController.h"
-#include "sensors/ValorCurrentSensor.h"
+#include <controllers/FalconController.h>
+#include <controllers/NeoController.h>
+#include <sensors/CurrentSensor.h>
 
 #include "subsystems/Direction.h"
 #include "subsystems/Position.h"
@@ -25,7 +18,7 @@
 /**
  * @brief Subsystem - Intake
  */
-class Intake : public ValorSubsystem
+class Intake : public valor::BaseSubsystem
 {
 public:
      /**
@@ -46,18 +39,15 @@ public:
       * @brief Initialize the Intake
       * 
       */
-     void init();
+     void init() override;
 
      void assessInputs();
      void analyzeDashboard();
      void assignOutputs();
 
-     void resetState();
+     void resetState() override;
 
-     void InitSendable(wpi::SendableBuilder& builder);
-
-     
-
+     void InitSendable(wpi::SendableBuilder& builder) override;
 
      //this state will come from elevarm, elevarm not currently connected to dev
 
@@ -116,7 +106,7 @@ public:
 
 private:
 
-     ValorFalconController intakeMotor;
+     valor::FalconController intakeMotor;
 
-     ValorCurrentSensor currentSensor;
+     valor::CurrentSensor currentSensor;
 };

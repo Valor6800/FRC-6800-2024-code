@@ -18,8 +18,8 @@
 #define CUBE_CACHE_SIZE 120.0f
 #define CONE_CACHE_SIZE 250.0f
 
-Intake::Intake(frc::TimedRobot *_robot) : ValorSubsystem(_robot, "Intake"),  
-                            intakeMotor(CANIDs::INTAKE_LEAD_CAN, ValorNeutralMode::Coast, false, "baseCAN"),
+Intake::Intake(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Intake"),  
+                            intakeMotor(CANIDs::INTAKE_LEAD_CAN, valor::NeutralMode::Coast, false, "baseCAN"),
                             currentSensor(_robot, subsystemName)
 
 {  
@@ -201,84 +201,84 @@ frc2::FunctionalCommand * Intake::getAutoCommand(std::string intakeState){
 }
 
 void Intake::InitSendable(wpi::SendableBuilder& builder)
-    {
-        builder.SetSmartDashboardType("Subsystem");
+{
+    builder.SetSmartDashboardType("Subsystem");
 
-        builder.AddDoubleProperty(
-            "Intake State",
-            [this]{ return state.intakeState; },
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "Outtake Cone Speed",
-            [this]{ return state.outtakeConeSpeed; },
-            // [this](double value) { state.outtakeConeSpeed = value; }
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "Outtake Cube Speed",
-            [this]{ return state.outtakeCubeSpeed; },
-            // [this](double value) { state.outtakeCubeSpeed = value; }
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "Outtake Speed",
-            [this]{ return state.outtakeSpeed; },
-            // [this](double value) { state.outtakeSpeed = value; }
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "Intake Cone Speed",
-            [this]{ return state.intakeConeSpeed; },
-            // [this](double value) { state.intakeSpeed = value; }
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "Intake Cube Speed",
-            [this]{ return state.intakeCubeSpeed; },
-            // [this](double value) { state.intakeSpeed = value; }
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "Cone Cache Size",
-            [this]{ return state.coneCacheSize; },
-            // [this](double value) { state.intakeSpeed = value; }
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "Cube Cache Size",
-            [this]{ return state.cubeCacheSize; },
-            // [this](double value) { state.intakeSpeed = value; }
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "Cube Hold Speed",
-            [this]{ return state.cubeHoldSpeed; },
-            // [this](double value) { state.holdSpeed = value; }
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "Cone Hold Speed",
-            [this]{ return state.coneHoldSpeed; },
-            // [this](double value) { state.holdSpeed = value; }
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "Cube Spike Current",
-            [this]{ return state.cubeSpikeCurrent; },
-            // [this](double value) {
-            //     state.stallCurrent = value;
-            //     cubeCurrentSensor.setSpikeSetpoint(state.stallCurrent);
-            // }
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "Cone Spike Current",
-            [this]{ return state.coneSpikeCurrent; },
-            // [this](double value) {
-            //     state.stallCurrent = value;
-            //     cubeCurrentSensor.setSpikeSetpoint(state.stallCurrent);
-            // }
-            nullptr
-        );
-    }
+    builder.AddDoubleProperty(
+        "Intake State",
+        [this]{ return state.intakeState; },
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "Outtake Cone Speed",
+        [this]{ return state.outtakeConeSpeed; },
+        // [this](double value) { state.outtakeConeSpeed = value; }
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "Outtake Cube Speed",
+        [this]{ return state.outtakeCubeSpeed; },
+        // [this](double value) { state.outtakeCubeSpeed = value; }
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "Outtake Speed",
+        [this]{ return state.outtakeSpeed; },
+        // [this](double value) { state.outtakeSpeed = value; }
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "Intake Cone Speed",
+        [this]{ return state.intakeConeSpeed; },
+        // [this](double value) { state.intakeSpeed = value; }
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "Intake Cube Speed",
+        [this]{ return state.intakeCubeSpeed; },
+        // [this](double value) { state.intakeSpeed = value; }
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "Cone Cache Size",
+        [this]{ return state.coneCacheSize; },
+        // [this](double value) { state.intakeSpeed = value; }
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "Cube Cache Size",
+        [this]{ return state.cubeCacheSize; },
+        // [this](double value) { state.intakeSpeed = value; }
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "Cube Hold Speed",
+        [this]{ return state.cubeHoldSpeed; },
+        // [this](double value) { state.holdSpeed = value; }
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "Cone Hold Speed",
+        [this]{ return state.coneHoldSpeed; },
+        // [this](double value) { state.holdSpeed = value; }
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "Cube Spike Current",
+        [this]{ return state.cubeSpikeCurrent; },
+        // [this](double value) {
+        //     state.stallCurrent = value;
+        //     cubeCurrentSensor.setSpikeSetpoint(state.stallCurrent);
+        // }
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "Cone Spike Current",
+        [this]{ return state.coneSpikeCurrent; },
+        // [this](double value) {
+        //     state.stallCurrent = value;
+        //     cubeCurrentSensor.setSpikeSetpoint(state.stallCurrent);
+        // }
+        nullptr
+    );
+}

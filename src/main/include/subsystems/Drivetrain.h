@@ -1,19 +1,12 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2019 FIRST. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 #pragma once
 
-#include "ValorSubsystem.h"
+#include <BaseSubsystem.h>
 #include "Constants.h"
-#include "ValorSwerve.h"
+#include <Swerve.h>
 #include <vector>
-#include "controllers/ValorFalconController.h"
-#include "controllers/ValorNeoController.h"
-#include "controllers/ValorPIDF.h"
+#include <controllers/FalconController.h>
+#include <controllers/NeoController.h>
+#include <controllers/PIDF.h>
 
 #include "AHRS.h"
 #include "ctre/phoenix/sensors/WPI_Pigeon2.h"
@@ -54,25 +47,25 @@
  * Subsystem responsible for driving the robot chassis, and housing all the logic to control the
  * 4 swerve modules on the robot.
  */
-class Drivetrain : public ValorSubsystem
+class Drivetrain : public valor::BaseSubsystem
 {
 public:
 
      /**
       * @brief Quick way to select the drive motor controller
       * To change what motor controller runs the drive motor, change this to either:
-      * * ValorFalconController
-      * * ValorNeoController
+      * * FalconController
+      * * NeoController
       */
-     typedef ValorNeoController SwerveDriveMotor;
+     typedef valor::NeoController SwerveDriveMotor;
 
      /**
       * @brief Quick way to select the azimuth motor controller
       * To change what motor controller runs the azimuth motor, change this to either:
-      * * ValorFalconController
-      * * ValorNeoController
+      * * FalconController
+      * * NeoController
       */
-     typedef ValorNeoController SwerveAzimuthMotor;
+     typedef valor::NeoController SwerveAzimuthMotor;
 
      /**
       * @brief Construct a new Drivetrain object
@@ -97,15 +90,15 @@ public:
       * * Setting the PID values for the Azimuth controller
       * * Resetting the drivetrain state
       */
-     void init();
+     void init() override;
 
      void assessInputs();
      void analyzeDashboard();
      void assignOutputs();
 
-     void resetState();
+     void resetState() override;
 
-     void InitSendable(wpi::SendableBuilder& builder);
+     void InitSendable(wpi::SendableBuilder& builder) override;
 
      enum LimelightPipes{
           APRIL_TAGS,
@@ -181,7 +174,7 @@ public:
       * Get the configured swerve modules
       * @return vector of swerve modules
       */
-     std::vector<ValorSwerve<SwerveAzimuthMotor, SwerveDriveMotor> *> getSwerveModules();
+     std::vector<valor::Swerve<SwerveAzimuthMotor, SwerveDriveMotor> *> getSwerveModules();
 
 
      /**
@@ -227,9 +220,9 @@ public:
 
      frc::ProfiledPIDController<units::angle::radians> & getThetaController();
 
-     ValorPIDF getXPIDF();
-     ValorPIDF getYPIDF();
-     ValorPIDF getThetaPIDF();
+     valor::PIDF getXPIDF();
+     valor::PIDF getYPIDF();
+     valor::PIDF getThetaPIDF();
 
      frc::TrajectoryConfig & getTrajectoryConfig();
 
@@ -237,7 +230,7 @@ public:
 
      frc2::InstantCommand* getSetXMode();
 
-     void setDriveMotorNeutralMode(ValorNeutralMode mode);
+     void setDriveMotorNeutralMode(valor::NeutralMode mode);
 
 private:
      double driveMaxSpeed;
@@ -255,7 +248,7 @@ private:
 
      void configSwerveModule(int);
 
-     std::vector<ValorSwerve<SwerveAzimuthMotor, SwerveDriveMotor> *> swerveModules;
+     std::vector<valor::Swerve<SwerveAzimuthMotor, SwerveDriveMotor> *> swerveModules;
      std::vector<SwerveAzimuthMotor *> azimuthControllers;
      std::vector<SwerveDriveMotor *> driveControllers;
 
@@ -274,9 +267,9 @@ private:
 
      frc::ProfiledPIDController<units::radians> thetaController;
 
-     ValorPIDF xPIDF;
-     ValorPIDF yPIDF;
-     ValorPIDF thetaPIDF;
+     valor::PIDF xPIDF;
+     valor::PIDF yPIDF;
+     valor::PIDF thetaPIDF;
 
      std::shared_ptr<nt::NetworkTable> limeTable;
 

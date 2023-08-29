@@ -11,7 +11,7 @@
 #include <frc2/command/Command.h>
 
 #include "Constants.h"
-#include "ValorGamepad.h"
+#include <Gamepad.h>
 
 #include "subsystems/Drivetrain.h"
 #include "subsystems/Elevarm.h"
@@ -42,8 +42,8 @@ class Robot : public frc::TimedRobot {
         void AutonomousExit() override;
         
     private:
-        ValorGamepad gamepadOperator{OIConstants::GAMEPAD_OPERATOR_LOCATION};
-        ValorGamepad gamepadDriver{OIConstants::GAMEPAD_BASE_LOCATION};
+        valor::Gamepad gamepadOperator{OIConstants::GAMEPAD_OPERATOR_LOCATION};
+        valor::Gamepad gamepadDriver{OIConstants::GAMEPAD_BASE_LOCATION};
 
         frc2::Command* autoCommand = nullptr;
 

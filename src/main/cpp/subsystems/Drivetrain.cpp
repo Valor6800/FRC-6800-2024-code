@@ -1,9 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2019 FIRST. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
 #include "subsystems/Drivetrain.h"
 #include <frc/DriverStation.h>
 #include <iostream>
@@ -63,7 +57,8 @@
 
 #define DRIVETRAIN_CAN_BUS ""
 #define PIGEON_CAN_BUS "baseCAN"
-Drivetrain::Drivetrain(frc::TimedRobot *_robot) : ValorSubsystem(_robot, "Drivetrain"),
+
+Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Drivetrain"),
                         driveMaxSpeed(MOTOR_FREE_SPEED / 60.0 / DRIVE_GEAR_RATIO * WHEEL_DIAMETER_M * M_PI),
                         swerveModuleDiff(units::meter_t(MODULE_DIFF)),
                         rotMaxSpeed(ROT_SPEED_MUL * 2 * M_PI),
@@ -106,7 +101,7 @@ void Drivetrain::configSwerveModule(int i)
     motorLocations[i] = frc::Translation2d{swerveModuleDiff * MDX[i],
                                            swerveModuleDiff * MDY[i]};
 
-    ValorPIDF azimuthPID;
+    valor::PIDF azimuthPID;
     azimuthPID.velocity = AZIMUTH_K_VEL;
     azimuthPID.acceleration = azimuthPID.velocity * AZIMUTH_K_ACC_MUL;
     azimuthPID.P = AZIMUTH_K_P;
@@ -115,13 +110,13 @@ void Drivetrain::configSwerveModule(int i)
     azimuthPID.error = AZIMUTH_K_E;
 
     azimuthControllers.push_back(new SwerveAzimuthMotor(CANIDs::AZIMUTH_CANS[i],
-                                                      ValorNeutralMode::Brake,
+                                                      valor::NeutralMode::Brake,
                                                       true,
                                                       DRIVETRAIN_CAN_BUS));
     azimuthControllers[i]->setConversion(1.0 / AZIMUTH_GEAR_RATIO);
     azimuthControllers[i]->setPIDF(azimuthPID, 0);
 
-    ValorPIDF drivePID;
+    valor::PIDF drivePID;
     drivePID.velocity = DRIVE_K_VEL;
     drivePID.acceleration = drivePID.velocity * DRIVE_K_ACC_MUL;
     drivePID.P = DRIVE_K_P;
@@ -130,13 +125,13 @@ void Drivetrain::configSwerveModule(int i)
     drivePID.error = DRIVE_K_E;
 
     driveControllers.push_back(new SwerveDriveMotor(CANIDs::DRIVE_CANS[i],
-                                                    ValorNeutralMode::Coast,
+                                                    valor::NeutralMode::Coast,
                                                     false,
                                                     DRIVETRAIN_CAN_BUS));
     driveControllers[i]->setConversion(1.0 / DRIVE_GEAR_RATIO * M_PI * WHEEL_DIAMETER_M);
     driveControllers[i]->setPIDF(drivePID, 0);
 
-    swerveModules.push_back(new ValorSwerve<SwerveAzimuthMotor, SwerveDriveMotor>(azimuthControllers[i], driveControllers[i], motorLocations[i]));
+    swerveModules.push_back(new valor::Swerve<SwerveAzimuthMotor, SwerveDriveMotor>(azimuthControllers[i], driveControllers[i], motorLocations[i]));
     swerveModules[i]->setMaxSpeed(driveMaxSpeed);
     
 
@@ -194,7 +189,7 @@ void Drivetrain::init()
     resetState();
 }
 
-std::vector<ValorSwerve<Drivetrain::SwerveAzimuthMotor, Drivetrain::SwerveDriveMotor> *> Drivetrain::getSwerveModules()
+std::vector<valor::Swerve<Drivetrain::SwerveAzimuthMotor, Drivetrain::SwerveDriveMotor> *> Drivetrain::getSwerveModules()
 {
     return swerveModules;
 }
@@ -239,7 +234,7 @@ void Drivetrain::analyzeDashboard()
 
     // Only save to file once. Wait until switch is toggled to run again
     if (table->GetBoolean("Save Swerve Mag Encoder",false) && !state.saveToFileDebouncer) {
-        for (ValorSwerve<SwerveAzimuthMotor, SwerveDriveMotor> *module : swerveModules)
+        for (valor::Swerve<SwerveAzimuthMotor, SwerveDriveMotor> *module : swerveModules)
         {
             module->storeAzimuthZeroReference();
         }
@@ -307,12 +302,12 @@ void Drivetrain::assignOutputs()
     if (state.xPose){
         setXMode();
     // } else if (state.adas){
-    //     setDriveMotorNeutralMode(ValorNeutralMode::Coast);
+    //     setDriveMotorNeutralMode(valor::NeutralMode::Coast);
     //     adas();
     //     drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
     } 
     else {
-        setDriveMotorNeutralMode(ValorNeutralMode::Coast);
+        setDriveMotorNeutralMode(valor::NeutralMode::Coast);
         limeTable->PutNumber("pipeline", LimelightPipes::APRIL_TAGS);    
         drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
     }
@@ -518,11 +513,11 @@ frc::TrajectoryConfig & Drivetrain::getTrajectoryConfig() {
     return *config;
 }
 
-ValorPIDF Drivetrain::getXPIDF() {
+valor::PIDF Drivetrain::getXPIDF() {
     return xPIDF;
 }
 
-ValorPIDF  Drivetrain::getYPIDF() {
+valor::PIDF  Drivetrain::getYPIDF() {
     return yPIDF;
 }
 
@@ -540,10 +535,10 @@ void Drivetrain::setXMode(){
     azimuthControllers[1]->setPosition(std::round(azimuthControllers[1]->getPosition()) + 0.375);
     azimuthControllers[2]->setPosition(std::round(azimuthControllers[2]->getPosition()) - 0.375);
     azimuthControllers[3]->setPosition(std::round(azimuthControllers[3]->getPosition()) - 0.125);
-    setDriveMotorNeutralMode(ValorNeutralMode::Brake);
+    setDriveMotorNeutralMode(valor::NeutralMode::Brake);
 }
 
-void Drivetrain::setDriveMotorNeutralMode(ValorNeutralMode mode) {
+void Drivetrain::setDriveMotorNeutralMode(valor::NeutralMode mode) {
     for (int i = 0; i < SWERVE_COUNT; i++)
     {
         driveControllers[i]->setNeutralMode(mode);
@@ -558,114 +553,114 @@ frc2::InstantCommand* Drivetrain::getSetXMode(){
 }
 
 void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
-    {
-        builder.SetSmartDashboardType("Subsystem");
+{
+    builder.SetSmartDashboardType("Subsystem");
 
-        builder.AddDoubleProperty(
-            "diffVisionOdom",
-            [this] { return state.visionOdomDiff; },
-            nullptr
-        );
+    builder.AddDoubleProperty(
+        "diffVisionOdom",
+        [this] { return state.visionOdomDiff; },
+        nullptr
+    );
 
-        builder.AddDoubleProperty(
-            "xSpeed",
-            [this] { return state.xSpeed; },
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "ySpeed",
-            [this] { return state.ySpeed; },
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "rotSpeed",
-            [this] { return state.rot; },
-            nullptr
-        );
+    builder.AddDoubleProperty(
+        "xSpeed",
+        [this] { return state.xSpeed; },
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "ySpeed",
+        [this] { return state.ySpeed; },
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "rotSpeed",
+        [this] { return state.rot; },
+        nullptr
+    );
 
-        builder.AddDoubleProperty(
-            "xSpeedMPS",
-            [this] { return state.xSpeedMPS.to<double>(); },
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "ySpeedMPS",
-            [this] { return state.ySpeedMPS.to<double>(); },
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "rotSpeedMPS",
-            [this] { return state.rotRPS.to<double>(); },
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "x",
-            [this] { return getPose_m().X().to<double>(); },
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "y",
-            [this] { return getPose_m().Y().to<double>(); },
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "theta",
-            [this] { return getPose_m().Rotation().Degrees().to<double>(); },
-            nullptr
-        );
-        builder.AddBooleanProperty(
-            "swerveGood",
-            [this] { return swerveNoError; },
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "visionX",
-            [this] { return state.visionPose.X().to<double>(); },
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "visionY",
-            [this] { return state.visionPose.Y().to<double>(); },
-            nullptr
-        );
-        builder.AddDoubleArrayProperty(
-            "pose",
-            [this] 
-            { 
-                std::vector<double> pose;
-                pose.push_back(getPose_m().X().to<double>());
-                pose.push_back(getPose_m().Y().to<double>());
-                pose.push_back(getPose_m().Rotation().Degrees().to<double>());
-                return pose;
-            },
-            nullptr
-        );
-        builder.AddDoubleArrayProperty(
-            "visionPose",
-            [this] 
-            { 
-                std::vector<double> pose;
-                pose.push_back(state.visionPose.X().to<double>());
-                pose.push_back(state.visionPose.Y().to<double>());
-                pose.push_back(state.visionPose.Rotation().Degrees().to<double>());
-                return pose;
-            },
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "pigeonPitch",
-            [this]
-            {
-                return pigeon.GetPitch();
-            },
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "pigeoYaw",
-            [this]
-            {
-                return pigeon.GetYaw();
-            },
-            nullptr
-        );
-    }
+    builder.AddDoubleProperty(
+        "xSpeedMPS",
+        [this] { return state.xSpeedMPS.to<double>(); },
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "ySpeedMPS",
+        [this] { return state.ySpeedMPS.to<double>(); },
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "rotSpeedMPS",
+        [this] { return state.rotRPS.to<double>(); },
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "x",
+        [this] { return getPose_m().X().to<double>(); },
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "y",
+        [this] { return getPose_m().Y().to<double>(); },
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "theta",
+        [this] { return getPose_m().Rotation().Degrees().to<double>(); },
+        nullptr
+    );
+    builder.AddBooleanProperty(
+        "swerveGood",
+        [this] { return swerveNoError; },
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "visionX",
+        [this] { return state.visionPose.X().to<double>(); },
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "visionY",
+        [this] { return state.visionPose.Y().to<double>(); },
+        nullptr
+    );
+    builder.AddDoubleArrayProperty(
+        "pose",
+        [this] 
+        { 
+            std::vector<double> pose;
+            pose.push_back(getPose_m().X().to<double>());
+            pose.push_back(getPose_m().Y().to<double>());
+            pose.push_back(getPose_m().Rotation().Degrees().to<double>());
+            return pose;
+        },
+        nullptr
+    );
+    builder.AddDoubleArrayProperty(
+        "visionPose",
+        [this] 
+        { 
+            std::vector<double> pose;
+            pose.push_back(state.visionPose.X().to<double>());
+            pose.push_back(state.visionPose.Y().to<double>());
+            pose.push_back(state.visionPose.Rotation().Degrees().to<double>());
+            return pose;
+        },
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "pigeonPitch",
+        [this]
+        {
+            return pigeon.GetPitch();
+        },
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "pigeoYaw",
+        [this]
+        {
+            return pigeon.GetYaw();
+        },
+        nullptr
+    );
+}

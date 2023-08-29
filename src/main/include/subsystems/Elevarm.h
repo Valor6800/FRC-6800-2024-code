@@ -1,22 +1,15 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2019 FIRST. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 #pragma once
 
-#include "ValorSubsystem.h"
+#include <BaseSubsystem.h>
 #include "Constants.h"
-#include "controllers/ValorFalconController.h"
-#include "controllers/ValorNeoController.h"
+#include <controllers/FalconController.h>
+#include <controllers/NeoController.h>
 #include "subsystems/Intake.h"
 
 #include "subsystems/Direction.h"
 #include "subsystems/Position.h"
 #include "subsystems/Piece.h"
-#include "sensors/ValorCANdleSensor.h"
+#include <sensors/CANdleSensor.h>
 
 #include <frc/smartdashboard/SendableChooser.h>
 #include <frc/smartdashboard/SmartDashboard.h>
@@ -32,7 +25,7 @@
 /**
  * @brief Subsystem - Elevarm
  */
-class Elevarm : public ValorSubsystem
+class Elevarm : public valor::BaseSubsystem
 {
 public:
      
@@ -56,15 +49,15 @@ public:
       * Includes:
       * * Resetting the test Bench state
       */
-     void init();
+     void init() override;
 
      void assessInputs();
      void analyzeDashboard();
      void assignOutputs();
 
-     void resetState();
+     void resetState() override;
 
-     void InitSendable(wpi::SendableBuilder& builder);
+     void InitSendable(wpi::SendableBuilder& builder) override;
 
     struct Positions {
         Positions() {
@@ -168,12 +161,12 @@ private:
     double minAngle(bool);
     bool minFloorAngle();
 
-     ValorNeoController carriageMotors;
-     ValorFalconController armRotateMotor;
+     valor::NeoController carriageMotors;
+     valor::FalconController armRotateMotor;
 
     ctre::phoenix::sensors::WPI_CANCoder armCANcoder;
 
-     ValorFalconController wristMotor;
+     valor::FalconController wristMotor;
 
      std::map<Piece, std::map<Direction, std::map<Position, frc::Pose2d>>> posMap;
      frc::Pose2d stowPos;
@@ -183,12 +176,12 @@ private:
     Positions detectionBoxManual(double, double);
 
     Intake *intake;
-    ValorCANdleSensor candle;
+    valor::CANdleSensor candle;
 
-    ValorPIDF carriagePID;
-    ValorPIDF rotatePID;
-    ValorPIDF autoRotatePID;
-    ValorPIDF wristPID;
+    valor::PIDF carriagePID;
+    valor::PIDF rotatePID;
+    valor::PIDF autoRotatePID;
+    valor::PIDF wristPID;
      
      double manualMaxCarriageSpeed;
      double manualMaxArmSpeed;

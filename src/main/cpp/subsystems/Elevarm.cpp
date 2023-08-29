@@ -1,9 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2019 FIRST. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
 #include "subsystems/Elevarm.h"
 #include <iostream>
 
@@ -91,12 +85,12 @@
 #define MAN_MAX_CARRIAGE 0.3f
 #define MAN_MAX_ROTATE 0.4f
 
-Elevarm::Elevarm(frc::TimedRobot *_robot, Intake *_intake) : ValorSubsystem(_robot, "Elevarm"),                        
+Elevarm::Elevarm(frc::TimedRobot *_robot, Intake *_intake) : valor::BaseSubsystem(_robot, "Elevarm"),                        
                             intake(_intake),
-                            carriageMotors(CANIDs::CARRIAGE_MAIN, ValorNeutralMode::Brake, false),
-                            armRotateMotor(CANIDs::ARM_ROTATE, ValorNeutralMode::Brake, false, "baseCAN"),
+                            carriageMotors(CANIDs::CARRIAGE_MAIN, valor::NeutralMode::Brake, false),
+                            armRotateMotor(CANIDs::ARM_ROTATE, valor::NeutralMode::Brake, false, "baseCAN"),
                             armCANcoder(CANIDs::ARM_CANCODER, "baseCAN"),
-                            wristMotor(CANIDs::WRIST, ValorNeutralMode::Brake, true, "baseCAN"),
+                            wristMotor(CANIDs::WRIST, valor::NeutralMode::Brake, true, "baseCAN"),
                             candle(_robot, 0, CANIDs::CANDLE, "baseCAN"),
                             manualMaxArmSpeed(MAN_MAX_ROTATE),
                             manualMaxCarriageSpeed(MAN_MAX_CARRIAGE),
