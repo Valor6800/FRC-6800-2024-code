@@ -411,7 +411,7 @@ frc2::SequentialCommandGroup* ValorAuto::makeAuto(std::string filename, bool blu
         createTrajectoryDebugFile(trajectory, trajCount);
         trajCount++;
         currentGroup->AddCommands(createTrajectoryCommand(trajectory));
-        trajPoses.empty();
+        trajPoses.clear();
     }
     cmdGroups.push_back(std::move(*currentGroup));
 
