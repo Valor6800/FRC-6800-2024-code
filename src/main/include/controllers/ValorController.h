@@ -285,13 +285,11 @@ public:
     virtual double getAbsEncoderPosition() = 0;
 
 protected:
-    ValorNeutralMode neutralMode;
-    T* motor;
-    T* followerMotor;
-
-    double conversion;
-
-    bool inverted;
-
     
+    T* motor;
+    
+    bool inverted;
+    ValorNeutralMode neutralMode;
+    double conversion;
+    T* followerMotor;
 };

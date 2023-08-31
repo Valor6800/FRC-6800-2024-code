@@ -20,6 +20,7 @@ public:
 
     void init();
     void reset();
+    void setNeutralMode(ValorNeutralMode mode);
 
     double getPosition();
     double getSpeed();
@@ -49,8 +50,6 @@ public:
      * Restrict the motor from going backwards
      */
     void preventBackwards();
-
-    void setNeutralMode(ValorNeutralMode mode);
 
     void InitSendable(wpi::SendableBuilder& builder);
 private:
