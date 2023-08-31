@@ -8,7 +8,7 @@ std::vector<std::string> ValorAutoAction::parseCSVLine(std::string line)
     int pointerPos = 0;
     std::vector<std::string> items;
 
-    while (pointerPos >= 0 && pointerPos < line.length()) {
+    while (pointerPos >= 0 && pointerPos < int(line.length())) {
         size_t returnPos = line.find_first_of(",", pointerPos);
         if (returnPos != std::string::npos) {
             items.push_back(line.substr(pointerPos,returnPos-pointerPos));
