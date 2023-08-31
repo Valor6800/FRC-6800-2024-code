@@ -167,11 +167,10 @@ private:
      */
     double minAngle(bool);
     bool minFloorAngle();
-
+     Intake *intake;
      ValorNeoController carriageMotors;
      ValorFalconController armRotateMotor;
-
-    ctre::phoenix::sensors::WPI_CANCoder armCANcoder;
+     ctre::phoenix::sensors::WPI_CANCoder armCANcoder;   
 
      ValorFalconController wristMotor;
 
@@ -182,15 +181,15 @@ private:
     frc::Pose2d forwardKinematics(Positions positions);
     Positions detectionBoxManual(double, double);
 
-    Intake *intake;
+    
     ValorCANdleSensor candle;
 
     ValorPIDF carriagePID;
     ValorPIDF rotatePID;
     ValorPIDF autoRotatePID;
     ValorPIDF wristPID;
-     
-     double manualMaxCarriageSpeed;
+
      double manualMaxArmSpeed;
+     double manualMaxCarriageSpeed;
      double carriageStallPower;
 };
