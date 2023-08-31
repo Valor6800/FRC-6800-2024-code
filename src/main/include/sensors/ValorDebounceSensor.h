@@ -33,7 +33,7 @@ public:
      * 
      * @param _robot Pass in the Robot reference so the calculate method can be auto-scheduled
      */
-    ValorDebounceSensor(frc::TimedRobot *_robot, const char* name);
+    ValorDebounceSensor(const char* name, frc::TimedRobot *_robot);
     
     void reset();
 

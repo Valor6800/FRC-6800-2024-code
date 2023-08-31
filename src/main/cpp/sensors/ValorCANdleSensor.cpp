@@ -15,7 +15,7 @@
 #define VALOR_GOLD 0xEEA800
 
 ValorCANdleSensor::ValorCANdleSensor(frc::TimedRobot *_robot, int _ledCount, int _canID, std::string _canbus) :
-    ValorSensor(_robot, std::string("ID ").append(std::to_string(_canID)).c_str()),
+    ValorSensor(std::string("ID ").append(std::to_string(_canID)).c_str(), _robot),
     candle(_canID, _canbus),
     ledCount(_ledCount),
     currentColor(toRGB(VALOR_GOLD)),

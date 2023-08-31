@@ -1,6 +1,6 @@
 #include "sensors/ValorDebounceSensor.h"
 
-ValorDebounceSensor::ValorDebounceSensor(frc::TimedRobot *_robot, const char *_name) : ValorSensor(_robot, _name)
+ValorDebounceSensor::ValorDebounceSensor(const char *_name, frc::TimedRobot *_robot) : ValorSensor(_name, _robot)
 {
     wpi::SendableRegistry::AddLW(this, "ValorDebounceSensor", sensorName);
     reset();
