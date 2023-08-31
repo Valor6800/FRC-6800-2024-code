@@ -163,7 +163,7 @@ ValorAutoAction::ValorAutoAction(std::string line, std::map<std::string, frc::Tr
             maxAccel = stod(items[1]);
         }
         else
-            maxAccel = NULL;
+            maxAccel = 0;
         
         if (items.size() == 3 && items[2] == "multiplier")
             accelMultiplier = stod(items[1]);
@@ -175,7 +175,7 @@ ValorAutoAction::ValorAutoAction(std::string line, std::map<std::string, frc::Tr
             reversed = items[1] == "reversed";
     } else if (type == ValorAutoAction::Type::INTAKE) {
         if (items.size() < 2){
-            error + ValorAutoAction::SIZE_MISMATCH;
+            error = ValorAutoAction::SIZE_MISMATCH;
             error_message = "received " + std::to_string(items.size());
             return;
         }
