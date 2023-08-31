@@ -285,7 +285,7 @@ public:
     virtual double getAbsEncoderPosition() = 0;
 
 protected:
-
+    ValorNeutralMode neutralMode;
     T* motor;
     T* followerMotor;
 
@@ -293,5 +293,5 @@ protected:
 
     bool inverted;
 
-    ValorNeutralMode neutralMode;
+    
 };
