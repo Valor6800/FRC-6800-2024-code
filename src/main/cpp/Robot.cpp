@@ -1,10 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2019 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 #include "Robot.h"
 
 #include <frc/smartdashboard/SmartDashboard.h>
@@ -12,7 +5,7 @@
 
 #include <ctime>
 
-Robot::Robot() : drivetrain(this), intake(this), elevarm(this, &intake), leds(this, &elevarm, &intake, &drivetrain), autonomous(&drivetrain, &intake, &elevarm)
+Robot::Robot() : drivetrain(this), intake(this), elevarm(this, &intake), leds(this, &elevarm, &intake, &drivetrain)
 {
     frc::TimedRobot();
 }
@@ -23,7 +16,6 @@ void Robot::RobotInit() {
     intake.setGamepads(&gamepadOperator, &gamepadDriver);
 
     drivetrain.resetState();
-    autonomous.fillAutoList();
 
     frc::LiveWindow::EnableAllTelemetry();
     frc::DataLogManager::Start();
@@ -57,45 +49,26 @@ void Robot::AutonomousInit() {
     drivetrain.resetState();
     elevarm.resetState();
     leds.resetState();
-    drivetrain.setDriveMotorNeutralMode(ValorNeutralMode::Brake);
-    drivetrain.pullSwerveModuleZeroReference();
-
     drivetrain.state.matchStart = frc::Timer::GetFPGATimestamp().to<double>();
-
     elevarm.futureState.highStow = false;
-
-    //intake.state.intakeState = Intake::SPIKED;
-
-    autoCommand = autonomous.getCurrentAuto();
-
-    if (autoCommand != nullptr) {
-        autoCommand->Schedule();
-    }
-
-    outfile.open("/home/lvuser/poseLog" + std::to_string(time(0)) + ".csv");
-
     drivetrain.setLimelightPipeline(Drivetrain::LimelightPipes::APRIL_TAGS);
+    drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Brake);
+    drivetrain.pullSwerveModuleZeroReference();
 }
 
 void Robot::AutonomousExit() {
-    outfile.close();
     drivetrain.state.xPose = true;
     intake.setConeHoldSpeed(false);
     elevarm.futureState.highStow = true;
 
 }
 
-std::string makePoseLog(frc::Pose2d pose){
-    return std::to_string(frc::Timer::GetFPGATimestamp().to<double>()) + "," + std::to_string(pose.X().to<double>()) + "," + std::to_string(pose.Y().to<double>()) + "," + std::to_string(pose.Rotation().Degrees().to<double>()) + "\n";
-}
-
-void Robot::AutonomousPeriodic(){
-    outfile << makePoseLog(drivetrain.getPose_m());
+void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
     drivetrain.pullSwerveModuleZeroReference();
-    drivetrain.setDriveMotorNeutralMode(ValorNeutralMode::Coast);
+    drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Coast);
 
     elevarm.teleopStart = frc::Timer::GetFPGATimestamp().to<double>();
     elevarm.setArmPIDF(false);

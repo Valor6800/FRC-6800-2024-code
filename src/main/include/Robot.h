@@ -1,29 +1,20 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2019 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 #pragma once
 
 #include <frc/TimedRobot.h>
 #include <frc2/command/Command.h>
 
 #include "Constants.h"
-#include "ValorGamepad.h"
+#include "valkyrie/Gamepad.h"
 
-#include "subsystems/Drivetrain.h"
-#include "subsystems/Elevarm.h"
-#include "subsystems/Intake.h"
-#include "subsystems/Leds.h"
+#include "Drivetrain.h"
+#include "Elevarm.h"
+#include "Intake.h"
+#include "Leds.h"
 
 #include <frc/DriverStation.h>
 #include <frc/DataLogManager.h>
 
 #include <frc/livewindow/LiveWindow.h>
-
-#include "auto/ValorAuto.h"
 
 #include <fstream>
 
@@ -43,8 +34,8 @@ class Robot : public frc::TimedRobot {
         void AutonomousExit() override;
         
     private:
-        ValorGamepad gamepadOperator{OIConstants::GAMEPAD_OPERATOR_LOCATION};
-        ValorGamepad gamepadDriver{OIConstants::GAMEPAD_BASE_LOCATION};
+        valor::Gamepad gamepadOperator{OIConstants::GAMEPAD_OPERATOR_LOCATION};
+        valor::Gamepad gamepadDriver{OIConstants::GAMEPAD_BASE_LOCATION};
 
         frc2::Command * autoCommand = nullptr;
 
@@ -52,7 +43,6 @@ class Robot : public frc::TimedRobot {
         Intake intake;
         Elevarm elevarm;
         Leds leds;
-        ValorAuto autonomous;
 
         std::ofstream outfile;
 };
