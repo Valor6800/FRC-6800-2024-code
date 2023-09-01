@@ -159,9 +159,9 @@ protected:
      * @brief Holds the previous sensor state
      */
     T prevState;
-
+    
+    frc::TimedRobot *robot;
+    
     const char* sensorName;
 
-private:
-    frc::TimedRobot *robot;
 };
