@@ -195,8 +195,6 @@ private:
     frc::Pose2d forwardKinematics(Positions positions);
     Positions detectionBoxManual(double, double);
 
-    Intake *intake;
-
     ValorPIDF carriagePID;
     ValorPIDF rotatePID;
     ValorPIDF autoRotatePID;

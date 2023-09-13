@@ -52,9 +52,7 @@ public:
      * Restrict the motor from going backwards
      */
     void preventBackwards();
-
-    void setNeutralMode(ValorNeutralMode mode);
-
+    
     void setOpenLoopRamp(double time);
 
     void InitSendable(wpi::SendableBuilder& builder);
