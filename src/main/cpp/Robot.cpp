@@ -12,7 +12,7 @@
 
 #include <ctime>
 
-Robot::Robot() : drivetrain(this), intake(this), elevarm(this, &intake), autonomous(&drivetrain, &intake, &elevarm)
+Robot::Robot() : drivetrain(this), intake(this), elevarm(this, &intake), leds(this, &elevarm, &intake, &drivetrain), autonomous(&drivetrain, &intake, &elevarm)
 {
     frc::TimedRobot();
 }
@@ -53,10 +53,18 @@ void Robot::DisabledPeriodic() { }
  * RobotContainer} class.
  */
 void Robot::AutonomousInit() {
+    intake.setConeHoldSpeed(true);
     drivetrain.resetState();
     elevarm.resetState();
+    leds.resetState();
     drivetrain.setDriveMotorNeutralMode(ValorNeutralMode::Brake);
     drivetrain.pullSwerveModuleZeroReference();
+
+    drivetrain.state.matchStart = frc::Timer::GetFPGATimestamp().to<double>();
+
+    elevarm.futureState.highStow = false;
+
+    //intake.state.intakeState = Intake::SPIKED;
 
     autoCommand = autonomous.getCurrentAuto();
 
@@ -65,11 +73,16 @@ void Robot::AutonomousInit() {
     }
 
     outfile.open("/home/lvuser/poseLog" + std::to_string(time(0)) + ".csv");
+
+    drivetrain.setLimelightPipeline(Drivetrain::LimelightPipes::APRIL_TAGS);
 }
 
 void Robot::AutonomousExit() {
     outfile.close();
     drivetrain.state.xPose = true;
+    intake.setConeHoldSpeed(false);
+    elevarm.futureState.highStow = true;
+
 }
 
 std::string makePoseLog(frc::Pose2d pose){
@@ -83,6 +96,8 @@ void Robot::AutonomousPeriodic(){
 void Robot::TeleopInit() {
     drivetrain.pullSwerveModuleZeroReference();
     drivetrain.setDriveMotorNeutralMode(ValorNeutralMode::Coast);
+
+    elevarm.teleopStart = frc::Timer::GetFPGATimestamp().to<double>();
     elevarm.setArmPIDF(false);
 
     if (autoCommand != nullptr) {

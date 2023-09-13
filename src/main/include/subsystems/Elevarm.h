@@ -16,7 +16,6 @@
 #include "subsystems/Direction.h"
 #include "subsystems/Position.h"
 #include "subsystems/Piece.h"
-#include "sensors/ValorCANdleSensor.h"
 
 #include <frc/smartdashboard/SendableChooser.h>
 #include <frc/smartdashboard/SmartDashboard.h>
@@ -66,6 +65,9 @@ public:
 
      void InitSendable(wpi::SendableBuilder& builder);
 
+     void setPrevPiece(Piece piece);
+     void setFuturePiece(Piece piece);
+
     struct Positions {
         Positions() {
             Positions(0,0,0);
@@ -87,7 +89,6 @@ public:
 
     struct x
     {
-        Piece pieceState;
         Direction directionState;
         Position positionState;
 
@@ -97,23 +98,33 @@ public:
         Positions targetPose;
         frc::Pose2d resultKinematics;
 
-        bool deadManEnabled;
         bool pitModeEnabled;
+
+        bool highStow;
 
         double frontMinAngle;
         double backMinAngle;
 
-        double carraigeOffset;
+        double carriageOffset;
 
         bool atCarriage;
         bool atArm;
         bool atWrist;
 
+        bool armInRange;
+        bool wristInRange;
+
     } futureState, previousState;
 
     double heightDeadband, rotationDeadband;
+    
+    bool zeroArm;
+    bool zeroWrist;
+    bool coastMode;
 
-    frc2::FunctionalCommand * getAutoCommand(std::string, std::string, std::string, bool);
+    double teleopStart;
+
+    frc2::FunctionalCommand * getAutoCommand(std::string, std::string, std::string);
 
     frc2::FunctionalCommand * getRotatePIDSetterCommand(bool);
 
@@ -142,7 +153,8 @@ public:
         {"high_auto", Position::HIGH_AUTO},
         {"manual", Position::MANUAL},
         {"ground_score", Position::GROUND_SCORE},
-        {"snake", Position::SNAKE}
+        {"snake", Position::SNAKE},
+        {"toppled", Position::GROUND_TOPPLE}
     };
     Position stringToPositionState(std::string name){
         if (!stringToPositionMap.contains(name))
@@ -167,10 +179,12 @@ private:
      */
     double minAngle(bool);
     bool minFloorAngle();
-     Intake *intake;
+
      ValorNeoController carriageMotors;
      ValorFalconController armRotateMotor;
-     ctre::phoenix::sensors::WPI_CANCoder armCANcoder;   
+
+    ctre::phoenix::sensors::WPI_CANCoder armCANcoder;
+    ctre::phoenix::sensors::WPI_CANCoder wristCANcoder;
 
      ValorFalconController wristMotor;
 
@@ -181,15 +195,14 @@ private:
     frc::Pose2d forwardKinematics(Positions positions);
     Positions detectionBoxManual(double, double);
 
-    
-    ValorCANdleSensor candle;
+    Intake *intake;
 
     ValorPIDF carriagePID;
     ValorPIDF rotatePID;
     ValorPIDF autoRotatePID;
     ValorPIDF wristPID;
-
-     double manualMaxArmSpeed;
+     
      double manualMaxCarriageSpeed;
+     double manualMaxArmSpeed;
      double carriageStallPower;
 };

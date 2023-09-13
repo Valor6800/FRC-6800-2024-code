@@ -1,22 +1,36 @@
 #include <iostream>
 #include "subsystems/Intake.h"
 #include "subsystems/Piece.h"
-//intaking with cone and cube has different directions, so flipped
-#define DEFAULT_INTAKE_CUBE_SPD -0.7f
-#define DEFAULT_INTAKE_CONE_SPD 0.9f
-#define DEFAULT_OUTTAKE_SPD -0.7f
-//since intaking with cone vs cube is different, outtaking follows the same rule
-#define DEFAULT_OUTTAKE_CUBE_SPD 0.4f
-#define DEFAULT_OUTTAKE_CONE_SPD -0.8f
 
-#define CONE_HOLD_SPD 0.02f
+#define IS_COMP
+
+#ifdef IS_COMP
+#define CONE_HOLD_SPD 0.04f
+#define CUBE_HOLD_SPD -0.04f
+
+#define AUTO_CONE_HOLD_SPD 0.15f
+#else
+#define CONE_HOLD_SPD 0.03f
 #define CUBE_HOLD_SPD -0.03f
 
-#define CUBE_SPIKED_CURRENT 60.0f
-#define CONE_SPIKED_CURRENT 60.0f
+#define AUTO_CONE_HOLD_SPD 0.06f
+#endif
 
-#define CUBE_CACHE_SIZE 120.0f
-#define CONE_CACHE_SIZE 250.0f
+//intaking with cone and cube has different directions, so flipped
+#define DEFAULT_INTAKE_CUBE_SPD -0.7f
+#define DEFAULT_INTAKE_CONE_SPD 1.0f
+//since intaking with cone vs cube is different, outtaking follows the same rule
+#define DEFAULT_OUTTAKE_CUBE_SPD 0.55f
+#define DEFAULT_OUTTAKE_CONE_SPD -0.8f
+#define GROUND_OUTTAKE_GROUND_CUBE_SPD 0.3f
+
+#define CUBE_SPIKED_CURRENT 60.0f
+#define CONE_SPIKED_CURRENT 90.0f
+
+#define CUBE_CACHE_SIZE 350.0f
+#define CONE_CACHE_SIZE 650.0f
+
+#define POOP_FULL_SPEED 1.0f
 
 Intake::Intake(frc::TimedRobot *_robot) : ValorSubsystem(_robot, "Intake"),  
                             intakeMotor(CANIDs::INTAKE_LEAD_CAN, ValorNeutralMode::Coast, false, "baseCAN"),
@@ -34,7 +48,6 @@ Intake::~Intake()
 void Intake::resetState()
 {
    state.intakeState = DISABLED;
-   state.pieceState = Piece::CONE;
    currentSensor.reset();
 }
 
@@ -42,7 +55,6 @@ void Intake::init()
 {
     state.intakeConeSpeed = DEFAULT_INTAKE_CONE_SPD;
     state.intakeCubeSpeed = DEFAULT_INTAKE_CUBE_SPD;
-    state.outtakeSpeed = DEFAULT_OUTTAKE_SPD;
     state.outtakeConeSpeed = DEFAULT_OUTTAKE_CONE_SPD;
     state.outtakeCubeSpeed = DEFAULT_OUTTAKE_CUBE_SPD;
     state.coneHoldSpeed = CONE_HOLD_SPD;
@@ -56,6 +68,8 @@ void Intake::init()
 
     state.intakeOp = false;
 
+    state.isCubeStall = false;
+
     prevState = state;
 
     currentSensor.setSpikeSetpoint(state.coneSpikeCurrent);
@@ -63,7 +77,6 @@ void Intake::init()
     currentSensor.setSpikeCallback([this]() { state.intakeState = SPIKED;});
     currentSensor.setCacheSize(CONE_CACHE_SIZE);
 
-    table->PutNumber("outtake speed", state.outtakeSpeed);
     table->PutNumber("outtake Cone speed", state.outtakeConeSpeed);
     table->PutNumber("outtake Cube speed", state.outtakeCubeSpeed);
     table->PutNumber("Cone Hold Speed", state.coneHoldSpeed);
@@ -73,39 +86,31 @@ void Intake::init()
     table->PutNumber("Cone Cache Size", state.coneCacheSize);
     table->PutNumber("Cube Cache Size", state.cubeCacheSize);
 
-    intakeMotor.getMotor()->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 40, 60, .75));
+    intakeMotor.getMotor()->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 60, 90, .75));
+    intakeMotor.setVoltageCompensation(12.0);
 
-    
+
     resetState();
 }
 
 void Intake::assessInputs()
 {
+    // Driver/Operator scoring independently
+    
+
     // SCORE
-    if (driverGamepad->rightTriggerActive() || operatorGamepad->rightTriggerActive()) {
-        // Operator holding cube score
-        if (operatorGamepad->GetYButton() || driverGamepad->GetYButton()) {
-            state.intakeState = OUTTAKE_CUBE;
-        // Operator holding cone score
-        } else{
-            state.intakeState = OUTTAKE_CONE;
-        }    
-        // Driver/Operator scoring independently
+    if (driverGamepad->rightTriggerActive()) {
+        state.intakeState = OUTTAKE;  
     // No game element in intake, driver/operator requesting intake
     } else if (state.intakeState != SPIKED) {
 
         // Driver or operator ground pickup
         if (driverGamepad->GetLeftBumper() || driverGamepad->GetRightBumper() || 
-        (operatorGamepad->DPadLeft() && driverGamepad->leftTriggerActive())) {
-            
-            if (driverGamepad->GetYButton() || operatorGamepad->GetYButton()){
-                state.intakeState = INTAKE_CUBE;
-                state.pieceState = Piece::CUBE;
-            }
-            else{
-                state.intakeState = INTAKE_CONE;
-                state.pieceState = Piece::CONE;
-            }
+        (operatorGamepad->DPadLeft() && driverGamepad->leftTriggerActive()) || 
+        driverGamepad->DPadLeft() || 
+        driverGamepad->DPadRight() ||
+        (driverGamepad->leftTriggerActive() && operatorGamepad->rightTriggerActive())) {
+            state.intakeState = INTAKE;
         // Nothing pressed
         } else{
             state.intakeState = DISABLED;
@@ -119,16 +124,11 @@ void Intake::assessInputs()
         state.intakeState = DISABLED;
     }
 
-    if(operatorGamepad->leftTriggerActive()){
-        state.intakeOp = true;
-    } else{
-        state.intakeOp = false;
-    }
+    state.intakeOp = operatorGamepad->leftTriggerActive();
 }
 
 void Intake::analyzeDashboard()
 {
-    state.outtakeSpeed = table->GetNumber("outtake speed", DEFAULT_OUTTAKE_SPD);
     state.outtakeConeSpeed = table->GetNumber("outtake Cone speed", DEFAULT_OUTTAKE_CONE_SPD);
     state.outtakeCubeSpeed =  table->GetNumber("outtake Cube speed", DEFAULT_OUTTAKE_CUBE_SPD);
     state.cubeHoldSpeed = table->GetNumber("Cube Hold Speed", CUBE_HOLD_SPD);
@@ -139,52 +139,71 @@ void Intake::analyzeDashboard()
     state.cubeCacheSize = table->GetNumber("Cube Cache Size", CUBE_CACHE_SIZE);
     state.intakeConeSpeed = table->GetNumber("intake cone speed", DEFAULT_INTAKE_CONE_SPD);
     state.intakeCubeSpeed = table->GetNumber("intake cube speed", DEFAULT_INTAKE_CUBE_SPD);
+
+    if (prevState.pieceState != state.pieceState) {
+        if (state.pieceState == Piece::CONE) {
+            currentSensor.setCacheSize(state.coneCacheSize);
+            currentSensor.setSpikeSetpoint(state.coneSpikeCurrent);
+        } else if (state.pieceState == Piece::CUBE) {
+            currentSensor.setCacheSize(state.cubeCacheSize);
+            currentSensor.setSpikeSetpoint(state.cubeSpikeCurrent);
+        }
+        
+    }
 }
  
 void Intake::assignOutputs()
 { 
     if (state.intakeOp){
-         if (state.pieceState ==Piece::CONE){
-            intakeMotor.setPower(state.intakeConeSpeed);
-        } else{
+         if (state.pieceState == Piece::CUBE){
             intakeMotor.setPower(state.intakeCubeSpeed);
+        } else{
+            intakeMotor.setPower(state.intakeConeSpeed);
         }
     } else if (state.intakeState == DISABLED) {
         intakeMotor.setPower(0);
     } else if (state.intakeState == SPIKED) {
-        if (state.pieceState ==Piece::CONE){
-            intakeMotor.setPower(state.coneHoldSpeed);
-        } else{
+        if (state.isCubeStall){
             intakeMotor.setPower(state.cubeHoldSpeed);
+        } else{
+            intakeMotor.setPower(state.coneHoldSpeed);
         }
-    } else if (state.intakeState == OUTTAKE_CONE){
-        intakeMotor.setPower(state.outtakeConeSpeed);
-    } else if (state.intakeState == OUTTAKE_CUBE){
-        intakeMotor.setPower(state.outtakeCubeSpeed);
     } else if (state.intakeState == OUTTAKE){
-        intakeMotor.setPower(state.outtakeSpeed);
-    } else if (state.intakeState == INTAKE_CONE){
-        if (prevState.pieceState !=Piece::CONE) {
-            currentSensor.setCacheSize(state.coneCacheSize);
-            currentSensor.setSpikeSetpoint(state.coneSpikeCurrent);
+        state.isCubeStall = false;
+
+        if (state.pieceState == Piece::CUBE) {
+            if (state.elevarmPoopFull) {
+                intakeMotor.setPower(POOP_FULL_SPEED);
+            } else if (state.elevarmGround){
+                intakeMotor.setPower(GROUND_OUTTAKE_GROUND_CUBE_SPD);
+            } else {
+                intakeMotor.setPower(state.outtakeCubeSpeed);
+            }
+        } else {
+            intakeMotor.setPower(state.outtakeConeSpeed);
+        }  
+    } else if (state.intakeState == INTAKE){
+        if (state.pieceState == Piece::CUBE) {
+            state.isCubeStall = true;
+            intakeMotor.setPower(state.intakeCubeSpeed);
+        } else {
+            intakeMotor.setPower(state.intakeConeSpeed);
+            state.isCubeStall = false;
         }
-        intakeMotor.setPower(state.intakeConeSpeed);
-    } else if (state.intakeState == INTAKE_CUBE){
-        if (prevState.pieceState != Piece::CUBE) {
-            currentSensor.setCacheSize(state.cubeCacheSize);
-            currentSensor.setSpikeSetpoint(state.cubeSpikeCurrent);
-        }
-        intakeMotor.setPower(state.intakeCubeSpeed);
     }
     prevState = state;
 }
 
-frc2::FunctionalCommand * Intake::getAutoCommand(std::string intakeState){
-    Intake::IntakeStates inState = stringToIntakeState(intakeState);
+frc2::FunctionalCommand * Intake::getAutoCommand(std::string intakeState, std::string pieceState){
+    IntakeStates inState = stringToIntakeState(intakeState);
+    Piece inPiece = stringToPieceState(pieceState);
     return new frc2::FunctionalCommand(
         // OnInit
-        [&, inState]() {
+        [&, inState, inPiece]() {
             state.intakeState = inState;
+            
+            if (inState != IntakeStates::DISABLED)
+                state.pieceState = inPiece;
         }, 
         //onExecute
         [&](){
@@ -219,12 +238,6 @@ void Intake::InitSendable(wpi::SendableBuilder& builder)
             "Outtake Cube Speed",
             [this]{ return state.outtakeCubeSpeed; },
             // [this](double value) { state.outtakeCubeSpeed = value; }
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "Outtake Speed",
-            [this]{ return state.outtakeSpeed; },
-            // [this](double value) { state.outtakeSpeed = value; }
             nullptr
         );
         builder.AddDoubleProperty(
@@ -282,3 +295,14 @@ void Intake::InitSendable(wpi::SendableBuilder& builder)
             nullptr
         );
     }
+
+Piece Intake::getPrevPiece(){
+    return prevState.pieceState;
+}
+Piece Intake::getFuturePiece(){
+    return state.pieceState;
+}
+
+void Intake::setConeHoldSpeed(double isAuto) {
+    state.intakeConeSpeed = (isAuto ? AUTO_CONE_HOLD_SPD : CONE_HOLD_SPD); 
+}

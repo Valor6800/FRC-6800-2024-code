@@ -20,7 +20,6 @@ public:
 
     void init();
     void reset();
-    void setNeutralMode(ValorNeutralMode mode);
 
     double getPosition();
     double getSpeed();
@@ -40,6 +39,8 @@ public:
     void setRange(int slot, double min, double max);
     
     void setConversion(double);
+    void setVoltageCompensation(double);
+    
 
     void setProfile(int slot);
     double getAbsEncoderPosition();
@@ -50,6 +51,10 @@ public:
      * Restrict the motor from going backwards
      */
     void preventBackwards();
+
+    void setNeutralMode(ValorNeutralMode mode);
+
+    void setOpenLoopRamp(double time);
 
     void InitSendable(wpi::SendableBuilder& builder);
 private:

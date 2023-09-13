@@ -16,6 +16,7 @@
 #include "subsystems/Drivetrain.h"
 #include "subsystems/Elevarm.h"
 #include "subsystems/Intake.h"
+#include "subsystems/Leds.h"
 
 #include <frc/DriverStation.h>
 #include <frc/DataLogManager.h>
@@ -45,11 +46,12 @@ class Robot : public frc::TimedRobot {
         ValorGamepad gamepadOperator{OIConstants::GAMEPAD_OPERATOR_LOCATION};
         ValorGamepad gamepadDriver{OIConstants::GAMEPAD_BASE_LOCATION};
 
-        frc2::Command* autoCommand = nullptr;
+        frc2::Command * autoCommand = nullptr;
 
         Drivetrain drivetrain;
         Intake intake;
         Elevarm elevarm;
+        Leds leds;
         ValorAuto autonomous;
 
         std::ofstream outfile;

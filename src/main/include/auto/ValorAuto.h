@@ -25,6 +25,12 @@
 #include <cstdint>
 #include <iostream>
 
+#include <pathplanner/lib/PathConstraints.h>
+#include <pathplanner/lib/PathPlanner.h>
+#include <pathplanner/lib/PathPlannerTrajectory.h>
+#include <pathplanner/lib/PathPoint.h>
+#include <pathplanner/lib/commands/FollowPathWithEvents.h>
+
 #ifndef VALOR_AUTO_H
 #define VALOR_AUTO_H
 
@@ -33,19 +39,31 @@ struct UsableCommand{
     frc2::WaitCommand waitCommand;
 };
 
+struct Point{
+    frc::Pose2d pose;
+    frc::Rotation2d heading; // Represents direction of travel, bot rotation is in the pose
+};
+
 class ValorAuto {
     public:
         ValorAuto(Drivetrain*, Intake*, Elevarm*);
+        ~ValorAuto();
         bool readPointsCSV(std::string);
-        frc2::SequentialCommandGroup* makeAuto(std::string, bool);
-        void precompileActions(std::string);
+        
+        frc2::SequentialCommandGroup* makePathAuto(std::string path);
+        frc2::SequentialCommandGroup * makeAuto(std::string path);
+
+        void precompileEvents(std::string);
+
+        frc2::SequentialCommandGroup* compileCommands(std::vector<ValorAutoAction>);
+
         void fillAutoList();
         frc2::SequentialCommandGroup* getCurrentAuto();
 
     protected:
 
-        frc::Trajectory createTrajectory(std::vector<frc::Pose2d>& poses, bool reversed, double, double);
-        frc2::SwerveControllerCommand<SWERVE_COUNT> createTrajectoryCommand(frc::Trajectory);
+        //pathplanner::PathPlannerTrajectory createTrajectory(std::vector<Point>&, double, double);
+        frc2::Command * createPPTrajectoryCommand(pathplanner::PathPlannerTrajectory);
 
         void readAuto(std::string);
 
@@ -54,18 +72,17 @@ class ValorAuto {
             {ValorAutoAction::NONE, "none"},
             {ValorAutoAction::TIME, "time"},
             {ValorAutoAction::STATE, "state"},
-            {ValorAutoAction::TRAJECTORY, "trajectory"},
             {ValorAutoAction::RESET_ODOM, "reset_odom"},
-            {ValorAutoAction::ACTION, "action"},
-            {ValorAutoAction::SPLIT, "split"},
             {ValorAutoAction::XMODE, "xmode"},
-            {ValorAutoAction::ACCELERATION, "acceleration"}
+            {ValorAutoAction::ACCELERATION, "acceleration"},
+            {ValorAutoAction::CLIMB_OVER, "climb over"},
+            {ValorAutoAction::GO_TO, "go to"}
         };
 
         std::unordered_map<ValorAutoAction::Error, std::string> errorToStringMap = {
             {ValorAutoAction::NONE_ERROR, "no error"},
-            {ValorAutoAction::POINT_MISSING, "non-existent point used"},
-            {ValorAutoAction::SIZE_MISMATCH, "insufficient number of parameters passed in"}
+            {ValorAutoAction::SIZE_MISMATCH, "insufficient number of parameters passed in"},
+            {ValorAutoAction::COMMAND_MISSING, "non-existent command used"}
         };
 
         std::vector<ValorAutoAction> autoActions;
@@ -82,5 +99,11 @@ class ValorAuto {
         nt::NetworkTableEntry entry;
 
         std::shared_ptr<nt::NetworkTable> table;
+        std::shared_ptr<nt::NetworkTable> elevarmTable;
+
+        frc2::SwerveControllerCommand<SWERVE_COUNT> * trajectoryCommand;
+
+        std::unordered_map<std::string, std::shared_ptr<frc2::Command> > eventMap;
+        std::unordered_map<std::string, frc2::SequentialCommandGroup> sequentialEventMap;
 };
 #endif
