@@ -7,12 +7,13 @@
 #include "subsystems/Drivetrain.h"
 #include <frc/DriverStation.h>
 #include <iostream>
+#include <math.h>
 
 #define TXRANGE  30.0f
 #define KPIGEON 2.0f
 #define KLIMELIGHT -29.8f
-#define KP_LIME_LIGHT 0.375f
 // #define KP_LOCK 0.2f
+#define KP_LIMELIGHT 0.7f
 
 #define KPX 60.0f //50
 #define KIX 0.0f //0
@@ -35,7 +36,7 @@
 #define AZIMUTH_K_E 0.0027f
 
 #define AZIMUTH_K_VEL 10.0f
-#define AZIMUTH_K_ACC_MUL 20.0f
+#define AZIMUTH_K_ACC_MUL 0.05f
 
 #define DRIVE_K_P 0.001f
 #define DRIVE_K_I 0.0f
@@ -43,14 +44,14 @@
 #define DRIVE_K_E 0.0027f
 
 #define DRIVE_K_VEL 6.0f
-#define DRIVE_K_ACC_MUL 20.0f
+#define DRIVE_K_ACC_MUL 0.05f
 
 #define MOTOR_FREE_SPEED 6380.0f
 #define WHEEL_DIAMETER_M 0.0973f //0.1016
 #define DRIVE_GEAR_RATIO 5.51f
 #define AZIMUTH_GEAR_RATIO 13.37f
 #define AUTO_MAX_SPEED 10.0f
-#define AUTO_MAX_ACCEL 1.875f //1.5
+#define AUTO_MAX_ACCEL_SECONDS 5.33f //5.33
 #define ROT_SPEED_MUL 2.0f
 
 #define AUTO_VISION_THRESHOLD 4.0f //meters
@@ -58,17 +59,20 @@
 
 #define MODULE_DIFF 0.206375f
 
+#define X_TIME 214.85f
+
 #define MODULE_DIFF_XS {1, 1, -1, -1}
 #define MODULE_DIFF_YS {1, -1, -1, 1}
 
 #define DRIVETRAIN_CAN_BUS ""
 #define PIGEON_CAN_BUS "baseCAN"
+
 Drivetrain::Drivetrain(frc::TimedRobot *_robot) : ValorSubsystem(_robot, "Drivetrain"),
                         driveMaxSpeed(MOTOR_FREE_SPEED / 60.0 / DRIVE_GEAR_RATIO * WHEEL_DIAMETER_M * M_PI),
                         swerveModuleDiff(units::meter_t(MODULE_DIFF)),
                         rotMaxSpeed(ROT_SPEED_MUL * 2 * M_PI),
                         autoMaxSpeed(AUTO_MAX_SPEED),
-                        autoMaxAccel(AUTO_MAX_ACCEL),
+                        autoMaxAccel(AUTO_MAX_SPEED/AUTO_MAX_ACCEL_SECONDS),
                         rotMaxAccel(rotMaxSpeed * 0.5),
                         pigeon(CANIDs::PIGEON_CAN, PIGEON_CAN_BUS),
                         motorLocations(wpi::empty_array),
@@ -76,7 +80,6 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot) : ValorSubsystem(_robot, "Drivet
                         kinematics(NULL),
                         estimator(NULL),
                         config(NULL),
-                        thetaController{KPT, KIT, KDT, frc::ProfiledPIDController<units::radians>::Constraints(units::angular_velocity::radians_per_second_t{rotMaxSpeed}, units::angular_acceleration::radians_per_second_squared_t{rotMaxAccel})},
                         swerveNoError(true)
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
@@ -108,7 +111,7 @@ void Drivetrain::configSwerveModule(int i)
 
     ValorPIDF azimuthPID;
     azimuthPID.velocity = AZIMUTH_K_VEL;
-    azimuthPID.acceleration = azimuthPID.velocity * AZIMUTH_K_ACC_MUL;
+    azimuthPID.acceleration = AZIMUTH_K_ACC_MUL;
     azimuthPID.P = AZIMUTH_K_P;
     azimuthPID.I = AZIMUTH_K_I;
     azimuthPID.D = AZIMUTH_K_D;
@@ -123,7 +126,7 @@ void Drivetrain::configSwerveModule(int i)
 
     ValorPIDF drivePID;
     drivePID.velocity = DRIVE_K_VEL;
-    drivePID.acceleration = drivePID.velocity * DRIVE_K_ACC_MUL;
+    drivePID.acceleration = DRIVE_K_ACC_MUL;
     drivePID.P = DRIVE_K_P;
     drivePID.I = DRIVE_K_I;
     drivePID.D = DRIVE_K_D;
@@ -154,8 +157,6 @@ void Drivetrain::init()
     limeTable = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
     pigeon.Calibrate();    
 
-    state.limeLocation = APRIL_TAGS;
-
     initPositions.fill(frc::SwerveModulePosition{0_m, frc::Rotation2d(0_rad)});
 
     for (int i = 0; i < SWERVE_COUNT; i++)
@@ -183,11 +184,12 @@ void Drivetrain::init()
     thetaPIDF.F = KFT;
 
     table->PutNumber("Vision Std", 3.0);
-    table->PutBoolean("Save Swerve Mag Encoder", false);
     table->PutBoolean("Load Swerve Mag Encoder", false);
-    state.saveToFileDebouncer = false;
 
-    table->PutNumber("KPLIMELIGHT", 1.25);
+    table->PutNumber("KPLIMELIGHT", KP_LIMELIGHT);
+
+    limeTable->PutNumber("pipeline", LimelightPipes::TAPE_HIGH);    
+    limeTable->PutNumber("ledMode", 1);
 
     state.lock = false;
 
@@ -223,6 +225,8 @@ void Drivetrain::assessInputs()
     }
 
     state.adas = driverGamepad->GetAButton();
+    state.topTape = operatorGamepad->DPadUp();
+    state.bottomTape = operatorGamepad->DPadRight();
     state.lock = state.adas || driverGamepad->GetBButton();
 
     state.xSpeed = driverGamepad->leftStickY(2);
@@ -236,18 +240,6 @@ void Drivetrain::assessInputs()
 
 void Drivetrain::analyzeDashboard()
 {
-
-    // Only save to file once. Wait until switch is toggled to run again
-    if (table->GetBoolean("Save Swerve Mag Encoder",false) && !state.saveToFileDebouncer) {
-        for (ValorSwerve<SwerveAzimuthMotor, SwerveDriveMotor> *module : swerveModules)
-        {
-            module->storeAzimuthZeroReference();
-        }
-        state.saveToFileDebouncer = true;
-    } else if (!table->GetBoolean("Save Swerve Mag Encoder",false)) {
-        state.saveToFileDebouncer = false;
-    }
-
     if (table->GetBoolean("Load Swerve Mag Encoder",false))
         pullSwerveModuleZeroReference();
 
@@ -271,7 +263,8 @@ void Drivetrain::analyzeDashboard()
 
         if (poseArray.size() >= 6){
             double x = poseArray[0], y = poseArray[1], angle = poseArray[5];
-            frc::Pose2d botpose{units::meter_t(x), units::meter_t(y), units::degree_t(angle)};
+            
+            frc::Pose2d botpose = frc::Pose2d{units::meter_t(x), units::meter_t(y), units::degree_t(angle)};
             state.prevVisionPose = state.visionPose;
             state.visionPose = frc::Pose2d{botpose.X(), botpose.Y(), getPose_m().Rotation()};
 
@@ -306,14 +299,21 @@ void Drivetrain::assignOutputs()
 
     if (state.xPose){
         setXMode();
-    // } else if (state.adas){
-    //     setDriveMotorNeutralMode(ValorNeutralMode::Coast);
-    //     adas();
-    //     drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
+    } else if (state.adas){
+        limeTable->PutNumber("ledMode", 3);
+        if (state.bottomTape) {
+            adas(LimelightPipes::TAPE_MID);
+        } else {
+            adas(LimelightPipes::TAPE_HIGH);
+        }
+        drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
     } 
     else {
         setDriveMotorNeutralMode(ValorNeutralMode::Coast);
-        limeTable->PutNumber("pipeline", LimelightPipes::APRIL_TAGS);    
+        if (robot->IsTeleop()){
+            limeTable->PutNumber("pipeline", LimelightPipes::TAPE_HIGH);    
+            limeTable->PutNumber("ledMode", 1);
+        }
         drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
     }
 }
@@ -335,6 +335,36 @@ frc::Pose2d Drivetrain::getPose_m()
     return estimator->GetEstimatedPosition();
 }
 
+frc::Pose2d Drivetrain::getVisionPose(){
+    if (limeTable->GetNumber("tv", 0) != 1.0)
+        return frc::Pose2d{0_m, 0_m, 0_deg};
+
+    std::vector<double> poseArray;
+    if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue) {
+        poseArray = limeTable->GetNumberArray("botpose_wpiblue", std::span<const double>());
+    } else {
+        poseArray = limeTable->GetNumberArray("botpose_wpired", std::span<const double>());
+    }
+
+    if (poseArray.size() < 6)
+        return frc::Pose2d{0_m, 0_m, 0_deg}; 
+
+    return frc::Pose2d{
+        units::meter_t{poseArray[0]},
+        units::meter_t{poseArray[1]},
+        units::degree_t{poseArray[5]}
+    };
+}
+
+void Drivetrain::addVisionMeasurement(frc::Pose2d visionPose, double doubt=1){
+    if (limeTable->GetNumber("tv", 0) == 1.0)   
+        estimator->AddVisionMeasurement(
+            visionPose,  
+            frc::Timer::GetFPGATimestamp(),
+            {doubt, 999999, 999999}
+        ); 
+}
+
 void Drivetrain::resetGyro(){
     frc::Pose2d initialPose = getPose_m();
     frc::Pose2d desiredPose = frc::Pose2d(initialPose.X(), initialPose.Y(), frc::Rotation2d(0_deg));
@@ -343,6 +373,8 @@ void Drivetrain::resetGyro(){
 
 void Drivetrain::resetOdometry(frc::Pose2d pose)
 {
+
+    limeTable->PutNumber("pipeline", LimelightPipes::APRIL_TAGS);
 
     wpi::array<frc::SwerveModulePosition, SWERVE_COUNT> modulePositions = wpi::array<frc::SwerveModulePosition, SWERVE_COUNT>(wpi::empty_array);
 
@@ -357,6 +389,12 @@ void Drivetrain::resetOdometry(frc::Pose2d pose)
 frc::Rotation2d Drivetrain::getPigeon() 
 {
     return pigeon.GetRotation2d();
+}
+
+units::degree_t Drivetrain::getGlobalPitch(){
+    double pitch = pigeon.GetPitch() / 180 * M_PI, yaw = getPose_m().Rotation().Degrees().to<double>() / 180 * M_PI, roll = pigeon.GetRoll() / 180 * M_PI;
+    double globalPitch = (std::cos(yaw) * pitch + std::sin(yaw) * roll) * 180 / M_PI; 
+    return units::degree_t{globalPitch};
 }
 
 void Drivetrain::resetDriveEncoders()
@@ -412,15 +450,214 @@ void Drivetrain::angleLock(){
     
 }
 
-// void Drivetrain::adas(){
-//     limeTable->PutNumber("pipeline", 1);
+void Drivetrain::adas(LimelightPipes pipe){
+    limeTable->PutNumber("pipeline", pipe);
+    if (limeTable->GetNumber("pipeline", -1) == LimelightPipes::TAPE_HIGH || limeTable->GetNumber("pipeline", -1) == LimelightPipes::TAPE_MID){
+        if (limeTable->GetNumber("tv",0) == 1){
+            double tx = limeTable->GetNumber("tx",0);
+            double normalizedTx = tx / KLIMELIGHT;
+            double kPlimeLight = table->GetNumber("KPLIMELIGHT", KP_LIMELIGHT);
+            state.ySpeedMPS = units::velocity::meters_per_second_t(((std::fabs(normalizedTx) <= 1 ? normalizedTx : std::copysignf(1.0, normalizedTx) ) * kPlimeLight * -driveMaxSpeed));
+        }
+    }
+}
 
-//     if (limeTable->GetNumber("tv",0) == 1){
-//         state.ySpeedMPS = units::velocity::meters_per_second_t((limeTable->GetNumber("tx",0) / (KLIMELIGHT - limeTable->GetNumber("cx0", 0)) * KP_LIME_LIGHT) * driveMaxSpeed);
-//     }
-// }
+void Drivetrain::setLimelightPipeline(LimelightPipes pipeline){
+    limeTable->PutNumber("pipeline", pipeline);
+}
+
+frc2::FunctionalCommand* Drivetrain::getResetOdom() {
+    return new frc2::FunctionalCommand(
+        [&]{ // onBegin
+            limeTable->PutNumber("pipeline", 0);
+            state.startTimestamp = frc::Timer::GetFPGATimestamp();
+        },
+        [&]{ // continuously running
+            frc::Pose2d visionPose = getVisionPose();
+            table->PutNumber("resetting maybe", true);
+            if (limeTable->GetNumber("tv", 0.0) == 1.0 && (visionPose.X() > 0_m && visionPose.Y() > 0_m)){
+                table->PutNumber("resetting odom", table->GetNumber("resetting odom", 0) + 1);
+                addVisionMeasurement(visionPose, 1.0);
+                table->PutBoolean("resetting", true);
+            }
+            else {
+                table->PutBoolean("resetting", false);
+            }
+        },
+        [&](bool){ // onEnd
+                
+        },
+        [&]{ // isFinished
+            return (frc::Timer::GetFPGATimestamp() - state.startTimestamp) > 1.0_s;
+        },
+        {}
+    );
+}
+
+frc2::FunctionalCommand* Drivetrain::getVisionAutoLevel(){
+    return new frc2::FunctionalCommand(
+        [&](){
+            state.abovePitchThreshold = false;
+            limeTable->PutNumber("pipeline", LimelightPipes::APRIL_TAGS);
+            state.prevPose = getPose_m();
+        },
+        [&](){
+            limeTable->PutNumber("pipeline", LimelightPipes::APRIL_TAGS);
+            if (!state.abovePitchThreshold && std::fabs(getGlobalPitch().to<double>()) > 20)
+                state.abovePitchThreshold = true;
+
+            if (!state.abovePitchThreshold){
+                state.prevPose = getPose_m();
+                state.xSpeed = -0.5;
+            } else
+                state.xSpeed = -0.3;
+                
+
+            frc::Pose2d visionPose = getVisionPose();
+            if (std::fabs(state.visionPose.X().to<double>() - state.prevPose.X().to<double>()) < 1.00)
+                state.prevPose = state.visionPose;
+        },
+        [&](bool){
+            state.xSpeed = 0.0;
+            state.xPose = true;
+        }, // onEnd
+        [&](){
+            return (state.prevPose.X() < 4.05_m) || (frc::Timer::GetFPGATimestamp().to<double>() - state.matchStart > X_TIME) || (state.abovePitchThreshold && getGlobalPitch().to<double>() > 0);
+        },//isFinished
+        {}
+    );
+}
 
 frc2::FunctionalCommand* Drivetrain::getAutoLevel(){
+    return new frc2::FunctionalCommand(
+        [&](){
+            state.stage = 0;
+        },
+        [&](){
+            double pitch = pigeon.GetPitch() / 180 * M_PI, yaw = getPose_m().Rotation().Degrees().to<double>() / 180 * M_PI, roll = pigeon.GetRoll() / 180 * M_PI;
+            double globalPitch = (std::cos(yaw) * pitch + std::sin(yaw) * roll) * 180 / M_PI;
+            switch (state.stage){
+                // There should be a stage for each change in slope between positive and negative, otherwise the stage change might happen at unexpected places
+                case 0: // 
+                    state.xSpeed = -0.5;
+                    if (globalPitch < -20.0)
+                        state.stage++;
+                    break;
+                case 1:
+                    state.xSpeed = -0.4;
+                    if (globalPitch > -14.7)
+                        state.stage++;
+                    break;
+                case 2:
+                    state.xSpeed = -0.2;
+                    if (globalPitch < -14.6)
+                        state.stage++;
+                    break;
+                case 3:
+                    state.xSpeed = -0.2;
+                    if (globalPitch > -14.6)
+                        state.stage++;
+                    break;
+                case 4:
+                    state.xSpeed = +0.02;
+                    break;
+            }
+        },
+        [&](bool){
+            state.xSpeed = 0.0;
+            state.xPose = true;
+        }, // onEnd
+        [&](){
+            return state.stage == 4 || (frc::Timer::GetFPGATimestamp().to<double>() - state.matchStart > X_TIME);
+        },//isFinished
+        {}
+    );
+}
+
+frc2::FunctionalCommand* Drivetrain::getAutoLevelReversed(){
+    return new frc2::FunctionalCommand(
+        [&](){
+            state.stage = 0;
+        },
+        [&](){
+            double pitch = pigeon.GetPitch() / 180 * M_PI, yaw = getPose_m().Rotation().Degrees().to<double>() / 180 * M_PI, roll = pigeon.GetRoll() / 180 * M_PI;
+            double globalPitch = (std::cos(yaw) * pitch + std::sin(yaw) * roll) * 180 / M_PI;
+            switch (state.stage){
+                // There should be a stage for each change in slope between positive and negative, otherwise the stage change might happen at unexpected places
+                case 0: // 
+                    state.xSpeed = 0.5;
+                    if (globalPitch > 20.0)
+                        state.stage++;
+                    break;
+                case 1:
+                    state.xSpeed = 0.4;
+                    if (globalPitch < 14.7)
+                        state.stage++;
+                    break;
+                case 2:
+                    state.xSpeed = 0.2;
+                    if (globalPitch > 14.6)
+                        state.stage++;
+                    break;
+                case 3:
+                    state.xSpeed = 0.2;
+                    if (globalPitch < 14.6)
+                        state.stage++;
+                    break;
+                case 4:
+                    state.xSpeed = -0.02;
+                    break;
+            }
+        },
+        [&](bool){
+            state.xSpeed = 0.0;
+            state.xPose = true;
+        }, // onEnd
+        [&](){
+            return state.stage == 4 || (frc::Timer::GetFPGATimestamp().to<double>() - state.matchStart > X_TIME);
+        },//isFinished
+        {}
+    );
+}
+
+frc2::FunctionalCommand* Drivetrain::getAutoClimbOver(){
+    return new frc2::FunctionalCommand(
+        [&](){
+            state.stage = 0;
+        },
+        [&](){
+            switch (state.stage){
+                case 0: // On the ground before we've started climbing
+                    state.xSpeed = 0.5;
+                    if (pigeon.GetPitch() < -16.0)
+                        state.stage = 1;
+                    break;
+                case 1: // Began climbing up -> became balanced -> starting to move down
+                    state.xSpeed = 0.4;
+                    if (pigeon.GetPitch() > 8.0)
+                        state.stage = 2;
+                    break;
+                case 2: // The climb down
+                    state.xSpeed = 0.1;
+                    if (pigeon.GetPitch() < 5.0)
+                        state.stage = 3;
+                    break;
+                case 3: // Reached flat ground
+                    state.xSpeed = 0.05;
+            }
+        },
+        [&](bool){
+            state.xSpeed = 0.05;
+        }, // onEnd
+        [&](){
+            return state.stage == 3;
+        },//isFinished
+        {}
+    );
+}
+
+//OLD BALANCE
+frc2::FunctionalCommand* Drivetrain::getOLDAutoLevel(){
     return new frc2::FunctionalCommand(
         [&](){
             state.abovePitchThreshold = false;
@@ -454,7 +691,8 @@ frc2::FunctionalCommand* Drivetrain::getAutoLevel(){
     );
 }
 
-frc2::FunctionalCommand* Drivetrain::getAutoLevelReversed(){
+//OLD BALANCE
+frc2::FunctionalCommand* Drivetrain::getOLDAutoLevelReversed(){
     return new frc2::FunctionalCommand(
         [&](){
             state.abovePitchThreshold = false;
@@ -488,7 +726,6 @@ frc2::FunctionalCommand* Drivetrain::getAutoLevelReversed(){
     );
 }
 
-
 double Drivetrain::getDriveMaxSpeed() {
     return driveMaxSpeed;
 }
@@ -510,10 +747,6 @@ double Drivetrain::getRotationMaxAcceleration() {
     return rotMaxAccel;
 }
 
-frc::ProfiledPIDController<units::angle::radians> & Drivetrain::getThetaController() {
-    return thetaController;
-}
-
 frc::TrajectoryConfig & Drivetrain::getTrajectoryConfig() {    
     return *config;
 }
@@ -522,16 +755,20 @@ ValorPIDF Drivetrain::getXPIDF() {
     return xPIDF;
 }
 
-ValorPIDF  Drivetrain::getYPIDF() {
+ValorPIDF Drivetrain::getYPIDF() {
     return yPIDF;
 }
 
+ValorPIDF Drivetrain::getThetaPIDF() {
+    return thetaPIDF;
+}
+
 void Drivetrain::setAutoMaxAcceleration(double acceleration, double multiplier)  {
-    autoMaxAccel = multiplier * (acceleration == NULL ? AUTO_MAX_ACCEL : acceleration);
-    if (config == NULL) {
-        delete config;
-    }
-    config = new frc::TrajectoryConfig(units::velocity::meters_per_second_t{autoMaxSpeed}, units::acceleration::meters_per_second_squared_t{autoMaxAccel});
+    // autoMaxAccel = multiplier * (acceleration == NULL ? AUTO_MAX_ACCEL_SECONDS : acceleration);
+    // if (config == NULL) {
+    //     delete config;
+    // }
+    // config = new frc::TrajectoryConfig(units::velocity::meters_per_second_t{autoMaxSpeed}, units::acceleration::meters_per_second_squared_t{autoMaxAccel});
 }
 
 void Drivetrain::setXMode(){
@@ -652,6 +889,18 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
             },
             nullptr
         );
+        builder.AddDoubleArrayProperty(
+            "prevPose",
+            [this] 
+            { 
+                std::vector<double> pose;
+                pose.push_back(state.prevPose.X().to<double>());
+                pose.push_back(state.prevPose.Y().to<double>());
+                pose.push_back(state.prevPose.Rotation().Degrees().to<double>());
+                return pose;
+            },
+            nullptr
+        );
         builder.AddDoubleProperty(
             "pigeonPitch",
             [this]
@@ -665,6 +914,57 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
             [this]
             {
                 return pigeon.GetYaw();
+            },
+            nullptr
+        );
+        builder.AddDoubleProperty(
+            "pigeonRoll",
+            [this]
+            {
+                return pigeon.GetRoll();
+            },
+            nullptr
+        );
+        builder.AddIntegerProperty(
+            "stage",
+            [this]
+            {
+                return state.stage;
+            },
+            nullptr
+        );
+        builder.AddDoubleArrayProperty(
+            "swerve states",
+            [this] 
+            { 
+                std::vector<double> states;
+                states.push_back(swerveModules[0]->getState().angle.Degrees().to<double>());
+                states.push_back(swerveModules[0]->getState().speed.to<double>());
+                states.push_back(swerveModules[1]->getState().angle.Degrees().to<double>());
+                states.push_back(swerveModules[1]->getState().speed.to<double>());
+                states.push_back(swerveModules[2]->getState().angle.Degrees().to<double>());
+                states.push_back(swerveModules[2]->getState().speed.to<double>());
+                states.push_back(swerveModules[3]->getState().angle.Degrees().to<double>());
+                states.push_back(swerveModules[3]->getState().speed.to<double>());
+                return states;
+            },
+            nullptr
+        );
+        builder.AddDoubleProperty(
+            "globalPitch",
+            [this]
+            {
+                double pitch = pigeon.GetPitch() / 180 * M_PI, yaw = getPose_m().Rotation().Degrees().to<double>() / 180 * M_PI, roll = pigeon.GetRoll() / 180 * M_PI;
+                double globalPitch = (std::cos(yaw) * pitch + std::sin(yaw) * roll) * 180 / M_PI;
+                return globalPitch;
+            },
+            nullptr
+        );
+
+        builder.AddBooleanProperty(
+            "abovePitchThreshold",
+            [this]{
+                return state.abovePitchThreshold;
             },
             nullptr
         );

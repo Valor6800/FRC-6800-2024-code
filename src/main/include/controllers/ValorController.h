@@ -280,6 +280,12 @@ public:
 
     virtual void setNeutralMode(ValorNeutralMode mode) = 0;
 
+    virtual void setOpenLoopRamp(double time) = 0;
+
+    ValorNeutralMode getNeutralMode(){
+        return neutralMode;
+    }
+
     virtual void InitSendable(wpi::SendableBuilder& builder) = 0;
 
     virtual double getAbsEncoderPosition() = 0;

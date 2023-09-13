@@ -58,8 +58,10 @@ void ValorNeoController::setPIDF(ValorPIDF pidf, int slot)
     pidController.SetFF(pidf.F, slot);
     pidController.SetIZone(0, slot);
 
-    pidController.SetSmartMotionMaxVelocity(pidf.velocity * 60.0 / conversion, slot);
-    pidController.SetSmartMotionMaxAccel(pidf.acceleration * 60.0 / conversion, slot);
+    double vel = pidf.velocity * 60.0 / conversion;
+
+    pidController.SetSmartMotionMaxVelocity(vel, slot);
+    pidController.SetSmartMotionMaxAccel(vel / pidf.acceleration, slot);
     pidController.SetSmartMotionAllowedClosedLoopError(pidf.error, slot);
 }
 
@@ -150,6 +152,10 @@ void ValorNeoController::setPower(double power)
 void ValorNeoController::setNeutralMode(ValorNeutralMode mode){  
     motor->SetIdleMode(mode == ValorNeutralMode::Brake ? rev::CANSparkMax::IdleMode::kBrake : rev::CANSparkMax::IdleMode::kCoast);
     neutralMode = mode;
+}
+
+void ValorNeoController::setOpenLoopRamp(double time){
+    motor->SetOpenLoopRampRate(time);
 }
 
 void ValorNeoController::InitSendable(wpi::SendableBuilder& builder)

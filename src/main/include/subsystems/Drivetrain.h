@@ -109,8 +109,8 @@ public:
 
      enum LimelightPipes{
           APRIL_TAGS,
-          TAPE_HIGH,
-          TAPE_MID
+          TAPE_MID,
+          TAPE_HIGH
      };
 
      struct x
@@ -119,8 +119,6 @@ public:
           double ySpeed;
           double rot;
           
-          bool saveToFileDebouncer;
-
           bool adas;
           bool lock;
 
@@ -131,8 +129,15 @@ public:
           bool isLeveled;
           bool abovePitchThreshold;
 
+          bool topTape;
+          bool bottomTape;
+
+          int stage;
+
           int trackingID;
           double visionOdomDiff;
+
+          double matchStart;
 
           frc::Pose2d visionPose;
           frc::Pose2d prevVisionPose;
@@ -140,6 +145,10 @@ public:
           units::velocity::meters_per_second_t xSpeedMPS;
           units::velocity::meters_per_second_t ySpeedMPS;
           units::angular_velocity::radians_per_second_t rotRPS;
+
+          frc::Pose2d prevPose;
+
+          units::second_t startTimestamp; // generic
      } state;
      
      
@@ -169,6 +178,7 @@ public:
 
 
      frc::Rotation2d getPigeon();
+     units::degree_t getGlobalPitch();
 
      /**
       * Reset the robot's position on the field. Any accumulted gyro drift will be noted and
@@ -202,6 +212,8 @@ public:
       * @return the pose of the robot (x and y are in meters)
       */
      frc::Pose2d getPose_m();
+     frc::Pose2d getVisionPose();
+     void addVisionMeasurement(frc::Pose2d visionPose, double doubt);
 
      /**
       * Returns the kinematics object in use by the swerve drive
@@ -211,11 +223,18 @@ public:
 
      void limelightHoming(LimelightPipes pipe);
      void angleLock();
-     void adas();
+     void adas(LimelightPipes pipe);
+     void setLimelightPipeline(LimelightPipes pipe);
+
+     frc2::FunctionalCommand* getResetOdom();
      
      frc2::FunctionalCommand* getAutoLevel();
+     frc2::FunctionalCommand* getVisionAutoLevel();
      frc2::FunctionalCommand* getAutoLevelReversed();
+     frc2::FunctionalCommand* getAutoClimbOver();
 
+     frc2::FunctionalCommand* getOLDAutoLevel();
+     frc2::FunctionalCommand* getOLDAutoLevelReversed();
 
      double getDriveMaxSpeed();
      double getAutoMaxSpeed();
@@ -224,8 +243,6 @@ public:
      double getRotationMaxAcceleration();
 
      void setAutoMaxAcceleration(double acceleration, double multiplier);
-
-     frc::ProfiledPIDController<units::angle::radians> & getThetaController();
 
      ValorPIDF getXPIDF();
      ValorPIDF getYPIDF();
@@ -271,8 +288,6 @@ private:
      frc::SwerveDrivePoseEstimator<SWERVE_COUNT> * estimator;
 
      frc::TrajectoryConfig * config;
-
-     frc::ProfiledPIDController<units::radians> thetaController;
 
      ValorPIDF xPIDF;
      ValorPIDF yPIDF;
