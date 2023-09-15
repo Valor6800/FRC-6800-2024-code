@@ -184,9 +184,10 @@ private:
      ValorFalconController armRotateMotor;
 
     ctre::phoenix::sensors::WPI_CANCoder armCANcoder;
+    ValorFalconController wristMotor;
     ctre::phoenix::sensors::WPI_CANCoder wristCANcoder;
 
-     ValorFalconController wristMotor;
+     
 
      std::map<Piece, std::map<Direction, std::map<Position, frc::Pose2d>>> posMap;
      frc::Pose2d stowPos;
