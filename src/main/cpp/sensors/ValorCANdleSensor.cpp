@@ -84,7 +84,7 @@ void ValorCANdleSensor::setColor(int segment, RGBColor rgb)
 }
 void ValorCANdleSensor::setColor(RGBColor rgb)
 {
-    for(int i = 0; i<segmentMap.size(); i++){
+    for(size_t i = 0; i<segmentMap.size(); i++){
         setColor(i, rgb);
     }
 }
