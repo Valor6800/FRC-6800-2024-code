@@ -33,9 +33,9 @@ class Leds : public ValorSubsystem
         } state;
         
     private:
-        ValorCANdleSensor candle;
         Elevarm *elevarm;
         Intake *intake;
         Drivetrain *drivetrain;
+        ValorCANdleSensor candle;
 
 };
