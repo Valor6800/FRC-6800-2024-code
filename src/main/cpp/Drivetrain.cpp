@@ -914,6 +914,7 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
                 pose.push_back(getCurrentGamePiecePositionRelativeToTheRobot().X().to<double>());
                 pose.push_back(getCurrentGamePiecePositionRelativeToTheRobot().Y().to<double>());
                 pose.push_back(0.0);
+                return pose;
             },
             nullptr
         );
@@ -925,6 +926,7 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
                 pose.push_back(getCurrentGamePiecePositionGlobal().X().to<double>());
                 pose.push_back(getCurrentGamePiecePositionGlobal().Y().to<double>());
                 pose.push_back(0.0);
+                return pose;
             },
             nullptr
         );
