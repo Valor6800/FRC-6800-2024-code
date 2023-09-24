@@ -154,7 +154,8 @@ public:
         {"manual", Position::MANUAL},
         {"ground_score", Position::GROUND_SCORE},
         {"snake", Position::SNAKE},
-        {"toppled", Position::GROUND_TOPPLE}
+        {"toppled", Position::GROUND_TOPPLE},
+        {"toppled_auto", Position::AUTO_GROUND_TOPPLE}
     };
     Position stringToPositionState(std::string name){
         if (!stringToPositionMap.contains(name))

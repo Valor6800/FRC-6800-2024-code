@@ -13,5 +13,6 @@ enum Position{
       MANUAL,
       SNAKE,
       VERTICAL,
-      POOPFULL
+      POOPFULL,
+      AUTO_GROUND_TOPPLE
    };

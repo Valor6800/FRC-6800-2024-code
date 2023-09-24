@@ -51,41 +51,16 @@
     },
     {
       "anchorPoint": {
-        "x": 3.05,
-        "y": 4.41
+        "x": 2.26,
+        "y": 4.33
       },
       "prevControl": {
-        "x": 3.744543489086978,
-        "y": 4.860249720499441
+        "x": 2.5032766865533733,
+        "y": 4.545432230864462
       },
       "nextControl": {
-        "x": 2.7999771128467255,
-        "y": 4.247918378290165
-      },
-      "holonomicAngle": 180.0,
-      "isReversal": false,
-      "velOverride": 1.25,
-      "isLocked": false,
-      "isStopPoint": false,
-      "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
-        "waitBehavior": "none",
-        "waitTime": 0
-      }
-    },
-    {
-      "anchorPoint": {
-        "x": 2.1,
-        "y": 3.75
-      },
-      "prevControl": {
-        "x": 2.369516939033878,
-        "y": 3.970255940511881
-      },
-      "nextControl": {
-        "x": 2.369516939033878,
-        "y": 3.970255940511881
+        "x": 2.5032766865533733,
+        "y": 4.545432230864462
       },
       "holonomicAngle": 180.0,
       "isReversal": true,
@@ -101,16 +76,16 @@
     },
     {
       "anchorPoint": {
-        "x": 6.62,
-        "y": 4.0
+        "x": 6.57,
+        "y": 3.82
       },
       "prevControl": {
-        "x": 4.497313151978735,
-        "y": 5.897234422363267
+        "x": 4.447313151978735,
+        "y": 5.717234422363267
       },
       "nextControl": {
-        "x": 6.831957967402095,
-        "y": 3.8105542735970364
+        "x": 6.7819579674020956,
+        "y": 3.630554273597036
       },
       "holonomicAngle": 135.0,
       "isReversal": false,
@@ -126,16 +101,16 @@
     },
     {
       "anchorPoint": {
-        "x": 7.1,
-        "y": 3.5
+        "x": 7.07,
+        "y": 3.32
       },
       "prevControl": {
-        "x": 6.976341642470791,
-        "y": 3.6236583575292087
+        "x": 6.9463416424707916,
+        "y": 3.4436583575292086
       },
       "nextControl": {
-        "x": 6.976341642470791,
-        "y": 3.6236583575292087
+        "x": 6.9463416424707916,
+        "y": 3.4436583575292086
       },
       "holonomicAngle": 135.0,
       "isReversal": true,
@@ -151,16 +126,16 @@
     },
     {
       "anchorPoint": {
-        "x": 4.1485122970245945,
-        "y": 4.626705253410507
+        "x": 3.8429164838925023,
+        "y": 4.6844933385776075
       },
       "prevControl": {
-        "x": 5.663216586826548,
-        "y": 4.739369208850321
+        "x": 5.797264318676394,
+        "y": 4.743113413119659
       },
       "nextControl": {
-        "x": 3.384758769517539,
-        "y": 4.56989713979428
+        "x": 2.858242514544564,
+        "y": 4.65495833950761
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -176,12 +151,12 @@
     },
     {
       "anchorPoint": {
-        "x": 2.3,
-        "y": 4.3
+        "x": 2.45,
+        "y": 3.9
       },
       "prevControl": {
-        "x": 2.5967493934987873,
-        "y": 4.367912735825472
+        "x": 2.75986951973904,
+        "y": 3.994368268736538
       },
       "nextControl": null,
       "holonomicAngle": 180.0,
@@ -206,41 +181,41 @@
     {
       "position": 0.02,
       "names": [
-        "pickup_back_cone"
+        "pickup_back_cube"
       ]
     },
     {
       "position": 1.2727272727272552,
       "names": [
-        "stage_mid_cone"
-      ]
-    },
-    {
-      "position": 3.02,
-      "names": [
-        "outtake_cone"
-      ]
-    },
-    {
-      "position": 3.45,
-      "names": [
-        "pickup_back_cube"
-      ]
-    },
-    {
-      "position": 5.25,
-      "names": [
         "stage_mid_cube"
       ]
     },
     {
-      "position": 6.85,
+      "position": 2.02,
       "names": [
         "score_final_cube"
       ]
     },
     {
-      "position": 3.15,
+      "position": 2.45,
+      "names": [
+        "pickup_back_cube"
+      ]
+    },
+    {
+      "position": 4.25,
+      "names": [
+        "stage_mid_cube"
+      ]
+    },
+    {
+      "position": 5.85,
+      "names": [
+        "score_final_cube"
+      ]
+    },
+    {
+      "position": 2.15,
       "names": [
         "stow_high_cone"
       ]

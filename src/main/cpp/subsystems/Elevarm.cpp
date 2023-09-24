@@ -235,7 +235,7 @@ void Elevarm::init()
     posMap[Piece::CUBE][Direction::FRONT][Position::HIGH] =frc::Pose2d(0.576_m, 1.305_m, -137.65_deg);
     posMap[Piece::CUBE][Direction::FRONT][Position::SNAKE] =frc::Pose2d(-0.33_m, 1.2376_m, 0.0_deg);
     posMap[Piece::CUBE][Direction::FRONT][Position::VERTICAL] =frc::Pose2d(-0.288_m, 1.25_m, 0.0_deg);
-
+    //TODO: Tilt auto ground cone pickup down;
     // BACK CONE   
     posMap[Piece::CONE][Direction::BACK][Position::GROUND] =frc::Pose2d(-1.027_m, 0.5931_m, -247.3_deg);
     posMap[Piece::CONE][Direction::BACK][Position::GROUND_TOPPLE] =frc::Pose2d(-0.9229_m, 0.2195_m, -192.67_deg);
@@ -246,6 +246,7 @@ void Elevarm::init()
     posMap[Piece::CONE][Direction::BACK][Position::HIGH] =frc::Pose2d(-0.904_m, 1.03_m, -180.0_deg);
     posMap[Piece::CONE][Direction::BACK][Position::SNAKE] =frc::Pose2d(-0.33_m, 1.2376_m, 0.0_deg);
     posMap[Piece::CONE][Direction::BACK][Position::VERTICAL] =frc::Pose2d(-0.288_m, 1.25_m, -60.0_deg);
+    posMap[Piece::CONE][Direction::BACK][Position::AUTO_GROUND_TOPPLE] = frc::Pose2d(-0.9229_m, 0.3195_m, -170_deg);
 
     // BACK CUBE
     posMap[Piece::CUBE][Direction::BACK][Position::GROUND] =frc::Pose2d(-0.914_m, 0.252_m, -137.5_deg);

@@ -522,7 +522,8 @@ frc2::FunctionalCommand* Drivetrain::getVisionAutoLevel(){
             state.xPose = true;
         }, // onEnd
         [&](){
-            return (state.prevPose.X() < 4.05_m) || (frc::Timer::GetFPGATimestamp().to<double>() - state.matchStart > X_TIME) || (state.abovePitchThreshold && getGlobalPitch().to<double>() > 0);
+            //4.05_m
+            return (state.prevPose.X() < 4.48_m) || (frc::Timer::GetFPGATimestamp().to<double>() - state.matchStart > X_TIME) || (state.abovePitchThreshold && getGlobalPitch().to<double>() > 0);
         },//isFinished
         {}
     );
