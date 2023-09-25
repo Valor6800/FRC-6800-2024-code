@@ -140,7 +140,9 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "score_final_cube"
+        ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
@@ -173,6 +175,18 @@
       "position": 1.95,
       "names": [
         "outtake_cube"
+      ]
+    },
+    {
+      "position": 4.276134144176132,
+      "names": [
+        "stage_mid_cube"
+      ]
+    },
+    {
+      "position": 4.99,
+      "names": [
+        "score_final_cube"
       ]
     }
   ]
