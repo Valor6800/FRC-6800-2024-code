@@ -52,15 +52,15 @@
     {
       "anchorPoint": {
         "x": 2.21,
-        "y": 4.33
+        "y": 4.38
       },
       "prevControl": {
         "x": 3.28745455490911,
-        "y": 4.5369051478055225
+        "y": 4.586905147805522
       },
       "nextControl": {
         "x": 3.28745455490911,
-        "y": 4.5369051478055225
+        "y": 4.586905147805522
       },
       "holonomicAngle": 180.0,
       "isReversal": true,
@@ -76,16 +76,16 @@
     },
     {
       "anchorPoint": {
-        "x": 6.62,
-        "y": 4.0
+        "x": 6.67,
+        "y": 4.05
       },
       "prevControl": {
-        "x": 5.272680174582355,
-        "y": 5.397408532669713
+        "x": 5.322680174582355,
+        "y": 5.447408532669713
       },
       "nextControl": {
-        "x": 6.817316013560475,
-        "y": 3.7953484571517317
+        "x": 6.867316013560475,
+        "y": 3.8453484571517316
       },
       "holonomicAngle": 135.0,
       "isReversal": false,
@@ -101,16 +101,16 @@
     },
     {
       "anchorPoint": {
-        "x": 7.1,
-        "y": 3.5
+        "x": 7.15,
+        "y": 3.55
       },
       "prevControl": {
-        "x": 6.97634164247079,
-        "y": 3.62365835752921
+        "x": 7.026341642470791,
+        "y": 3.67365835752921
       },
       "nextControl": {
-        "x": 7.223658357529209,
-        "y": 3.37634164247079
+        "x": 7.27365835752921,
+        "y": 3.4263416424707898
       },
       "holonomicAngle": 135.0,
       "isReversal": false,
@@ -140,9 +140,7 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [
-          "score_final_cube"
-        ],
+        "names": [],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
@@ -160,7 +158,7 @@
       ]
     },
     {
-      "position": 2.25,
+      "position": 2.05,
       "names": [
         "pickup_back_cube"
       ]
@@ -180,13 +178,7 @@
     {
       "position": 4.276134144176132,
       "names": [
-        "stage_low_cube"
-      ]
-    },
-    {
-      "position": 4.99,
-      "names": [
-        "score_final_cube"
+        "stow_low"
       ]
     }
   ]
