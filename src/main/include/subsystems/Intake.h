@@ -62,10 +62,10 @@ public:
      //this state will come from elevarm, elevarm not currently connected to dev
 
      enum IntakeStates {
-        DISABLED,
-        SPIKED,
-        OUTTAKE,
-        INTAKE
+        DISABLED, // 0
+        SPIKED, // 1
+        OUTTAKE, // 2
+        INTAKE // 3
      };
 
 
