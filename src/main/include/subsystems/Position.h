@@ -1,18 +1,18 @@
 #pragma once
 
 enum Position{
-      STOW,
-      GROUND,
-      GROUND_TOPPLE,
-      GROUND_SCORE,
-      PLAYER,
-      BIRD,
-      MID,
-      HIGH,
-      HIGH_AUTO,
-      MANUAL,
-      SNAKE,
-      VERTICAL,
-      POOPFULL,
-      AUTO_GROUND_TOPPLE
+      STOW, // 0
+      GROUND, // 1
+      GROUND_TOPPLE, // 2
+      GROUND_SCORE, // 3
+      PLAYER, // 4
+      BIRD, // 5
+      MID, // 6
+      HIGH, // 7  
+      HIGH_AUTO, // 8
+      MANUAL, // 9
+      SNAKE, // 10
+      VERTICAL, // 11
+      POOPFULL, // 12
+      AUTO_GROUND_TOPPLE // 13
    };
