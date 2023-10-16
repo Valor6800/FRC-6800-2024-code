@@ -107,6 +107,16 @@ public:
 
      void InitSendable(wpi::SendableBuilder& builder);
 
+     enum Stream{
+          LIMELIGHT,
+          USB_CAM
+     };
+
+     enum Value{
+          tx,
+          ty
+     };
+
      enum LimelightPipes{
           APRIL_TAGS,
           TAPE_MID,
@@ -118,7 +128,7 @@ public:
           double xSpeed;
           double ySpeed;
           double rot;
-          
+          bool exist;
           bool adas;
           bool lock;
 
@@ -224,7 +234,18 @@ public:
      void limelightHoming(LimelightPipes pipe);
      void angleLock();
      void adas(LimelightPipes pipe);
+     double getTx(LimelightPipes pipe);
+     double getTy(LimelightPipes pipe);
+     bool checkValid(LimelightPipes pipe);
+     double getTargetArea(LimelightPipes pipe);
+     double getLatency(LimelightPipes pipe);
+     double getShortSideLength(LimelightPipes pipe);
+     double getLongSideLength(LimelightPipes pipe);
+     double getHorRoughBox(LimelightPipes pipe);
+     double getVerRoughBox(LimelightPipes pipe);
+     std::vector<double> getAverageHSV(LimelightPipes pipe);
      void setLimelightPipeline(LimelightPipes pipe);
+     void feedVisionData();
 
      frc2::FunctionalCommand* getResetOdom();
      
