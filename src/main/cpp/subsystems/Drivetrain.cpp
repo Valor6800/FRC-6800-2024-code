@@ -141,8 +141,6 @@ void Drivetrain::configSwerveModule(int i)
 
     swerveModules.push_back(new ValorSwerve<SwerveAzimuthMotor, SwerveDriveMotor>(azimuthControllers[i], driveControllers[i], motorLocations[i]));
     swerveModules[i]->setMaxSpeed(driveMaxSpeed);
-    
-
 }
 
 void Drivetrain::resetState()
@@ -363,6 +361,93 @@ void Drivetrain::addVisionMeasurement(frc::Pose2d visionPose, double doubt=1){
             frc::Timer::GetFPGATimestamp(),
             {doubt, 999999, 999999}
         ); 
+}
+
+void Drivetrain::feedVisionData(){
+    limeTable->PutNumber("pipeline", 0);
+    limeTable->PutNumber("stream", 0);
+    std::vector<double> poseArray;
+    if(frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue){
+        poseArray = limeTable->GetNumberArray("botpos_wpiblue", std::span<const double>());
+    }
+    else{
+        poseArray = limeTable->GetNumberArray("botpos_wpired", std::span<const double>());
+    }
+    frc::Pose2d visionMeasurement = frc::Pose2d{units::meter_t{poseArray[0]}, units::meter_t{poseArray[1]}, units::degree_t{poseArray[5]}};
+    addVisionMeasurement(visionMeasurement, 1);
+}
+
+bool Drivetrain::checkValid(LimelightPipes pipe){
+    if(limeTable->GetNumber("tv", pipe) == 1){
+        return state.exist = true;
+    }
+    else{
+        return state.exist = false;
+    }
+}
+
+double Drivetrain::getTx(LimelightPipes pipe){
+    if(checkValid(pipe)){
+        return limeTable->GetNumber("tx", pipe);
+    }
+}
+
+double Drivetrain::getTy(LimelightPipes pipe){
+    if(checkValid(pipe)){
+        return limeTable->GetNumber("ty", pipe);
+    } 
+}
+
+double Drivetrain::getTargetArea(LimelightPipes pipe){
+    if(checkValid(pipe) == true){
+        return limeTable->GetNumber("ta", pipe);
+    }
+}
+
+double Drivetrain::getLatency(LimelightPipes pipe){
+    return limeTable->GetNumber("cl", pipe);
+}
+
+double Drivetrain::getShortSideLength(LimelightPipes pipe){
+    if(checkValid(pipe) == true){
+        return limeTable->GetNumber("tshort", pipe);
+    }
+    else{
+        return -1;
+    }
+}
+
+double Drivetrain::getLongSideLength(LimelightPipes pipe){
+    if(checkValid(pipe) == true){
+        return limeTable->GetNumber("tlong", pipe);
+    }
+    else{
+        return -1;
+    }
+}
+
+double Drivetrain::getHorRoughBox(LimelightPipes pipe){
+    if(checkValid(pipe) == true){
+        return limeTable->GetNumber("thor", pipe);
+    }
+    else{
+        return -1;
+    }
+}
+
+double Drivetrain::getVerRoughBox(LimelightPipes pipe){
+    if(checkValid(pipe) == true){
+        return limeTable->GetNumber("tvert", pipe);
+    }
+    else{
+        return -1;
+    }
+}
+
+std::vector<double> Drivetrain::getAverageHSV(LimelightPipes pipe){
+    if(checkValid(pipe) == true){
+        return limeTable->GetNumberArray("tc", std::span<const double>());
+    }
 }
 
 void Drivetrain::resetGyro(){
