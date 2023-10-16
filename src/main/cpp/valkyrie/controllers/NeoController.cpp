@@ -162,21 +162,5 @@ void NeoController::setOpenLoopRamp(double time){
 
 void NeoController::InitSendable(wpi::SendableBuilder& builder)
 {
-    builder.SetSmartDashboardType("Subsystem");
-    builder.AddDoubleProperty(
-        "Amps", 
-        [this] { return getCurrent(); },
-        nullptr);
-    builder.AddDoubleProperty(
-        "Position", 
-        [this] { return getPosition(); },
-        nullptr);
-    builder.AddDoubleProperty(
-        "Speed", 
-        [this] { return getSpeed(); },
-        nullptr);
-    builder.AddBooleanProperty(
-        "Inverted", 
-        [this] { return inverted; },
-        nullptr);
+    BaseController::InitSendable(builder);
 }

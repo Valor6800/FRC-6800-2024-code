@@ -32,6 +32,7 @@ public:
      * @brief Construct a new Valor Current Sensor object
      * 
      * @param _robot Pass in the Robot reference so the calculate method can be auto-scheduled
+     * @param _name The name of the specific current sensor for logging and reporting
      */
     CurrentSensor(frc::TimedRobot *_robot, const char *_name);
 

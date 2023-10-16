@@ -164,23 +164,7 @@ void FalconController::setOpenLoopRamp(double time){
 
 void FalconController::InitSendable(wpi::SendableBuilder& builder)
 {
-    builder.SetSmartDashboardType("Subsystem");
-    builder.AddDoubleProperty(
-        "Amps", 
-        [this] { return getCurrent(); },
-        nullptr);
-    builder.AddDoubleProperty(
-        "Position", 
-        [this] { return getPosition(); },
-        nullptr);
-    builder.AddDoubleProperty(
-        "Speed", 
-        [this] { return getSpeed(); },
-        nullptr);
-    builder.AddBooleanProperty(
-        "Inverted", 
-        [this] { return inverted; },
-        nullptr);
+    BaseController::InitSendable(builder);
     builder.AddDoubleProperty(
         "Out Volt", 
         [this] { return motor->GetMotorOutputVoltage(); },
