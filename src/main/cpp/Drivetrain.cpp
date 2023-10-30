@@ -16,7 +16,7 @@ using namespace pathplanner;
 #define KLIMELIGHT -29.8f
 
 #define LIME_LIGHT_HEIGHT 1.30f //meters
-#define LIME_LIGHT_ANGLE 1.30f
+#define LIME_LIGHT_ANGLE (M_PI / 6.0)
 #define CUBE_ID 1
 #define CONE_ID 2
 
@@ -197,7 +197,7 @@ void Drivetrain::init()
     table->PutNumber("KPLIMELIGHT", KP_LIMELIGHT);
 
     limeTable->PutNumber("pipeline", LimelightPipes::TAPE_HIGH);    
-    limeTable->PutNumber("ledMode", 1);
+    limeTable->PutNumber("ledMode", 0);
 
     state.lock = false;
 
@@ -308,7 +308,7 @@ void Drivetrain::assignOutputs()
     if (state.xPose){
         setXMode();
     } else if (state.adas){
-        limeTable->PutNumber("ledMode", 3);
+        limeTable->PutNumber("ledMode", 0);
         if (state.bottomTape) {
             adas(LimelightPipes::TAPE_MID);
         } else {
@@ -320,7 +320,7 @@ void Drivetrain::assignOutputs()
         setDriveMotorNeutralMode(valor::NeutralMode::Coast);
         if (robot->IsTeleop()){
             limeTable->PutNumber("pipeline", LimelightPipes::TAPE_HIGH);    
-            limeTable->PutNumber("ledMode", 1);
+            limeTable->PutNumber("ledMode", 0);
         }
         drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
     }
@@ -470,23 +470,33 @@ void Drivetrain::adas(LimelightPipes pipe){
     }
 }
 
-void Drivetrain::setCurrentGamePiecePosition(){
+void Drivetrain::setCurrentGamePiecePosition() {
+    limeTable->PutNumber("pipeline", 4);
+    limeTable->PutNumber("ledMode", 0);
+    if (limeTable->GetNumber("pipeline", -1) != 4) {
+      return;
+    }
+
+    if (!limeTable->GetNumber("tv", 0)) {
+      return;
+    }
+
     state.currentGamePiece.piece = limeTable->GetNumber("tclass", 0.0) == CUBE_ID ? CUBE : CONE;
-    double tx = limeTable->GetNumber("tx", 0.0); //degrees
-    double ty = limeTable->GetNumber("ty", 0.0); //degrees
+    units::degree_t tx = units::degree_t(limeTable->GetNumber("tx", 0.0)); // degrees
+    units::degree_t ty = units::degree_t(limeTable->GetNumber("ty", 0.0)); // degrees
 
-    double xPositionRelativeToRobot = LIME_LIGHT_HEIGHT * tan((LIME_LIGHT_ANGLE + ty) * (M_PI/180)); //how much game object is infront of the robot
-    double yPositionRelativeToRobot = xPositionRelativeToRobot * tan(tx * (M_PI/180)); //how much game object is on the horizontal axis
+    units::meter_t relativeX = units::meter_t(LIME_LIGHT_HEIGHT / tan(LIME_LIGHT_ANGLE - ty.convert<units::radian>().to<double>()));
 
-    double dist = sqrt(pow(xPositionRelativeToRobot, 2) + pow(yPositionRelativeToRobot, 2));
+    units::meter_t relativeY = units::meter_t((tx.to<double>() / fabs(tx.to<double>())) * relativeX * tan(tx.convert<units::radian>().to<double>()));
 
-    state.currentGamePiece.relativePosition = frc::Translation2d(units::meter_t{xPositionRelativeToRobot}, units::meter_t{yPositionRelativeToRobot});
-    
-    
-    double xGlobalPosition = getPose_m().X().to<double>() + dist * sin(getPose_m().Rotation().Radians().to<double>());
-    double yGlobalPosition = getPose_m().Y().to<double>() + dist * cos(getPose_m().Rotation().Radians().to<double>());
+    state.currentGamePiece.relativePosition = frc::Translation2d(relativeX, relativeY);
 
-    state.currentGamePiece.globalPosition = frc::Translation2d(units::meter_t(xGlobalPosition), units::meter_t(yGlobalPosition));
+    units::meter_t distance = units::meter_t(sqrt(pow(relativeX.to<double>(), 2) + pow(relativeY.to<double>(), 2)));
+
+    state.currentGamePiece.globalPosition = frc::Translation2d(
+        getPose_m().X() + distance * cos(getPose_m().Rotation().Radians().to<double>()),
+        getPose_m().Y() + distance * sin(getPose_m().Rotation().Radians().to<double>())
+    );
 }
 
 frc::Translation2d Drivetrain::getCurrentGamePiecePositionRelativeToTheRobot(){
@@ -909,6 +919,11 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
                 pose.push_back(getPose_m().Rotation().Degrees().to<double>());
                 return pose;
             },
+            nullptr
+        );
+        builder.AddDoubleProperty(
+            "GameObjectDistance",
+            [this] { return state.currentGamePiece.distance; },
             nullptr
         );
         builder.AddDoubleArrayProperty(

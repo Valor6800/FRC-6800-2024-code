@@ -163,5 +163,6 @@ bin/
 
 docs/
 
-# Compile_flags.txt
+# Clangd
 compile_flags.txt
+.clang-format
