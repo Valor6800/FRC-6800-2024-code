@@ -111,6 +111,7 @@ public:
           Piece piece;
           frc::Translation2d relativePosition;
           frc::Translation2d globalPosition;
+          double distance;
      };
 
      struct x
