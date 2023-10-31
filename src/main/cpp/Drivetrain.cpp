@@ -14,6 +14,12 @@ using namespace pathplanner;
 #define TXRANGE  30.0f
 #define KPIGEON 2.0f
 #define KLIMELIGHT -29.8f
+
+#define LIME_LIGHT_HEIGHT 1.30f //meters
+#define LIME_LIGHT_ANGLE 1.30f
+#define CUBE_ID 1
+#define CONE_ID 2
+
 // #define KP_LOCK 0.2f
 #define KP_LIMELIGHT 0.7f
 
@@ -464,6 +470,30 @@ void Drivetrain::adas(LimelightPipes pipe){
     }
 }
 
+void Drivetrain::setCurrentGamePiecePosition(){
+    state.currentGamePiece.piece = limeTable->GetNumber("tclass", 0.0) == CUBE_ID ? CUBE : CONE;
+    double tx = limeTable->GetNumber("tx", 0.0); //degrees
+    double ty = limeTable->GetNumber("ty", 0.0); //degrees
+
+    double xPositionRelativeToRobot = LIME_LIGHT_HEIGHT * tan((LIME_LIGHT_ANGLE + ty) * (M_PI / 180)); //how much game object is infront of the robot
+    double yPositionRelativeToRobot = xPositionRelativeToRobot * tan(tx); //how much game object is on the horizontal axis
+    
+    state.currentGamePiece.relativePosition = frc::Translation2d(units::meter_t{xPositionRelativeToRobot}, units::meter_t{yPositionRelativeToRobot});
+
+    units::meter_t xGlobalPosition = getPose_m().X() + state.currentGamePiece.relativePosition.X();
+    units::meter_t yGlobalPosition = getPose_m().Y() + state.currentGamePiece.relativePosition.Y();
+
+    state.currentGamePiece.globalPosition = frc::Translation2d(xGlobalPosition, yGlobalPosition);
+}
+
+frc::Translation2d Drivetrain::getCurrentGamePiecePositionRelativeToTheRobot(){
+    return state.currentGamePiece.relativePosition;
+}
+
+frc::Translation2d Drivetrain::getCurrentGamePiecePositionGlobal() {
+    return state.currentGamePiece.globalPosition;
+}
+
 void Drivetrain::setLimelightPipeline(LimelightPipes pipeline){
     limeTable->PutNumber("pipeline", pipeline);
 }
@@ -843,6 +873,7 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
             [this] { return getPose_m().Y().to<double>(); },
             nullptr
         );
+
         builder.AddDoubleProperty(
             "theta",
             [this] { return getPose_m().Rotation().Degrees().to<double>(); },
@@ -872,6 +903,28 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
                 pose.push_back(getPose_m().Y().to<double>());
                 pose.push_back(getPose_m().Rotation().Degrees().to<double>());
                 return pose;
+            },
+            nullptr
+        );
+        builder.AddDoubleArrayProperty(
+            "GameObjectRelativePose",
+            [this]
+            {
+                std::vector<double> pose;
+                pose.push_back(getCurrentGamePiecePositionRelativeToTheRobot().X().to<double>());
+                pose.push_back(getCurrentGamePiecePositionRelativeToTheRobot().Y().to<double>());
+                pose.push_back(0.0);
+            },
+            nullptr
+        );
+        builder.AddDoubleArrayProperty(
+            "GameObjectGlobalPose",
+            [this]
+            {
+                std::vector<double> pose;
+                pose.push_back(getCurrentGamePiecePositionGlobal().X().to<double>());
+                pose.push_back(getCurrentGamePiecePositionGlobal().Y().to<double>());
+                pose.push_back(0.0);
             },
             nullptr
         );

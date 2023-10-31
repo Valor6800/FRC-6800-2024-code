@@ -106,6 +106,13 @@ public:
           TAPE_HIGH
      };
 
+     struct GamePiece
+     {
+          Piece piece;
+          frc::Translation2d relativePosition;
+          frc::Translation2d globalPosition;
+     };
+
      struct x
      {
           double xSpeed;
@@ -135,6 +142,8 @@ public:
           frc::Pose2d visionPose;
           frc::Pose2d prevVisionPose;
 
+          GamePiece currentGamePiece;
+
           units::velocity::meters_per_second_t xSpeedMPS;
           units::velocity::meters_per_second_t ySpeedMPS;
           units::angular_velocity::radians_per_second_t rotRPS;
@@ -143,8 +152,7 @@ public:
 
           units::second_t startTimestamp; // generic
      } state;
-     
-     
+
      /**
       * Drive the robot with given x, y and rotational velocities using open loop velocity control
       * @param vx_mps the desired x velocity component in meters per second
@@ -215,6 +223,10 @@ public:
      frc::SwerveDriveKinematics<SWERVE_COUNT>* getKinematics();
 
      void limelightHoming(LimelightPipes pipe);
+     frc::Translation2d getCurrentGamePiecePositionRelativeToTheRobot();
+     frc::Translation2d getCurrentGamePiecePositionGlobal();
+     void setCurrentGamePiecePosition();
+     GamePiece getCurrentGamePiece();
      void angleLock();
      void adas(LimelightPipes pipe);
      void setLimelightPipeline(LimelightPipes pipe);
