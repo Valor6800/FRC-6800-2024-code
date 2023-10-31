@@ -39,6 +39,8 @@
 #include <ctre/phoenix/motorcontrol/NeutralMode.h>
 #include <rev/CANSparkMax.h>
 
+#include <Piece.h>
+
 #define SWERVE_COUNT 4
 
 /**
