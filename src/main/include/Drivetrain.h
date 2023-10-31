@@ -209,6 +209,9 @@ public:
      //returns angle within the range [-180, 180]
      double angleWrap(double degrees);
 
+     //returns angle within the range [0,360]
+     double angleWrapTSXT(double degrees);
+
      /**
       * Returns the position of the robot on the field in meters
       * @return the pose of the robot (x and y are in meters)

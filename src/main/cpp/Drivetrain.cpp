@@ -196,7 +196,7 @@ void Drivetrain::init()
 
     table->PutNumber("KPLIMELIGHT", KP_LIMELIGHT);
 
-    limeTable->PutNumber("pipeline", LimelightPipes::TAPE_HIGH);    
+    limeTable->PutNumber("pipeline", 4);    
     limeTable->PutNumber("ledMode", 0);
 
     state.lock = false;
@@ -224,6 +224,18 @@ double Drivetrain::angleWrap(double degrees)
     return start - 180;
 }
 
+double Drivetrain::angleWrapTSXT(double degrees) {
+    if (0 >= degrees && degrees <= 90) {
+        return 90 - degrees;
+    } else if ( -90 <= degrees && degrees < 0) {
+        return 90 + fabs(degrees);
+    } else if ( -180 <= degrees && degrees < -90) {
+        return 90 + fabs(degrees);
+    } else if ( 90 < degrees && degrees <= 180) {
+        return 450 - degrees;
+    }
+    return 0;
+}
 void Drivetrain::assessInputs()
 {
     if (!driverGamepad) return;
@@ -319,7 +331,7 @@ void Drivetrain::assignOutputs()
     else {
         setDriveMotorNeutralMode(valor::NeutralMode::Coast);
         if (robot->IsTeleop()){
-            limeTable->PutNumber("pipeline", LimelightPipes::TAPE_HIGH);    
+            limeTable->PutNumber("pipeline", 4);    
             limeTable->PutNumber("ledMode", 0);
         }
         drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
