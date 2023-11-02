@@ -157,7 +157,7 @@ void Drivetrain::resetState()
 {
     resetDriveEncoders();
     pullSwerveModuleZeroReference();
-    resetOdometry(frc::Pose2d{0_m, 0_m, 0_rad});
+    resetOdometry(frc::Pose2d{1.78_m, 5.03_m, 0_rad});
 }
 
 void Drivetrain::init()
@@ -225,7 +225,7 @@ double Drivetrain::angleWrap(double degrees)
 }
 
 double Drivetrain::angleWrapTSXT(double degrees) {
-    if (0 >= degrees && degrees <= 90) {
+    if (0 <= degrees && degrees <= 90) {
         return 90 - degrees;
     } else if ( -90 <= degrees && degrees < 0) {
         return 90 + fabs(degrees);
