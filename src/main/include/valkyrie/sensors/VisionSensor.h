@@ -6,33 +6,34 @@
 #include <networktables/NetworkTableEntry.h>
 #include <networktables/NetworkTableInstance.h>
 #include <string>
+#include <unordered_map>
 
 namespace valor {
+
 class VisionSensor : public valor::BaseSensor<int> {
-   public:
-     VisionSensor(frc::TimedRobot *_robot, frc::Pose3d _cameraCoordinates);
-     void setPipeline(int pipe);
-     int getPipeline();
-     bool tracking;
 
-     struct Detector {
-          struct GamePiece {
-               std::pair<int, std::string> piece;
-               frc::Pose2d relativeDistance;
-               frc::Pose2d globalCoords;
-          } currentGamePiece;
-     };
+  public:
+    VisionSensor(frc::TimedRobot *_robot, const char *_name,
+                 frc::Pose3d _cameraCoordinates);
 
-     struct AprilTags {
-          int trackingID;
-          frc::Pose2d visionPosition;
-          frc::Pose2d prevVisionPosition;
-     };
+    void setPipeline(int pipe);
+    struct Pipeline {};
+    struct {
+        int pipe;
+        bool tracking;
+        Pipeline currentPipe;
+    } state;
 
-     struct RetroTape {};
+    VisionSensor(frc::TimedRobot *_robot, const char *_name,
+                 frc::Pose3d _cameraCoordinates,
+                 std::unordered_map<int, PipeLines> myPipes);
 
-   private:
-     std::shared_ptr<nt::NetworkTable> limeTable;
-     const frc::Pose3d cameraCoordinate; // relative to the robots center
+  protected:
+    std::shared_ptr<nt::NetworkTable> limeTable;
+
+  private:
+    frc::Pose3d cameraCoordinate; // relative to the robots center
+    std::unordered_map<int, PipeLines> myPipes;
 };
+
 } // namespace valor
