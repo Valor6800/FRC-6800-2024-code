@@ -111,9 +111,11 @@ public:
      struct GamePiece
      {
           Piece piece;
-          frc::Translation2d relativePosition;
+          std::pair<double, double> relativePosition;
           frc::Translation2d globalPosition;
           double distance;
+          units::degree_t tx;
+          units::degree_t ty;
      };
 
      struct x
@@ -229,7 +231,7 @@ public:
      frc::SwerveDriveKinematics<SWERVE_COUNT>* getKinematics();
 
      void limelightHoming(LimelightPipes pipe);
-     frc::Translation2d getCurrentGamePiecePositionRelativeToTheRobot();
+     std::pair<double, double> getCurrentGamePiecePositionRelativeToTheRobot();
      frc::Translation2d getCurrentGamePiecePositionGlobal();
      void setCurrentGamePiecePosition();
      GamePiece getCurrentGamePiece();
