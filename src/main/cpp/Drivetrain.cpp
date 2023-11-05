@@ -494,16 +494,16 @@ void Drivetrain::setCurrentGamePiecePosition() {
     }
 
     state.currentGamePiece.piece = limeTable->GetNumber("tclass", 0.0) == CUBE_ID ? CUBE : CONE;
-    units::degree_t tx = units::degree_t(limeTable->GetNumber("tx", 0.0)); // degrees
-    units::degree_t ty = units::degree_t(limeTable->GetNumber("ty", 0.0)); // degrees
+    state.currentGamePiece.tx = units::degree_t(limeTable->GetNumber("tx", 0.0)); // degrees
+    state.currentGamePiece.ty = units::degree_t(limeTable->GetNumber("ty", 0.0)); // degrees
 
-    units::meter_t relativeX = units::meter_t(LIME_LIGHT_HEIGHT / tan(LIME_LIGHT_ANGLE - ty.convert<units::radian>().to<double>()));
+    double relativeX = LIME_LIGHT_HEIGHT / tan(LIME_LIGHT_ANGLE - state.currentGamePiece.ty.convert<units::radian>().to<double>());
 
-    units::meter_t relativeY = units::meter_t((tx.to<double>() / fabs(tx.to<double>())) * relativeX * tan(tx.convert<units::radian>().to<double>()));
+    double relativeY = (state.currentGamePiece.tx.to<double>() / fabs(state.currentGamePiece.tx.to<double>())) * (relativeX * tan(state.currentGamePiece.tx.convert<units::radian>().to<double>()));
 
-    state.currentGamePiece.relativePosition = frc::Translation2d(relativeX, relativeY);
+    state.currentGamePiece.relativePosition = std::pair<double, double>(relativeX, relativeY);
 
-    units::meter_t distance = units::meter_t(sqrt(pow(relativeX.to<double>(), 2) + pow(relativeY.to<double>(), 2)));
+    units::meter_t distance = units::meter_t(sqrt(pow(relativeX, 2) + pow(relativeY, 2)));
 
     state.currentGamePiece.globalPosition = frc::Translation2d(
         getPose_m().X() + distance * cos(getPose_m().Rotation().Radians().to<double>()),
@@ -511,7 +511,7 @@ void Drivetrain::setCurrentGamePiecePosition() {
     );
 }
 
-frc::Translation2d Drivetrain::getCurrentGamePiecePositionRelativeToTheRobot(){
+std::pair<double, double> Drivetrain::getCurrentGamePiecePositionRelativeToTheRobot(){
     setCurrentGamePiecePosition();
     return state.currentGamePiece.relativePosition;
 }
@@ -921,6 +921,16 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
             [this] { return state.visionPose.Y().to<double>(); },
             nullptr
         );
+        builder.AddDoubleProperty(
+            "tx",
+            [this] { return state.currentGamePiece.tx.to<double>(); },
+            nullptr
+        );
+        builder.AddDoubleProperty(
+            "ty",
+            [this] { return state.currentGamePiece.ty.to<double>(); },
+            nullptr
+        );
         builder.AddDoubleArrayProperty(
             "pose",
             [this] 
@@ -943,8 +953,8 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
             [this]
             {
                 std::vector<double> pose;
-                pose.push_back(getCurrentGamePiecePositionRelativeToTheRobot().X().to<double>());
-                pose.push_back(getCurrentGamePiecePositionRelativeToTheRobot().Y().to<double>());
+                pose.push_back(getCurrentGamePiecePositionRelativeToTheRobot().first);
+                pose.push_back(getCurrentGamePiecePositionRelativeToTheRobot().second);
                 pose.push_back(0.0);
                 return pose;
             },
