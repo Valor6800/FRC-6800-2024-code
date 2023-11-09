@@ -88,7 +88,8 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "
                         kinematics(NULL),
                         estimator(NULL),
                         config(NULL),
-                        swerveNoError(true)
+                        swerveNoError(true),
+                        cameraCoordinates(std::vector<double>{-.212662, -.220603, -1.1477526, LIME_LIGHT_ANGLE})
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -503,11 +504,33 @@ void Drivetrain::setCurrentGamePiecePosition() {
 
     state.currentGamePiece.relativePosition = std::pair<double, double>(relativeX, relativeY);
 
-    units::meter_t distance = units::meter_t(sqrt(pow(relativeX, 2) + pow(relativeY, 2)));
+    // units::meter_t distance = units::meter_t(sqrt(pow(relativeX, 2) + pow(relativeY, 2)));
 
+    double distanceOfLimeLight = sqrt(pow(cameraCoordinates[0], 2) + pow(cameraCoordinates[1], 2));
+
+    std::pair<double, double> limeLightPos{
+        distanceOfLimeLight * cos(angleWrapTSXT(getPose_m().Rotation().Degrees().to<double>()) * (M_PI / 180)) + getPose_m().X().to<double>(),
+        distanceOfLimeLight * sin(angleWrapTSXT(getPose_m().Rotation().Degrees().to<double>()) * (M_PI / 180)) + getPose_m().Y().to<double>()
+    };
+
+    double theta = getPose_m().Rotation().Degrees().to<double>() > 0 ? getPose_m().Rotation().Degrees().to<double>() - 360 : getPose_m().Rotation().Degrees().to<double>();
+
+    double globalX = (cos(theta * (M_PI / 180)) * relativeX) - (sin(theta * (M_PI / 180)) * relativeY) + getPose_m().X().to<double>();
+    double globalY = (sin(theta * (M_PI / 180)) * relativeX) + (cos(theta * (M_PI / 180)) * relativeY) + getPose_m().Y().to<double>();
+    // double a1 = atan(limeLightPos.second / limeLightPos.first);
+    // double a2 = atan(relativeX / relativeY);
+    // double l1 = sqrt(pow(limeLightPos.first, 2) + pow(limeLightPos.second, 2));
+    // double l2 = sqrt(pow(relativeX, 2) + pow(relativeY, 2));
+    // double theta1 = (M_PI / 2) + a1 + a2;
+    // double d2 = sqrt(pow(l1, 2) + pow(l2, 2) - (2 * l1 * l2 * cos(theta1)));
+    // double theta2 = asin((l2 * sin(theta1)) / d2);
+    // double theta3 = theta2 + a1;
+    
+    // double globalX = d2 * cos(theta3);
+    // double globalY = d2 * sin(theta3);
     state.currentGamePiece.globalPosition = frc::Translation2d(
-        getPose_m().X() + distance * cos(getPose_m().Rotation().Radians().to<double>()),
-        getPose_m().Y() + distance * sin(getPose_m().Rotation().Radians().to<double>())
+        units::meter_t(globalX),
+        units::meter_t(globalY)
     );
 }
 

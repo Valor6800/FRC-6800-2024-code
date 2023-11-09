@@ -18,6 +18,7 @@
 
 #include <frc/geometry/Translation2d.h>
 #include <frc/geometry/Pose2d.h>
+#include <frc/geometry/Pose3d.h>
 #include <frc/geometry/Rotation2d.h>
 #include <frc/kinematics/DifferentialDriveWheelSpeeds.h>
 #include <frc/controller/SimpleMotorFeedforward.h>
@@ -310,6 +311,13 @@ private:
      valor::PIDF thetaPIDF;
 
      std::shared_ptr<nt::NetworkTable> limeTable;
+     /**
+      * @brief 1st index is x
+      * , 2nd index is y
+      * , 3rd index is z
+      * , 4th index is rotation
+     */
+     std::vector<double> cameraCoordinates;
 
      bool swerveNoError;
 };
