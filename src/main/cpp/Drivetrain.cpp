@@ -17,6 +17,8 @@ using namespace pathplanner;
 
 #define LIME_LIGHT_HEIGHT 1.30f //meters
 #define LIME_LIGHT_ANGLE (M_PI / 6.0)
+#define LIME_LIGHT_FORWARD .220604
+#define LIME_LIGHT_SIDE .212662
 #define CUBE_ID 1
 #define CONE_ID 2
 
@@ -498,9 +500,9 @@ void Drivetrain::setCurrentGamePiecePosition() {
     state.currentGamePiece.tx = units::degree_t(limeTable->GetNumber("tx", 0.0)); // degrees
     state.currentGamePiece.ty = units::degree_t(limeTable->GetNumber("ty", 0.0)); // degrees
 
-    double relativeX = LIME_LIGHT_HEIGHT / tan(LIME_LIGHT_ANGLE - state.currentGamePiece.ty.convert<units::radian>().to<double>());
+    double relativeX = (LIME_LIGHT_HEIGHT / tan(LIME_LIGHT_ANGLE - state.currentGamePiece.ty.convert<units::radian>().to<double>())) - LIME_LIGHT_FORWARD;
 
-    double relativeY = (state.currentGamePiece.tx.to<double>() / fabs(state.currentGamePiece.tx.to<double>())) * (relativeX * tan(state.currentGamePiece.tx.convert<units::radian>().to<double>()));
+    double relativeY = -relativeX * tan(state.currentGamePiece.tx.convert<units::radian>().to<double>()) - LIME_LIGHT_SIDE;
 
     state.currentGamePiece.relativePosition = std::pair<double, double>(relativeX, relativeY);
 
@@ -513,7 +515,14 @@ void Drivetrain::setCurrentGamePiecePosition() {
         distanceOfLimeLight * sin(angleWrapTSXT(getPose_m().Rotation().Degrees().to<double>()) * (M_PI / 180)) + getPose_m().Y().to<double>()
     };
 
-    double theta = getPose_m().Rotation().Degrees().to<double>() > 0 ? getPose_m().Rotation().Degrees().to<double>() - 360 : getPose_m().Rotation().Degrees().to<double>();
+    double robotTheta = getPose_m().Rotation().Degrees().to<double>();
+    double theta = 0;
+    if (robotTheta < 0) {
+        theta = getPose_m().Rotation().Degrees().to<double>() + 360;
+    } else if (robotTheta > 0) {
+        theta = getPose_m().Rotation().Degrees().to<double>() - 360;
+    }
+    // double theta = getPose_m().Rotation().Degrees().to<double>() < 0 ? getPose_m().Rotation().Degrees().to<double>() + 360 : getPose_m().Rotation().Degrees().to<double>() - 360;
 
     double globalX = (cos(theta * (M_PI / 180)) * relativeX) - (sin(theta * (M_PI / 180)) * relativeY) + getPose_m().X().to<double>();
     double globalY = (sin(theta * (M_PI / 180)) * relativeX) + (cos(theta * (M_PI / 180)) * relativeY) + getPose_m().Y().to<double>();
