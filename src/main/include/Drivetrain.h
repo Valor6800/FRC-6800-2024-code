@@ -249,6 +249,8 @@ public:
 
      void setDriveMotorNeutralMode(valor::NeutralMode mode);
 
+     frc2::SequentialCommandGroup * getOTFDriveCommand(frc::Translation2d, frc::Pose2d, units::meters_per_second_t);
+
 private:
      
      double driveMaxSpeed;

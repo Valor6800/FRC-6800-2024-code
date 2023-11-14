@@ -11,10 +11,14 @@
 #include "Intake.h"
 #include "Leds.h"
 
+#include <frc2/command/Commands.h>
+
 #include <frc/DriverStation.h>
 #include <frc/DataLogManager.h>
 
 #include <frc/livewindow/LiveWindow.h>
+
+#include "auto/ValorAuto.h"
 
 #include <fstream>
 
@@ -37,12 +41,13 @@ class Robot : public frc::TimedRobot {
         valor::Gamepad gamepadOperator{OIConstants::GAMEPAD_OPERATOR_LOCATION};
         valor::Gamepad gamepadDriver{OIConstants::GAMEPAD_BASE_LOCATION};
 
-        frc2::Command * autoCommand = nullptr;
+        frc2::CommandPtr autoCommand = frc2::cmd::Sequence();
 
         Drivetrain drivetrain;
         Intake intake;
         Elevarm elevarm;
         Leds leds;
+        ValorAuto autonomous;
 
         std::ofstream outfile;
 };

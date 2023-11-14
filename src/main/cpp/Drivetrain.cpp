@@ -3,6 +3,14 @@
 #include <iostream>
 #include <math.h>
 
+#include <pathplanner/lib/PathPlannerTrajectory.h>
+#include <pathplanner/lib/PathPlanner.h>
+#include <pathplanner/lib/PathPoint.h>
+#include <pathplanner/lib/commands/PPSwerveControllerCommand.h>
+#include <cmath>
+
+using namespace pathplanner;
+
 #define TXRANGE  30.0f
 #define KPIGEON 2.0f
 #define KLIMELIGHT -29.8f
@@ -960,3 +968,80 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
             nullptr
         );
     }
+
+units::radian_t angleBetweenPoints(frc::Translation2d start, frc::Translation2d end){
+    return units::radian_t{
+        std::atan2(
+            end.Y().to<double>() - start.Y().to<double>(), 
+            end.X().to<double>() - start.X().to<double>()
+        )
+    };
+}
+
+frc2::SequentialCommandGroup * Drivetrain::getOTFDriveCommand(frc::Translation2d _target, frc::Pose2d handoff, units::meters_per_second_t handoffSpeed){
+    frc::Pose2d p = getPose_m();
+    units::radian_t heading1 = angleBetweenPoints(p.Translation(), _target), heading2 = angleBetweenPoints(_target, handoff.Translation());
+    frc::Pose2d target = frc::Pose2d{_target, heading1};
+    double xspeed = state.xSpeedMPS.to<double>(), yspeed = state.ySpeedMPS.to<double>();
+    double speed = std::sqrt(xspeed * xspeed + yspeed * yspeed);
+    std::vector<PathPoint> points1 = {
+        PathPoint(
+            p.Translation(), // Position
+            heading1, // Heading 
+            p.Rotation(), // Holonomic rotation
+            units::meters_per_second_t{speed} // Velocity override
+        ), 
+        PathPoint(
+            target.Translation(),
+            heading1,
+            target.Rotation()
+        )
+    }, points2 = {
+        PathPoint(
+            target.Translation(),
+            heading2,
+            target.Rotation()
+        ),
+        PathPoint(
+            handoff.Translation(),
+            heading2,
+            handoff.Rotation(),
+            handoffSpeed
+        )
+    };
+    table->PutNumber("handoff rotation", handoff.Rotation().Degrees().to<double>());
+
+    PathPlannerTrajectory 
+    trajectory1 = PathPlanner::generatePath(PathConstraints{10_mps,1.88_mps_sq}, points1), 
+    trajectory2 = PathPlanner::generatePath(PathConstraints{10_mps,1.88_mps_sq}, points2);
+
+    frc2::PIDController thetaController = frc2::PIDController(getThetaPIDF().P, getThetaPIDF().I, getThetaPIDF().D);
+    thetaController.EnableContinuousInput(units::radian_t(-M_PI).to<double>(),
+                                          units::radian_t(M_PI).to<double>());
+
+    return new frc2::SequentialCommandGroup(
+        pathplanner::PPSwerveControllerCommand{
+            trajectory1, 
+            [&, this] () { return getPose_m(); },
+            *getKinematics(),
+            frc2::PIDController(getXPIDF().P, getXPIDF().I, getXPIDF().D),
+            frc2::PIDController(getYPIDF().P, getYPIDF().I, getYPIDF().D),
+            thetaController,
+            [this] (auto states) {setModuleStates(states); },
+            {this},
+            true
+        },
+        pathplanner::PPSwerveControllerCommand{
+            trajectory2, 
+            [&, this] () { return getPose_m(); },
+            *getKinematics(),
+            frc2::PIDController(getXPIDF().P, getXPIDF().I, getXPIDF().D),
+            frc2::PIDController(getYPIDF().P, getYPIDF().I, getYPIDF().D),
+            thetaController,
+            [this] (auto states) {setModuleStates(states); },
+            {this},
+            true
+        }
+    );
+
+}

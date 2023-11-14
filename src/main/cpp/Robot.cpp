@@ -5,7 +5,7 @@
 
 #include <ctime>
 
-Robot::Robot() : drivetrain(this), intake(this), elevarm(this, &intake), leds(this, &elevarm, &intake, &drivetrain)
+Robot::Robot() : drivetrain(this), intake(this), elevarm(this, &intake), leds(this, &elevarm, &intake, &drivetrain), autonomous(&drivetrain, &intake, &elevarm)
 {
     frc::TimedRobot();
 }
@@ -16,6 +16,7 @@ void Robot::RobotInit() {
     intake.setGamepads(&gamepadOperator, &gamepadDriver);
 
     drivetrain.resetState();
+    autonomous.fillAutoList();
 
     frc::LiveWindow::EnableAllTelemetry();
     frc::DataLogManager::Start();
@@ -54,6 +55,9 @@ void Robot::AutonomousInit() {
     drivetrain.setLimelightPipeline(Drivetrain::LimelightPipes::APRIL_TAGS);
     drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Brake);
     drivetrain.pullSwerveModuleZeroReference();
+
+    autoCommand = autonomous.getCurrentAuto();
+    autoCommand.Schedule();
 }
 
 void Robot::AutonomousExit() {
@@ -73,10 +77,10 @@ void Robot::TeleopInit() {
     elevarm.teleopStart = frc::Timer::GetFPGATimestamp().to<double>();
     elevarm.setArmPIDF(false);
 
-    if (autoCommand != nullptr) {
-        autoCommand->Cancel();
-        autoCommand = nullptr;
-    }
+    // if (autoCommand != nullptr) {
+        autoCommand.Cancel();
+    //     autoCommand = nullptr;
+    // }
 }
 
 /**
