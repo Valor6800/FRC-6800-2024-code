@@ -1097,27 +1097,35 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
         );
     }
 
-units::radian_t angleBetweenPoints(frc::Translation2d start, frc::Translation2d end){
-    return units::radian_t{
-        std::atan2(
-            end.Y().to<double>() - start.Y().to<double>(), 
-            end.X().to<double>() - start.X().to<double>()
-        )
-    };
-}
+frc2::SequentialCommandGroup * Drivetrain::getOTFDriveCommand(frc::Translation2d _target, pathplanner::PathPlannerTrajectory::PathPlannerState initState, pathplanner::PathPlannerTrajectory::PathPlannerState handoffState){
+    // TODO: All usages of initState, namely the speed and heading, should be replaced with measurements of the robot state.
+    units::meter_t intakeOffsetPerp = -0.165_m, intakeOffsetParallel = -0.4_m;
 
-frc2::SequentialCommandGroup * Drivetrain::getOTFDriveCommand(frc::Translation2d _target, frc::Pose2d handoff, units::meters_per_second_t handoffSpeed){
-    frc::Pose2d p = getPose_m();
-    units::radian_t heading1 = angleBetweenPoints(p.Translation(), _target), heading2 = angleBetweenPoints(_target, handoff.Translation());
-    frc::Pose2d target = frc::Pose2d{_target, heading1};
-    double xspeed = state.xSpeedMPS.to<double>(), yspeed = state.ySpeedMPS.to<double>();
-    double speed = std::sqrt(xspeed * xspeed + yspeed * yspeed);
+    frc::Pose2d start = getPose_m();
+    units::radian_t heading1 = (_target - start.Translation()).Angle().Radians(), heading2 = (handoffState.pose.Translation() - _target).Angle().Radians();
+    _target = _target + frc::Translation2d(
+        intakeOffsetParallel * cos(heading1.to<double>()) + intakeOffsetPerp * -sin(heading1.to<double>()),
+        intakeOffsetParallel * sin(heading1.to<double>()) + intakeOffsetPerp * cos(heading1.to<double>())
+    );
+    // increase the delta in angle introduced by the shift
+    // heading1 = heading1 + ((_target - start.Translation()).Angle().Radians() - heading1) * 1;
+    // heading2 = (handoffState.pose.Translation() - _target).Angle().Radians();
+
+    // double xspeed = state.xSpeedMPS.to<double>(), yspeed = state.ySpeedMPS.to<double>();
+    units::radian_t currentHeading = initState.pose.Rotation().Radians();
+    units::meters_per_second_t speed = initState.velocity;
+
+    frc::Pose2d target = frc::Pose2d{
+        _target, 
+        heading1
+    };
+    
     std::vector<PathPoint> points1 = {
         PathPoint(
-            p.Translation(), // Position
-            heading1, // Heading 
-            p.Rotation(), // Holonomic rotation
-            units::meters_per_second_t{speed} // Velocity override
+            start.Translation(), // Position
+            currentHeading, // Heading 
+            start.Rotation(), // Holonomic rotation
+            speed // Velocity override
         ), 
         PathPoint(
             target.Translation(),
@@ -1131,17 +1139,17 @@ frc2::SequentialCommandGroup * Drivetrain::getOTFDriveCommand(frc::Translation2d
             target.Rotation()
         ),
         PathPoint(
-            handoff.Translation(),
-            heading2,
-            handoff.Rotation(),
-            handoffSpeed
+            handoffState.pose.Translation(),
+            handoffState.pose.Rotation(),
+            handoffState.holonomicRotation,
+            handoffState.velocity
         )
     };
-    table->PutNumber("handoff rotation", handoff.Rotation().Degrees().to<double>());
 
+    PathConstraints pathConstraints = PathConstraints{units::meters_per_second_t{autoMaxSpeed}, units::meters_per_second_squared_t{autoMaxAccel}};
     PathPlannerTrajectory 
-    trajectory1 = PathPlanner::generatePath(PathConstraints{10_mps,1.88_mps_sq}, points1), 
-    trajectory2 = PathPlanner::generatePath(PathConstraints{10_mps,1.88_mps_sq}, points2);
+    trajectory1 = PathPlanner::generatePath(pathConstraints, points1), 
+    trajectory2 = PathPlanner::generatePath(pathConstraints, points2);
 
     frc2::PIDController thetaController = frc2::PIDController(getThetaPIDF().P, getThetaPIDF().I, getThetaPIDF().D);
     thetaController.EnableContinuousInput(units::radian_t(-M_PI).to<double>(),

@@ -21,6 +21,10 @@ ValorAuto::ValorAuto(Drivetrain *_drivetrain, Intake *_intake, Elevarm *_elevarm
             elevarm->setFuturePiece(Piece::CUBE);
             intake->state.intakeState = Intake::IntakeStates::OUTTAKE;
         }))},
+        {"intake_cube", std::shared_ptr<frc2::Command>(new frc2::InstantCommand([&] {
+            elevarm->setFuturePiece(Piece::CUBE);
+            intake->state.intakeState = Intake::IntakeStates::INTAKE;
+        }))},
         {"outtake_cone", std::shared_ptr<frc2::Command>(new frc2::SequentialCommandGroup(
             frc2::InstantCommand([&]{
                 table->PutString("running command", "outtake_cone");
@@ -68,6 +72,21 @@ ValorAuto::ValorAuto(Drivetrain *_drivetrain, Intake *_intake, Elevarm *_elevarm
             elevarm->futureState.directionState = Direction::BACK;
             intake->state.intakeState = Intake::IntakeStates::INTAKE;
         }))},
+        {"pickup_front_cube", std::shared_ptr<frc2::Command>(new frc2::InstantCommand([&] {
+            table->PutString("running command", "pickup_front_cube");
+            elevarm->setFuturePiece(Piece::CUBE);
+            elevarm->futureState.positionState = Position::GROUND;
+            elevarm->futureState.directionState = Direction::FRONT;
+            intake->state.intakeState = Intake::IntakeStates::INTAKE;
+        }))},
+        {"pickup_front_cube_interrupting", std::shared_ptr<frc2::Command>( 
+            new frc2::SequentialCommandGroup(
+                frc2::InstantCommand([&] {
+                    elevarm->setFuturePiece(Piece::CUBE);
+                    intake->state.intakeState = Intake::IntakeStates::INTAKE;
+                }),
+                std::move(*elevarm->getAutoCommand("cube", "front", "ground"))
+        ))},
         {"stage_mid_cone", std::shared_ptr<frc2::Command>(new frc2::InstantCommand([&] {
             elevarm->setFuturePiece(Piece::CONE);
             elevarm->futureState.positionState = Position::MID;
@@ -81,6 +100,12 @@ ValorAuto::ValorAuto(Drivetrain *_drivetrain, Intake *_intake, Elevarm *_elevarm
         {"stow_high_cone", std::shared_ptr<frc2::Command>(new frc2::InstantCommand([&] {
             table->PutString("running command", "stow_high_cone");
             elevarm->setFuturePiece(Piece::CONE);
+            elevarm->futureState.positionState = Position::SNAKE;
+            elevarm->futureState.directionState = Direction::BACK;
+        }))},
+        {"stow_high_cube", std::shared_ptr<frc2::Command>(new frc2::InstantCommand([&] {
+            table->PutString("running command", "stow_high_cube");
+            elevarm->setFuturePiece(Piece::CUBE);
             elevarm->futureState.positionState = Position::SNAKE;
             elevarm->futureState.directionState = Direction::BACK;
         }))}
@@ -145,11 +170,13 @@ frc2::CommandPtr ValorAuto::makeAuto(std::string autoName) {
     }
 
     for (int i = trajectoryCommands.size() - 2; i >= 0; i--){
-        frc::Pose2d nextStart = realTrajectories[i + 1].getInitialHolonomicPose();
-        units::meters_per_second_t nextSpeed = realTrajectories[i + 1].getInitialState().velocity;
+        pathplanner::PathPlannerTrajectory::PathPlannerState 
+        initState = realTrajectories[i].getEndState(),
+        nextState = realTrajectories[i + 1].getInitialState();
         trajectoryCommands[i] = std::move(trajectoryCommands[i]).AndThen(
-            [this, i, nextStart, nextSpeed](){
-                driveCommand = std::move(*(drivetrain->getOTFDriveCommand(frc::Translation2d(7.10_m, 3.39_m), nextStart, nextSpeed))).ToPtr()
+            [this, i, initState, nextState](){
+                frc::Translation2d targetPos = drivetrain->state.currentGamePiece.globalPosition;
+                driveCommand = std::move(*(drivetrain->getOTFDriveCommand(targetPos, initState, nextState))).ToPtr()
                 .AndThen([this, i](){
                     trajectoryCommands[i + 1].Schedule();
                 });

@@ -42,6 +42,8 @@
 
 #include <Piece.h>
 
+#include <pathplanner/lib/PathPlannerTrajectory.h>
+
 #define SWERVE_COUNT 4
 
 /**
@@ -270,7 +272,14 @@ public:
 
      void setDriveMotorNeutralMode(valor::NeutralMode mode);
 
-     frc2::SequentialCommandGroup * getOTFDriveCommand(frc::Translation2d, frc::Pose2d, units::meters_per_second_t);
+     /*
+          Generates trajectory commands between the robot and a target and back, meant to be used "on the fly"
+          @param target The target global translation for the robot to drive to
+          @param initState The trajectory state at the time of starting the otf command
+          @param handoffState Trajectory state to drive to on the way back
+          @return an frc2::SequentialCommandGroup containing two pathplanner::PPSwerveControllerCommands 
+     */
+     frc2::SequentialCommandGroup * getOTFDriveCommand(frc::Translation2d target, pathplanner::PathPlannerTrajectory::PathPlannerState initState, pathplanner::PathPlannerTrajectory::PathPlannerState handoffState);
 
 private:
      
