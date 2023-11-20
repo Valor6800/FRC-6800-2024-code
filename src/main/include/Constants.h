@@ -46,15 +46,8 @@ namespace DIOPorts {
 }
 
 namespace CANIDs {
-    constexpr static int DRIVE_CANS[4] = {2, 4, 6, 8};
-    constexpr static int AZIMUTH_CANS[4] = {1, 3, 5, 7};
-    constexpr static int PIGEON_CAN = 61;
-    constexpr static int INTAKE_LEAD_CAN = 12;
-    constexpr static int CARRIAGE_MAIN = 9;
-    constexpr static int CARRIAGE_FOLLOW = 10;
-    constexpr static int ARM_ROTATE = 11;
-    constexpr static int ARM_CANCODER = 14;
-    constexpr static int WRIST = 15;
-    constexpr static int WRIST_CANCODER = 16;
-    constexpr static int CANDLE = 60;
+    constexpr static int MOTOR1 = 1;
+    constexpr static int MOTOR2 = 2;
+    constexpr static int MOTOR3 = 3;
+    constexpr static int MOTOR4 = 4;
 }

@@ -1,21 +1,25 @@
 #include "Robot.h"
+#include "valkyrie/BaseSubsystem.h"
 
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/CommandScheduler.h>
 
 #include <ctime>
 
-Robot::Robot() : drivetrain(this), intake(this), elevarm(this, &intake), leds(this, &elevarm, &intake, &drivetrain)
+Robot::Robot() : oneAndTwo(this), three(this), four(this)
 {
     frc::TimedRobot();
 }
 
 void Robot::RobotInit() {
-    drivetrain.setGamepads(&gamepadOperator, &gamepadDriver);
-    elevarm.setGamepads(&gamepadOperator, &gamepadDriver);
-    intake.setGamepads(&gamepadOperator, &gamepadDriver);
+    oneAndTwo.setGamepads(&gamepadOperator, &gamepadDriver);
+    oneAndTwo.resetState();
 
-    drivetrain.resetState();
+    three.setGamepads(&gamepadOperator, &gamepadDriver);
+    three.resetState(); 
+
+    four.setGamepads(&gamepadOperator, &gamepadDriver);
+    four.resetState(); 
 
     frc::LiveWindow::EnableAllTelemetry();
     frc::DataLogManager::Start();
@@ -44,35 +48,7 @@ void Robot::DisabledPeriodic() { }
  * This autonomous runs the autonomous command selected by your {@link
  * RobotContainer} class.
  */
-void Robot::AutonomousInit() {
-    intake.setConeHoldSpeed(true);
-    drivetrain.resetState();
-    elevarm.resetState();
-    leds.resetState();
-    drivetrain.state.matchStart = frc::Timer::GetFPGATimestamp().to<double>();
-    elevarm.futureState.highStow = false;
-    drivetrain.setLimelightPipeline(Drivetrain::LimelightPipes::APRIL_TAGS);
-    drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Brake);
-    drivetrain.pullSwerveModuleZeroReference();
-}
-
-void Robot::AutonomousExit() {
-    drivetrain.state.xPose = true;
-    intake.setConeHoldSpeed(false);
-    elevarm.futureState.highStow = true;
-
-}
-
-void Robot::AutonomousPeriodic() {
-}
-
 void Robot::TeleopInit() {
-    drivetrain.pullSwerveModuleZeroReference();
-    drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Coast);
-
-    elevarm.teleopStart = frc::Timer::GetFPGATimestamp().to<double>();
-    elevarm.setArmPIDF(false);
-
     if (autoCommand != nullptr) {
         autoCommand->Cancel();
         autoCommand = nullptr;
