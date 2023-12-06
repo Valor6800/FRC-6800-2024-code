@@ -3,6 +3,8 @@
 
 #define DEFAULT_MOTOR4_SPD 0.3
 #define DEFAULT_DIRECTION4 true
+#define Motor4_Buttons "Press right trigger to run motor"
+
 
 Four::Four(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Four"),
     fourMotor(CANIDs::MOTOR4, valor::NeutralMode::Coast, DEFAULT_DIRECTION4, "")
@@ -28,6 +30,7 @@ void Four::init()
 
     table->PutNumber("Motor4 Speed", state.motor4Speed);
     table->PutBoolean("Motor4 Direction", state.direction4);
+    table->PutString("Motor4 Buttons", Motor4_Buttons);
 
     resetState();
 }
@@ -77,7 +80,7 @@ void Four::InitSendable(wpi::SendableBuilder &builder)
     );
     builder.AddStringProperty(
         "Motor4 Buttons",
-        [this]{return "Press right trigger to run motor";},
+        [this]{return Motor4_Buttons;},
         nullptr
     );
 }

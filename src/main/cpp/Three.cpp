@@ -3,6 +3,7 @@
 
 #define DEFAULT_MOTOR3_SPD 0.3
 #define DEFAULT_DIRECTION3 true
+#define Motor3_Buttons "Press left trigger to run motor"
 
 Three::Three(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Three"),
     threeMotor(CANIDs::MOTOR3, valor::NeutralMode::Coast, DEFAULT_DIRECTION3, "")
@@ -27,7 +28,10 @@ void Three::init()
     state.direction3 = DEFAULT_DIRECTION3;
 
     table->PutNumber("Motor3 Speed", state.motor3Speed);
-    table->PutNumber("Motor3 Direction", state.direction3);
+    table->PutBoolean("Motor3 Direction", state.direction3);
+    table->PutString("Motor3 Buttons", Motor3_Buttons);
+
+    resetState();
 }
 
 void Three::assessInputs()
@@ -75,7 +79,7 @@ void Three::InitSendable(wpi::SendableBuilder &builder)
     );
     builder.AddStringProperty(
         "Motor3 Buttons",
-        [this]{return "Press left trigger to run motor";},
+        [this]{return Motor3_Buttons;},
         nullptr
     );
 }

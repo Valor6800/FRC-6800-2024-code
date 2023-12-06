@@ -1,0 +1,227 @@
+{
+  "tabPane": [
+    {
+      "title": "SmartDashboard",
+      "autoPopulate": true,
+      "autoPopulatePrefix": "SmartDashboard/",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "titleType": 0,
+        "tiles": {
+          "4,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Toggle Button",
+              "_source0": "network_table:///One/Motor1 Direction",
+              "_title": "One/Motor1 Direction",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "5,2": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Number Slider",
+              "_source0": "network_table:///One/Motor1 Speed",
+              "_title": "One/Motor1 Speed",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Slider Settings/Min": -1.0,
+              "Slider Settings/Max": 1.0,
+              "Slider Settings/Block increment": 0.0625,
+              "Visuals/Display value": true
+            }
+          },
+          "4,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Toggle Button",
+              "_source0": "network_table:///Three/Motor3 Direction",
+              "_title": "Three/Motor3 Direction",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "5,3": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Number Slider",
+              "_source0": "network_table:///Three/Motor3 Speed",
+              "_title": "Three/Motor3 Speed",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Slider Settings/Min": -1.0,
+              "Slider Settings/Max": 1.0,
+              "Slider Settings/Block increment": 0.0625,
+              "Visuals/Display value": true
+            }
+          },
+          "4,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Toggle Button",
+              "_source0": "network_table:///Four/Motor4 Direction",
+              "_title": "Four/Motor4 Direction",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "5,1": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Number Slider",
+              "_source0": "network_table:///Four/Motor4 Speed",
+              "_title": "Four/Motor4 Speed",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Slider Settings/Min": -1.0,
+              "Slider Settings/Max": 1.0,
+              "Slider Settings/Block increment": 0.0625,
+              "Visuals/Display value": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "LiveWindow",
+      "autoPopulate": true,
+      "autoPopulatePrefix": "LiveWindow/",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "titleType": 0,
+        "tiles": {
+          "0,0": {
+            "size": [
+              2,
+              4
+            ],
+            "content": {
+              "_type": "Subsystem Layout",
+              "_source0": "network_table:///LiveWindow/BaseSubsystem",
+              "_title": "BaseSubsystem",
+              "_glyph": 149,
+              "_showGlyph": false,
+              "Layout/Label position": "BOTTOM",
+              "_children": [
+                {
+                  "_type": "Basic Subsystem",
+                  "_source0": "network_table:///LiveWindow/BaseSubsystem/One",
+                  "_title": "One",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                {
+                  "_type": "Basic Subsystem",
+                  "_source0": "network_table:///LiveWindow/BaseSubsystem/Three",
+                  "_title": "Three",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                {
+                  "_type": "Basic Subsystem",
+                  "_source0": "network_table:///LiveWindow/BaseSubsystem/Four",
+                  "_title": "Four",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                }
+              ]
+            }
+          },
+          "2,0": {
+            "size": [
+              2,
+              4
+            ],
+            "content": {
+              "_type": "Subsystem Layout",
+              "_source0": "network_table:///LiveWindow/NeoController",
+              "_title": "NeoController",
+              "_glyph": 149,
+              "_showGlyph": false,
+              "Layout/Label position": "BOTTOM",
+              "_children": [
+                {
+                  "_type": "Basic Subsystem",
+                  "_source0": "network_table:///LiveWindow/NeoController/ID 1",
+                  "_title": "ID 1",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                {
+                  "_type": "Basic Subsystem",
+                  "_source0": "network_table:///LiveWindow/NeoController/ID 3",
+                  "_title": "ID 3",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                {
+                  "_type": "Basic Subsystem",
+                  "_source0": "network_table:///LiveWindow/NeoController/ID 4",
+                  "_title": "ID 4",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                }
+              ]
+            }
+          },
+          "4,0": {
+            "size": [
+              2,
+              4
+            ],
+            "content": {
+              "_type": "Subsystem Layout",
+              "_source0": "network_table:///LiveWindow/Ungrouped",
+              "_title": "Ungrouped",
+              "_glyph": 149,
+              "_showGlyph": false,
+              "Layout/Label position": "BOTTOM",
+              "_children": [
+                {
+                  "_type": "Subsystem Layout",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/Scheduler/Ids",
+                  "_title": "Scheduler/Ids",
+                  "_glyph": 149,
+                  "_showGlyph": false,
+                  "Layout/Label position": "BOTTOM",
+                  "_children": []
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ],
+  "windowGeometry": {
+    "x": 0.0,
+    "y": 0.0,
+    "width": 1920.0,
+    "height": 1040.0
+  }
+}

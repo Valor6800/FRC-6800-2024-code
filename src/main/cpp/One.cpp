@@ -3,6 +3,7 @@
 
 #define DEFAULT_MOTOR1_SPD 0.3
 #define DEFAULT_DIRECTION1 true
+#define Motor1_Buttons "Press left bumper to run motors"
 #define CAN_BUS ""
 
 One::One(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "One"),
@@ -30,6 +31,7 @@ void One::init()
 
     table->PutNumber("Motor1 Speed", state.motor1Speed);
     table->PutBoolean("Motor1 Direction", state.direction1);
+    table->PutString("Motor1 Buttons", Motor1_Buttons);
     
     resetState();
 }
@@ -79,7 +81,7 @@ void One::InitSendable(wpi::SendableBuilder &builder)
     );
     builder.AddStringProperty(
         "Motor1 Buttons",
-        [this]{return "Press left bumper to run motors";},
+        [this]{return Motor1_Buttons;},
         nullptr
     );
 }
