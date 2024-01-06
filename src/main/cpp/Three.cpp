@@ -77,9 +77,4 @@ void Three::InitSendable(wpi::SendableBuilder &builder)
         [this]{return state.direction3;},
         nullptr
     );
-    builder.AddStringProperty(
-        "Motor3 Buttons",
-        [this]{return Motor3_Buttons;},
-        nullptr
-    );
 }

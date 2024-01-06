@@ -78,9 +78,4 @@ void Four::InitSendable(wpi::SendableBuilder &builder)
         [this]{return state.direction4;},
         nullptr
     );
-    builder.AddStringProperty(
-        "Motor4 Buttons",
-        [this]{return Motor4_Buttons;},
-        nullptr
-    );
 }

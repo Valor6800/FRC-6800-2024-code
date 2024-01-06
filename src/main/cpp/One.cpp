@@ -79,9 +79,4 @@ void One::InitSendable(wpi::SendableBuilder &builder)
         [this]{return state.direction1;},
         nullptr
     );
-    builder.AddStringProperty(
-        "Motor1 Buttons",
-        [this]{return Motor1_Buttons;},
-        nullptr
-    );
 }
