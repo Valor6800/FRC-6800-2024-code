@@ -24,22 +24,6 @@
 #define KDT 0.0f
 #define KFT 0.0f
 
-#define AZIMUTH_K_P 0.00001f
-#define AZIMUTH_K_I 0.0f
-#define AZIMUTH_K_D 0.0f
-#define AZIMUTH_K_E 0.0027f
-
-#define AZIMUTH_K_VEL 10.0f
-#define AZIMUTH_K_ACC_MUL 0.05f
-
-#define DRIVE_K_P 0.001f
-#define DRIVE_K_I 0.0f
-#define DRIVE_K_D 0.0f
-#define DRIVE_K_E 0.0027f
-
-#define DRIVE_K_VEL 6.0f
-#define DRIVE_K_ACC_MUL 0.05f
-
 #define MOTOR_FREE_SPEED 6380.0f
 #define WHEEL_DIAMETER_M 0.0973f //0.1016
 #define DRIVE_GEAR_RATIO 5.51f
@@ -103,40 +87,21 @@ void Drivetrain::configSwerveModule(int i)
     motorLocations[i] = frc::Translation2d{swerveModuleDiff * MDX[i],
                                            swerveModuleDiff * MDY[i]};
 
-    valor::PIDF azimuthPID;
-    azimuthPID.velocity = AZIMUTH_K_VEL;
-    azimuthPID.acceleration = AZIMUTH_K_ACC_MUL;
-    azimuthPID.P = AZIMUTH_K_P;
-    azimuthPID.I = AZIMUTH_K_I;
-    azimuthPID.D = AZIMUTH_K_D;
-    azimuthPID.error = AZIMUTH_K_E;
-
     azimuthControllers.push_back(new SwerveAzimuthMotor(CANIDs::AZIMUTH_CANS[i],
                                                       valor::NeutralMode::Brake,
                                                       true,
                                                       DRIVETRAIN_CAN_BUS));
     azimuthControllers[i]->setConversion(1.0 / AZIMUTH_GEAR_RATIO);
-    azimuthControllers[i]->setPIDF(azimuthPID, 0);
 
-    valor::PIDF drivePID;
-    drivePID.velocity = DRIVE_K_VEL;
-    drivePID.acceleration = DRIVE_K_ACC_MUL;
-    drivePID.P = DRIVE_K_P;
-    drivePID.I = DRIVE_K_I;
-    drivePID.D = DRIVE_K_D;
-    drivePID.error = DRIVE_K_E;
 
     driveControllers.push_back(new SwerveDriveMotor(CANIDs::DRIVE_CANS[i],
                                                     valor::NeutralMode::Coast,
                                                     false,
                                                     DRIVETRAIN_CAN_BUS));
     driveControllers[i]->setConversion(1.0 / DRIVE_GEAR_RATIO * M_PI * WHEEL_DIAMETER_M);
-    driveControllers[i]->setPIDF(drivePID, 0);
 
     swerveModules.push_back(new valor::Swerve<SwerveAzimuthMotor, SwerveDriveMotor>(azimuthControllers[i], driveControllers[i], motorLocations[i]));
     swerveModules[i]->setMaxSpeed(driveMaxSpeed);
-    
-
 }
 
 void Drivetrain::resetState()

@@ -2,6 +2,14 @@
 
 using namespace valor;
 
+#define NEO_PIDF_KP 0.00005f // Azimuth used to be 1e-5; Drives may need 0.001
+#define NEO_PIDF_KI 0.0f
+#define NEO_PIDF_KD 0.0f
+#define NEO_PIDF_KF 2.44e-4f
+#define NEO_PIDF_KE 0.0027f
+#define NEO_PIDF_KV 10.0f // Tuned for Azimuth; Drives may need 6; In meters per sec
+#define NEO_PIDF_KA 0.05f // Max velocity in 1/20 of a second; In meters per sec^2; 
+
 NeoController::NeoController(int canID,
                                 valor::NeutralMode _mode,
                                 bool _inverted,
@@ -21,8 +29,17 @@ void NeoController::init()
     motor->SetInverted(inverted);
     setNeutralMode(neutralMode);
     setRange(0,-1,1);
+
     valor::PIDF motionPIDF;
+    motionPIDF.P = NEO_PIDF_KP;
+    motionPIDF.I = NEO_PIDF_KI;
+    motionPIDF.D = NEO_PIDF_KD;
+    motionPIDF.F = NEO_PIDF_KF;
+    motionPIDF.error = NEO_PIDF_KE;
+    motionPIDF.velocity = NEO_PIDF_KV;
+    motionPIDF.acceleration = NEO_PIDF_KA;
     setPIDF(motionPIDF, 0);
+
     reset();
 
     wpi::SendableRegistry::AddLW(this, "NeoController", "ID " + std::to_string(motor->GetDeviceId()));

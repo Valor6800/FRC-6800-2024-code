@@ -2,6 +2,14 @@
 
 #define FALCON_TICKS_PER_REV 2048
 
+#define FALCON_PIDF_KP 0.1f // Wrist 0.18, Rotation 0.04
+#define FALCON_PIDF_KI 0.0f
+#define FALCON_PIDF_KD 0.0f
+#define FALCON_PIDF_KF 0.75f
+#define FALCON_PIDF_KE 0.25f
+#define FALCON_PIDF_KV 254.0f // Wrist 750, Rotation 254
+#define FALCON_PIDF_KA 1.3f // Wrist 0.425, Rotation 1.3
+
 using namespace valor;
 
 FalconController::FalconController(int canID,
@@ -30,6 +38,13 @@ void FalconController::init()
     motor->ConfigNeutralDeadband(0.01);
 
     valor::PIDF motionPIDF;
+    motionPIDF.P = FALCON_PIDF_KP;
+    motionPIDF.I = FALCON_PIDF_KI;
+    motionPIDF.D = FALCON_PIDF_KD;
+    motionPIDF.F = FALCON_PIDF_KF;
+    motionPIDF.error = FALCON_PIDF_KE;
+    motionPIDF.velocity = FALCON_PIDF_KV;
+    motionPIDF.acceleration = FALCON_PIDF_KA;
     setPIDF(motionPIDF, 0);
     reset();
 
@@ -69,6 +84,10 @@ void FalconController::setReverseLimit(double reverse)
     motor->ConfigReverseSoftLimitThreshold(rawReverse);
     motor->ConfigReverseSoftLimitEnable(true);
 }
+
+#define FALCON_PIDF_KE 0.25f
+#define FALCON_PIDF_KV 254.0f // Wrist 750, Rotation 254
+#define FALCON_PIDF_KA 1.3f // Wrist 0.425, Rotation 1.3
 
 void FalconController::setPIDF(valor::PIDF _pidf, int slot)
 {
