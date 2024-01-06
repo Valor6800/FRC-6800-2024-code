@@ -3,7 +3,7 @@
 
 #define DEFAULT_MOTOR1_SPD 0.3
 #define DEFAULT_DIRECTION1 true
-#define Motor1_Buttons "Press left bumper to run motors"
+#define Motor1_Buttons "Press left bumper to run motors 1 and 2"
 #define CAN_BUS ""
 
 One::One(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "One"),

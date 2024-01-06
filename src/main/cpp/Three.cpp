@@ -3,7 +3,7 @@
 
 #define DEFAULT_MOTOR3_SPD 0.3
 #define DEFAULT_DIRECTION3 true
-#define Motor3_Buttons "Press left trigger to run motor"
+#define Motor3_Buttons "Press left trigger to run motor 3"
 
 Three::Three(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Three"),
     threeMotor(CANIDs::MOTOR3, valor::NeutralMode::Coast, DEFAULT_DIRECTION3, "")

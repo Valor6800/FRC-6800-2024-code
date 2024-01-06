@@ -11,7 +11,63 @@
         "vgap": 16.0,
         "titleType": 0,
         "tiles": {
-          "4,2": {
+          "6,3": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///Four/Motor4 Buttons",
+              "_title": "Four/Motor4 Buttons",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Toggle Button",
+              "_source0": "network_table:///Four/Motor4 Direction",
+              "_title": "Four/Motor4 Direction",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "4,3": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Number Slider",
+              "_source0": "network_table:///Four/Motor4 Speed",
+              "_title": "Four/Motor4 Speed",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Slider Settings/Min": -1.0,
+              "Slider Settings/Max": 1.0,
+              "Slider Settings/Block increment": 0.0625,
+              "Visuals/Display value": true
+            }
+          },
+          "6,1": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///One/Motor1 Buttons",
+              "_title": "One/Motor1 Buttons",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,1": {
             "size": [
               1,
               1
@@ -24,7 +80,7 @@
               "_showGlyph": false
             }
           },
-          "5,2": {
+          "4,1": {
             "size": [
               2,
               1
@@ -41,7 +97,20 @@
               "Visuals/Display value": true
             }
           },
-          "4,3": {
+          "6,2": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///Three/Motor3 Buttons",
+              "_title": "Three/Motor3 Buttons",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,2": {
             "size": [
               1,
               1
@@ -54,7 +123,7 @@
               "_showGlyph": false
             }
           },
-          "5,3": {
+          "4,2": {
             "size": [
               2,
               1
@@ -63,36 +132,6 @@
               "_type": "Number Slider",
               "_source0": "network_table:///Three/Motor3 Speed",
               "_title": "Three/Motor3 Speed",
-              "_glyph": 148,
-              "_showGlyph": false,
-              "Slider Settings/Min": -1.0,
-              "Slider Settings/Max": 1.0,
-              "Slider Settings/Block increment": 0.0625,
-              "Visuals/Display value": true
-            }
-          },
-          "4,1": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Toggle Button",
-              "_source0": "network_table:///Four/Motor4 Direction",
-              "_title": "Four/Motor4 Direction",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "5,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Number Slider",
-              "_source0": "network_table:///Four/Motor4 Speed",
-              "_title": "Four/Motor4 Speed",
               "_glyph": 148,
               "_showGlyph": false,
               "Slider Settings/Min": -1.0,
@@ -221,7 +260,7 @@
   "windowGeometry": {
     "x": 0.0,
     "y": 0.0,
-    "width": 1920.0,
-    "height": 1040.0
+    "width": 1536.0,
+    "height": 816.0
   }
 }

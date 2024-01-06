@@ -3,7 +3,7 @@
 
 #define DEFAULT_MOTOR4_SPD 0.3
 #define DEFAULT_DIRECTION4 true
-#define Motor4_Buttons "Press right trigger to run motor"
+#define Motor4_Buttons "Press right trigger to run motor 4"
 
 
 Four::Four(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Four"),
