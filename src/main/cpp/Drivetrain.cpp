@@ -158,7 +158,6 @@ void Drivetrain::resetState()
 void Drivetrain::init()
 {
     limeTable = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
-    pigeon.Calibrate();    
 
     initPositions.fill(frc::SwerveModulePosition{0_m, frc::Rotation2d(0_rad)});
 

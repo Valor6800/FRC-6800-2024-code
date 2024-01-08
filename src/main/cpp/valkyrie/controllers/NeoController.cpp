@@ -8,8 +8,8 @@ NeoController::NeoController(int canID,
                                 std::string canbus) :
     BaseController(new rev::CANSparkMax(canID, rev::CANSparkMax::MotorType::kBrushless), _inverted, _mode),
     pidController(motor->GetPIDController()),
-    encoder(motor->GetEncoder()),
-    extEncoder(motor->GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)),
+    encoder(motor->GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor, 42)),
+    extEncoder(motor->GetAbsoluteEncoder(rev::SparkAbsoluteEncoder::Type::kDutyCycle)),
     currentPidSlot(0)
 {
     init();

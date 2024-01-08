@@ -6,7 +6,7 @@
 
 #include <rev/CANSparkMax.h>
 #include <rev/CANEncoder.h>
-#include <rev/SparkMaxAbsoluteEncoder.h>
+#include <rev/SparkAbsoluteEncoder.h>
 #include <string>
 
 namespace valor {
@@ -50,9 +50,9 @@ public:
     void InitSendable(wpi::SendableBuilder& builder) override;
     
 private:
-    rev::SparkMaxPIDController pidController;
-    rev::SparkMaxRelativeEncoder encoder;
-    rev::SparkMaxAbsoluteEncoder extEncoder;
+    rev::SparkPIDController pidController;
+    rev::SparkRelativeEncoder encoder;
+    rev::SparkAbsoluteEncoder extEncoder;
 
     int currentPidSlot;
 };

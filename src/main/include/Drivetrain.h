@@ -9,7 +9,6 @@
 #include "valkyrie/controllers/NeoController.h"
 #include "valkyrie/controllers/PIDF.h"
 
-#include "AHRS.h"
 #include "ctre/phoenix/sensors/WPI_Pigeon2.h"
 #include <frc/kinematics/SwerveDriveKinematics.h>
 #include <frc/estimator/SwerveDrivePoseEstimator.h>
