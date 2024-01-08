@@ -3,31 +3,34 @@
 #define FALCON_TICKS_PER_REV 2048
 
 using namespace valor;
+using namespace ctre::phoenix6;
 
 FalconController::FalconController(int canID,
                                              valor::NeutralMode _mode,
                                              bool _inverted,
                                              std::string canbus) :
-    BaseController(new WPI_TalonFX{canID, canbus}, _inverted, _mode)
+    BaseController(new hardware::TalonFX{canID, canbus}, _inverted, _mode)
 {
     init();
 }
 
 void FalconController::init()
 {
-    motor->ConfigFactoryDefault();
+    motor->GetConfigurator().Apply(configs::TalonFXConfiguration{});
     motor->SetInverted(inverted);
     setNeutralMode(neutralMode);
 
-    motor->EnableVoltageCompensation(true);
-    motor->ConfigVoltageCompSaturation(10);
-    motor->ConfigSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 60, 80, .75)); //potentially could do 40 60
+    configs::CurrentLimitsConfigs currentLimits;
+    currentLimits.StatorCurrentLimit = 60.0;
+    currentLimits.StatorCurrentLimitEnable = true;
+    currentLimits.SupplyCurrentLimit = 80.0;
+    currentLimits.SupplyCurrentLimitEnable = true;
+    currentLimits.SupplyTimeThreshold = 0.75;
+    motor->GetConfigurator().Apply(currentLimits);
 
-    motor->ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 10);
-    motor->ConfigAllowableClosedloopError(0, 0);
-    motor->Config_IntegralZone(0, 0);
-
-    motor->ConfigNeutralDeadband(0.01);
+    configs::MotorOutputConfigs config;
+    config.DutyCycleNeutralDeadband = 0.01;
+    motor->GetConfigurator().Apply(config);
 
     valor::PIDF motionPIDF;
     setPIDF(motionPIDF, 0);
@@ -48,7 +51,7 @@ void FalconController::setEncoderPosition(double position)
 
 void FalconController::setupFollower(int canID, bool followerInverted)
 {
-    followerMotor = new WPI_TalonFX(canID);
+    followerMotor = new TalonFX(canID);
     followerMotor->Follow(*motor);
     if (followerInverted) {
         followerMotor->SetInverted(!motor->GetInverted());
@@ -59,24 +62,32 @@ void FalconController::setupFollower(int canID, bool followerInverted)
 void FalconController::setForwardLimit(double forward)
 {
     double rawForward = forward / conversion * FALCON_TICKS_PER_REV;
-    motor->ConfigForwardSoftLimitThreshold(rawForward);
-    motor->ConfigForwardSoftLimitEnable(true);
+    configs::SoftwareLimitSwitchConfigs config;
+    config.ForwardSoftLimitEnable = true;
+    config.ForwardSoftLimitThreshold = rawForward;
+    motor->GetConfigurator().Apply(config);
 }
 
 void FalconController::setReverseLimit(double reverse)
 {
     double rawReverse = reverse / conversion * FALCON_TICKS_PER_REV;
-    motor->ConfigReverseSoftLimitThreshold(rawReverse);
-    motor->ConfigReverseSoftLimitEnable(true);
+    configs::SoftwareLimitSwitchConfigs config;
+    config.ForwardSoftLimitEnable = true;
+    config.ForwardSoftLimitThreshold = rawReverse;
+    motor->GetConfigurator().Apply(config);
 }
 
 void FalconController::setPIDF(valor::PIDF _pidf, int slot)
 {
     pidf = _pidf;
-    motor->Config_kP(slot, pidf.P);
-    motor->Config_kI(slot, pidf.I);
-    motor->Config_kD(slot, pidf.D);
-    motor->Config_kF(slot, pidf.F * (1023.0 / 7112.0));
+    configs::Slot0Configs config{};
+    config.kP = pidf.P;
+    config.kI = pidf.I;
+    config.kD = pidf.D;
+    config.kV = pidf.F * (1023.0 / 7112.0);
+    motor->GetConfigurator().Apply(config);
+    configs::
+    
     motor->ConfigAllowableClosedloopError(slot, pidf.error * FALCON_TICKS_PER_REV / conversion);
     double vel = pidf.velocity / 10.0 * FALCON_TICKS_PER_REV / conversion;
     motor->ConfigMotionCruiseVelocity(vel);
@@ -99,12 +110,18 @@ double FalconController::getCurrent()
  */
 double FalconController::getPosition()
 {
-    return motor->GetSelectedSensorPosition() * conversion / FALCON_TICKS_PER_REV;
+    auto& rotorPosSignal = motor->GetRotorPosition();
+    // @TODO Use FPGA - latency to identify timestamp of calculation
+    units::second_t latency = rotorPosSignal.GetTimestamp().GetLatency();
+    return rotorPosSignal.GetValueAsDouble() * conversion / FALCON_TICKS_PER_REV;
 }
 
 double FalconController::getSpeed()
 {
-    return motor->GetSelectedSensorVelocity() * 10 * conversion / FALCON_TICKS_PER_REV;
+    auto& rotorPosSignal = motor->GetVelocity();
+    // @TODO Use FPGA - latency to identify timestamp of calculation
+    units::second_t latency = rotorPosSignal.GetTimestamp().GetLatency();
+    return rotorPosSignal.GetValueAsDouble() * 10 * conversion / FALCON_TICKS_PER_REV;
 }
 
 void FalconController::setRange(int slot, double min, double max)
@@ -129,6 +146,7 @@ void FalconController::setSpeed(double speed)
 
 void FalconController::setPower(double speed)
 {
+    // @TODO built in voltage compenstation and saturation
     motor->Set(ControlMode::PercentOutput, speed);
 }
 
@@ -139,7 +157,9 @@ void FalconController::setProfile(int profile)
 
 void FalconController::preventBackwards()
 {
-    motor->ConfigPeakOutputReverse(0);
+    configs::MotorOutputConfigs config;
+    config.PeakReverseDutyCycle = 0;
+    motor->GetConfigurator().Apply(config);
 }
 
 double FalconController::getAbsEncoderPosition()
@@ -147,19 +167,22 @@ double FalconController::getAbsEncoderPosition()
     return 0;
 }
 
-void FalconController::setNeutralMode(valor::NeutralMode mode){
-    motor->SetNeutralMode(mode == valor::NeutralMode::Brake ?
-                        ctre::phoenix::motorcontrol::NeutralMode::Brake :
-                        ctre::phoenix::motorcontrol::NeutralMode::Coast);
+void FalconController::setNeutralMode(valor::NeutralMode mode)
+{
+    configs::MotorOutputConfigs config;
+    config.NeutralMode = mode == valor::NeutralMode::Brake ?
+        signals::NeutralModeValue::Brake :
+        signals::NeutralModeValue::Coast;
+    motor->GetConfigurator().Apply(config);
+    
     neutralMode = mode;
 }
 
-void FalconController::setVoltageCompensation(double voltage){
-    motor->ConfigVoltageCompSaturation(voltage);
-}
-
-void FalconController::setOpenLoopRamp(double time){
-    motor->ConfigOpenloopRamp(time);
+void FalconController::setOpenLoopRamp(double time)
+{
+    configs::OpenLoopRampsConfigs config;
+    config.DutyCycleOpenLoopRampPeriod = time;
+    motor->GetConfigurator().Apply(config);
 }
 
 void FalconController::InitSendable(wpi::SendableBuilder& builder)
