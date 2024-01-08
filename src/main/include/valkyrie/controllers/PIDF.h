@@ -2,6 +2,12 @@
 
 namespace valor {
 
+enum FeedForwardType
+{
+    LINEAR,
+    CIRCULAR
+};
+
 /**
  * @brief Container to hold PID and feed forward values for the motor controller
  */
@@ -19,14 +25,13 @@ struct PIDF
     double velocity = 1500;
     /// Max acceleration: revolutions per 1s^2
     double acceleration = 15000;
+    /// Max jerk: revolutions per 1s^3
+    double jerk = 0;
     /// Minimum error threshold
     double error = 0.5;
 
     double aFF = 0;
     double aFFTarget = 90;
-
-    // Sets the s-curve value for the motion profile. This helps control the jerk of the mechanimsm and reduces the oscillation, but makes it slower
-    // Values 0-8. 0 is a trapezoidal motion profile, 1-8 adds a curve 
-    int sCurveStrength = 0;
+    FeedForwardType aFFType = FeedForwardType::LINEAR;
 };
 }

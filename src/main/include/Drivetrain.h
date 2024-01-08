@@ -4,7 +4,7 @@
 #include "Constants.h"
 #include "valkyrie/Swerve.h"
 #include <vector>
-#include "valkyrie/controllers/FalconController.h"
+#include "valkyrie/controllers/PhoenixController.h"
 #include "valkyrie/controllers/NeoController.h"
 #include "valkyrie/controllers/PIDF.h"
 
@@ -35,7 +35,6 @@
 #include <frc/TimedRobot.h>
 #include <frc2/command/FunctionalCommand.h>
 
-#include <ctre/phoenix/motorcontrol/NeutralMode.h>
 #include <rev/CANSparkMax.h>
 
 #define SWERVE_COUNT 4
@@ -53,7 +52,7 @@ public:
      /**
       * @brief Quick way to select the drive motor controller
       * To change what motor controller runs the drive motor, change this to either:
-      * * valor::FalconController
+      * * valor::PhoenixController
       * * valor::NeoController
       */
      typedef valor::NeoController SwerveDriveMotor;
@@ -61,7 +60,7 @@ public:
      /**
       * @brief Quick way to select the azimuth motor controller
       * To change what motor controller runs the azimuth motor, change this to either:
-      * * valor::FalconController
+      * * valor::PhoenixController
       * * valor::NeoController
       */
      typedef valor::NeoController SwerveAzimuthMotor;

@@ -1,5 +1,5 @@
 #include "valkyrie/Swerve.h"
-#include "valkyrie/controllers/FalconController.h"
+#include "valkyrie/controllers/PhoenixController.h"
 #include "valkyrie/controllers/NeoController.h"
 #include "Constants.h"
 #include <fstream>
@@ -30,10 +30,10 @@ using namespace valor;
 
 // Explicit template instantiation
 // This is needed for linking
-template class valor::Swerve<valor::FalconController, valor::FalconController>;
+template class valor::Swerve<valor::PhoenixController, valor::PhoenixController>;
 template class valor::Swerve<valor::NeoController, valor::NeoController>;
-template class valor::Swerve<valor::FalconController, valor::NeoController>;
-template class valor::Swerve<valor::NeoController, valor::FalconController>;
+template class valor::Swerve<valor::PhoenixController, valor::NeoController>;
+template class valor::Swerve<valor::NeoController, valor::PhoenixController>;
 
 template<class AzimuthMotor, class DriveMotor>
 Swerve<AzimuthMotor, DriveMotor>::Swerve(AzimuthMotor* _azimuthMotor,

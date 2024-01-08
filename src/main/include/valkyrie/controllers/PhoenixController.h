@@ -2,16 +2,15 @@
 
 #include "valkyrie/controllers/BaseController.h"
 
-#include <ctre/Phoenix.h>
-#include <ctre/phoenix/motorcontrol/NeutralMode.h>
+#include <ctre/phoenix6/TalonFX.hpp>
 #include <string>
 
 namespace valor {
 
-class FalconController : public BaseController<WPI_TalonFX>
+class PhoenixController : public BaseController<ctre::phoenix6::hardware::TalonFX>
 {
 public:
-    FalconController(int _canID, valor::NeutralMode _mode, bool _inverted, std::string _canbus = "");
+    PhoenixController(int _canID, valor::NeutralMode _mode, bool _inverted, std::string _canbus = "");
 
     void init();
     void reset();
@@ -35,7 +34,6 @@ public:
     void setRange(int slot, double min, double max);
     
     void setConversion(double);
-    void setVoltageCompensation(double);
     
 
     void setProfile(int slot);
@@ -53,5 +51,6 @@ public:
     void InitSendable(wpi::SendableBuilder& builder);
 private:
     valor::PIDF pidf;
+    int currentProfile;
 };
 }
