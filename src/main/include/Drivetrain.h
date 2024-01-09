@@ -199,6 +199,18 @@ public:
 
      //returns angle within the range [-180, 180]
      double angleWrap(double degrees);
+     void feedVisionData();
+     bool checkValid(LimelightPipes pipe);
+     double getTx(LimelightPipes pipe);
+     double getTy(LimelightPipes pipe);
+     double getTargetArea(LimelightPipes pipe);
+     double getLatency(LimelightPipes pipe);
+     double getShortSideLength(LimelightPipes pipe);
+     double getLongSideLength(LimelightPipes pipe);
+     double getHorRoughBox(LimelightPipes pipe);
+     double getVerRoughBox(LimelightPipes pipe);
+     void switchPipeline(LimelightPipes pipe);
+     std::vector<double> getAverageHSV(LimelightPipes pipe);
 
      /**
       * Returns the position of the robot on the field in meters
