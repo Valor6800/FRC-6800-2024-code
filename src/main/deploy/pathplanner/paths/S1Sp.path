@@ -61,7 +61,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Score",
+  "folder": "PreLoad",
   "previewStartingState": {
     "rotation": 180.0,
     "velocity": 0
