@@ -62,7 +62,6 @@
 #define PIGEON_CAN_BUS "baseCAN"
 
 Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Drivetrain"),
-                        robot(_robot),
                         driveMaxSpeed(MOTOR_FREE_SPEED / 60.0 / DRIVE_GEAR_RATIO * WHEEL_DIAMETER_M * M_PI),
                         swerveModuleDiff(units::meter_t(MODULE_DIFF)),
                         rotMaxSpeed(ROT_SPEED_MUL * 2 * M_PI),
@@ -88,7 +87,6 @@ Drivetrain::~Drivetrain()
         delete azimuthControllers[i];
         delete driveControllers[i];
         delete swerveModules[i];
-        delete monitorSensors[i];
     }
 
     delete kinematics;
@@ -128,23 +126,16 @@ void Drivetrain::configSwerveModule(int i)
     drivePID.D = DRIVE_K_D;
     drivePID.error = DRIVE_K_E;
 
-    SwerveDriveMotor *driveMotor = new SwerveDriveMotor(CANIDs::DRIVE_CANS[i],
-                                                        valor::NeutralMode::Coast,
-                                                        false,
-                                                        DRIVETRAIN_CAN_BUS);
-    driveControllers.push_back(driveMotor);
+    driveControllers.push_back(new SwerveDriveMotor(CANIDs::DRIVE_CANS[i],
+                                                    valor::NeutralMode::Coast,
+                                                    false,
+                                                    DRIVETRAIN_CAN_BUS));
     driveControllers[i]->setConversion(1.0 / DRIVE_GEAR_RATIO * M_PI * WHEEL_DIAMETER_M);
     driveControllers[i]->setPIDF(drivePID, 0);
 
     swerveModules.push_back(new valor::Swerve<SwerveAzimuthMotor, SwerveDriveMotor>(azimuthControllers[i], driveControllers[i], motorLocations[i]));
     swerveModules[i]->setMaxSpeed(driveMaxSpeed);
     
-    valor::MonitorSensor * sensor = new valor::MonitorSensor(robot, "Swerve Current Monitor " + i);
-    sensor->setGetter([&]() { return driveMotor->getCurrent(); });
-    sensor->setTargetMean(7);
-    sensor->setTargetRange(3);
-    sensor->startRecording();
-    monitorSensors.push_back(sensor);
 
 }
 
