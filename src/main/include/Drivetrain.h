@@ -3,7 +3,6 @@
 #include "valkyrie/BaseSubsystem.h"
 #include "Constants.h"
 #include "valkyrie/Swerve.h"
-#include "valkyrie/sensors/MonitorSensor.h"
 #include <vector>
 #include "valkyrie/controllers/FalconController.h"
 #include "valkyrie/controllers/NeoController.h"
@@ -250,7 +249,6 @@ public:
      void setDriveMotorNeutralMode(valor::NeutralMode mode);
 
 private:
-     frc::TimedRobot *robot;
      
      double driveMaxSpeed;
      units::meter_t swerveModuleDiff;
@@ -272,7 +270,6 @@ private:
      std::vector<valor::Swerve<SwerveAzimuthMotor, SwerveDriveMotor> *> swerveModules;
      std::vector<SwerveAzimuthMotor *> azimuthControllers;
      std::vector<SwerveDriveMotor *> driveControllers;
-     std::vector<valor::MonitorSensor *> monitorSensors; 
 
      wpi::array<frc::Translation2d, SWERVE_COUNT> motorLocations;
 
