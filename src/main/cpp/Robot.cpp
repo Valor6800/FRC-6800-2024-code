@@ -5,7 +5,7 @@
 
 #include <ctime>
 
-Robot::Robot() : drivetrain(this)
+Robot::Robot() : drivetrain(this), valorAuto(&drivetrain)
 {
     frc::TimedRobot();
 }
@@ -16,8 +16,9 @@ void Robot::RobotInit() {
 
     frc::LiveWindow::EnableAllTelemetry();
     frc::DataLogManager::Start();
-}
 
+    valorAuto.fillAutoList();
+}
 /**
  * This function is called every robot packet, no matter the mode. Use
  * this for items like diagnostics that you want to run during disabled,
@@ -46,6 +47,9 @@ void Robot::AutonomousInit() {
     drivetrain.state.matchStart = frc::Timer::GetFPGATimestamp().to<double>();
     drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Brake);
     drivetrain.pullSwerveModuleZeroReference();
+
+    autoCommand = valorAuto.getCurrentAuto();
+    autoCommand.Schedule();
 }
 
 void Robot::AutonomousExit() {
@@ -59,10 +63,7 @@ void Robot::TeleopInit() {
     drivetrain.pullSwerveModuleZeroReference();
     drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Coast);
 
-    if (autoCommand != nullptr) {
-        autoCommand->Cancel();
-        autoCommand = nullptr;
-    }
+    autoCommand.Cancel();
 }
 
 /**

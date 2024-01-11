@@ -2,6 +2,12 @@
 #include <frc/DriverStation.h>
 #include <iostream>
 #include <math.h>
+#include <pathplanner/lib/auto/AutoBuilder.h>
+#include <pathplanner/lib/util/HolonomicPathFollowerConfig.h>
+#include <pathplanner/lib/util/PIDConstants.h>
+#include <pathplanner/lib/util/ReplanningConfig.h>
+
+using namespace pathplanner;
 
 #define TXRANGE  30.0f
 #define KPIGEON 2.0f
@@ -78,6 +84,8 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
+
+    
 }
 
 Drivetrain::~Drivetrain()
@@ -189,6 +197,32 @@ void Drivetrain::init()
     state.lock = false;
 
     resetState();
+
+    AutoBuilder::configureHolonomic(
+        [this](){ return getPose_m(); }, // Robot pose supplier
+        [this](frc::Pose2d pose){ resetOdometry(pose); }, // Method to reset odometry (will be called if your auto has a starting pose)
+        [this](){ return getRobotRelativeSpeeds(); }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+        [this](frc::ChassisSpeeds speeds){ driveRobotRelative(speeds); }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+        HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+            PIDConstants(getXPIDF().P, getXPIDF().I, getXPIDF().D), // Translation PID constants
+            PIDConstants(getThetaPIDF().P, getThetaPIDF().I, getThetaPIDF().D), // Rotation PID constants
+            units::meters_per_second_t{driveMaxSpeed}, // Max module speed, in m/s
+            0.36_m, // Drive base radius in meters. Distance from robot center to furthest module.
+            ReplanningConfig() // Default path replanning config. See the API for the options here
+        ),
+        []() {
+            // Boolean supplier that controls when the path will be mirrored for the red alliance
+            // This will flip the path being followed to the red side of the field.
+            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+            auto alliance = frc::DriverStation::GetAlliance();
+            if (alliance) {
+                return alliance.value() == frc::DriverStation::Alliance::kRed;
+            }
+            return false;
+        },
+        this // Reference to this subsystem to set requirements
+    );
 }
 
 std::vector<valor::Swerve<Drivetrain::SwerveAzimuthMotor, Drivetrain::SwerveDriveMotor> *> Drivetrain::getSwerveModules()
@@ -401,6 +435,14 @@ void Drivetrain::drive(units::velocity::meters_per_second_t vx_mps, units::veloc
     }
 }
 
+void Drivetrain::driveRobotRelative(frc::ChassisSpeeds speeds) {
+    auto states = getModuleStates(speeds);
+    for (size_t i = 0; i < swerveModules.size(); i++)
+    {
+        swerveModules[i]->setDesiredState(states[i], true);
+    }
+}
+
 wpi::array<frc::SwerveModuleState, SWERVE_COUNT> Drivetrain::getModuleStates(units::velocity::meters_per_second_t vx_mps,
                                                                   units::velocity::meters_per_second_t vy_mps,
                                                                   units::angular_velocity::radians_per_second_t omega_radps,
@@ -414,6 +456,23 @@ wpi::array<frc::SwerveModuleState, SWERVE_COUNT> Drivetrain::getModuleStates(uni
     auto states = kinematics->ToSwerveModuleStates(chassisSpeeds);
     kinematics->DesaturateWheelSpeeds(&states, units::velocity::meters_per_second_t{driveMaxSpeed});
     return states;
+}
+
+wpi::array<frc::SwerveModuleState, SWERVE_COUNT> Drivetrain::getModuleStates(frc::ChassisSpeeds chassisSpeeds)
+{
+    auto states = kinematics->ToSwerveModuleStates(chassisSpeeds);
+    kinematics->DesaturateWheelSpeeds(&states, units::velocity::meters_per_second_t{driveMaxSpeed});
+    return states;
+}
+
+frc::ChassisSpeeds Drivetrain::getRobotRelativeSpeeds(){
+    wpi::array<frc::SwerveModuleState, 4> moduleStates = {
+        swerveModules[0]->getState(),
+        swerveModules[1]->getState(),
+        swerveModules[2]->getState(),
+        swerveModules[3]->getState()
+    }; 
+    return kinematics->ToChassisSpeeds(moduleStates);
 }
 
 void Drivetrain::setModuleStates(wpi::array<frc::SwerveModuleState, SWERVE_COUNT> desiredStates)

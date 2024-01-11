@@ -2,11 +2,13 @@
 
 #include <frc/TimedRobot.h>
 #include <frc2/command/Command.h>
+#include <frc2/command/Commands.h>
 
 #include "Constants.h"
 #include "valkyrie/Gamepad.h"
 
 #include "Drivetrain.h"
+#include "Auto.h"
 
 #include <frc/DriverStation.h>
 #include <frc/DataLogManager.h>
@@ -34,9 +36,10 @@ class Robot : public frc::TimedRobot {
         valor::Gamepad gamepadOperator{OIConstants::GAMEPAD_OPERATOR_LOCATION};
         valor::Gamepad gamepadDriver{OIConstants::GAMEPAD_BASE_LOCATION};
 
-        frc2::Command * autoCommand = nullptr;
+        frc2::CommandPtr autoCommand = frc2::cmd::Sequence();
 
         Drivetrain drivetrain;
+        Auto valorAuto;
 
         std::ofstream outfile;
 };
