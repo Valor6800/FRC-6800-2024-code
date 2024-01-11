@@ -5,6 +5,10 @@
 #include <frc/geometry/Pose3d.h>
 
 namespace valor{
+struct LimeLight
+{
+    frc::Pose3d globalPose;
+};
 
 class VisionSensor : public valor::BaseSensor<int> {
     public:
