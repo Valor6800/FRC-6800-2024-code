@@ -151,6 +151,7 @@ public:
       * @param isFOC true if driving field oriented
       */
      void drive(units::velocity::meters_per_second_t vx_mps, units::velocity::meters_per_second_t vy_mps, units::angular_velocity::radians_per_second_t omega_radps, bool isFOC);
+     void driveRobotRelative(frc::ChassisSpeeds speeds);
 
      /**
       * Directly set the swerve modules to the specified states
@@ -250,8 +251,8 @@ private:
                                                            units::velocity::meters_per_second_t,
                                                            units::angular_velocity::radians_per_second_t,
                                                            bool);
-
-
+     wpi::array<frc::SwerveModuleState, SWERVE_COUNT> getModuleStates(frc::ChassisSpeeds chassisSpeeds);
+     frc::ChassisSpeeds getRobotRelativeSpeeds();
 
      void configSwerveModule(int);
 
