@@ -89,7 +89,6 @@ Drivetrain::~Drivetrain()
         delete swerveModules[i];
     }
 
-    delete kinematics;
     delete estimator;
     delete config;
 }
@@ -294,11 +293,6 @@ void Drivetrain::assignOutputs()
         setXMode();
     } else if (state.adas){
         limeTable->PutNumber("ledMode", 3);
-        if (state.bottomTape) {
-            adas(LimelightPipes::TAPE_MID);
-        } else {
-            adas(LimelightPipes::TAPE_HIGH);
-        }
         drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
     } 
     else {
@@ -354,7 +348,7 @@ void Drivetrain::addVisionMeasurement(frc::Pose2d visionPose, double doubt=1){
         estimator->AddVisionMeasurement(
             visionPose,  
             frc::Timer::GetFPGATimestamp(),
-            {doubt, 999999, 999999}
+            {doubt, 999999.0, 999999.0}
         ); 
 }
 
@@ -382,12 +376,6 @@ void Drivetrain::resetOdometry(frc::Pose2d pose)
 frc::Rotation2d Drivetrain::getPigeon() 
 {
     return pigeon.GetRotation2d();
-}
-
-units::degree_t Drivetrain::getGlobalPitch(){
-    double pitch = pigeon.GetPitch() / 180 * M_PI, yaw = getPose_m().Rotation().Degrees().to<double>() / 180 * M_PI, roll = pigeon.GetRoll() / 180 * M_PI;
-    double globalPitch = (std::cos(yaw) * pitch + std::sin(yaw) * roll) * 180 / M_PI; 
-    return units::degree_t{globalPitch};
 }
 
 void Drivetrain::resetDriveEncoders()
@@ -443,22 +431,6 @@ void Drivetrain::angleLock(){
     
 }
 
-void Drivetrain::adas(LimelightPipes pipe){
-    limeTable->PutNumber("pipeline", pipe);
-    if (limeTable->GetNumber("pipeline", -1) == LimelightPipes::TAPE_HIGH || limeTable->GetNumber("pipeline", -1) == LimelightPipes::TAPE_MID){
-        if (limeTable->GetNumber("tv",0) == 1){
-            double tx = limeTable->GetNumber("tx",0);
-            double normalizedTx = tx / KLIMELIGHT;
-            double kPlimeLight = table->GetNumber("KPLIMELIGHT", KP_LIMELIGHT);
-            state.ySpeedMPS = units::velocity::meters_per_second_t(((std::fabs(normalizedTx) <= 1 ? normalizedTx : std::copysignf(1.0, normalizedTx) ) * kPlimeLight * -driveMaxSpeed));
-        }
-    }
-}
-
-void Drivetrain::setLimelightPipeline(LimelightPipes pipeline){
-    limeTable->PutNumber("pipeline", pipeline);
-}
-
 frc2::FunctionalCommand* Drivetrain::getResetOdom() {
     return new frc2::FunctionalCommand(
         [&]{ // onBegin
@@ -483,239 +455,6 @@ frc2::FunctionalCommand* Drivetrain::getResetOdom() {
         [&]{ // isFinished
             return (frc::Timer::GetFPGATimestamp() - state.startTimestamp) > 1.0_s;
         },
-        {}
-    );
-}
-
-frc2::FunctionalCommand* Drivetrain::getVisionAutoLevel(){
-    return new frc2::FunctionalCommand(
-        [&](){
-            state.abovePitchThreshold = false;
-            limeTable->PutNumber("pipeline", LimelightPipes::APRIL_TAGS);
-            state.prevPose = getPose_m();
-        },
-        [&](){
-            limeTable->PutNumber("pipeline", LimelightPipes::APRIL_TAGS);
-            if (!state.abovePitchThreshold && std::fabs(getGlobalPitch().to<double>()) > 20)
-                state.abovePitchThreshold = true;
-
-            if (!state.abovePitchThreshold){
-                state.prevPose = getPose_m();
-                state.xSpeed = -0.5;
-            } else
-                state.xSpeed = -0.3;
-                
-
-            frc::Pose2d visionPose = getVisionPose();
-            if (std::fabs(state.visionPose.X().to<double>() - state.prevPose.X().to<double>()) < 1.00)
-                state.prevPose = state.visionPose;
-        },
-        [&](bool){
-            state.xSpeed = 0.0;
-            state.xPose = true;
-        }, // onEnd
-        [&](){
-            //4.05_m
-            return (state.prevPose.X() < 4.48_m) || (frc::Timer::GetFPGATimestamp().to<double>() - state.matchStart > X_TIME) || (state.abovePitchThreshold && getGlobalPitch().to<double>() > 0);
-        },//isFinished
-        {}
-    );
-}
-
-frc2::FunctionalCommand* Drivetrain::getAutoLevel(){
-    return new frc2::FunctionalCommand(
-        [&](){
-            state.stage = 0;
-        },
-        [&](){
-            double pitch = pigeon.GetPitch() / 180 * M_PI, yaw = getPose_m().Rotation().Degrees().to<double>() / 180 * M_PI, roll = pigeon.GetRoll() / 180 * M_PI;
-            double globalPitch = (std::cos(yaw) * pitch + std::sin(yaw) * roll) * 180 / M_PI;
-            switch (state.stage){
-                // There should be a stage for each change in slope between positive and negative, otherwise the stage change might happen at unexpected places
-                case 0: // 
-                    state.xSpeed = -0.5;
-                    if (globalPitch < -20.0)
-                        state.stage++;
-                    break;
-                case 1:
-                    state.xSpeed = -0.4;
-                    if (globalPitch > -14.7)
-                        state.stage++;
-                    break;
-                case 2:
-                    state.xSpeed = -0.2;
-                    if (globalPitch < -14.6)
-                        state.stage++;
-                    break;
-                case 3:
-                    state.xSpeed = -0.2;
-                    if (globalPitch > -14.6)
-                        state.stage++;
-                    break;
-                case 4:
-                    state.xSpeed = +0.02;
-                    break;
-            }
-        },
-        [&](bool){
-            state.xSpeed = 0.0;
-            state.xPose = true;
-        }, // onEnd
-        [&](){
-            return state.stage == 4 || (frc::Timer::GetFPGATimestamp().to<double>() - state.matchStart > X_TIME);
-        },//isFinished
-        {}
-    );
-}
-
-frc2::FunctionalCommand* Drivetrain::getAutoLevelReversed(){
-    return new frc2::FunctionalCommand(
-        [&](){
-            state.stage = 0;
-        },
-        [&](){
-            double pitch = pigeon.GetPitch() / 180 * M_PI, yaw = getPose_m().Rotation().Degrees().to<double>() / 180 * M_PI, roll = pigeon.GetRoll() / 180 * M_PI;
-            double globalPitch = (std::cos(yaw) * pitch + std::sin(yaw) * roll) * 180 / M_PI;
-            switch (state.stage){
-                // There should be a stage for each change in slope between positive and negative, otherwise the stage change might happen at unexpected places
-                case 0: // 
-                    state.xSpeed = 0.5;
-                    if (globalPitch > 20.0)
-                        state.stage++;
-                    break;
-                case 1:
-                    state.xSpeed = 0.4;
-                    if (globalPitch < 14.7)
-                        state.stage++;
-                    break;
-                case 2:
-                    state.xSpeed = 0.2;
-                    if (globalPitch > 14.6)
-                        state.stage++;
-                    break;
-                case 3:
-                    state.xSpeed = 0.2;
-                    if (globalPitch < 14.6)
-                        state.stage++;
-                    break;
-                case 4:
-                    state.xSpeed = -0.02;
-                    break;
-            }
-        },
-        [&](bool){
-            state.xSpeed = 0.0;
-            state.xPose = true;
-        }, // onEnd
-        [&](){
-            return state.stage == 4 || (frc::Timer::GetFPGATimestamp().to<double>() - state.matchStart > X_TIME);
-        },//isFinished
-        {}
-    );
-}
-
-frc2::FunctionalCommand* Drivetrain::getAutoClimbOver(){
-    return new frc2::FunctionalCommand(
-        [&](){
-            state.stage = 0;
-        },
-        [&](){
-            switch (state.stage){
-                case 0: // On the ground before we've started climbing
-                    state.xSpeed = 0.5;
-                    if (pigeon.GetPitch() < -16.0)
-                        state.stage = 1;
-                    break;
-                case 1: // Began climbing up -> became balanced -> starting to move down
-                    state.xSpeed = 0.4;
-                    if (pigeon.GetPitch() > 8.0)
-                        state.stage = 2;
-                    break;
-                case 2: // The climb down
-                    state.xSpeed = 0.1;
-                    if (pigeon.GetPitch() < 5.0)
-                        state.stage = 3;
-                    break;
-                case 3: // Reached flat ground
-                    state.xSpeed = 0.05;
-            }
-        },
-        [&](bool){
-            state.xSpeed = 0.05;
-        }, // onEnd
-        [&](){
-            return state.stage == 3;
-        },//isFinished
-        {}
-    );
-}
-
-//OLD BALANCE
-frc2::FunctionalCommand* Drivetrain::getOLDAutoLevel(){
-    return new frc2::FunctionalCommand(
-        [&](){
-            state.abovePitchThreshold = false;
-            state.isLeveled = false;
-        }, // OnInit
-        [&](){
-            if (pigeon.GetPitch() > 16.0) {
-                state.abovePitchThreshold = true;
-                state.xSpeed = -0.4;
-            } else if (state.abovePitchThreshold) {
-                if (pigeon.GetPitch() < 11.5 ){
-                    state.isLeveled = true;
-                    state.xSpeed = 0.02;
-                }else if(pigeon.GetPitch() < 16){
-                    state.xSpeed = -0.15;
-                }else{
-                    state.xSpeed = -0.3;
-                }
-            } else {
-                state.xSpeed = -0.3;
-            }
-        }, //onExecute
-        [&](bool){
-            state.xSpeed = 0.0;
-            state.xPose = true;
-        }, // onEnd
-        [&](){
-            return state.isLeveled;
-        },//isFinished
-        {}
-    );
-}
-
-//OLD BALANCE
-frc2::FunctionalCommand* Drivetrain::getOLDAutoLevelReversed(){
-    return new frc2::FunctionalCommand(
-        [&](){
-            state.abovePitchThreshold = false;
-            state.isLeveled = false;
-        }, // OnInit
-        [&](){
-            if (pigeon.GetPitch() < -16.0) {
-                state.abovePitchThreshold = true;
-                state.xSpeed = 0.4;
-            } else if (state.abovePitchThreshold) {
-                if (pigeon.GetPitch() > -11.5 ){
-                    state.isLeveled = true;
-                    state.xSpeed = -0.02;
-                }else if(pigeon.GetPitch() > -16){
-                    state.xSpeed = 0.15;
-                }else{
-                    state.xSpeed = 0.3;
-                }
-            } else {
-                state.xSpeed = 0.3;
-            }
-        }, //onExecute
-        [&](bool){
-            state.xSpeed = 0.0;
-            state.xPose = true;
-        }, // onEnd
-        [&](){
-            return state.isLeveled;
-        },//isFinished
         {}
     );
 }
@@ -895,7 +634,7 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
             "pigeonPitch",
             [this]
             {
-                return pigeon.GetPitch();
+                return pigeon.GetPitch().GetValueAsDouble();
             },
             nullptr
         );
@@ -903,7 +642,7 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
             "pigeoYaw",
             [this]
             {
-                return pigeon.GetYaw();
+                return pigeon.GetYaw().GetValueAsDouble();
             },
             nullptr
         );
@@ -911,7 +650,7 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
             "pigeonRoll",
             [this]
             {
-                return pigeon.GetRoll();
+                return pigeon.GetRoll().GetValueAsDouble();
             },
             nullptr
         );
@@ -937,24 +676,6 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
                 states.push_back(swerveModules[3]->getState().angle.Degrees().to<double>());
                 states.push_back(swerveModules[3]->getState().speed.to<double>());
                 return states;
-            },
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "globalPitch",
-            [this]
-            {
-                double pitch = pigeon.GetPitch() / 180 * M_PI, yaw = getPose_m().Rotation().Degrees().to<double>() / 180 * M_PI, roll = pigeon.GetRoll() / 180 * M_PI;
-                double globalPitch = (std::cos(yaw) * pitch + std::sin(yaw) * roll) * 180 / M_PI;
-                return globalPitch;
-            },
-            nullptr
-        );
-
-        builder.AddBooleanProperty(
-            "abovePitchThreshold",
-            [this]{
-                return state.abovePitchThreshold;
             },
             nullptr
         );

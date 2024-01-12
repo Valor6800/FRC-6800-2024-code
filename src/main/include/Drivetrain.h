@@ -8,7 +8,6 @@
 #include "valkyrie/controllers/NeoController.h"
 #include "valkyrie/controllers/PIDF.h"
 
-#include "ctre/phoenix/sensors/WPI_Pigeon2.h"
 #include <frc/kinematics/SwerveDriveKinematics.h>
 #include <frc/estimator/SwerveDrivePoseEstimator.h>
 #include <frc/kinematics/ChassisSpeeds.h>
@@ -36,6 +35,7 @@
 #include <frc2/command/FunctionalCommand.h>
 
 #include <rev/CANSparkMax.h>
+#include <ctre/phoenix6/Pigeon2.hpp>
 
 #define SWERVE_COUNT 4
 
@@ -212,20 +212,9 @@ public:
       */
      frc::SwerveDriveKinematics<SWERVE_COUNT>* getKinematics();
 
-     void limelightHoming(LimelightPipes pipe);
      void angleLock();
-     void adas(LimelightPipes pipe);
-     void setLimelightPipeline(LimelightPipes pipe);
 
      frc2::FunctionalCommand* getResetOdom();
-     
-     frc2::FunctionalCommand* getAutoLevel();
-     frc2::FunctionalCommand* getVisionAutoLevel();
-     frc2::FunctionalCommand* getAutoLevelReversed();
-     frc2::FunctionalCommand* getAutoClimbOver();
-
-     frc2::FunctionalCommand* getOLDAutoLevel();
-     frc2::FunctionalCommand* getOLDAutoLevelReversed();
 
      double getDriveMaxSpeed();
      double getAutoMaxSpeed();
@@ -255,7 +244,7 @@ private:
      double autoMaxSpeed;
      double autoMaxAccel;
      double rotMaxAccel;
-     WPI_Pigeon2 pigeon;
+     ctre::phoenix6::hardware::Pigeon2 pigeon;
      
      wpi::array<frc::SwerveModuleState, SWERVE_COUNT> getModuleStates(units::velocity::meters_per_second_t,
                                                            units::velocity::meters_per_second_t,
