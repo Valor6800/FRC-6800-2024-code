@@ -7,6 +7,7 @@
 #include "valkyrie/Gamepad.h"
 
 #include "Drivetrain.h"
+#include "Climber.h"
 
 #include <frc/DriverStation.h>
 #include <frc/DataLogManager.h>
@@ -37,6 +38,7 @@ class Robot : public frc::TimedRobot {
         frc2::Command * autoCommand = nullptr;
 
         Drivetrain drivetrain;
+        Climber climber;
 
         std::ofstream outfile;
 };

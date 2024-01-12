@@ -5,13 +5,15 @@
 
 #include <ctime>
 
-Robot::Robot() : drivetrain(this)
+Robot::Robot() : drivetrain(this), climber(this)
 {
     frc::TimedRobot();
 }
 
 void Robot::RobotInit() {
     drivetrain.setGamepads(&gamepadOperator, &gamepadDriver);
+    climber.setGamepads(&gamepadOperator, &gamepadDriver);
+
     drivetrain.resetState();
 
     frc::LiveWindow::EnableAllTelemetry();
