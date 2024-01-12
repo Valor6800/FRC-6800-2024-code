@@ -14,5 +14,6 @@ class Auto
     private:
         Drivetrain *drivetrain;
         frc2::CommandPtr makeAuto(std::string autoName);
+        std::shared_ptr<nt::NetworkTable> table;
         frc::SendableChooser<std::string> m_chooser;
 };

@@ -1,12 +1,15 @@
 #include "Auto.h"
 // #include <frc/Filesystem.h>
 #include <pathplanner/lib/commands/PathPlannerAuto.h>
+#include <filesystem>
 
 #define AUTOS_PATH (std::string)"/home/lvuser/deploy/pathplanner/autos/"
 #define PATHS_PATH (std::string)"/home/lvuser/deploy/pathplanner/paths/"
 
 Auto::Auto(Drivetrain *_drivetrain) : drivetrain(_drivetrain){
-
+    table = nt::NetworkTableInstance::GetDefault().GetTable("auto");
+    table->PutString("New auto name", "");
+    table->PutBoolean("Add to and update autos list", false);
 }
 
 frc2::CommandPtr Auto::makeAuto(std::string autoName){
@@ -53,25 +56,23 @@ std::string makeFriendlyName(std::string filename){
     return n_name;
 }
 
-// std::vector<std::string> listDirectory(std::string path_name){
-//     std::vector<std::string> files;
+std::vector<std::string> listDirectory(std::string path_name){
+    std::vector<std::string> files;
 
-//     for (auto &entry : ghc::filesystem::directory_iterator(path_name)) {
-//         std::string path = entry.path();
-//         if (path.find(".path") != std::string::npos || path.find(".auto") != std::string::npos) {
-//             files.push_back(entry.path());
-//         }
-//     }
-//     return files;
-// }
+    for (const auto & entry : std::filesystem::directory_iterator(path_name)){
+        std::string path = entry.path();
+        if (path.find(".path") != std::string::npos || path.find(".auto") != std::string::npos) {
+            files.push_back(entry.path());
+        }
+    }
+    return files;
+}
 
 void Auto::fillAutoList(){
     // for (std::string path : listDirectory(PATHS_PATH)){
     //     m_chooser.AddOption(makeFriendlyName(removeFileType(path)), removeFileType(path));
-    // }
-    // for (std::string path : listDirectory(AUTOS_PATH)){
-    //     m_chooser.AddOption(makeFriendlyName(removeFileType(path)), removeFileType(path));
-    // }
-    m_chooser.AddOption("TestAuto", "TestAuto");
+    for (std::string path : listDirectory(AUTOS_PATH)){
+        m_chooser.AddOption(makeFriendlyName(removeFileType(path)), removeFileType(path));
+    }
     frc::SmartDashboard::PutData(&m_chooser);
 }
