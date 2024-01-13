@@ -6,11 +6,14 @@ climbMotor(9, valor::NeutralMode::Brake, false)
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     target_pose = 0;
-    climbMotor.setEncoderPosition(target_pose);
+    climbMotor.setEncoderPosition(0);
     climbMotor.setupFollower(10, false);
     KILL = false;
-    speed_multiplier = .05;
+    speed_multiplier = .25;
     table->PutNumber("speed multiplier", speed_multiplier);
+    climbMotor.setForwardLimit(20);
+    climbMotor.setReverseLimit(0);
+
 }
 \
 void Climber::assessInputs()
@@ -24,13 +27,12 @@ void Climber::assessInputs()
 void Climber::analyzeDashboard()
 {
     table->PutNumber("target pose", target_pose); 
-    speed_multiplier = table->GetNumber("speed multiplier", .05);  
+    // speed_multiplier = table->GetNumber("speed multiplier", .05);  
 }
 
 void Climber::assignOutputs()
 {
-    if (!KILL) climbMotor.setPower(target_pose);
-    else climbMotor.setPower(0);
+    climbMotor.setPower(target_pose);
 }
 
 void Climber::InitSendable(wpi::SendableBuilder& builder)
