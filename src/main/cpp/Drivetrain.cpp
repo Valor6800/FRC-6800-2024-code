@@ -70,7 +70,6 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "
                         rotMaxAccel(rotMaxSpeed * 0.5),
                         pigeon(CANIDs::PIGEON_CAN, PIGEON_CAN_BUS),
                         motorLocations(wpi::empty_array),
-                        initPositions(wpi::empty_array),
                         kinematics(NULL),
                         estimator(NULL),
                         config(NULL),
@@ -149,15 +148,18 @@ void Drivetrain::init()
 {
     limeTable = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
 
-    initPositions.fill(frc::SwerveModulePosition{0_m, frc::Rotation2d(0_rad)});
-
     for (int i = 0; i < SWERVE_COUNT; i++)
     {
         configSwerveModule(i);
     }
 
     kinematics = new frc::SwerveDriveKinematics<SWERVE_COUNT>(motorLocations);
-    estimator = new frc::SwerveDrivePoseEstimator<SWERVE_COUNT>(*kinematics, pigeon.GetRotation2d(), initPositions, frc::Pose2d{0_m, 0_m, 0_rad});
+    estimator = new frc::SwerveDrivePoseEstimator<SWERVE_COUNT>(
+        *kinematics,
+        getPigeon(),
+        getSwerveModulePositions(),
+        frc::Pose2d{0_m, 0_m, 0_rad}
+    );
     config = new frc::TrajectoryConfig(units::velocity::meters_per_second_t{autoMaxSpeed}, units::acceleration::meters_per_second_squared_t{autoMaxAccel});
 
     xPIDF.P = KPX;
@@ -237,12 +239,7 @@ void Drivetrain::analyzeDashboard()
 
     estimator->UpdateWithTime(frc::Timer::GetFPGATimestamp(),
                             getPigeon(),
-                            {
-                                swerveModules[0]->getModulePosition(),
-                                swerveModules[1]->getModulePosition(),
-                                swerveModules[2]->getModulePosition(),
-                                swerveModules[3]->getModulePosition()
-                            });
+                            getSwerveModulePositions());
 
     if (limeTable->GetNumber("tv", 0) == 1.0) {
         
@@ -267,11 +264,7 @@ void Drivetrain::analyzeDashboard()
                 (x > (FIELD_LENGTH - AUTO_VISION_THRESHOLD) && x < FIELD_LENGTH)) &&
                 (state.visionPose - state.prevVisionPose).Translation().Norm().to<double>() < 1.0)
             {
-                // estimator->AddVisionMeasurement(
-                //     state.visionPose,  
-                //     frc::Timer::GetFPGATimestamp(),
-                //     {visionStd, visionStd, visionStd}
-                // ); 
+                addVisionMeasurement(state.visionPose);
             }
             
             
@@ -343,13 +336,9 @@ frc::Pose2d Drivetrain::getVisionPose(){
     };
 }
 
-void Drivetrain::addVisionMeasurement(frc::Pose2d visionPose, double doubt=1){
-    if (limeTable->GetNumber("tv", 0) == 1.0)   
-        estimator->AddVisionMeasurement(
-            visionPose,  
-            frc::Timer::GetFPGATimestamp(),
-            {doubt, 999999.0, 999999.0}
-        ); 
+void Drivetrain::addVisionMeasurement(frc::Pose2d visionPose)
+{  
+    estimator->AddVisionMeasurement(visionPose, frc::Timer::GetFPGATimestamp()); 
 }
 
 void Drivetrain::resetGyro(){
@@ -358,19 +347,22 @@ void Drivetrain::resetGyro(){
     resetOdometry(desiredPose);
 }
 
-void Drivetrain::resetOdometry(frc::Pose2d pose)
+wpi::array<frc::SwerveModulePosition, SWERVE_COUNT> Drivetrain::getSwerveModulePositions()
 {
 
-    limeTable->PutNumber("pipeline", LimelightPipes::APRIL_TAGS);
-
     wpi::array<frc::SwerveModulePosition, SWERVE_COUNT> modulePositions = wpi::array<frc::SwerveModulePosition, SWERVE_COUNT>(wpi::empty_array);
-
     for (size_t i = 0; i < swerveModules.size(); i++)
     {
         modulePositions[i] = swerveModules[i]->getModulePosition();
     }
+    return modulePositions;
+}
 
-    estimator->ResetPosition(getPigeon(), modulePositions, pose);
+void Drivetrain::resetOdometry(frc::Pose2d pose)
+{
+
+    limeTable->PutNumber("pipeline", LimelightPipes::APRIL_TAGS);
+    estimator->ResetPosition(getPigeon(), getSwerveModulePositions(), pose);
 }
 
 frc::Rotation2d Drivetrain::getPigeon() 
@@ -406,7 +398,7 @@ wpi::array<frc::SwerveModuleState, SWERVE_COUNT> Drivetrain::getModuleStates(uni
     frc::ChassisSpeeds chassisSpeeds = isFOC ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(vx_mps,
                                                                                            vy_mps,
                                                                                            omega_radps,
-                                                                                           estimator->GetEstimatedPosition().Rotation())
+                                                                                           getPose_m().Rotation())
                                              : frc::ChassisSpeeds{vx_mps, vy_mps, omega_radps};
     auto states = kinematics->ToSwerveModuleStates(chassisSpeeds);
     kinematics->DesaturateWheelSpeeds(&states, units::velocity::meters_per_second_t{driveMaxSpeed});
@@ -442,7 +434,7 @@ frc2::FunctionalCommand* Drivetrain::getResetOdom() {
             table->PutNumber("resetting maybe", true);
             if (limeTable->GetNumber("tv", 0.0) == 1.0 && (visionPose.X() > 0_m && visionPose.Y() > 0_m)){
                 table->PutNumber("resetting odom", table->GetNumber("resetting odom", 0) + 1);
-                addVisionMeasurement(visionPose, 1.0);
+                addVisionMeasurement(visionPose);
                 table->PutBoolean("resetting", true);
             }
             else {

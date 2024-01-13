@@ -204,7 +204,7 @@ public:
       */
      frc::Pose2d getPose_m();
      frc::Pose2d getVisionPose();
-     void addVisionMeasurement(frc::Pose2d visionPose, double doubt);
+     void addVisionMeasurement(frc::Pose2d visionPose);
 
      /**
       * Returns the kinematics object in use by the swerve drive
@@ -260,8 +260,7 @@ private:
      std::vector<SwerveDriveMotor *> driveControllers;
 
      wpi::array<frc::Translation2d, SWERVE_COUNT> motorLocations;
-
-     wpi::array<frc::SwerveModulePosition, SWERVE_COUNT> initPositions;
+     wpi::array<frc::SwerveModulePosition, SWERVE_COUNT> getSwerveModulePositions();
 
 
 
