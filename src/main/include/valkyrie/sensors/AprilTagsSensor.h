@@ -3,6 +3,10 @@
 #include "BaseSensor.h"
 #include <frc/geometry/Pose3d.h>
 #include "VisionSensor.h"
+#include "frc/geometry/Rotation3d.h"
+#include "units/angle.h"
+#include <span>
+#include <vector>
 
 namespace valor
 {
@@ -10,15 +14,22 @@ namespace valor
         public:
             /**
              * @brief Constructor for AprilTagsSensor
+            *
+            * @param _robot Pass in the Robot reference so the calculate can be auto-scheduled
+            * @param _name The name of the specific sensor for logging and reporting
             */
             AprilTagsSensor(frc::TimedRobot *_robot, const char *_name);
 
-            void reset();
+            ~AprilTagsSensor();
 
+            void reset() override;
+
+            void InitSendable(wpi::SendableBuilder& builder) override;
+
+            void adas(int pipe);
         private:
-            void calculate();
+            void calculate() override;
 
             void setGlobalPosition();
-
     };
 } // namespace valor
