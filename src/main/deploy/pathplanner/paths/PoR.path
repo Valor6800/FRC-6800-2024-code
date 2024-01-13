@@ -3,41 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 4.06
+        "x": 2.9045645140470615,
+        "y": 2.941909875623031
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.607300197101809,
-        "y": 4.064787642133613
+        "x": 7.500424722160919,
+        "y": 0.9248075217461923
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.657640990170626,
-        "y": 4.06
+        "x": 8.287131439016976,
+        "y": 0.79585385810116
       },
       "prevControl": {
-        "x": 2.192363264065093,
-        "y": 4.068609762979674
+        "x": 7.322751624937429,
+        "y": 0.8496616747525892
       },
       "nextControl": {
-        "x": 2.8154276211868323,
-        "y": 4.057080226672826
+        "x": 8.823238027623598,
+        "y": 0.7659416548341298
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.4844259249109566,
-        "y": 3.5606700714868484
+        "x": 3.8604933439375078,
+        "y": 2.4705166828366454
       },
       "prevControl": {
-        "x": 2.235041042546558,
-        "y": 3.7828321561266995
+        "x": 7.6559261233276565,
+        "y": 0.757425350916277
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,18 +46,18 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.9,
-      "rotationDegrees": 180.0,
-      "rotateFast": false
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": -0.4328701223663126,
+      "rotateFast": true
     }
   ],
   "constraintZones": [],
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.75,
+      "waypointRelativePos": 0.8,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {
@@ -79,13 +79,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 138.96729337323617,
+    "rotation": 138.54052360392456,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "FirstPick",
+  "folder": "SecondPick",
   "previewStartingState": {
-    "rotation": 137.29,
+    "rotation": 180.0,
     "velocity": 0
   },
   "useDefaultConstraints": false
