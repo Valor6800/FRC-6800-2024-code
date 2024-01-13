@@ -9,7 +9,7 @@ climbMotor(9, valor::NeutralMode::Brake, false)
     climbMotor.setEncoderPosition(0);
     climbMotor.setupFollower(10, false);
     KILL = false;
-    speed_multiplier = .25;
+    speed_multiplier = 1.00;
     table->PutNumber("speed multiplier", speed_multiplier);
     climbMotor.setForwardLimit(20);
     climbMotor.setReverseLimit(0);
