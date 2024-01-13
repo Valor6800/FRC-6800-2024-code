@@ -12,6 +12,7 @@ class Climber : public valor::BaseSubsystem
 public:
     Climber(frc::TimedRobot *robot);
     double target_pose;
+    double speed_multiplier;
     bool KILL;
 
     void assessInputs();
