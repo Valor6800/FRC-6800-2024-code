@@ -9,6 +9,8 @@
 #include <iostream>
 #include <string>
 
+#include <frc/RobotController.h>
+
 #define COMP_TEAM_NUMBER 6800
 
 #define WHEEL_0_INIT 0.3106f
@@ -104,7 +106,6 @@ bool Swerve<AzimuthMotor, DriveMotor>::loadAndSetAzimuthZeroReference()
     //   Protects against issues as seen in: https://www.youtube.com/watch?v=MGxpWNcv-VM
     double currPos = getMagEncoderCount();
     if (currPos == 0) {
-        azimuthMotor->setEncoderPosition(0);
         return false;
     }
 
