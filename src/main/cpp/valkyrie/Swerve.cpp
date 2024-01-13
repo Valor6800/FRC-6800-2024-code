@@ -112,8 +112,7 @@ template<class AzimuthMotor, class DriveMotor>
 bool Swerve<AzimuthMotor, DriveMotor>::loadAndSetAzimuthZeroReference()
 {
     int teamNumber = frc::RobotController::GetTeamNumber();
-    // TODO: Figure out what to do if team number is undetected
-    if (teamNumber == 0) {}
+    bool failedLoad = teamNumber == 0;
     bool isComp = teamNumber == COMP_TEAM_NUMBER;
 
     // Read the encoder position. If the encoder position isn't returned, set the position to what the wheels
@@ -133,8 +132,12 @@ bool Swerve<AzimuthMotor, DriveMotor>::loadAndSetAzimuthZeroReference()
 
     double storedPos = 0.0;
 
-    if (wheelIdx >= 0 && wheelIdx <= 3)
-        storedPos = storedPositions[wheelIdx];
+    if (wheelIdx >= 0 && wheelIdx <= 3){
+        if (!failedLoad)
+            storedPos = storedPositions[wheelIdx];
+        else
+            storedPos = currPos;
+    }
     // if(wheelIdx == 0){
     //     storedPos = WHEEL_0_INIT;
     // } else if(wheelIdx == 1){
