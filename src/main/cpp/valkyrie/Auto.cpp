@@ -1,12 +1,14 @@
-#include "Auto.h"
+#include "valkyrie/Auto.h"
 // #include <frc/Filesystem.h>
 #include <pathplanner/lib/commands/PathPlannerAuto.h>
 #include <filesystem>
 
+using namespace valor;
+
 #define AUTOS_PATH (std::string)"/home/lvuser/deploy/pathplanner/autos/"
 #define PATHS_PATH (std::string)"/home/lvuser/deploy/pathplanner/paths/"
 
-Auto::Auto(Drivetrain *_drivetrain) : drivetrain(_drivetrain){
+Auto::Auto(){
     table = nt::NetworkTableInstance::GetDefault().GetTable("auto");
     table->PutString("New auto name", "");
     table->PutBoolean("Add to and update autos list", false);

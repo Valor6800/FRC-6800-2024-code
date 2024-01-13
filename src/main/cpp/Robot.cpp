@@ -5,7 +5,7 @@
 
 #include <ctime>
 
-Robot::Robot() : drivetrain(this), valorAuto(&drivetrain)
+Robot::Robot() : drivetrain(this), valorAuto()
 {
     frc::TimedRobot();
 }
