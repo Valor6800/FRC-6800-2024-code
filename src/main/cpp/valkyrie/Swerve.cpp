@@ -17,10 +17,10 @@
 #define WHEEL_2_INIT 0.4780f
 #define WHEEL_3_INIT 0.7372f
 #else
-#define WHEEL_0_INIT 0.3752f
-#define WHEEL_1_INIT 0.0625f
-#define WHEEL_2_INIT 0.6396f
-#define WHEEL_3_INIT 0.5010f
+#define WHEEL_0_INIT 0.3867f
+#define WHEEL_1_INIT 0.8890f
+#define WHEEL_2_INIT 0.0763f
+#define WHEEL_3_INIT 0.6103f
 #endif
 
 #define DRIVE_DEADBAND 0.05f
