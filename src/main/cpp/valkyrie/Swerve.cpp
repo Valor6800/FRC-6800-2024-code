@@ -12,6 +12,7 @@
 #include <networktables/NetworkTableEntry.h>
 #include <networktables/NetworkTableInstance.h>
 #include <networktables/NetworkTable.h>
+#define IS_COMP
 
 #ifdef IS_COMP
 #define WHEEL_0_INIT 0.3106f
