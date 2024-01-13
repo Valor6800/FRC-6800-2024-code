@@ -9,27 +9,27 @@ climbMotor(9, valor::NeutralMode::Brake, false)
     climbMotor.setEncoderPosition(target_pose);
     climbMotor.setupFollower(10, false);
     KILL = false;
-    speed_multiplier = .001;
+    speed_multiplier = .05;
     table->PutNumber("speed multiplier", speed_multiplier);
 }
-
+\
 void Climber::assessInputs()
 {
     if (!operatorGamepad) return;
-    if (operatorGamepad->GetBButtonPressed()) KILL = !KILL;
+    if (operatorGamepad->GetBButtonPressed()) KILL = true;
     
-    target_pose += operatorGamepad->rightStickY(3) * speed_multiplier;
+    target_pose = operatorGamepad->rightStickY(3) * speed_multiplier;
 }
 
 void Climber::analyzeDashboard()
 {
     table->PutNumber("target pose", target_pose); 
-    speed_multiplier = table->GetNumber("speed multiplier", .001);  
+    speed_multiplier = table->GetNumber("speed multiplier", .05);  
 }
 
 void Climber::assignOutputs()
 {
-    if (!KILL) climbMotor.setPosition(target_pose);
+    if (!KILL) climbMotor.setPower(target_pose);
     else climbMotor.setPower(0);
 }
 
