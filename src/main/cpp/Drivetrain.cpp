@@ -156,6 +156,9 @@ void Drivetrain::init()
         configSwerveModule(i);
     }
 
+    ctre::phoenix6::configs::Pigeon2Configuration toApply{};
+    pigeon.GetConfigurator().Apply(toApply);
+
     kinematics = new frc::SwerveDriveKinematics<SWERVE_COUNT>(motorLocations);
     estimator = new frc::SwerveDrivePoseEstimator<SWERVE_COUNT>(*kinematics, pigeon.GetRotation2d(), initPositions, frc::Pose2d{0_m, 0_m, 0_rad});
     config = new frc::TrajectoryConfig(units::velocity::meters_per_second_t{autoMaxSpeed}, units::acceleration::meters_per_second_squared_t{autoMaxAccel});
