@@ -102,5 +102,6 @@ private:
     DriveMotor* driveMotor;
 
     int wheelIdx;
+    double initialMagEncoderValue;
 };
 }

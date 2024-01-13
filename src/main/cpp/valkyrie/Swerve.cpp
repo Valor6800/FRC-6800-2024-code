@@ -48,6 +48,7 @@ Swerve<AzimuthMotor, DriveMotor>::Swerve(AzimuthMotor* _azimuthMotor,
     else wheelIdx = 2;
 
     wpi::SendableRegistry::AddLW(this, "Swerve", "Module " + std::to_string(wheelIdx));
+    initialMagEncoderValue = getMagEncoderCount();
 }
     
 template<class AzimuthMotor, class DriveMotor>
@@ -121,7 +122,12 @@ bool Swerve<AzimuthMotor, DriveMotor>::loadAndSetAzimuthZeroReference()
 template<class AzimuthMotor, class DriveMotor>
 double Swerve<AzimuthMotor, DriveMotor>::getMagEncoderCount()
 {
-    return azimuthMotor->getAbsEncoderPosition();
+    double readValue = azimuthMotor->getAbsEncoderPosition();
+    if (initialMagEncoderValue == 0 && readValue != 0)
+        initialMagEncoderValue = readValue;
+    if (readValue != initialMagEncoderValue)
+        return readValue;
+    return 0;
 }
 
 template<class AzimuthMotor, class DriveMotor>
