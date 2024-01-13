@@ -9,19 +9,17 @@
 #include <iostream>
 #include <string>
 
-#define IS_COMP
+#define COMP_TEAM_NUMBER 6800
 
-#ifdef IS_COMP
 #define WHEEL_0_INIT 0.3106f
 #define WHEEL_1_INIT 0.4369f
 #define WHEEL_2_INIT 0.4780f
 #define WHEEL_3_INIT 0.7372f
-#else
-#define WHEEL_0_INIT 0.3752f
-#define WHEEL_1_INIT 0.0625f
-#define WHEEL_2_INIT 0.6396f
-#define WHEEL_3_INIT 0.5010f
-#endif
+
+#define PRAC_WHEEL_0_INIT 0.3867f
+#define PRAC_WHEEL_1_INIT 0.8890f
+#define PRAC_WHEEL_2_INIT 0.0763f
+#define PRAC_WHEEL_3_INIT 0.6103f
 
 #define DRIVE_DEADBAND 0.05f
 #define MAG_ENCODER_TICKS_PER_REV 4096.0f
@@ -96,24 +94,35 @@ void Swerve<AzimuthMotor, DriveMotor>::resetDriveEncoder()
 template<class AzimuthMotor, class DriveMotor>
 bool Swerve<AzimuthMotor, DriveMotor>::loadAndSetAzimuthZeroReference()
 {
+    int teamNumber = frc::RobotController::GetTeamNumber();
+    bool failedLoad = teamNumber == 0;
+    bool isComp = teamNumber == COMP_TEAM_NUMBER;
+
     // Read the encoder position. If the encoder position isn't returned, set the position to what the wheels
     //   are currently. The pit crew sets the wheels straight in pre-match setup. They should be close enough
     //   if the mag encoders aren't working.
     //   Protects against issues as seen in: https://www.youtube.com/watch?v=MGxpWNcv-VM
     double currPos = getMagEncoderCount();
     if (currPos == 0) {
+        azimuthMotor->setEncoderPosition(0);
         return false;
     }
+
+    std::vector<double> storedPositions;
+    if (isComp)
+        storedPositions = {WHEEL_0_INIT, WHEEL_1_INIT, WHEEL_2_INIT, WHEEL_3_INIT};
+    else
+        storedPositions = {PRAC_WHEEL_0_INIT, PRAC_WHEEL_1_INIT, PRAC_WHEEL_2_INIT, PRAC_WHEEL_3_INIT};
+
     double storedPos = 0.0;
-    if(wheelIdx == 0){
-        storedPos = WHEEL_0_INIT;
-    } else if(wheelIdx == 1){
-        storedPos = WHEEL_1_INIT;
-    } else if(wheelIdx == 2){
-        storedPos = WHEEL_2_INIT;
-    } else if(wheelIdx == 3){
-        storedPos = WHEEL_3_INIT;
+
+    if (wheelIdx >= 0 && wheelIdx <= 3){
+        if (!failedLoad)
+            storedPos = storedPositions[wheelIdx];
+        else
+            storedPos = currPos;
     }
+    
     // Get the remainder of the delta so the encoder can wrap
     azimuthMotor->setEncoderPosition(currPos - storedPos);
     return true;
