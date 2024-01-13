@@ -105,7 +105,7 @@ bool Swerve<AzimuthMotor, DriveMotor>::loadAndSetAzimuthZeroReference()
     //   if the mag encoders aren't working.
     //   Protects against issues as seen in: https://www.youtube.com/watch?v=MGxpWNcv-VM
     double currPos = getMagEncoderCount();
-    if (currPos == 0) {
+    if (currPos == 0 || failedLoad) {
         return false;
     }
 
@@ -118,10 +118,7 @@ bool Swerve<AzimuthMotor, DriveMotor>::loadAndSetAzimuthZeroReference()
     double storedPos = 0.0;
 
     if (wheelIdx >= 0 && wheelIdx <= 3){
-        if (!failedLoad)
-            storedPos = storedPositions[wheelIdx];
-        else
-            storedPos = currPos;
+        storedPos = storedPositions[wheelIdx];
     }
     
     // Get the remainder of the delta so the encoder can wrap
