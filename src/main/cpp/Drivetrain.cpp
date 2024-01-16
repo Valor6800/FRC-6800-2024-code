@@ -57,7 +57,7 @@ using namespace pathplanner;
 #define AUTO_VISION_THRESHOLD 4.0f //meters
 #define FIELD_LENGTH 16.5f
 
-#define MODULE_DIFF 0.206375f
+#define MODULE_DIFF 0.2413f
 
 #define X_TIME 214.85f
 
