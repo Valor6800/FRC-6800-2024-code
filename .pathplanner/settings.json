@@ -4,11 +4,14 @@
   "holonomicMode": true,
   "pathFolders": [
     "FirstPick",
-    "Specials",
     "PreLoad",
-    "SecondPick"
+    "SecondPick",
+    "Specials"
   ],
-  "autoFolders": [],
+  "autoFolders": [
+    "Comp",
+    "Testing"
+  ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,
