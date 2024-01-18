@@ -33,12 +33,7 @@ using namespace pathplanner;
 #define KDX 0.0f //.1
 #define KFX 0.0f
 
-#define KPY 60.0f //65
-#define KIY 0.0f //0
-#define KDY 0.0f //.1
-#define KFY 0.0f
-
-#define KPT 15.0f
+#define KPT 15.0f //15
 #define KIT 0.0f
 #define KDT 0.0f
 #define KFT 0.0f
@@ -64,8 +59,6 @@ using namespace pathplanner;
 #define WHEEL_DIAMETER_M 0.0973f //0.1016
 #define DRIVE_GEAR_RATIO 5.51f
 #define AZIMUTH_GEAR_RATIO 13.37f
-#define AUTO_MAX_SPEED 10.0f
-#define AUTO_MAX_ACCEL_SECONDS 5.33f //5.33
 #define ROT_SPEED_MUL 2.0f
 
 #define AUTO_VISION_THRESHOLD 4.0f //meters
@@ -212,11 +205,6 @@ void Drivetrain::init()
     xPIDF.I = KIX;
     xPIDF.D = KDX;
     xPIDF.F = KFX;
-
-    yPIDF.P = KPY;
-    yPIDF.I = KIY;
-    yPIDF.D = KDY;
-    yPIDF.F = KFY;
 
     thetaPIDF.P = KPT;
     thetaPIDF.I = KIT;
