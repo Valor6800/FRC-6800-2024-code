@@ -40,6 +40,8 @@ public:
 
     void init();
 
+    void shoot(double speed);
+
     void assessInputs();
     void analyzeDashboard();
     void assignOutputs();
