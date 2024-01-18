@@ -54,4 +54,13 @@ namespace CANIDs {
     constexpr static int WRIST = 15;
     constexpr static int WRIST_CANCODER = 16;
     constexpr static int CANDLE = 60;
+    constexpr static int INTERNAL_INTAKE = 17; // rando number
+    constexpr static int EXTERNAL_INTAKE = 18; // rando number
+    constexpr static int EXTERNAL_DROPDOWN = 19; // rando number
+    constexpr static int ANGLE_CONTROLLER = 20; // rando number
+    constexpr static int RIGHT_SHOOTER_WHEEL_CONTROLLER = 21; // rando number
+    constexpr static int LEFT_SHOOTER_WHEEL_CONTROLLER = 22; // rando number
+    constexpr static int HANDOFF_CONTROLLER = 23;
+    constexpr static int RIGHT_CLIMBER = 24;
+    constexpr static int LEFT_CLIMBER = 25;
 }
