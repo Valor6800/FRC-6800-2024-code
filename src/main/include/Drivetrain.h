@@ -226,7 +226,6 @@ public:
      void setAutoMaxAcceleration(double acceleration, double multiplier);
 
      valor::PIDF getXPIDF();
-     valor::PIDF getYPIDF();
      valor::PIDF getThetaPIDF();
 
      frc::TrajectoryConfig & getTrajectoryConfig();
@@ -272,7 +271,6 @@ private:
      frc::TrajectoryConfig * config;
 
      valor::PIDF xPIDF;
-     valor::PIDF yPIDF;
      valor::PIDF thetaPIDF;
 
      std::shared_ptr<nt::NetworkTable> limeTable;
