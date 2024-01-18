@@ -17,8 +17,7 @@ namespace valor
             * @param _robot Pass in the Robot reference so the calculate can be auto-scheduled
             * @param _name The name of the specific sensor for logging and reporting
             */
-            AprilTagsSensor(frc::TimedRobot *_robot, const char *_name, frc::Pose3d _cameraPose);
-
+            AprilTagsSensor(frc::TimedRobot* robot, const char *name, frc::Pose3d _cameraPose);
             ~AprilTagsSensor();
 
             void reset() override;
@@ -37,11 +36,6 @@ namespace valor
                 CAMERA_ROBOT = 7*/
             };
 
-            void calculate() override;
-
-            void setGlobalPosition();
-            void setAlliancePosition();
-            void setRedAlliancePosition();
-            void setBlueAlliancePosition();
+            frc::Pose3d getGlobalPose() override;
     };
 } // namespace valor

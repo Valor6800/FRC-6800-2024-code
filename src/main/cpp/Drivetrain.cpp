@@ -93,7 +93,7 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "
                         estimator(NULL),
                         config(NULL),
                         swerveNoError(true),
-                        aprilLL(_robot, "Apriltg", frc::Pose3d{
+                        aprilLL(_robot, "limelight-apriltg", frc::Pose3d{
                             (units::length::meter_t) LIMELIGHT_X,
                             (units::length::meter_t) LIMELIGHT_Y,
                             (units::length::meter_t) LIMELIGHT_Z,
@@ -177,6 +177,8 @@ void Drivetrain::resetState()
 
 void Drivetrain::init()
 {
+    aprilLL.setPipe(2);
+
     initPositions.fill(frc::SwerveModulePosition{0_m, frc::Rotation2d(0_rad)});
 
     for (int i = 0; i < SWERVE_COUNT; i++)
@@ -309,7 +311,7 @@ void Drivetrain::analyzeDashboard()
 
     if (aprilLL.hasTarget()) {
         if (aprilLL.hasTarget()){
-            frc::Pose2d botpose = aprilLL.getSensor().alliancePos.ToPose2d();
+            frc::Pose2d botpose = aprilLL.getSensor().ToPose2d();
             state.prevVisionPose = state.visionPose;
             state.visionPose = frc::Pose2d{botpose.X(), botpose.Y(), getPose_m().Rotation()};
 
@@ -490,7 +492,7 @@ frc2::FunctionalCommand* Drivetrain::getResetOdom() {
             state.startTimestamp = frc::Timer::GetFPGATimestamp();
         },
         [&]{ // continuously running
-            frc::Pose2d visionPose = aprilLL.getSensor().alliancePos.ToPose2d();
+            frc::Pose2d visionPose = aprilLL.getSensor().ToPose2d();
             table->PutNumber("resetting maybe", true);
             if (aprilLL.hasTarget() && (visionPose.X() > 0_m && visionPose.Y() > 0_m)){
                 table->PutNumber("resetting odom", table->GetNumber("resetting odom", 0) + 1);
