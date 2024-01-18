@@ -15,17 +15,12 @@ using namespace pathplanner;
 // #define KP_LOCK 0.2f
 #define KP_LIMELIGHT 0.7f
 
-#define KPX 60.0f //50
+#define KPX 30.0f //50
 #define KIX 0.0f //0
 #define KDX 0.0f //.1
 #define KFX 0.0f
 
-#define KPY 60.0f //65
-#define KIY 0.0f //0
-#define KDY 0.0f //.1
-#define KFY 0.0f
-
-#define KPT 15.0f
+#define KPT 15.0f //15
 #define KIT 0.0f
 #define KDT 0.0f
 #define KFT 0.0f
@@ -45,13 +40,12 @@ using namespace pathplanner;
 
 #define DRIVE_K_VEL 6.0f
 #define DRIVE_K_ACC_MUL 0.05f
+#define MODULE_MAX_SPEED 5.0_mps
 
 #define MOTOR_FREE_SPEED 6380.0f
 #define WHEEL_DIAMETER_M 0.0973f //0.1016
 #define DRIVE_GEAR_RATIO 5.51f
 #define AZIMUTH_GEAR_RATIO 13.37f
-#define AUTO_MAX_SPEED 10.0f
-#define AUTO_MAX_ACCEL_SECONDS 5.33f //5.33
 #define ROT_SPEED_MUL 2.0f
 
 #define AUTO_VISION_THRESHOLD 4.0f //meters
@@ -71,8 +65,6 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "
                         driveMaxSpeed(MOTOR_FREE_SPEED / 60.0 / DRIVE_GEAR_RATIO * WHEEL_DIAMETER_M * M_PI),
                         swerveModuleDiff(units::meter_t(MODULE_DIFF)),
                         rotMaxSpeed(ROT_SPEED_MUL * 2 * M_PI),
-                        autoMaxSpeed(AUTO_MAX_SPEED),
-                        autoMaxAccel(AUTO_MAX_SPEED/AUTO_MAX_ACCEL_SECONDS),
                         rotMaxAccel(rotMaxSpeed * 0.5),
                         pigeon(CANIDs::PIGEON_CAN, PIGEON_CAN_BUS),
                         motorLocations(wpi::empty_array),
@@ -176,11 +168,6 @@ void Drivetrain::init()
     xPIDF.D = KDX;
     xPIDF.F = KFX;
 
-    yPIDF.P = KPY;
-    yPIDF.I = KIY;
-    yPIDF.D = KDY;
-    yPIDF.F = KFY;
-
     thetaPIDF.P = KPT;
     thetaPIDF.I = KIT;
     thetaPIDF.D = KDT;
@@ -206,7 +193,7 @@ void Drivetrain::init()
         HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
             PIDConstants(getXPIDF().P, getXPIDF().I, getXPIDF().D), // Translation PID constants
             PIDConstants(getThetaPIDF().P, getThetaPIDF().I, getThetaPIDF().D), // Rotation PID constants
-            units::meters_per_second_t{driveMaxSpeed}, // Max module speed, in m/s
+            MODULE_MAX_SPEED, // Max module speed, in m/s
             0.36_m, // Drive base radius in meters. Distance from robot center to furthest module.
             ReplanningConfig() // Default path replanning config. See the API for the options here
         ),
@@ -548,10 +535,6 @@ frc::TrajectoryConfig & Drivetrain::getTrajectoryConfig() {
 
 valor::PIDF Drivetrain::getXPIDF() {
     return xPIDF;
-}
-
-valor::PIDF  Drivetrain::getYPIDF() {
-    return yPIDF;
 }
 
 valor::PIDF Drivetrain::getThetaPIDF() {
