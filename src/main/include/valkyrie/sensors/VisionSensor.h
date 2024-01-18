@@ -3,7 +3,6 @@
 #include "networktables/NetworkTableInstance.h"
 #include "units/velocity.h"
 #include "valkyrie/sensors/BaseSensor.h"
-#include <functional>
 #include <memory>
 #include <networktables/NetworkTable.h>
 #include <frc/geometry/Pose3d.h>
@@ -27,7 +26,7 @@ class VisionSensor : public valor::BaseSensor<frc::Pose3d> {
 
         virtual frc::Pose3d getGlobalPose() = 0;
 
-        void init();
+        void reset() override;
 
         void setPipe(int _pipe);
 
@@ -35,7 +34,7 @@ class VisionSensor : public valor::BaseSensor<frc::Pose3d> {
         
         units::velocity::meters_per_second_t getError(int pipe, double kPLimeLight=0.7);
 
-        virtual void InitSendable(wpi::SendableBuilder& builder) = 0;
+        virtual void InitSendable(wpi::SendableBuilder& builder) override = 0;
 
     protected:
         double tx, ty, tv;

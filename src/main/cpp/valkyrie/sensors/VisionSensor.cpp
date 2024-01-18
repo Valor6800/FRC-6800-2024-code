@@ -3,11 +3,19 @@
 
 using namespace valor;
 
-VisionSensor::VisionSensor(frc::TimedRobot* robot, const char *name, frc::Pose3d _cameraPose) : BaseSensor(robot, name)
+VisionSensor::VisionSensor(frc::TimedRobot* robot, const char *name, frc::Pose3d _cameraPose) : BaseSensor(robot, name),
+            cameraPose(_cameraPose),
+            limeTable(nt::NetworkTableInstance::GetDefault().GetTable(name))
 {
-    cameraPose = _cameraPose;
-    limeTable = nt::NetworkTableInstance::GetDefault().GetTable(name);
     setGetter([this](){return getGlobalPose();});
+    reset();
+}
+
+void VisionSensor::reset() {
+    tx = 0;
+    tv = 0;
+    ty = 0;
+    pipe = 0;
 }
 
 void VisionSensor::setPipe(int _pipe) {
@@ -21,9 +29,7 @@ bool VisionSensor::hasTarget() {
 
 
 units::velocity::meters_per_second_t VisionSensor::getError(int pipe, double kPLimeLight) {
-    if (limeTable == nullptr) return units::velocity::meters_per_second_t{0};
-    setPipe(pipe);
-    if (hasTarget()) {
+    if (limeTable != nullptr && hasTarget()) {
         double normalizedTx = tx / KLIMELIGHT;
         return units::velocity::meters_per_second_t(((std::fabs(normalizedTx) <= 1 ? normalizedTx : std::copysignf(1.0, normalizedTx) ) * kPLimeLight));
     }
@@ -32,10 +38,7 @@ units::velocity::meters_per_second_t VisionSensor::getError(int pipe, double kPL
 
 void VisionSensor::setDefaultValues(){
     if (!hasTarget() || limeTable == nullptr) {
-        tv = 0;
-        tx = 0;
-        ty = 0;
-        pipe = 0;
+        reset();
         return;
     }
 
