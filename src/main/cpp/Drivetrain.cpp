@@ -32,11 +32,7 @@ using namespace pathplanner;
 #define KIX 0.0f //0
 #define KDX 0.0f //.1
 
-#define KPY 60.0f //65
-#define KIY 0.0f //0
-#define KDY 0.0f //.1
-
-#define KPT 15.0f
+#define KPT 15.0f //15
 #define KIT 0.0f
 #define KDT 0.0f
 
@@ -181,10 +177,6 @@ void Drivetrain::init()
     xPIDF.P = KPX;
     xPIDF.I = KIX;
     xPIDF.D = KDX;
-
-    yPIDF.P = KPY;
-    yPIDF.I = KIY;
-    yPIDF.D = KDY;
 
     thetaPIDF.P = KPT;
     thetaPIDF.I = KIT;
