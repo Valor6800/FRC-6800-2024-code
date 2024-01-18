@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.5,
-      "y": 1.9
+      "x": 1.54,
+      "y": 4.12
     },
     "rotation": 0.0
   },
@@ -14,7 +14,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Straight Line Test"
+            "pathName": "Copy of S4Pt1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of S4Pt2"
           }
         }
       ]
