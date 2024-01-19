@@ -1,15 +1,15 @@
 #include "valkyrie/sensors/AprilTagsSensor.h"
 
-#define KLIMELIGHT -29.8f //degrees; TODO: MakeModular
 using namespace valor;
 
 AprilTagsSensor::AprilTagsSensor(frc::TimedRobot* robot, const char *name, frc::Pose3d _cameraPose) : valor::VisionSensor(robot, name, _cameraPose) {
-   // setGetter([this](){return getGlobalPose();});
+   setGetter([this](){return getGlobalPose();});
 }
 
 frc::Pose3d AprilTagsSensor::getGlobalPose() {
-    if (!hasTarget() || limeTable == nullptr) return frc::Pose3d();
-    std::vector<double> botPose = limeTable->GetNumberArray("botPose", std::span<double>());
+    if (!hasTarget()) return frc::Pose3d();
+    std::vector<double> botPose = limeTable->GetNumberArray("botpose_wpiblue", std::span<double>());
+    
     return frc::Pose3d(
         (units::meter_t) botPose[0],
         (units::meter_t) botPose[1],
@@ -20,13 +20,6 @@ frc::Pose3d AprilTagsSensor::getGlobalPose() {
             (units::degree_t) botPose[5]
         )
     );
-}
-void AprilTagsSensor::reset() {
-    
-}
-
-AprilTagsSensor::~AprilTagsSensor() {
-    
 }
 
 void AprilTagsSensor::InitSendable(wpi::SendableBuilder& builder) {
@@ -47,4 +40,5 @@ void AprilTagsSensor::InitSendable(wpi::SendableBuilder& builder) {
     builder.AddDoubleProperty("tx", [this]{ return tx;}, nullptr);
     builder.AddDoubleProperty("ty", [this]{ return ty;}, nullptr);
     builder.AddBooleanProperty("hasTarget", [this]{ return hasTarget();}, nullptr);
+    builder.AddBooleanProperty("limeTableExist", [this] {return limeTable != nullptr;}, nullptr);
 }

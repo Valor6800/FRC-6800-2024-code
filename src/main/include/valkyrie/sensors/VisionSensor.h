@@ -24,11 +24,18 @@ class VisionSensor : public valor::BaseSensor<frc::Pose3d> {
         VisionSensor(frc::TimedRobot* robot, const char *name, frc::Pose3d _cameraPose);
         //std::string getPipeType(); //Later
 
-        virtual frc::Pose3d getGlobalPose() = 0;
+        enum PipeLines{
+            PIPELINE_0,
+            PIPELINE_1,
+            PIPELINE_2,
+            PIPELINE_3,
+            PIPELINE_4,
+            PIPELINE_5,
+        };
 
         void reset() override;
 
-        void setPipe(int _pipe);
+        void setPipe(PipeLines _pipe);
 
         bool hasTarget();
         
@@ -36,16 +43,17 @@ class VisionSensor : public valor::BaseSensor<frc::Pose3d> {
 
         virtual void InitSendable(wpi::SendableBuilder& builder) override = 0;
 
+        
+
     protected:
         double tx, ty, tv;
         int pipe;
 
-        void setDefaultValues();
+        virtual frc::Pose3d getGlobalPose() = 0;
 
         frc::Pose3d cameraPose;
         std::shared_ptr<nt::NetworkTable> limeTable;
 
-    private:
         void calculate() override;
 };
 

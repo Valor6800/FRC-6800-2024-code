@@ -7,7 +7,7 @@ VisionSensor::VisionSensor(frc::TimedRobot* robot, const char *name, frc::Pose3d
             cameraPose(_cameraPose),
             limeTable(nt::NetworkTableInstance::GetDefault().GetTable(name))
 {
-    setGetter([this](){return getGlobalPose();});
+    wpi::SendableRegistry::AddLW(this, "VisionSensor", sensorName);
     reset();
 }
 
@@ -18,7 +18,7 @@ void VisionSensor::reset() {
     pipe = 0;
 }
 
-void VisionSensor::setPipe(int _pipe) {
+void VisionSensor::setPipe(PipeLines _pipe) {
     if (limeTable == nullptr) return;
     limeTable->PutNumber("pipeline", _pipe);
 }
@@ -36,20 +36,19 @@ units::velocity::meters_per_second_t VisionSensor::getError(int pipe, double kPL
     return units::velocity::meters_per_second_t{0};
 }
 
-void VisionSensor::setDefaultValues(){
-    if (!hasTarget() || limeTable == nullptr) {
+void VisionSensor::calculate(){
+    prevState = currState;
+
+    if (limeTable == nullptr) {
         reset();
         return;
     }
 
+    tv = limeTable->GetNumber("tv", 0.0);
     tx = limeTable->GetNumber("tx", 0.0);
     ty = limeTable->GetNumber("ty", 0.0);
-    tv = limeTable->GetNumber("tv", 0.0);
     pipe = limeTable->GetNumber("pipeline", 0);
-}
 
-void VisionSensor::calculate() {
-    prevState = currState;
-    setDefaultValues();
     currState = getSensor();
+    
 }

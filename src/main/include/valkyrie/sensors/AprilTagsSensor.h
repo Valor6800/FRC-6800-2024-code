@@ -18,24 +18,10 @@ namespace valor
             * @param _name The name of the specific sensor for logging and reporting
             */
             AprilTagsSensor(frc::TimedRobot* robot, const char *name, frc::Pose3d _cameraPose);
-            ~AprilTagsSensor();
-
-            void reset() override;
 
             void InitSendable(wpi::SendableBuilder& builder) override;
 
         private:
-            enum RobotTransform {
-                GLOBAL = 0,
-                BLUE_ALLIANCE = 1,
-                RED_ALLIANCE = 2,
-                /*CAMERA_TARGET = 3,
-                TARGET_CAMERA = 4,
-                TARGET_ROBOT = 5,
-                ROBOT_TARGET = 6,
-                CAMERA_ROBOT = 7*/
-            };
-
             frc::Pose3d getGlobalPose() override;
     };
 } // namespace valor

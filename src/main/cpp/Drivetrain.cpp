@@ -19,9 +19,9 @@ using namespace pathplanner;
 // #define KP_LOCK 0.2f
 #define KP_LIMELIGHT 0.7f
 
-#define LIMELIGHT_X 0.0f //meters
-#define LIMELIGHT_Y 0.0f //meters
-#define LIMELIGHT_Z 0.0f //meters
+#define LIMELIGHT_X 0.22225f //meters
+#define LIMELIGHT_Y 0.3302f //meters
+#define LIMELIGHT_Z 0.62865f //meters
 
 #define LIMELIGHT_ROLL 0.0f //degrees
 #define LIMELIGHT_PITCH 0.0f //degrees
@@ -93,8 +93,18 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "
                         estimator(NULL),
                         config(NULL),
                         swerveNoError(true),
-                        aprilLL(_robot, "limelight-apriltg", frc::Pose3d{
+                        aprilLL(_robot, "limelight-vanilla", frc::Pose3d{
                             (units::length::meter_t) LIMELIGHT_X,
+                            (units::length::meter_t) LIMELIGHT_Y,
+                            (units::length::meter_t) LIMELIGHT_Z,
+                            frc::Rotation3d{
+                                (units::degree_t) LIMELIGHT_ROLL,
+                                (units::degree_t) LIMELIGHT_PITCH,
+                                (units::degree_t) LIMELIGHT_YAW,
+                            }
+                        }),
+                        aprilChocolate(_robot, "limelight-choco", frc::Pose3d{
+                            (units::length::meter_t) -LIMELIGHT_X,
                             (units::length::meter_t) LIMELIGHT_Y,
                             (units::length::meter_t) LIMELIGHT_Z,
                             frc::Rotation3d{
@@ -177,7 +187,7 @@ void Drivetrain::resetState()
 
 void Drivetrain::init()
 {
-    aprilLL.setPipe(2);
+    aprilLL.setPipe(valor::VisionSensor::PIPELINE_0);
 
     initPositions.fill(frc::SwerveModulePosition{0_m, frc::Rotation2d(0_rad)});
 
@@ -219,8 +229,6 @@ void Drivetrain::init()
     table->PutBoolean("Load Swerve Mag Encoder", false);
 
     table->PutNumber("KPLIMELIGHT", KP_LIMELIGHT);
-
-    aprilLL.setPipe(0);   
 
     state.lock = false;
 
@@ -310,29 +318,26 @@ void Drivetrain::analyzeDashboard()
                             });
 
     if (aprilLL.hasTarget()) {
-        if (aprilLL.hasTarget()){
-            frc::Pose2d botpose = aprilLL.getSensor().ToPose2d();
-            state.prevVisionPose = state.visionPose;
-            state.visionPose = frc::Pose2d{botpose.X(), botpose.Y(), getPose_m().Rotation()};
+        frc::Pose2d botpose = aprilLL.getSensor().ToPose2d();
+        state.prevVisionPose = state.visionPose;
+        state.visionPose = frc::Pose2d{botpose.X(), botpose.Y(), getPose_m().Rotation()};
 
-            state.visionOdomDiff = (botpose - getPose_m()).Translation().Norm().to<double>();
-            // double visionStd = table->GetNumber("Vision Std", 3.0);
+        state.visionOdomDiff = (botpose - getPose_m()).Translation().Norm().to<double>();
 
-            if (((botpose.X().to<double>() < AUTO_VISION_THRESHOLD && botpose.X().to<double>() > 0) || 
-                (botpose.X().to<double>() > (FIELD_LENGTH - AUTO_VISION_THRESHOLD) &&  botpose.X().to<double>() < FIELD_LENGTH)) &&
-                (state.visionPose - state.prevVisionPose).Translation().Norm().to<double>() < 1.0)
-            {
-                // estimator->AddVisionMeasurement(
-                //     state.visionPose,  
-                //     frc::Timer::GetFPGATimestamp(),
-                //     {visionStd, visionStd, visionStd}
-                // ); 
-            }
-            
-            
-            if (driverGamepad->GetStartButton()){
-                resetOdometry(botpose);
-            }
+        if (((botpose.X().to<double>() < AUTO_VISION_THRESHOLD && botpose.X().to<double>() > 0) || 
+            (botpose.X().to<double>() > (FIELD_LENGTH - AUTO_VISION_THRESHOLD) &&  botpose.X().to<double>() < FIELD_LENGTH)) &&
+            (state.visionPose - state.prevVisionPose).Translation().Norm().to<double>() < 1.0)
+        {
+            // estimator->AddVisionMeasurement(
+            //     state.visionPose,  
+            //     frc::Timer::GetFPGATimestamp(),
+            //     {visionStd, visionStd, visionStd}
+            // ); 
+        }
+        
+        
+        if (driverGamepad->GetStartButton()){
+            resetOdometry(botpose);
         }
     }
 }
@@ -390,7 +395,7 @@ void Drivetrain::resetGyro(){
 void Drivetrain::resetOdometry(frc::Pose2d pose)
 {
 
-    aprilLL.setPipe(0);
+    aprilLL.setPipe(valor::VisionSensor::PIPELINE_0);
 
     wpi::array<frc::SwerveModulePosition, SWERVE_COUNT> modulePositions = wpi::array<frc::SwerveModulePosition, SWERVE_COUNT>(wpi::empty_array);
 
@@ -488,7 +493,7 @@ void Drivetrain::angleLock(){
 frc2::FunctionalCommand* Drivetrain::getResetOdom() {
     return new frc2::FunctionalCommand(
         [&]{ // onBegin
-            aprilLL.setPipe(0);
+            aprilLL.setPipe(valor::VisionSensor::PIPELINE_0);
             state.startTimestamp = frc::Timer::GetFPGATimestamp();
         },
         [&]{ // continuously running
@@ -581,6 +586,7 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
     {
         builder.SetSmartDashboardType("Subsystem");
 
+        builder.AddBooleanProperty("Target?", [this] {return aprilLL.hasTarget();}, nullptr);
         builder.AddDoubleProperty(
             "diffVisionOdom",
             [this] { return state.visionOdomDiff; },
