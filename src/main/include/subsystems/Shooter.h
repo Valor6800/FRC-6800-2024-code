@@ -23,20 +23,11 @@ public:
     valor::NeoController RightWheelsShootingMotor;
     valor::NeoController LeftWheelShootingMotor;
 
-    valor::Gamepad *operatorGamepad;
-    valor::Gamepad *driverGamepad;
-
     Shooter(frc::TimedRobot *robot);
 
     ~Shooter();
 
     void resetState();
-
-    void setGamepads(valor::Gamepad *_operatorGamepad, valor::Gamepad *_driverGamepad)
-    {
-        operatorGamepad = _operatorGamepad;
-        driverGamepad = _driverGamepad;
-    }
 
     void init();
 
@@ -46,9 +37,7 @@ public:
     void analyzeDashboard();
     void assignOutputs();
 
-    // void resetState();
-
-    // void InitSendable(wpi::SendableBuilder& builder);
+    void InitSendable(wpi::SendableBuilder& builder);
 
     struct x
     {

@@ -16,20 +16,24 @@ public:
 
     ~OTBIntake();
 
+    void resetState();
     void init();
 
-    // void assessInputs();
-    // void analyzeDashboard();
-    // void assignOutputs();
+    void assessInputs();
+    void analyzeDashboard();
+    void assignOutputs();
 
-    // void resetState();
+    void dropDown();
+    void rollerIntake();
 
-    // void InitSendable(wpi::SendableBuilder& builder);
+    double getOTBRollerSpeed();
+
+    void InitSendable(wpi::SendableBuilder& builder);
 
     struct x
     {
         bool OTBisIntaking;
-        bool dropdownLocation;
+        bool dropDown;
     } state;
 
 private:

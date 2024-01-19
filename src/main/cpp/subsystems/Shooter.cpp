@@ -97,7 +97,7 @@ void Shooter::analyzeDashboard()
 
 void Shooter::assignOutputs()
 {
-    if(operatorGamepad->leftStickYActive())
+    if(state.isShooting)
     {
         shoot(state.shootingSpeed);
     }
@@ -107,4 +107,39 @@ void Shooter::shoot(double power)
 {
     RightWheelsShootingMotor.setPower(power);
     LeftWheelShootingMotor.setPower(power);
+}
+
+void Shooter::InitSendable(wpi::SendableBuilder& builder)
+{
+    builder.SetSmartDashboardType("Subsystem");
+
+    builder.AddBooleanProperty(
+        "rightShot",
+        [this] {return state.rightSideShooting;},
+        nullptr
+    );
+
+    builder.AddBooleanProperty(
+        "leftShot",
+        [this] {return state.leftSideShooting;},
+        nullptr
+    );
+
+    builder.AddBooleanProperty(
+        "isShot",
+        [this] {return state.isShooting;},
+        nullptr
+    );
+
+    builder.AddDoubleProperty(
+        "angle",
+        [this] {return state.angle;},
+        nullptr
+    );
+
+    builder.AddDoubleProperty(
+        "speed",
+        [this] {return state.shootingSpeed;},
+        nullptr
+    );
 }
