@@ -5,7 +5,7 @@
       "x": 0.48438732155674197,
       "y": 3.8461879274136805
     },
-    "rotation": 178.54006441448695
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
@@ -18,15 +18,33 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Re"
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "ReS"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
           }
         }
       ]
