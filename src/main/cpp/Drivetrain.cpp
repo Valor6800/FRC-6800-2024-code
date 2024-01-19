@@ -319,21 +319,11 @@ void Drivetrain::analyzeDashboard()
 
     if (aprilLL.hasTarget()) {
         frc::Pose2d botpose = aprilLL.getSensor().ToPose2d();
-        state.prevVisionPose = state.visionPose;
-        state.visionPose = frc::Pose2d{botpose.X(), botpose.Y(), getPose_m().Rotation()};
-
-        state.visionOdomDiff = (botpose - getPose_m()).Translation().Norm().to<double>();
-
-        if (((botpose.X().to<double>() < AUTO_VISION_THRESHOLD && botpose.X().to<double>() > 0) || 
-            (botpose.X().to<double>() > (FIELD_LENGTH - AUTO_VISION_THRESHOLD) &&  botpose.X().to<double>() < FIELD_LENGTH)) &&
-            (state.visionPose - state.prevVisionPose).Translation().Norm().to<double>() < 1.0)
-        {
             // estimator->AddVisionMeasurement(
             //     state.visionPose,  
             //     frc::Timer::GetFPGATimestamp(),
             //     {visionStd, visionStd, visionStd}
             // ); 
-        }
         
         
         if (driverGamepad->GetStartButton()){
@@ -497,11 +487,10 @@ frc2::FunctionalCommand* Drivetrain::getResetOdom() {
             state.startTimestamp = frc::Timer::GetFPGATimestamp();
         },
         [&]{ // continuously running
-            frc::Pose2d visionPose = aprilLL.getSensor().ToPose2d();
             table->PutNumber("resetting maybe", true);
-            if (aprilLL.hasTarget() && (visionPose.X() > 0_m && visionPose.Y() > 0_m)){
+            if (aprilLL.hasTarget() && (aprilLL.getSensor().ToPose2d().X() > 0_m && aprilLL.getSensor().ToPose2d().Y() > 0_m)){
                 table->PutNumber("resetting odom", table->GetNumber("resetting odom", 0) + 1);
-                addVisionMeasurement(visionPose, 1.0);
+                addVisionMeasurement(aprilLL.getSensor().ToPose2d(), 1.0);
                 table->PutBoolean("resetting", true);
             }
             else {
@@ -587,11 +576,6 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
         builder.SetSmartDashboardType("Subsystem");
 
         builder.AddBooleanProperty("Target?", [this] {return aprilLL.hasTarget();}, nullptr);
-        builder.AddDoubleProperty(
-            "diffVisionOdom",
-            [this] { return state.visionOdomDiff; },
-            nullptr
-        );
 
         builder.AddDoubleProperty(
             "xSpeed",
@@ -644,16 +628,6 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
             [this] { return swerveNoError; },
             nullptr
         );
-        builder.AddDoubleProperty(
-            "visionX",
-            [this] { return state.visionPose.X().to<double>(); },
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "visionY",
-            [this] { return state.visionPose.Y().to<double>(); },
-            nullptr
-        );
         builder.AddDoubleArrayProperty(
             "pose",
             [this] 
@@ -662,18 +636,6 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
                 pose.push_back(getPose_m().X().to<double>());
                 pose.push_back(getPose_m().Y().to<double>());
                 pose.push_back(getPose_m().Rotation().Degrees().to<double>());
-                return pose;
-            },
-            nullptr
-        );
-        builder.AddDoubleArrayProperty(
-            "visionPose",
-            [this] 
-            { 
-                std::vector<double> pose;
-                pose.push_back(state.visionPose.X().to<double>());
-                pose.push_back(state.visionPose.Y().to<double>());
-                pose.push_back(state.visionPose.Rotation().Degrees().to<double>());
                 return pose;
             },
             nullptr
