@@ -8,6 +8,8 @@
 #include "valkyrie/Gamepad.h"
 
 #include "Drivetrain.h"
+#include "subsystems/Shooter.h"
+
 #include "valkyrie/Auto.h"
 
 #include <frc/DriverStation.h>
