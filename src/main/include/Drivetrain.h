@@ -1,5 +1,6 @@
 #pragma once
 
+#include "frc/geometry/Pose3d.h"
 #include "valkyrie/sensors/AprilTagsSensor.h"
 #include "valkyrie/BaseSubsystem.h"
 #include "Constants.h"

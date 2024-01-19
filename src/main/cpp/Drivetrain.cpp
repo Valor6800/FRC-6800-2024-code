@@ -19,6 +19,14 @@ using namespace pathplanner;
 // #define KP_LOCK 0.2f
 #define KP_LIMELIGHT 0.7f
 
+#define LIMELIGHT_X 0.0f //meters
+#define LIMELIGHT_Y 0.0f //meters
+#define LIMELIGHT_Z 0.0f //meters
+
+#define LIMELIGHT_ROLL 0.0f //degrees
+#define LIMELIGHT_PITCH 0.0f //degrees
+#define LIMELIGHT_YAW 0.0f //degrees
+
 #define KPX 60.0f //50
 #define KIX 0.0f //0
 #define KDX 0.0f //.1
@@ -86,13 +94,13 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "
                         config(NULL),
                         swerveNoError(true),
                         aprilLL(_robot, "Apriltg", frc::Pose3d{
-                            (units::length::meter_t) 0,
-                            (units::length::meter_t) 0,
-                            (units::length::meter_t) 0,
+                            (units::length::meter_t) LIMELIGHT_X,
+                            (units::length::meter_t) LIMELIGHT_Y,
+                            (units::length::meter_t) LIMELIGHT_Z,
                             frc::Rotation3d{
-                                (units::degree_t) 0.0,
-                                (units::degree_t) 0.0,
-                                (units::degree_t) 0.0,
+                                (units::degree_t) LIMELIGHT_ROLL,
+                                (units::degree_t) LIMELIGHT_PITCH,
+                                (units::degree_t) LIMELIGHT_YAW,
                             }
                         })
 {
