@@ -1,5 +1,6 @@
 #pragma once
 
+#include "valkyrie/sensors/AprilTagsSensor.h"
 #include "valkyrie/BaseSubsystem.h"
 #include "Constants.h"
 #include "valkyrie/Swerve.h"
@@ -204,7 +205,6 @@ public:
       * @return the pose of the robot (x and y are in meters)
       */
      frc::Pose2d getPose_m();
-     frc::Pose2d getVisionPose();
      void addVisionMeasurement(frc::Pose2d visionPose, double doubt);
 
      /**
@@ -275,7 +275,7 @@ private:
      valor::PIDF yPIDF;
      valor::PIDF thetaPIDF;
 
-     std::shared_ptr<nt::NetworkTable> limeTable;
+     valor::AprilTagsSensor aprilLL;
 
      bool swerveNoError;
 };

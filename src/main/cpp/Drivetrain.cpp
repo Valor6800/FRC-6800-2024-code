@@ -7,6 +7,9 @@
 #include <pathplanner/lib/util/PIDConstants.h>
 #include <pathplanner/lib/util/ReplanningConfig.h>
 #include "valkyrie/sensors/VisionSensor.h"
+#include "frc/geometry/Pose3d.h"
+#include "frc/geometry/Rotation3d.h"
+#include "units/angle.h"
 
 using namespace pathplanner;
 
@@ -81,7 +84,17 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "
                         kinematics(NULL),
                         estimator(NULL),
                         config(NULL),
-                        swerveNoError(true)
+                        swerveNoError(true),
+                        aprilLL(_robot, "Apriltg", frc::Pose3d{
+                            (units::length::meter_t) 0,
+                            (units::length::meter_t) 0,
+                            (units::length::meter_t) 0,
+                            frc::Rotation3d{
+                                (units::degree_t) 0.0,
+                                (units::degree_t) 0.0,
+                                (units::degree_t) 0.0,
+                            }
+                        })
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -156,9 +169,6 @@ void Drivetrain::resetState()
 
 void Drivetrain::init()
 {
-    limeTable = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
-
-
     initPositions.fill(frc::SwerveModulePosition{0_m, frc::Rotation2d(0_rad)});
 
     for (int i = 0; i < SWERVE_COUNT; i++)
@@ -200,8 +210,7 @@ void Drivetrain::init()
 
     table->PutNumber("KPLIMELIGHT", KP_LIMELIGHT);
 
-    limeTable->PutNumber("pipeline", LimelightPipes::TAPE_HIGH);    
-    limeTable->PutNumber("ledMode", 1);
+    aprilLL.setPipe(0);   
 
     state.lock = false;
 
@@ -290,27 +299,17 @@ void Drivetrain::analyzeDashboard()
                                 swerveModules[3]->getModulePosition()
                             });
 
-    if (limeTable->GetNumber("tv", 0) == 1.0) {
-        
-        std::vector<double> poseArray;
-        if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue) {
-            poseArray = limeTable->GetNumberArray("botpose_wpiblue", std::span<const double>());
-        } else {
-            poseArray = limeTable->GetNumberArray("botpose_wpired", std::span<const double>());
-        }
-
-        if (poseArray.size() >= 6){
-            double x = poseArray[0], y = poseArray[1], angle = poseArray[5];
-            
-            frc::Pose2d botpose = frc::Pose2d{units::meter_t(x), units::meter_t(y), units::degree_t(angle)};
+    if (aprilLL.hasTarget()) {
+        if (aprilLL.hasTarget()){
+            frc::Pose2d botpose = aprilLL.getSensor().alliancePos.ToPose2d();
             state.prevVisionPose = state.visionPose;
             state.visionPose = frc::Pose2d{botpose.X(), botpose.Y(), getPose_m().Rotation()};
 
             state.visionOdomDiff = (botpose - getPose_m()).Translation().Norm().to<double>();
             // double visionStd = table->GetNumber("Vision Std", 3.0);
 
-            if (((x < AUTO_VISION_THRESHOLD && x > 0) || 
-                (x > (FIELD_LENGTH - AUTO_VISION_THRESHOLD) && x < FIELD_LENGTH)) &&
+            if (((botpose.X().to<double>() < AUTO_VISION_THRESHOLD && botpose.X().to<double>() > 0) || 
+                (botpose.X().to<double>() > (FIELD_LENGTH - AUTO_VISION_THRESHOLD) &&  botpose.X().to<double>() < FIELD_LENGTH)) &&
                 (state.visionPose - state.prevVisionPose).Translation().Norm().to<double>() < 1.0)
             {
                 // estimator->AddVisionMeasurement(
@@ -338,15 +337,10 @@ void Drivetrain::assignOutputs()
     if (state.xPose){
         setXMode();
     } else if (state.adas){
-        limeTable->PutNumber("ledMode", 3);
         drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
     } 
     else {
         setDriveMotorNeutralMode(valor::NeutralMode::Coast);
-        if (robot->IsTeleop()){
-            limeTable->PutNumber("pipeline", LimelightPipes::TAPE_HIGH);    
-            limeTable->PutNumber("ledMode", 1);
-        }
         drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
     }
 }
@@ -368,29 +362,8 @@ frc::Pose2d Drivetrain::getPose_m()
     return estimator->GetEstimatedPosition();
 }
 
-frc::Pose2d Drivetrain::getVisionPose(){
-    if (limeTable->GetNumber("tv", 0) != 1.0)
-        return frc::Pose2d{0_m, 0_m, 0_deg};
-
-    std::vector<double> poseArray;
-    if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue) {
-        poseArray = limeTable->GetNumberArray("botpose_wpiblue", std::span<const double>());
-    } else {
-        poseArray = limeTable->GetNumberArray("botpose_wpired", std::span<const double>());
-    }
-
-    if (poseArray.size() < 6)
-        return frc::Pose2d{0_m, 0_m, 0_deg}; 
-
-    return frc::Pose2d{
-        units::meter_t{poseArray[0]},
-        units::meter_t{poseArray[1]},
-        units::degree_t{poseArray[5]}
-    };
-}
-
 void Drivetrain::addVisionMeasurement(frc::Pose2d visionPose, double doubt=1){
-    if (limeTable->GetNumber("tv", 0) == 1.0)   
+    if (aprilLL.hasTarget())   
         estimator->AddVisionMeasurement(
             visionPose,  
             frc::Timer::GetFPGATimestamp(),
@@ -407,7 +380,7 @@ void Drivetrain::resetGyro(){
 void Drivetrain::resetOdometry(frc::Pose2d pose)
 {
 
-    limeTable->PutNumber("pipeline", LimelightPipes::APRIL_TAGS);
+    aprilLL.setPipe(0);
 
     wpi::array<frc::SwerveModulePosition, SWERVE_COUNT> modulePositions = wpi::array<frc::SwerveModulePosition, SWERVE_COUNT>(wpi::empty_array);
 
@@ -505,13 +478,13 @@ void Drivetrain::angleLock(){
 frc2::FunctionalCommand* Drivetrain::getResetOdom() {
     return new frc2::FunctionalCommand(
         [&]{ // onBegin
-            limeTable->PutNumber("pipeline", 0);
+            aprilLL.setPipe(0);
             state.startTimestamp = frc::Timer::GetFPGATimestamp();
         },
         [&]{ // continuously running
-            frc::Pose2d visionPose = getVisionPose();
+            frc::Pose2d visionPose = aprilLL.getSensor().alliancePos.ToPose2d();
             table->PutNumber("resetting maybe", true);
-            if (limeTable->GetNumber("tv", 0.0) == 1.0 && (visionPose.X() > 0_m && visionPose.Y() > 0_m)){
+            if (aprilLL.hasTarget() && (visionPose.X() > 0_m && visionPose.Y() > 0_m)){
                 table->PutNumber("resetting odom", table->GetNumber("resetting odom", 0) + 1);
                 addVisionMeasurement(visionPose, 1.0);
                 table->PutBoolean("resetting", true);
