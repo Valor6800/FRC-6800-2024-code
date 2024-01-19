@@ -16,19 +16,24 @@ public:
 
     ~Climber();
 
+    void resetState();
     void init();
 
-    // void assessInputs();
-    // void analyzeDashboard();
-    // void assignOutputs();
+    void assessInputs();
+    void analyzeDashboard();
+    void assignOutputs();
 
-    // void resetState();
+    void InitSendable(wpi::SendableBuilder& builder);
 
-    // void InitSendable(wpi::SendableBuilder& builder);
+    void extend();
+    void climb();
+
+    double getClimberSpeed();
 
     struct x
     {
         bool isInClimb;
+        bool isExtended;
     } state;
 
 private:

@@ -10,28 +10,35 @@ class Indexer : public valor::BaseSubsystem
 {
 public:
     valor::NeoController NoteHandoffMotor;
+    valor::NeoController ITBRollerMotor;
 
     Indexer(frc::TimedRobot *robot);
 
     ~Indexer();
 
+    void resetState();
     void init();
 
-    // void assessInputs();
-    // void analyzeDashboard();
-    // void assignOutputs();
+    void assessInputs();
+    void analyzeDashboard();
+    void assignOutputs();
+    void handoff();
+    void rollerIntake();
 
-    // void resetState();
-    
-    // void InitSendable(wpi::SendableBuilder& builder);
+    double getHandOffSpeed();
+    double getRollerSpeed();
+
+    void InitSendable(wpi::SendableBuilder& builder);
 
     struct x
     {
         bool inHandoff;
+        bool isIndexIntake;
     } state;
 
 private:
 
-    double handoffSpeed;
+    double maxHandoffSpeed;
+    double maxRollerSpeed;
 
 };
