@@ -6,6 +6,7 @@
 #include <pathplanner/lib/util/HolonomicPathFollowerConfig.h>
 #include <pathplanner/lib/util/PIDConstants.h>
 #include <pathplanner/lib/util/ReplanningConfig.h>
+#include "valkyrie/sensors/VisionSensor.h"
 
 using namespace pathplanner;
 
@@ -156,6 +157,7 @@ void Drivetrain::resetState()
 void Drivetrain::init()
 {
     limeTable = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
+
 
     initPositions.fill(frc::SwerveModulePosition{0_m, frc::Rotation2d(0_rad)});
 
@@ -749,3 +751,4 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
             nullptr
         );
     }
+
