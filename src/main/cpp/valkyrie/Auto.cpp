@@ -1,9 +1,15 @@
 #include "valkyrie/Auto.h"
 // #include <frc/Filesystem.h>
 #include <pathplanner/lib/commands/PathPlannerAuto.h>
+#include <pathplanner/lib/auto/NamedCommands.h>
+#include <frc2/command/SequentialCommandGroup.h>
+#include <frc2/command/InstantCommand.h>
+#include <frc2/command/WaitCommand.h>
+
 #include <filesystem>
 
 using namespace valor;
+using namespace pathplanner;
 
 #define AUTOS_PATH (std::string)"/home/lvuser/deploy/pathplanner/autos/"
 #define PATHS_PATH (std::string)"/home/lvuser/deploy/pathplanner/paths/"
@@ -12,6 +18,45 @@ Auto::Auto(){
     table = nt::NetworkTableInstance::GetDefault().GetTable("auto");
     table->PutString("New auto name", "");
     table->PutBoolean("Add to and update autos list", false);
+    table->PutString("shooting", "not");
+    table->PutString("picking", "not");
+
+
+
+    NamedCommands::registerCommand("Shoot", std::move(
+        frc2::SequentialCommandGroup(
+            frc2::InstantCommand(
+                [this]() {
+                    // shooter->state.isShooting = true;
+                    table->PutString("shooting", "mhm");
+                }
+            ),
+            frc2::WaitCommand(1_s),
+            frc2::InstantCommand(
+                [this]() {
+                    // shooter->state.isShooting = false;
+                    table->PutString("shooting", "not");
+                }
+            )
+        )
+    ).ToPtr());
+    NamedCommands::registerCommand("Intake", std::move(
+        frc2::SequentialCommandGroup(
+            frc2::InstantCommand(
+                [this]() {
+                    // shooter->state.isShooting = true;
+                    table->PutString("picking", "mhm");
+                }
+            ),
+            frc2::WaitCommand(1_s),
+            frc2::InstantCommand(
+                [this]() {
+                    // shooter->state.isShooting = false;
+                    table->PutString("picking", "not");
+                }
+            )
+        )
+    ).ToPtr());
 }
 
 frc2::CommandPtr Auto::makeAuto(std::string autoName){
