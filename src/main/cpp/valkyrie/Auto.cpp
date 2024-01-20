@@ -23,7 +23,7 @@ Auto::Auto(Intake* _intake, Shooter* _shooter) : intake(_intake), shooter(_shoot
 
 
 
-    NamedCommands::registerCommand("Shoot", std::move(
+    NamedCommands::registerCommand("Intake", std::move(
         frc2::SequentialCommandGroup(
             frc2::InstantCommand(
                 [this]() {
@@ -42,7 +42,7 @@ Auto::Auto(Intake* _intake, Shooter* _shooter) : intake(_intake), shooter(_shoot
             )
         )
     ).ToPtr());
-    NamedCommands::registerCommand("Intake", std::move(
+    NamedCommands::registerCommand("Shoot", std::move(
         frc2::SequentialCommandGroup(
             frc2::InstantCommand(
                 [this]() {
