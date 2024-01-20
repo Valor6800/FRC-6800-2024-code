@@ -4,13 +4,14 @@
 #include <Drivetrain.h>
 
 #include "subsystems/Shooter.h"
+#include "subsystems/Intake.h"
 
 namespace valor {
 
 class Auto
 {
     public:
-        Auto();
+        Auto(Intake* intake, Shooter* shooter);
         
         void fillAutoList();
         frc2::CommandPtr getCurrentAuto();
@@ -20,7 +21,8 @@ class Auto
         std::shared_ptr<nt::NetworkTable> table;
         frc::SendableChooser<std::string> m_chooser;
 
-        // Shooter* shooter;
+        Shooter* shooter;
+        Intake* intake;
 };
 
 }
