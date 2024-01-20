@@ -16,7 +16,7 @@
 
 Intake::Intake(frc::TimedRobot *_robot, frc::DigitalInput *_beamBreak) :
     valor::BaseSubsystem(_robot, "Intake"),
-    RollerMotor(CANIDs::EXTERNAL_INTAKE, valor::NeutralMode::Brake, false),
+    RollerMotor(CANIDs::EXTERNAL_INTAKE, valor::NeutralMode::Brake, true),
     // ActivationMotor(CANIDs::EXTERNAL_DROPDOWN, valor::NeutralMode::Brake, false),
     beam(_beamBreak),
     debounce(_robot, "Intake")
