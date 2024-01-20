@@ -1,7 +1,5 @@
-
 #include "DriveChar.h"
-#include "DriveChar.h"
-
+#include "Drivetrain.h"
 #include <frc2/command/Commands.h>
 
 DriveChar::DriveChar(frc::TimedRobot *_robot, Drivetrain *_drive) : valor::BaseSubsystem(_robot, "Drivetrain"),
@@ -21,4 +19,11 @@ void DriveChar::ConfigureBindings() {
 
 frc2::CommandPtr DriveChar::GetAutonomousCommand() {
   return drive->Run([] {});
+}
+
+void DriveChar::InitSendable(wpi::SendableBuilder& builder)
+{
+    builder.SetSmartDashboardType("Subsystem");
+    builder.AddDoubleProperty("X Pose", [this] {return drive->state.xPose; }, nullptr);
+        
 }

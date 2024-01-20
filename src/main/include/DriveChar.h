@@ -4,7 +4,6 @@
 #include <frc2/command/button/CommandXboxController.h>
 
 #include "frc/DataLogManager.h"
-#include "URCL.h"
 
 #include "valkyrie/controllers/NeoController.h"
 #include "valkyrie/BaseSubsystem.h"
@@ -14,12 +13,12 @@
 
 class DriveChar : public valor::BaseSubsystem {
  public:
-  DriveChar(frc::TimedRobot *_robot, Drivetrain *_drive);
+  DriveChar(frc::TimedRobot *_robot, Drivetrain* _drive);
 
   frc2::CommandPtr GetAutonomousCommand();
   void InitSendable(wpi::SendableBuilder& builder);
   
  private:
   void ConfigureBindings();
-  Drivetrain* drive;
+  Drivetrain*  drive;
 };

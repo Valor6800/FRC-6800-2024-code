@@ -11,7 +11,6 @@
 #include "valkyrie/controllers/PIDF.h"
 
 #include <frc2/command/sysid/SysIdRoutine.h>
-#include <DriveChar.h>
 #include <frc/RobotController.h>
 
 #include <frc/kinematics/SwerveDriveKinematics.h>
