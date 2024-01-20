@@ -45,21 +45,18 @@ void Intake::init()
 
     table->PutNumber("Intake Power", ROLLER_MOTOR_INTAKE_POWER);
     table->PutNumber("Outtake Power", ROLLER_MOTOR_OUTTAKE_POWER);
-    table->PutNumber("Activation State", state.activation);
-    table->PutNumber("Intake State", state.intake);
-    table->PutNumber("Detection State", state.detection);
 }
 
 void Intake::assessInputs()
 {
-    if(operatorGamepad->GetRightTriggerAxis() != 0.0)
+    if(operatorGamepad->rightTriggerActive())
     {
         state.intake = INTAKING;
         state.activation = DEPOLOYED;
     }
     else
     {
-        if(operatorGamepad->GetLeftTriggerAxis() != 0.0)
+        if(operatorGamepad->leftTriggerActive())
         {
             state.intake = OUTTAKE;
             state.activation = DEPOLOYED;
@@ -70,24 +67,13 @@ void Intake::assessInputs()
             state.activation = STOWED;
         }
     }
-    if(beam->Get())
-    {
-        state.detection = NOTE_DETECTED;
-    }
-    else
-    {
-        state.detection = NOTE_NOTDETECTED;
-    }
+    state.detection = beam->Get() ? NOTE_DETECTED : NOTE_NOTDETECTED; 
 }
 
 void Intake::analyzeDashboard()
 {
     IntakeRotMaxSpeed = table->GetNumber("Intake Power", ROLLER_MOTOR_INTAKE_POWER);
     OuttakeRotMaxSpeed = table->GetNumber("Outtake Power", ROLLER_MOTOR_OUTTAKE_POWER);
-
-    table->PutNumber("Activation State", state.activation);
-    table->PutNumber("Intake State", state.intake);
-    table->PutNumber("Detection State", state.detection);
 }
 
 void Intake::assignOutputs()
@@ -166,4 +152,8 @@ void Intake::InitSendable(wpi::SendableBuilder& builder)
         [this] {return beam->Get();},
         nullptr
     );
+
+    table->PutNumber("Activation State", state.activation);
+    table->PutNumber("Intake State", state.intake);
+    table->PutNumber("Detection State", state.detection);
 }

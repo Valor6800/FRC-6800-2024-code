@@ -24,8 +24,6 @@ public:
     void analyzeDashboard();
     void assignOutputs();
 
-    double getOTBRollerSpeed();
-
     void InitSendable(wpi::SendableBuilder& builder);
 
     enum Activation_State
@@ -62,6 +60,8 @@ private:
 
     frc::DigitalInput* beam;
     valor::DebounceSensor debounce;
+
+    double getOTBRollerSpeed();
 
     double IntakeRotMaxSpeed;
     double OuttakeRotMaxSpeed;
