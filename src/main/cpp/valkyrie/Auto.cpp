@@ -14,7 +14,7 @@ using namespace pathplanner;
 #define AUTOS_PATH (std::string)"/home/lvuser/deploy/pathplanner/autos/"
 #define PATHS_PATH (std::string)"/home/lvuser/deploy/pathplanner/paths/"
 
-Auto::Auto(){
+Auto::Auto(Intake* _intake, Shooter* _shooter) : intake(_intake), shooter(_shooter){
     table = nt::NetworkTableInstance::GetDefault().GetTable("auto");
     table->PutString("New auto name", "");
     table->PutBoolean("Add to and update autos list", false);
@@ -28,14 +28,16 @@ Auto::Auto(){
             frc2::InstantCommand(
                 [this]() {
                     // shooter->state.isShooting = true;
-                    table->PutString("shooting", "mhm");
+                    intake->state.activation = Intake::Activation_State::DEPOLOYED;
+                    intake->state.intake = Intake::Intake_State::INTAKING;
                 }
             ),
             frc2::WaitCommand(1_s),
             frc2::InstantCommand(
                 [this]() {
                     // shooter->state.isShooting = false;
-                    table->PutString("shooting", "not");
+                    intake->state.activation = Intake::Activation_State::STOWED;
+                    intake->state.intake = Intake::Intake_State::STAGNANT;
                 }
             )
         )
@@ -45,14 +47,14 @@ Auto::Auto(){
             frc2::InstantCommand(
                 [this]() {
                     // shooter->state.isShooting = true;
-                    table->PutString("picking", "mhm");
+                    shooter->state.flywheel = Shooter::FlywheelState::SHOOTING;
                 }
             ),
             frc2::WaitCommand(1_s),
             frc2::InstantCommand(
                 [this]() {
                     // shooter->state.isShooting = false;
-                    table->PutString("picking", "not");
+                    shooter->state.flywheel = Shooter::FlywheelState::NOT_SHOOTING;
                 }
             )
         )
