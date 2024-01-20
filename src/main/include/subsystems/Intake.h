@@ -12,11 +12,6 @@
 class Intake : public valor::BaseSubsystem
 {
 public:
-    valor::NeoController RollerMotor;
-    valor::NeoController ActivationMotor;
-
-    frc::DigitalInput* beam;
-    valor::DebounceSensor debounce;
 
     Intake(frc::TimedRobot *robot, frc::DigitalInput *_beamBreak);
 
@@ -62,6 +57,13 @@ public:
 
 private:
 
+    valor::NeoController RollerMotor;
+    // valor::NeoController ActivationMotor;
+
+    frc::DigitalInput* beam;
+    valor::DebounceSensor debounce;
+
     double IntakeRotMaxSpeed;
+    double OuttakeRotMaxSpeed;
     double dropDownMaxSpeed;
 };
