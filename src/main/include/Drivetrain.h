@@ -72,7 +72,7 @@ public:
       * 
       * @param robot Top level robot object to parse out smart dashboard and table information
       */
-     Drivetrain(frc::TimedRobot *robot);
+     Drivetrain(frc::TimedRobot *robot, bool isAlpha);
 
      /**
       * @brief Destroy the Drivetrain object

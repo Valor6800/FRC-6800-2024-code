@@ -2,10 +2,19 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/CommandScheduler.h>
+#include <frc/RobotController.h>
 
 #include <ctime>
 
-Robot::Robot() : drivetrain(this), valorAuto(), beamBreak(DIOPorts::BEAM_BREAK_PORT), shooter(this, &beamBreak), intake(this, &beamBreak)
+#define ALPHA_TEAM_NUMBER 6801
+
+Robot::Robot() : 
+isAlpha(frc::RobotController::GetTeamNumber() == ALPHA_TEAM_NUMBER), 
+drivetrain(this, isAlpha), 
+valorAuto(), 
+beamBreak(DIOPorts::BEAM_BREAK_PORT), 
+shooter(this, &beamBreak), 
+intake(this, &beamBreak)
 {
     frc::TimedRobot();
 }

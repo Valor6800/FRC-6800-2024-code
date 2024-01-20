@@ -68,7 +68,8 @@ using namespace pathplanner;
 
 #define AUTO_VISION_THRESHOLD 4.0f //meters
 
-#define MODULE_DIFF 0.2413f
+#define MODULE_DIFF 0.2_m // temp number. pls change
+#define ALPHA_MODULE_DIFF 0.2413_m
 
 #define X_TIME 214.85f
 
@@ -78,9 +79,17 @@ using namespace pathplanner;
 #define DRIVETRAIN_CAN_BUS ""
 #define PIGEON_CAN_BUS "baseCAN"
 
-Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Drivetrain"),
+#define PIGEON_MOUNT_PITCH 0_deg
+#define PIGEON_MOUNT_ROLL 0_deg
+#define PIGEON_MOUNT_YAW 0_deg
+#define ALPHA_PIGEON_MOUNT_PITCH 0_deg
+#define ALPHA_PIGEON_MOUNT_ROLL -0.395508_deg
+#define ALPHA_PIGEON_MOUNT_YAW -1.477661_deg
+
+Drivetrain::Drivetrain(frc::TimedRobot *_robot, bool _isAlpha) : valor::BaseSubsystem(_robot, "Drivetrain"),
+                        isAlpha(_isAlpha),
                         driveMaxSpeed(MOTOR_FREE_SPEED / 60.0 / DRIVE_GEAR_RATIO * WHEEL_DIAMETER_M * M_PI),
-                        swerveModuleDiff(units::meter_t(MODULE_DIFF)),
+                        swerveModuleDiff(isAlpha ? ALPHA_MODULE_DIFF : MODULE_DIFF),
                         rotMaxSpeed(ROT_SPEED_MUL * 2 * M_PI),
                         autoMaxSpeed(AUTO_MAX_SPEED),
                         autoMaxAccel(AUTO_MAX_SPEED/AUTO_MAX_ACCEL_SECONDS),
@@ -111,7 +120,10 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "
                                 (units::degree_t) LIMELIGHT_PITCH,
                                 (units::degree_t) LIMELIGHT_YAW,
                             }
-                        })
+                        }),
+                        pigeonMountPitch(isAlpha ? ALPHA_PIGEON_MOUNT_PITCH : PIGEON_MOUNT_PITCH),
+                        pigeonMountRoll(isAlpha ? ALPHA_PIGEON_MOUNT_ROLL : PIGEON_MOUNT_ROLL),
+                        pigeonMountYaw(isAlpha ? ALPHA_PIGEON_MOUNT_YAW : PIGEON_MOUNT_YAW)
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -199,9 +211,9 @@ void Drivetrain::init()
         ctre::phoenix6::configs::Pigeon2Configuration{}
         .WithMountPose(
             ctre::phoenix6::configs::MountPoseConfigs{}
-            .WithMountPosePitch(0)
-            .WithMountPoseRoll(-0.395508)
-            .WithMountPoseYaw(-1.477661)
+            .WithMountPosePitch(pigeonMountPitch.to<double>())
+            .WithMountPoseRoll(pigeonMountRoll.to<double>())
+            .WithMountPoseYaw(pigeonMountYaw.to<double>())
         )
     );
 
@@ -352,7 +364,7 @@ void Drivetrain::assignOutputs()
 void Drivetrain::pullSwerveModuleZeroReference(){
     swerveNoError = true;
     for (size_t i = 0; i < swerveModules.size(); i++) {
-        swerveNoError &= swerveModules[i]->loadAndSetAzimuthZeroReference();
+        swerveNoError &= swerveModules[i]->loadAndSetAzimuthZeroReference(isAlpha);
     }
 }
 
