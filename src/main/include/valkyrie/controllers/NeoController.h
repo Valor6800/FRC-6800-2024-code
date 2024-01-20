@@ -30,6 +30,7 @@ public:
     void setPosition(double);
     void setSpeed(double);
     void setPower(double);
+    void setVoltage(units::volt_t voltage);
     
     void setupFollower(int, bool = false);
     

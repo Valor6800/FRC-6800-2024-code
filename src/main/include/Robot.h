@@ -40,8 +40,8 @@ class Robot : public frc::TimedRobot {
         frc2::CommandPtr autoCommand = frc2::cmd::Sequence();
 
         Drivetrain drivetrain;
-        SysIdRoutineBot SysID;
         valor::Auto valorAuto;
+        DriveChar sysID;
 
         std::ofstream outfile;
 };

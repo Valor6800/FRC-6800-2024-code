@@ -11,6 +11,8 @@
 #include "frc/geometry/Rotation3d.h"
 #include "units/angle.h"
 
+#include "DriveChar.h"
+
 using namespace pathplanner;
 
 #define TXRANGE  30.0f
@@ -569,6 +571,14 @@ frc2::InstantCommand* Drivetrain::getSetXMode(){
         setXMode();
     });
      return cmd_XMode;
+}
+
+frc2::CommandPtr Drivetrain::SysIdQuasistatic(frc2::sysid::Direction direction) {
+  return m_sysIdRoutine.Quasistatic(direction);
+}
+
+frc2::CommandPtr Drivetrain::SysIdDynamic(frc2::sysid::Direction direction) {
+  return m_sysIdRoutine.Dynamic(direction);
 }
 
 void Drivetrain::InitSendable(wpi::SendableBuilder& builder)

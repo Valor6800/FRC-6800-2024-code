@@ -12,6 +12,7 @@
 
 #include <frc2/command/sysid/SysIdRoutine.h>
 #include <DriveChar.h>
+#include <frc/RobotController.h>
 
 #include <frc/kinematics/SwerveDriveKinematics.h>
 #include <frc/estimator/SwerveDrivePoseEstimator.h>
@@ -241,6 +242,9 @@ public:
 
      void setDriveMotorNeutralMode(valor::NeutralMode mode);
 
+     frc2::CommandPtr SysIdQuasistatic(frc2::sysid::Direction direction);
+     frc2::CommandPtr SysIdDynamic(frc2::sysid::Direction direction);
+
 private:
      
      double driveMaxSpeed;
@@ -283,4 +287,25 @@ private:
      valor::AprilTagsSensor aprilChocolate;
 
      bool swerveNoError;
+
+     frc2::sysid::SysIdRoutine m_sysIdRoutine{
+      frc2::sysid::Config{std::nullopt, std::nullopt, std::nullopt,
+                          std::nullopt},
+      frc2::sysid::Mechanism{
+          [this](units::volt_t driveVoltage) {
+            for (SwerveDriveMotor* driveMotor : driveControllers) {
+               driveMotor->setVoltage(driveVoltage);
+            }
+          },
+          [this](frc::sysid::SysIdRoutineLog* log) {
+               for (int i = 0; i < 4; i++){
+                    SwerveDriveMotor* driveMotor = driveControllers[i];
+                    log->Motor("drive-" + std::to_string(i))
+                         .voltage(driveMotor->getSpeed() *
+                              frc::RobotController::GetBatteryVoltage())
+                    .position(units::meter_t{driveMotor->getPosition()})
+                    .velocity(units::meters_per_second_t{driveMotor->getSpeed()});
+               }
+          },
+          this}};
 };

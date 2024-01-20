@@ -1,27 +1,24 @@
-#include <frc2/command/sysid/SysIdRoutine.h>
+
+#include "DriveChar.h"
 #include "DriveChar.h"
 
 #include <frc2/command/Commands.h>
 
-SysIdRoutineBot::SysIdRoutineBot(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Drivetrain") {
+DriveChar::DriveChar(frc::TimedRobot *_robot, Drivetrain *_drive) : valor::BaseSubsystem(_robot, "Drivetrain"),
+  drive(_drive) 
+{
   ConfigureBindings();
 }
 
-void SysIdRoutineBot::ConfigureBindings() {
-  while (driverGamepad->GetAButtonPressed()){
-    frc2::sysid::SysIdRoutine::Quasistatic(frc2::sysid::Direction::kForward);
-  }
-  while (driverGamepad->GetBButtonPressed()){
-    m_drive.Quasistatic(frc2::sysid::Direction::kReverse);
-  }
-  while (driverGamepad->GetXButtonPressed()){
-    m_drive.Dynamic(frc2::sysid::Direction::kForward);
-  }
-  while (driverGamepad->GetYButtonPressed()){
-    m_drive.Dynamic(frc2::sysid::Direction::kReverse);
-  }
+void DriveChar::ConfigureBindings() {
+
+  while (driverGamepad->GetAButtonPressed()) {drive->SysIdQuasistatic(frc2::sysid::Direction::kForward);}
+  while (driverGamepad->GetBButtonPressed()) {drive->SysIdQuasistatic(frc2::sysid::Direction::kReverse);}
+  while (driverGamepad->GetXButtonPressed()) {drive->SysIdDynamic(frc2::sysid::Direction::kForward);}
+  while (driverGamepad->GetYButtonPressed()) {drive->SysIdDynamic(frc2::sysid::Direction::kReverse);}
+
 }
 
-frc2::CommandPtr SysIdRoutineBot::GetAutonomousCommand() {
-  return m_drive.Run([] {});
+frc2::CommandPtr DriveChar::GetAutonomousCommand() {
+  return drive->Run([] {});
 }

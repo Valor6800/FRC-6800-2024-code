@@ -2,6 +2,7 @@
 
 #include "valkyrie/controllers/PIDF.h"
 #include "valkyrie/controllers/NeutralMode.h"
+#include <units/voltage.h>
 
 #include <string>
 
@@ -167,6 +168,18 @@ public:
      * 
      */
     virtual void setPower(double power) = 0;
+
+    /**
+     * @brief Set the motor to a voltage
+     * 
+     * 
+     * To be defined by the implemented BaseController class
+     * 
+     * @param voltage The voltage to set the motor to
+     * 
+     */
+    virtual void setVoltage(units::volt_t voltage) = 0;
+
 
     /**
      * @brief If a motor is paired with another motor, setup that other motor as a follower

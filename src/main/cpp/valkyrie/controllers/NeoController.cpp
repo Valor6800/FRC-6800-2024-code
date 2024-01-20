@@ -151,6 +151,11 @@ void NeoController::setPower(double power)
     motor->Set(power);
 }
 
+void NeoController::setVoltage(units::volt_t voltage)
+{
+    motor->SetVoltage(voltage);
+}
+
 void NeoController::setNeutralMode(valor::NeutralMode mode){  
     motor->SetIdleMode(mode == valor::NeutralMode::Brake ? rev::CANSparkMax::IdleMode::kBrake : rev::CANSparkMax::IdleMode::kCoast);
     neutralMode = mode;
