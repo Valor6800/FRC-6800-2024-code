@@ -70,6 +70,8 @@ using namespace pathplanner;
 
 #define MODULE_DIFF 0.2_m // temp number. pls change
 #define ALPHA_MODULE_DIFF 0.2413_m
+#define DRIVE_BASE_RADIUS 0.3_m // temp number pls hange
+#define ALPHA_DRIVE_BASE_RADIUS 0.36_m
 
 #define X_TIME 214.85f
 
@@ -123,7 +125,8 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot, bool _isAlpha) : valor::BaseSubs
                         }),
                         pigeonMountPitch(isAlpha ? ALPHA_PIGEON_MOUNT_PITCH : PIGEON_MOUNT_PITCH),
                         pigeonMountRoll(isAlpha ? ALPHA_PIGEON_MOUNT_ROLL : PIGEON_MOUNT_ROLL),
-                        pigeonMountYaw(isAlpha ? ALPHA_PIGEON_MOUNT_YAW : PIGEON_MOUNT_YAW)
+                        pigeonMountYaw(isAlpha ? ALPHA_PIGEON_MOUNT_YAW : PIGEON_MOUNT_YAW),
+                        driveBaseRadius(isAlpha ? ALPHA_DRIVE_BASE_RADIUS : DRIVE_BASE_RADIUS)
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -254,7 +257,7 @@ void Drivetrain::init()
             PIDConstants(getXPIDF().P, getXPIDF().I, getXPIDF().D), // Translation PID constants
             PIDConstants(getThetaPIDF().P, getThetaPIDF().I, getThetaPIDF().D), // Rotation PID constants
             units::meters_per_second_t{driveMaxSpeed}, // Max module speed, in m/s
-            0.36_m, // Drive base radius in meters. Distance from robot center to furthest module.
+            driveBaseRadius, // Drive base radius in meters. Distance from robot center to furthest module.
             ReplanningConfig() // Default path replanning config. See the API for the options here
         ),
         []() {
