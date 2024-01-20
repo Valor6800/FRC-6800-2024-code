@@ -5,7 +5,7 @@
 
 #include <ctime>
 
-Robot::Robot() : drivetrain(this), valorAuto()
+Robot::Robot() : drivetrain(this), valorAuto(), SysID(this)
 {
     frc::TimedRobot();
 }
@@ -13,6 +13,8 @@ Robot::Robot() : drivetrain(this), valorAuto()
 void Robot::RobotInit() {
     drivetrain.setGamepads(&gamepadOperator, &gamepadDriver);
     drivetrain.resetState();
+
+    SysID.setGamepads(&gamepadOperator, &gamepadDriver);
 
     frc::LiveWindow::EnableAllTelemetry();
     frc::DataLogManager::Start();

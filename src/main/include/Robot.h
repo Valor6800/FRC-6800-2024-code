@@ -9,6 +9,7 @@
 
 #include "Drivetrain.h"
 #include "valkyrie/Auto.h"
+#include "DriveChar.h"
 
 #include <frc/DriverStation.h>
 #include <frc/DataLogManager.h>
@@ -39,6 +40,7 @@ class Robot : public frc::TimedRobot {
         frc2::CommandPtr autoCommand = frc2::cmd::Sequence();
 
         Drivetrain drivetrain;
+        SysIdRoutineBot SysID;
         valor::Auto valorAuto;
 
         std::ofstream outfile;

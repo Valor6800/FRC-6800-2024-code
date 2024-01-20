@@ -10,6 +10,9 @@
 #include "valkyrie/controllers/NeoController.h"
 #include "valkyrie/controllers/PIDF.h"
 
+#include <frc2/command/sysid/SysIdRoutine.h>
+#include <DriveChar.h>
+
 #include <frc/kinematics/SwerveDriveKinematics.h>
 #include <frc/estimator/SwerveDrivePoseEstimator.h>
 #include <frc/kinematics/ChassisSpeeds.h>
