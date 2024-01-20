@@ -6,11 +6,15 @@
 #include "valkyrie/controllers/NeoController.h"
 #include "valkyrie/controllers/PIDF.h"
 
+#include "frc/DigitalInput.h"
+
 class Intake : public valor::BaseSubsystem
 {
 public:
-    valor::NeoController IntakeRollerMotor;
-    valor::NeoController OTBDropDownMotor;
+    valor::NeoController RollerMotor;
+    valor::NeoController ActivationMotor;
+
+    frc::DigitalInput beam;
 
     Intake(frc::TimedRobot *robot);
 
@@ -23,36 +27,34 @@ public:
     void analyzeDashboard();
     void assignOutputs();
 
-    void dropDown();
-    void rollerIntake();
-
     double getOTBRollerSpeed();
 
     void InitSendable(wpi::SendableBuilder& builder);
 
+    enum Activation_State
+    {
+        DEPOLOYED,
+        STOWED
+    };
+
+    enum Intake_State
+    {
+        INTAKING,
+        STAGNANT,
+        OUTTAKE
+    };
+
+    enum Detection_State
+    {
+        NOTE_DETECTED,
+        NOTE_NOTDETECTED
+    };
+
     struct x
     {
-        enum Activation_State
-        {
-            DEPOLOYED,
-            STOWED
-        };
-
-        enum Intake_State
-        {
-            INTAKING,
-            STAGNANT,
-            OUTTAKE
-        };
-
-        enum Detection_State
-        {
-            NOTE_DETECTED,
-            NOTE_NOTDETECTED
-        };
-        int activation;
-        int intake;
-        int detection;
+        Activation_State activation;
+        Intake_State intake;
+        Detection_State detection;
 
     } state;
 

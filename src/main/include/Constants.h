@@ -40,6 +40,7 @@ namespace LimelightConstants {
 
 namespace DIOPorts {
     constexpr static int MAG_ENCODER_PORTS[4] = {1, 2, 3, 4};
+    constexpr static int BEAM_DIO_PORT = 5; // some number
 }
 
 namespace CANIDs {
