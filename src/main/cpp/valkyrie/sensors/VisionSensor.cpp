@@ -9,9 +9,6 @@ VisionSensor::VisionSensor(frc::TimedRobot* robot, const char *name, frc::Pose3d
 {
     wpi::SendableRegistry::AddLW(this, "VisionSensor", sensorName);
     reset();
-}
-
-void VisionSensor::init(){
     setCameraPose();
 }
 
