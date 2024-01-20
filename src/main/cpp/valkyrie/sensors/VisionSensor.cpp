@@ -11,6 +11,23 @@ VisionSensor::VisionSensor(frc::TimedRobot* robot, const char *name, frc::Pose3d
     reset();
 }
 
+void VisionSensor::init(){
+    setCameraPose();
+}
+
+void VisionSensor::setCameraPose(){
+    if (limeTable == nullptr) return;
+    double x = cameraPose.X().to<double>();
+    double y = cameraPose.Y().to<double>();
+    double z = cameraPose.Z().to<double>();
+    double pitch = cameraPose.Rotation().X().to<double>();
+    double roll = cameraPose.Rotation().Y().to<double>();
+    double yaw = cameraPose.Rotation().Z().to<double>();
+
+    std::array<const double, 6> camPose = std::array<const double, 6>(x, y, z, pitch, roll, yaw);
+    limeTable->PutNumberArray("camerapose_robotspace_set", camPose);
+}
+
 void VisionSensor::reset() {
     tx = 0;
     tv = 0;

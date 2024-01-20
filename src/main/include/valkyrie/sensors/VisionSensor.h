@@ -35,6 +35,9 @@ class VisionSensor : public valor::BaseSensor<frc::Pose3d> {
 
         void reset() override;
 
+        void init();
+        void setCameraPose();
+
         void setPipe(PipeLines _pipe);
 
         bool hasTarget();
