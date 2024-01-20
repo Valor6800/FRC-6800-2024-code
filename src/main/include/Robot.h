@@ -45,5 +45,5 @@ class Robot : public frc::TimedRobot {
         Intake intake;
 
         std::ofstream outfile;
-        frc::DigitalInput *beamBreak;
+        frc::DigitalInput beamBreak;
 };
