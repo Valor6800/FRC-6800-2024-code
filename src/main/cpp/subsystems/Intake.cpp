@@ -54,18 +54,17 @@ void Intake::assessInputs()
         state.intake = INTAKING;
         state.activation = DEPOLOYED;
     }
-    else
+    /*else
     {
         if(operatorGamepad->leftTriggerActive())
         {
             state.intake = OUTTAKE;
             state.activation = DEPOLOYED;
-        }
-        else
-        {
-            state.intake = STAGNANT;
-            state.activation = STOWED;
-        }
+        }*/
+    else
+    {
+        state.intake = STAGNANT;
+        state.activation = STOWED;
     }
     state.detection = beam->Get() ? NOTE_DETECTED : NOTE_NOTDETECTED; 
 }

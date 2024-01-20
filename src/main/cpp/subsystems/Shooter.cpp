@@ -94,18 +94,18 @@ void Shooter::assessInputs()
     } 
 
     //PIVOT LOGIC
-    if (operatorGamepad->rightTriggerActive()) {
+    if (driverGamepad->GetAButton()) {
         state.pivot = PivotState::SUBWOOFER;
     }
-    else if (operatorGamepad->GetRightBumperPressed()) {
+   /* else if (operatorGamepad->GetRightBumperPressed()) {
         state.pivot = PivotState::PODIUM;
     }
     else if (operatorGamepad->GetLeftBumperPressed()) { 
         state.pivot = PivotState::STARTING_LINE;
     }
     else if (operatorGamepad->leftTriggerActive()) {
-        state.pivot = PivotState::TRACKING;
-    }
+        state.pivot = PivotState::TRACKING;*/
+    
 }
 
 void Shooter::analyzeDashboard()
