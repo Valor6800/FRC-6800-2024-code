@@ -49,7 +49,7 @@ void Intake::init()
 
 void Intake::assessInputs()
 {
-    if(operatorGamepad->rightTriggerActive())
+    if(driverGamepad->GetLeftBumperPressed())
     {
         state.intake = INTAKING;
         state.activation = DEPOLOYED;
