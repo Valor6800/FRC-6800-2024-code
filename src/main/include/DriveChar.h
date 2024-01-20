@@ -15,6 +15,8 @@ class DriveChar : public valor::BaseSubsystem {
  public:
   DriveChar(frc::TimedRobot *_robot, Drivetrain* _drive);
 
+  void assignOutputs() override;
+
   frc2::CommandPtr GetAutonomousCommand();
   void InitSendable(wpi::SendableBuilder& builder);
   
