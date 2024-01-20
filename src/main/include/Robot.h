@@ -14,8 +14,10 @@
 #include <frc/DataLogManager.h>
 
 #include <frc/livewindow/LiveWindow.h>
+#include "subsystems/Intake.h"
 
 #include <fstream>
+#include "frc/DigitalInput.h"
 
 class Robot : public frc::TimedRobot {
     public:
@@ -40,6 +42,8 @@ class Robot : public frc::TimedRobot {
 
         Drivetrain drivetrain;
         valor::Auto valorAuto;
+        Intake intake;
 
         std::ofstream outfile;
+        frc::DigitalInput *beamBreak;
 };

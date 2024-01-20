@@ -3,6 +3,7 @@
 #include <math.h>
 #include "valkyrie/controllers/NeutralMode.h"
 #include "Constants.h"
+#include "valkyrie/sensors/DebounceSensor.h"
 
 #define OTB_ROLLER_GEAR_RATIO 4.0f
 #define OTB_DROPDOWN_GEAR_RATIO 3.0f
@@ -10,11 +11,12 @@
 #define OTB_DEPLOYED_POSITION 33.0f
 #define OTB_STOWED_POSITION 0.0f
 
-Intake::Intake(frc::TimedRobot *_robot) :
+Intake::Intake(frc::TimedRobot *_robot, frc::DigitalInput *_beamBreak) :
     valor::BaseSubsystem(_robot, "Intake"),
     RollerMotor(CANIDs::EXTERNAL_INTAKE, valor::NeutralMode::Brake, false),
     ActivationMotor(CANIDs::EXTERNAL_DROPDOWN, valor::NeutralMode::Brake, false),
-    beam(DIOPorts::BEAM_DIO_PORT)
+    beam(_beamBreak),
+    debounce(_robot, "Intake")
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -45,14 +47,14 @@ void Intake::init()
 
 void Intake::assessInputs()
 {
-    if(operatorGamepad->GetXButtonPressed())
+    if(operatorGamepad->GetRightTriggerAxis())
     {
         state.intake = INTAKING;
         state.activation = DEPOLOYED;
     }
     else
     {
-        if(operatorGamepad->GetYButtonPressed())
+        if(operatorGamepad->GetLeftTriggerAxis())
         {
             state.intake = OUTTAKE;
             state.activation = DEPOLOYED;
@@ -63,7 +65,7 @@ void Intake::assessInputs()
             state.activation = STOWED;
         }
     }
-    if(beam.Get())
+    if(beam->Get())
     {
         state.detection = NOTE_DETECTED;
     }
@@ -146,9 +148,14 @@ void Intake::InitSendable(wpi::SendableBuilder& builder)
         nullptr
     );
 
+    /*builder.AddDoubleProperty(
+        "debounceTest",
+        [this] {return debounce.}
+    ) */
+
     builder.AddBooleanProperty(
         "beamDetection",
-        [this] {return beam.Get();},
+        [this] {return beam->Get();},
         nullptr
     );
 }

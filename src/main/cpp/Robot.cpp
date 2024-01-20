@@ -5,7 +5,7 @@
 
 #include <ctime>
 
-Robot::Robot() : drivetrain(this), valorAuto()
+Robot::Robot() : drivetrain(this), intake(this, beamBreak), valorAuto()
 {
     frc::TimedRobot();
 }
@@ -14,10 +14,14 @@ void Robot::RobotInit() {
     drivetrain.setGamepads(&gamepadOperator, &gamepadDriver);
     drivetrain.resetState();
 
+    intake.resetState();
+    intake.setGamepads(&gamepadOperator, &gamepadDriver);
+
     frc::LiveWindow::EnableAllTelemetry();
     frc::DataLogManager::Start();
 
     valorAuto.fillAutoList();
+
 }
 /**
  * This function is called every robot packet, no matter the mode. Use
@@ -47,6 +51,8 @@ void Robot::AutonomousInit() {
     drivetrain.state.matchStart = frc::Timer::GetFPGATimestamp().to<double>();
     drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Brake);
     drivetrain.pullSwerveModuleZeroReference();
+
+    intake.resetState();
 
     autoCommand = valorAuto.getCurrentAuto();
     autoCommand.Schedule();

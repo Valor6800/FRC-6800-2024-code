@@ -5,6 +5,7 @@
 #include <vector>
 #include "valkyrie/controllers/NeoController.h"
 #include "valkyrie/controllers/PIDF.h"
+#include "valkyrie/sensors/DebounceSensor.h"
 
 #include "frc/DigitalInput.h"
 
@@ -14,9 +15,10 @@ public:
     valor::NeoController RollerMotor;
     valor::NeoController ActivationMotor;
 
-    frc::DigitalInput beam;
+    frc::DigitalInput* beam;
+    valor::DebounceSensor debounce;
 
-    Intake(frc::TimedRobot *robot);
+    Intake(frc::TimedRobot *robot, frc::DigitalInput *_beamBreak);
 
     ~Intake();
 
