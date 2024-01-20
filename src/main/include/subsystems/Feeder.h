@@ -6,15 +6,15 @@
 #include "valkyrie/controllers/NeoController.h"
 #include "valkyrie/controllers/PIDF.h"
 
-class Indexer : public valor::BaseSubsystem
+class Feeder : public valor::BaseSubsystem
 {
 public:
     valor::NeoController NoteHandoffMotor;
     valor::NeoController ITBRollerMotor;
 
-    Indexer(frc::TimedRobot *robot);
+    Feeder(frc::TimedRobot *robot);
 
-    ~Indexer();
+    ~Feeder();
 
     void resetState();
     void init();
