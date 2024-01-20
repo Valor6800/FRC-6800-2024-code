@@ -52,14 +52,14 @@ void Intake::init()
 
 void Intake::assessInputs()
 {
-    if(operatorGamepad->GetRightTriggerAxis())
+    if(operatorGamepad->GetRightTriggerAxis() != 0.0)
     {
         state.intake = INTAKING;
         state.activation = DEPOLOYED;
     }
     else
     {
-        if(operatorGamepad->GetLeftTriggerAxis())
+        if(operatorGamepad->GetLeftTriggerAxis() != 0.0)
         {
             state.intake = OUTTAKE;
             state.activation = DEPOLOYED;
