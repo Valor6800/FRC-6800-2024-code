@@ -5,7 +5,7 @@
 
 #include <ctime>
 
-Robot::Robot() : drivetrain(this), beamBreak(DIOPorts::BEAM_DIO_PORT), intake(this, &beamBreak), valorAuto()
+Robot::Robot() : drivetrain(this), valorAuto(), beamBreak(DIOPorts::BEAM_BREAK_PORT), shooter(this, &beamBreak), intake(this, &beamBreak)
 {
     frc::TimedRobot();
 }

@@ -12,6 +12,7 @@
 
 #include <frc/DriverStation.h>
 #include <frc/DataLogManager.h>
+#include <subsystems/Shooter.h>
 
 #include <frc/livewindow/LiveWindow.h>
 #include "subsystems/Intake.h"
@@ -41,6 +42,8 @@ class Robot : public frc::TimedRobot {
         frc2::CommandPtr autoCommand = frc2::cmd::Sequence();
 
         Drivetrain drivetrain;
+        Shooter shooter;
+
         valor::Auto valorAuto;
         Intake intake;
 

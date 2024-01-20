@@ -40,7 +40,7 @@ namespace LimelightConstants {
 
 namespace DIOPorts {
     constexpr static int MAG_ENCODER_PORTS[4] = {1, 2, 3, 4};
-    constexpr static int BEAM_DIO_PORT = 0;
+    constexpr static int BEAM_BREAK_PORT = 0;
 }
 
 namespace CANIDs {
@@ -59,8 +59,8 @@ namespace CANIDs {
     constexpr static int EXTERNAL_INTAKE = 9;
     constexpr static int EXTERNAL_DROPDOWN = 19; // rando number
     constexpr static int ANGLE_CONTROLLER = 20; // rando number
-    constexpr static int RIGHT_SHOOTER_WHEEL_CONTROLLER = 21; // rando number
-    constexpr static int LEFT_SHOOTER_WHEEL_CONTROLLER = 22; // rando number
+    constexpr static int RIGHT_SHOOTER_WHEEL_CONTROLLER = 10; // rando number
+    constexpr static int LEFT_SHOOTER_WHEEL_CONTROLLER = 11; // rando number
     constexpr static int HANDOFF_CONTROLLER = 23; // rando number
     constexpr static int RIGHT_CLIMBER = 24; // rando number
     constexpr static int LEFT_CLIMBER = 25; // rando number

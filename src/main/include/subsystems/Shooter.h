@@ -10,20 +10,22 @@
 #include <frc/trajectory/Trajectory.h>
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Rotation2d.h>
+#include <frc/DigitalInput.h>
+#include <frc/trajectory/TrajectoryGenerator.h>
+#include <frc/DigitalOutput.h>
 
 #include <frc2/command/FunctionalCommand.h>
 #include <unordered_map>
 #include "valkyrie/Gamepad.h"
 
-
 class Shooter : public valor::BaseSubsystem
 {
 public:
-    valor::NeoController ShooterAngleControlMotor;
-    valor::NeoController RightWheelsShootingMotor;
-    valor::NeoController LeftWheelShootingMotor;
+    //valor::NeoController pivotMotors;
+    valor::NeoController LeftflywheelMotors;
+    valor::NeoController RightflywheelMotors;
 
-    Shooter(frc::TimedRobot *robot);
+    Shooter(frc::TimedRobot *robot, frc::DigitalInput* beamBreak);
 
     ~Shooter();
 
@@ -31,27 +33,41 @@ public:
 
     void init();
 
-    void shoot(double speed);
-
     void assessInputs();
     void analyzeDashboard();
     void assignOutputs();
+    
+    void setAngle();
 
     void InitSendable(wpi::SendableBuilder& builder);
 
+    enum FlywheelState
+    {
+        NOT_SHOOTING,
+        SPOOLED,
+        SHOOTING
+    };
+
+    enum PivotState
+    {
+        SUBWOOFER,
+        PODIUM,
+        STARTING_LINE,
+        TRACKING
+    };
+
     struct x
     {
-        bool rightSideShooting;
-        bool leftSideShooting;
-        bool isShooting;
-        double shootingSpeed;
-        double angle;
+        PivotState pivot;
+        FlywheelState flywheel;
     } state;
 
 private:
+    units::degree_t calculatingPivotingAngle;
 
-    double shootingMaxSpeed;
-    double angleAdjustMaxSpeed;
+    valor::PIDF pivotPID;
 
-    valor::PIDF shooterAngle;
+    frc::DigitalInput* beamBreak;
+
+    double leftShootPwr, rightShootPwr, leftSpooledPwr, rightSpooledPwr;
 };

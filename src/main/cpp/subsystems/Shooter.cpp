@@ -3,34 +3,40 @@
 #include <math.h>
 #include "valkyrie/controllers/NeutralMode.h"
 
-#define SHOOTER_ANGLE_ADJUST_SPEED 1.0f
-#define SHOOTER_MAX_SPEED 2.0f
+#define PIVOT_ROTATE_K_VEL 90.0_rpm
+#define PIVOT_ROTATE_K_ACC_MUL 0.5f
+#define PIVOT_ROTATE_K_F 0.0f
+#define PIVOT_ROTATE_K_P 0.0f
+#define PIVOT_ROTATE_K_I 0.0f
+#define PIVOT_ROTATE_K_D 0.0f
+#define PIVOT_ROTATE_K_ERROR 0.0f
+#define PIVOT_ROTATE_K_AFF 0.0f
+#define PIVOT_ROTATE_K_AFF_POS 0.0f
 
-#define SHOOTER_ROTATE_K_VEL 0.0f
-#define SHOOTER_ROTATE_K_ACC_MUL 0.0f
-#define SHOOTER_ROTATE_K_F 0.0f
-#define SHOOTER_ROTATE_K_P 0.0f
-#define SHOOTER_ROTATE_K_I 0.0f
-#define SHOOTER_ROTATE_K_D 0.0f
-#define SHOOTER_ROTATE_K_ERROR 0.0f
-#define SHOOTER_ROTATE_K_AFF 0.0f
-#define SHOOTER_ROTATE_K_AFF_POS 0.0f
+#define SUBWOOFER_ANG 30.0_deg
+#define PODIUM_ANG 45.0_deg
+#define STARTING_LINE_ANG 60.0_deg
+
+#define SHOOT_LEFT_POWER -1.0f
+#define SPOOLED_LEFT_POWER -0.8f
+#define SHOOT_RIGHT_POWER 1.0f
+#define SPOOLED_RIGHT_POWER 0.8f
 
 #define SHOOTER_ROTATE_GEAR_RATIO 1.0f
-#define SHOOTER_ROTATE_FORWARD_LIMIT 1.0f
-#define SHOOTER_ROTATE_REVERSE_LIMIT 2.0f
+#define SHOOTER_ROTATE_FORWARD_LIMIT 90.0_deg
+#define SHOOTER_ROTATE_REVERSE_LIMIT 0.0_deg
 
-#define SHOOTER_STARTING_ANGLE 30.0f
-#define SHOOTING_SPEED_SLOWER 0.8f
-// #define SHOOTER_ROTATE_S_CURVE_STRENGTH 0.0f
-
-Shooter::Shooter(frc::TimedRobot *_robot) :
+Shooter::Shooter(frc::TimedRobot *_robot, frc::DigitalInput* _beamBreak) :
     valor::BaseSubsystem(_robot, "Shooter"),
-    ShooterAngleControlMotor(CANIDs::ANGLE_CONTROLLER, valor::NeutralMode::Brake, false),
-    RightWheelsShootingMotor(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Brake, false),
-    LeftWheelShootingMotor(CANIDs::LEFT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Brake, false),
-    angleAdjustMaxSpeed(SHOOTER_ANGLE_ADJUST_SPEED),
-    shootingMaxSpeed(SHOOTER_MAX_SPEED)
+    //pivotMotors(CANIDs::ANGLE_CONTROLLER, valor::NeutralMode::Brake, false),
+    LeftflywheelMotors(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Brake, false),
+    RightflywheelMotors(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Brake, false),
+    beamBreak(_beamBreak),
+    leftShootPwr(SHOOT_LEFT_POWER),
+    rightShootPwr(SHOOT_RIGHT_POWER),
+    leftSpooledPwr(SPOOLED_LEFT_POWER),
+    rightSpooledPwr(SPOOLED_RIGHT_POWER)
+
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -42,104 +48,118 @@ Shooter::~Shooter()
 
 void Shooter::resetState()
 {
-    state.isShooting = false;
-    state.leftSideShooting = false;
-    state.rightSideShooting = false;
-    state.angle = SHOOTER_STARTING_ANGLE;
-    state.shootingSpeed = 0;
+    state.flywheel = FlywheelState::NOT_SHOOTING;
+    state.pivot = PivotState::SUBWOOFER;
 }
 
 void Shooter::init()
 {
-    shooterAngle.velocity = SHOOTER_ROTATE_K_VEL;
-    shooterAngle.acceleration = SHOOTER_ROTATE_K_ACC_MUL;
-    shooterAngle.F = SHOOTER_ROTATE_K_F;
-    shooterAngle.P = SHOOTER_ROTATE_K_P;
-    shooterAngle.I = SHOOTER_ROTATE_K_I;
-    shooterAngle.D = SHOOTER_ROTATE_K_D;
-    shooterAngle.error = SHOOTER_ROTATE_K_ERROR;
-    shooterAngle.aFF = SHOOTER_ROTATE_K_AFF;
-    shooterAngle.aFFTarget = SHOOTER_ROTATE_K_AFF_POS;
+    pivotPID.velocity = PIVOT_ROTATE_K_VEL.to<double>();
+    pivotPID.acceleration = PIVOT_ROTATE_K_ACC_MUL;
+    pivotPID.F = PIVOT_ROTATE_K_F;
+    pivotPID.P = PIVOT_ROTATE_K_P;
+    pivotPID.I = PIVOT_ROTATE_K_I;
+    pivotPID.D = PIVOT_ROTATE_K_D;
+    pivotPID.error = PIVOT_ROTATE_K_ERROR;
+    pivotPID.aFF = PIVOT_ROTATE_K_AFF;
+    pivotPID.aFFTarget = PIVOT_ROTATE_K_AFF_POS;
 
-    ShooterAngleControlMotor.setConversion(1.0 / SHOOTER_ROTATE_GEAR_RATIO * 360);
-    ShooterAngleControlMotor.setForwardLimit(SHOOTER_ROTATE_FORWARD_LIMIT);
-    ShooterAngleControlMotor.setReverseLimit(SHOOTER_ROTATE_REVERSE_LIMIT);
-    ShooterAngleControlMotor.setPIDF(shooterAngle, 0);
+    // pivotMotors.setConversion(1.0 / SHOOTER_ROTATE_GEAR_RATIO * 360);
+    // pivotMotors.setForwardLimit(SHOOTER_ROTATE_FORWARD_LIMIT.to<double>());
+    // pivotMotors.setReverseLimit(SHOOTER_ROTATE_REVERSE_LIMIT.to<double>());
+    // pivotMotors.setPIDF(pivotPID, 0);
+    table->PutNumber("Left shoot power", leftShootPwr);
+    table->PutNumber("Right shoot power", rightShootPwr);
+    table->PutNumber("Left spooled power", leftSpooledPwr);
+    table->PutNumber("Right spooled power", rightSpooledPwr);
+
 
     resetState();
-
-    table->PutNumber("Shooting Angle Control Max Speed", SHOOTER_ANGLE_ADJUST_SPEED);
-    table->PutNumber("Shooting Max Speed", SHOOTER_MAX_SPEED);
-    table->PutBoolean("Is Left Side Shooting?", state.leftSideShooting);
-    table->PutBoolean("Is Right Side Shooting?", state.rightSideShooting);
-    table->PutBoolean("Are We Shooting?", state.isShooting);
 
 }
 
 void Shooter::assessInputs()
 {
-    if(operatorGamepad->leftStickYActive())
-    {
-        state.shootingSpeed = operatorGamepad->leftStickY() * SHOOTING_SPEED_SLOWER;
-        state.isShooting = true;
-        state.rightSideShooting = true;
-        state.leftSideShooting = true;
+    //SHOOT LOGIC
+    if (driverGamepad->rightTrigger()) {
+        state.flywheel = FlywheelState::SHOOTING;
+    }
+    else if (beamBreak->Get()) {
+        state.flywheel = FlywheelState::SPOOLED;
+    }
+    else {
+        state.flywheel = FlywheelState::NOT_SHOOTING;
+    } 
+
+    //PIVOT LOGIC
+    if (operatorGamepad->rightTrigger()) {
+        state.pivot = PivotState::SUBWOOFER;
+    }
+    else if (operatorGamepad->GetRightBumperPressed()) {
+        state.pivot = PivotState::PODIUM;
+    }
+    else if (operatorGamepad->GetLeftBumperPressed()) { 
+        state.pivot = PivotState::STARTING_LINE;
+    }
+    else if (operatorGamepad->leftTrigger()) {
+        state.pivot = PivotState::TRACKING;
     }
 }
 
 void Shooter::analyzeDashboard()
 {
-    table->PutNumber("Shooting speed", state.shootingSpeed);
-    table->PutBoolean("Is shooting?", state.isShooting);
-    table->PutBoolean("Is right side shooting?", state.rightSideShooting);
-    table->PutBoolean("Is left side shooting?", state.leftSideShooting);
-}
+    calculatingPivotingAngle = 0.0_deg;
+    leftShootPwr = table->GetNumber("Left shoot power", leftShootPwr);
+    rightShootPwr = table->GetNumber("Right shoot power", rightShootPwr);
+    leftSpooledPwr = table->GetNumber("Left spooled power", leftSpooledPwr);
+    rightSpooledPwr = table->GetNumber("Right spooled power", rightSpooledPwr);}
 
 void Shooter::assignOutputs()
 {
-    if(state.isShooting)
-    {
-        shoot(state.shootingSpeed);
-    }
-}
 
-void Shooter::shoot(double power)
-{
-    RightWheelsShootingMotor.setPower(power);
-    LeftWheelShootingMotor.setPower(power);
+    //NEED PIVOT MOTOR
+    // if(state.pivot == PivotState::SUBWOOFER){
+    //     pivotMotors.setPosition(SUBWOOFER_ANG.to<double>());
+    // }
+    // else if(state.pivot == PivotState::PODIUM){
+    //     pivotMotors.setPosition(PODIUM_ANG.to<double>());
+    // }
+    // else if(state.pivot == PivotState::STARTING_LINE){
+    //     pivotMotors.setPosition(STARTING_LINE_ANG.to<double>());
+    // }
+    // else if(state.pivot == PivotState::TRACKING){
+    //     pivotMotors.setPosition(calculatingPivotingAngle.to<double>());
+    // }
+
+    //SHOOTER
+    if(state.flywheel == FlywheelState::SHOOTING){
+        LeftflywheelMotors.setPower(leftShootPwr);
+        RightflywheelMotors.setPower(rightShootPwr);
+    }
+    else if(state.flywheel == FlywheelState::SPOOLED){
+        LeftflywheelMotors.setPower(leftSpooledPwr);
+        RightflywheelMotors.setPower(rightSpooledPwr);
+    }
+    else{
+        RightflywheelMotors.setPower(0);
+        LeftflywheelMotors.setPower(0);
+    }
 }
 
 void Shooter::InitSendable(wpi::SendableBuilder& builder)
 {
-    builder.SetSmartDashboardType("Subsystem");
+    builder.SetSmartDashboardType("Shooter");
 
-    builder.AddBooleanProperty(
-        "rightShot",
-        [this] {return state.rightSideShooting;},
+    builder.AddIntegerProperty(
+        "flywheel state",
+        [this] {return state.flywheel;},
         nullptr
     );
 
-    builder.AddBooleanProperty(
-        "leftShot",
-        [this] {return state.leftSideShooting;},
+    builder.AddIntegerProperty(
+        "pivot state",
+        [this] {return state.pivot;},
         nullptr
     );
 
-    builder.AddBooleanProperty(
-        "isShot",
-        [this] {return state.isShooting;},
-        nullptr
-    );
-
-    builder.AddDoubleProperty(
-        "angle",
-        [this] {return state.angle;},
-        nullptr
-    );
-
-    builder.AddDoubleProperty(
-        "speed",
-        [this] {return state.shootingSpeed;},
-        nullptr
-    );
 }
