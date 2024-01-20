@@ -21,6 +21,8 @@
 #define SPOOLED_LEFT_POWER -0.8f
 #define SHOOT_RIGHT_POWER 1.0f
 #define SPOOLED_RIGHT_POWER 0.8f
+#define OFF_LEFT_POWER 0.0f
+#define OFF_RIGHT_POWER 0.0f
 
 #define SHOOTER_ROTATE_GEAR_RATIO 1.0f
 #define SHOOTER_ROTATE_FORWARD_LIMIT 90.0_deg
@@ -29,7 +31,7 @@
 Shooter::Shooter(frc::TimedRobot *_robot, frc::DigitalInput* _beamBreak) :
     valor::BaseSubsystem(_robot, "Shooter"),
     //pivotMotors(CANIDs::ANGLE_CONTROLLER, valor::NeutralMode::Brake, false),
-    LeftflywheelMotors(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Brake, false),
+    LeftflywheelMotors(CANIDs::LEFT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Brake, false),
     RightflywheelMotors(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Brake, false),
     beamBreak(_beamBreak),
     leftShootPwr(SHOOT_LEFT_POWER),
@@ -81,7 +83,7 @@ void Shooter::init()
 void Shooter::assessInputs()
 {
     //SHOOT LOGIC
-    if (driverGamepad->rightTrigger()) {
+    if (driverGamepad->rightTriggerActive()) {
         state.flywheel = FlywheelState::SHOOTING;
     }
     else if (beamBreak->Get()) {
@@ -92,7 +94,7 @@ void Shooter::assessInputs()
     } 
 
     //PIVOT LOGIC
-    if (operatorGamepad->rightTrigger()) {
+    if (operatorGamepad->rightTriggerActive()) {
         state.pivot = PivotState::SUBWOOFER;
     }
     else if (operatorGamepad->GetRightBumperPressed()) {
@@ -101,7 +103,7 @@ void Shooter::assessInputs()
     else if (operatorGamepad->GetLeftBumperPressed()) { 
         state.pivot = PivotState::STARTING_LINE;
     }
-    else if (operatorGamepad->leftTrigger()) {
+    else if (operatorGamepad->leftTriggerActive()) {
         state.pivot = PivotState::TRACKING;
     }
 }
@@ -141,8 +143,8 @@ void Shooter::assignOutputs()
         RightflywheelMotors.setPower(rightSpooledPwr);
     }
     else{
-        RightflywheelMotors.setPower(0);
-        LeftflywheelMotors.setPower(0);
+        RightflywheelMotors.setPower(OFF_LEFT_POWER);
+        LeftflywheelMotors.setPower(OFF_RIGHT_POWER);
     }
 }
 
@@ -161,5 +163,32 @@ void Shooter::InitSendable(wpi::SendableBuilder& builder)
         [this] {return state.pivot;},
         nullptr
     );
+
+    builder.AddDoubleProperty(
+        "Left shoot power", 
+        [this] { return leftShootPwr; },
+        nullptr
+    );
+
+    builder.AddDoubleProperty(
+        "Right shoot power", 
+        [this] { return rightShootPwr; },
+        nullptr
+    );
+
+    builder.AddDoubleProperty(
+        "Left spooled power", 
+        [this] { return leftSpooledPwr; },
+        nullptr
+    );
+
+    builder.AddDoubleProperty(
+        "Right spooled power", 
+        [this] { return rightSpooledPwr; },
+        nullptr
+    );
+
+
+
 
 }

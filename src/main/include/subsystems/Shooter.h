@@ -37,8 +37,6 @@ public:
     void analyzeDashboard();
     void assignOutputs();
     
-    void setAngle();
-
     void InitSendable(wpi::SendableBuilder& builder);
 
     enum FlywheelState
