@@ -32,8 +32,28 @@ public:
 
     struct x
     {
-        bool OTBisIntaking;
-        bool dropDown;
+        enum Activation_State
+        {
+            DEPOLOYED,
+            STOWED
+        };
+
+        enum Intake_State
+        {
+            INTAKING,
+            STAGNANT,
+            OUTTAKE
+        };
+
+        enum Detection_State
+        {
+            NOTE_DETECTED,
+            NOTE_NOTDETECTED
+        };
+        int activation;
+        int intake;
+        int detection;
+
     } state;
 
 private:

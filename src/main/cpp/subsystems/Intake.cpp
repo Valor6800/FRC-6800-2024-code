@@ -24,8 +24,9 @@ Intake::~Intake()
 
 void Intake::resetState()
 {
-    state.dropDown = false;
-    state.OTBisIntaking = false;
+    state.activation = state.STOWED;
+    state.intake = state.STAGNANT;
+    state.detection = state.NOTE_NOTDETECTED;
 }
 
 void Intake::init()
@@ -35,50 +36,54 @@ void Intake::init()
 
     resetState();
 
-    table->PutBoolean("Intaking?", state.OTBisIntaking);
-    table->PutBoolean("Dropdown?", state.dropDown);
+    table->PutNumber("Activation State", state.activation);
+    table->PutNumber("Intake State", state.intake);
+    table->PutNumber("Detection State", state.detection);
 }
 
 void Intake::assessInputs()
 {
     if(operatorGamepad->GetXButtonPressed())
     {
-        state.dropDown = true;
+        state.intake = state.INTAKING;
+        state.activation = state.DEPOLOYED;
     }
-    if(operatorGamepad->GetYButtonPressed())
+    else
     {
-        state.OTBisIntaking = true;
+        if(operatorGamepad->GetYButtonPressed())
+        {
+            state.intake = state.OUTTAKE;
+            state.activation = state.DEPOLOYED;
+        }
+        else
+        {
+            state.intake = state.STAGNANT;
+            state.activation = state.STOWED;
+        }
+    }
+    if(operatorGamepad->GetAButtonPressed()) // placeholder for beam break sensor
+    {
+        state.detection = state.NOTE_DETECTED;
+    }
+    else
+    {
+        state.detection = state.NOTE_NOTDETECTED;
     }
 }
 
 void Intake::analyzeDashboard()
 {
-    table->PutBoolean("Intaking?", state.OTBisIntaking);
-    table->PutBoolean("Dropdown?", state.dropDown);
+    table->PutNumber("Activation State", state.activation);
+    table->PutNumber("Intake State", state.intake);
+    table->PutNumber("Detection State", state.detection);
 }
 
 void Intake::assignOutputs()
 {
-    if(state.dropDown)
-    {
-        dropDown();
-    }
-    if(state.OTBisIntaking)
-    {
-        rollerIntake();
-    }
 }
 
 void Intake::dropDown()
 {
-    if(state.dropDown)
-    {
-        OTBDropDownMotor.setPosition(OTB_DROPDOWN_POSITION);
-    }
-    if(!state.dropDown)
-    {
-        OTBDropDownMotor.setPosition(OTB_INSIDE_POSITION);
-    }
 }
 
 void Intake::rollerIntake()
@@ -95,7 +100,7 @@ void Intake::InitSendable(wpi::SendableBuilder& builder)
 {
     builder.SetSmartDashboardType("Subsystem");
 
-    builder.AddBooleanProperty(
+    /*builder.AddBooleanProperty(
         "isDropdown",
         [this] {return state.dropDown;},
         nullptr
@@ -105,7 +110,7 @@ void Intake::InitSendable(wpi::SendableBuilder& builder)
         "isIntaking",
         [this] {return state.OTBisIntaking;},
         nullptr
-    );
+    );*/
 
     builder.AddDoubleProperty(
         "OTBrollerSpeed",
