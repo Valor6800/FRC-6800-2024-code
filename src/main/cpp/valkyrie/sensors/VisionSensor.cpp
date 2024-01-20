@@ -24,7 +24,7 @@ void VisionSensor::setCameraPose(){
     double roll = cameraPose.Rotation().Y().to<double>();
     double yaw = cameraPose.Rotation().Z().to<double>();
 
-    std::array<const double, 6> camPose = std::array<const double, 6>(x, y, z, pitch, roll, yaw);
+    std::array<double, 6> camPose = std::array<double, 6>{x, y, z, pitch, roll, yaw};
     limeTable->PutNumberArray("camerapose_robotspace_set", camPose);
 }
 
