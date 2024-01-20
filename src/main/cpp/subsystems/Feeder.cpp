@@ -1,13 +1,13 @@
-#include "subsystems/Indexer.h"
+#include "subsystems/Feeder.h"
 #include <iostream>
 #include <math.h>
 #include "valkyrie/controllers/NeutralMode.h"
 
-#define INDEXER_GEAR_RATIO 0.0f
+#define Feeder_GEAR_RATIO 0.0f
 #define ITB_ROLLER_GEAR_RATIO 2.0f
 
-Indexer::Indexer(frc::TimedRobot *_robot) :
-    valor::BaseSubsystem(_robot, "Indexer"),
+Feeder::Feeder(frc::TimedRobot *_robot) :
+    valor::BaseSubsystem(_robot, "Feeder"),
     NoteHandoffMotor(CANIDs::HANDOFF_CONTROLLER, valor::NeutralMode::Brake, false),
     ITBRollerMotor(CANIDs::INTERNAL_INTAKE, valor::NeutralMode::Brake, false)
 {
@@ -15,19 +15,19 @@ Indexer::Indexer(frc::TimedRobot *_robot) :
     init();
 }
 
-Indexer::~Indexer()
+Feeder::~Feeder()
 {   
 }
 
-void Indexer::resetState()
+void Feeder::resetState()
 {
     state.inHandoff = false;
     state.isIndexIntake = false;
 }
 
-void Indexer::init()
+void Feeder::init()
 {
-    NoteHandoffMotor.setConversion(1.0 / INDEXER_GEAR_RATIO * 360);
+    NoteHandoffMotor.setConversion(1.0 / Feeder_GEAR_RATIO * 360);
     ITBRollerMotor.setConversion(1.0 / ITB_ROLLER_GEAR_RATIO * 360);
 
     resetState();
@@ -36,7 +36,7 @@ void Indexer::init()
     table->PutBoolean("Roller Intaking?", state.isIndexIntake);
 }
 
-void Indexer::assessInputs()
+void Feeder::assessInputs()
 {
     if(operatorGamepad->GetAButtonPressed())
     {
@@ -48,13 +48,13 @@ void Indexer::assessInputs()
     }
 }
 
-void Indexer::analyzeDashboard()
+void Feeder::analyzeDashboard()
 {
     table->PutBoolean("In handoff?", state.inHandoff);
     table->PutBoolean("Roller intaking?", state.isIndexIntake);
 }
 
-void Indexer::assignOutputs()
+void Feeder::assignOutputs()
 {
     if(state.inHandoff)
     {
@@ -65,27 +65,27 @@ void Indexer::assignOutputs()
     }
 }
 
-void Indexer::handoff()
+void Feeder::handoff()
 {
     NoteHandoffMotor.setPower(maxHandoffSpeed);
 }
 
-void Indexer::rollerIntake()
+void Feeder::rollerIntake()
 {
     ITBRollerMotor.setPower(maxRollerSpeed);
 }
 
-double Indexer::getHandOffSpeed()
+double Feeder::getHandOffSpeed()
 {
     return NoteHandoffMotor.getSpeed();
 }
 
-double Indexer::getRollerSpeed()
+double Feeder::getRollerSpeed()
 {
     return ITBRollerMotor.getSpeed();
 }
 
-void Indexer::InitSendable(wpi::SendableBuilder& builder)
+void Feeder::InitSendable(wpi::SendableBuilder& builder)
 {
     builder.SetSmartDashboardType("Subsystem");
 
