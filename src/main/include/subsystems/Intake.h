@@ -6,15 +6,15 @@
 #include "valkyrie/controllers/NeoController.h"
 #include "valkyrie/controllers/PIDF.h"
 
-class OTBIntake : public valor::BaseSubsystem
+class Intake : public valor::BaseSubsystem
 {
 public:
-    valor::NeoController OTBIntakeRollerMotor;
+    valor::NeoController IntakeRollerMotor;
     valor::NeoController OTBDropDownMotor;
 
-    OTBIntake(frc::TimedRobot *robot);
+    Intake(frc::TimedRobot *robot);
 
-    ~OTBIntake();
+    ~Intake();
 
     void resetState();
     void init();
@@ -38,6 +38,6 @@ public:
 
 private:
 
-    double OTBintakeRotMaxSpeed;
+    double IntakeRotMaxSpeed;
     double dropDownMaxSpeed;
 };

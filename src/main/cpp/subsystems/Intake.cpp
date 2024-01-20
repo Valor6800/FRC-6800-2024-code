@@ -1,4 +1,4 @@
-#include "subsystems/OTBIntake.h"
+#include "subsystems/Intake.h"
 #include <iostream>
 #include <math.h>
 #include "valkyrie/controllers/NeutralMode.h"
@@ -9,28 +9,28 @@
 #define OTB_DROPDOWN_POSITION 33.0f
 #define OTB_INSIDE_POSITION 0.0f
 
-OTBIntake::OTBIntake(frc::TimedRobot *_robot) :
-    valor::BaseSubsystem(_robot, "OTBIntake"),
-    OTBIntakeRollerMotor(CANIDs::EXTERNAL_INTAKE, valor::NeutralMode::Brake, false),
+Intake::Intake(frc::TimedRobot *_robot) :
+    valor::BaseSubsystem(_robot, "Intake"),
+    IntakeRollerMotor(CANIDs::EXTERNAL_INTAKE, valor::NeutralMode::Brake, false),
     OTBDropDownMotor(CANIDs::EXTERNAL_DROPDOWN, valor::NeutralMode::Brake, false)
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
 }
 
-OTBIntake::~OTBIntake()
+Intake::~Intake()
 {
 }
 
-void OTBIntake::resetState()
+void Intake::resetState()
 {
     state.dropDown = false;
     state.OTBisIntaking = false;
 }
 
-void OTBIntake::init()
+void Intake::init()
 {
-    OTBIntakeRollerMotor.setConversion(1.0 / OTB_ROLLER_GEAR_RATIO * 360);
+    IntakeRollerMotor.setConversion(1.0 / OTB_ROLLER_GEAR_RATIO * 360);
     OTBDropDownMotor.setConversion(1.0 / OTB_DROPDOWN_GEAR_RATIO * 360);
 
     resetState();
@@ -39,7 +39,7 @@ void OTBIntake::init()
     table->PutBoolean("Dropdown?", state.dropDown);
 }
 
-void OTBIntake::assessInputs()
+void Intake::assessInputs()
 {
     if(operatorGamepad->GetXButtonPressed())
     {
@@ -51,13 +51,13 @@ void OTBIntake::assessInputs()
     }
 }
 
-void OTBIntake::analyzeDashboard()
+void Intake::analyzeDashboard()
 {
     table->PutBoolean("Intaking?", state.OTBisIntaking);
     table->PutBoolean("Dropdown?", state.dropDown);
 }
 
-void OTBIntake::assignOutputs()
+void Intake::assignOutputs()
 {
     if(state.dropDown)
     {
@@ -69,7 +69,7 @@ void OTBIntake::assignOutputs()
     }
 }
 
-void OTBIntake::dropDown()
+void Intake::dropDown()
 {
     if(state.dropDown)
     {
@@ -81,17 +81,17 @@ void OTBIntake::dropDown()
     }
 }
 
-void OTBIntake::rollerIntake()
+void Intake::rollerIntake()
 {
-    OTBIntakeRollerMotor.setPower(OTBintakeRotMaxSpeed);
+    IntakeRollerMotor.setPower(IntakeRotMaxSpeed);
 }
 
-double OTBIntake::getOTBRollerSpeed()
+double Intake::getOTBRollerSpeed()
 {
-    return OTBIntakeRollerMotor.getSpeed();
+    return IntakeRollerMotor.getSpeed();
 }
 
-void OTBIntake::InitSendable(wpi::SendableBuilder& builder)
+void Intake::InitSendable(wpi::SendableBuilder& builder)
 {
     builder.SetSmartDashboardType("Subsystem");
 
