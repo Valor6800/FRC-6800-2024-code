@@ -67,7 +67,6 @@ using namespace pathplanner;
 #define ROT_SPEED_MUL 2.0f
 
 #define AUTO_VISION_THRESHOLD 4.0f //meters
-#define FIELD_LENGTH 16.5f
 
 #define MODULE_DIFF 0.2413f
 
