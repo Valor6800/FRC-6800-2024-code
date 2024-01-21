@@ -276,8 +276,9 @@ private:
      valor::PIDF yPIDF;
      valor::PIDF thetaPIDF;
 
+     bool swerveNoError;
+
      valor::AprilTagsSensor aprilLL;
      valor::AprilTagsSensor aprilChocolate;
 
-     bool swerveNoError;
 };
