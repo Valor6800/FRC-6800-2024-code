@@ -98,7 +98,7 @@ void Intake::assignOutputs()
     {
         RollerMotor.setPower(0);
     }
-    if(state.detection = NOTE_DETECTED)
+    if(state.detection == NOTE_DETECTED)
     {
         // LED ON
     }
