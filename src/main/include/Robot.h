@@ -42,11 +42,11 @@ class Robot : public frc::TimedRobot {
         frc2::CommandPtr autoCommand = frc2::cmd::Sequence();
 
         Drivetrain drivetrain;
-        Shooter shooter;
-
         valor::Auto valorAuto;
+        frc::DigitalInput beamBreak;  
+          
+        Shooter shooter;
         Intake intake;
 
-        std::ofstream outfile;
-        frc::DigitalInput beamBreak;
+        std::ofstream outfile;        
 };
