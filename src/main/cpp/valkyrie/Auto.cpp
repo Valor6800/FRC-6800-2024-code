@@ -14,7 +14,7 @@ using namespace pathplanner;
 #define AUTOS_PATH (std::string)"/home/lvuser/deploy/pathplanner/autos/"
 #define PATHS_PATH (std::string)"/home/lvuser/deploy/pathplanner/paths/"
 
-Auto::Auto(Intake* _intake, Shooter* _shooter) : intake(_intake), shooter(_shooter){
+Auto::Auto(){
     table = nt::NetworkTableInstance::GetDefault().GetTable("auto");
 }
 

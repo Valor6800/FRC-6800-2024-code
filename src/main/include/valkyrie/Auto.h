@@ -11,8 +11,7 @@ namespace valor {
 class Auto
 {
     public:
-        Auto(Intake* intake, Shooter* shooter);
-        
+        Auto();
         void fillAutoList();
         frc2::CommandPtr getCurrentAuto();
 
@@ -20,9 +19,6 @@ class Auto
         frc2::CommandPtr makeAuto(std::string autoName);
         std::shared_ptr<nt::NetworkTable> table;
         frc::SendableChooser<std::string> m_chooser;
-
-        Shooter* shooter;
-        Intake* intake;
 };
 
 }
