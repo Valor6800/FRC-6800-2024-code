@@ -5,6 +5,12 @@
 #include "Constants.h"
 #include "valkyrie/sensors/DebounceSensor.h"
 
+#include <pathplanner/lib/auto/NamedCommands.h>
+
+#include <frc2/command/SequentialCommandGroup.h>
+#include <frc2/command/InstantCommand.h>
+#include <frc2/command/WaitCommand.h>
+
 #define OTB_ROLLER_GEAR_RATIO 4.0f
 #define OTB_DROPDOWN_GEAR_RATIO 3.0f
 
@@ -23,6 +29,25 @@ Intake::Intake(frc::TimedRobot *_robot, frc::DigitalInput *_beamBreak) :
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
+    pathplanner::NamedCommands::registerCommand("Intake", std::move(
+        frc2::SequentialCommandGroup(
+            frc2::InstantCommand(
+                [this]() {
+                    // shooter->state.isShooting = true;
+                    state.activation = Intake::Activation_State::DEPOLOYED;
+                    state.intake = Intake::Intake_State::INTAKING;
+                }
+            ),
+            frc2::WaitCommand(1_s),
+            frc2::InstantCommand(
+                [this]() {
+                    // shooter->state.isShooting = false;
+                    state.activation = Intake::Activation_State::STOWED;
+                    state.intake = Intake::Intake_State::STAGNANT;
+                }
+            )
+        )
+    ).ToPtr());
 }
 
 void Intake::resetState()
