@@ -283,7 +283,9 @@ namespace Constants {
                     std::pair("limelight-mint", mintCameraPosition()),
                     std::pair("limelight-lemon", lemonCameraPosition()),
                     std::pair("limelight-choco", chocolateCameraPosition()),
-                    std::pair("limelight-vanilla", vanillaCameraPosition())
+        };
+        static std::pair<const char*, frc::Pose3d> gamePieceCam{
+            "limelight-vanilla", vanillaCameraPosition()
         };
 }
 #pragma GCC diagnostic pop

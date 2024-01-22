@@ -35,7 +35,9 @@ using namespace pathplanner;
 #define KLIMELIGHT -29.8f
 
 #define LIME_LIGHT_HEIGHT 1.30f //meters
-#define LIME_LIGHT_ANGLE 1.30f
+#define LIME_LIGHT_ANGLE (M_PI / 6.0)
+#define LIME_LIGHT_FORWARD .220604
+#define LIME_LIGHT_SIDE .212662
 #define CUBE_ID 1
 #define CONE_ID 2
 
@@ -215,6 +217,9 @@ void Drivetrain::init()
     }
 
     aprilTagSensors[0]->normalVisionOutlier = 5.5_m;
+    gamePieceCamera = new valor::GamePieceSensor(robot, Constants::gamePieceCam.first, Constants::gamePieceCam.second, calculatedEstimator);
+
+    gamePieceCamera->setPipe(valor::VisionSensor::PIPELINE_0);
 
     for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
         aprilLime->setPipe(valor::VisionSensor::PIPELINE_0);
@@ -707,39 +712,6 @@ void Drivetrain::angleLock(){
         state.rot = (-getPose_m().Rotation().Degrees().to<double>()/180) + 1.0;
     }
     
-}
-
-void Drivetrain::setCurrentGamePiecePosition(){
-    state.currentGamePiece.piece = limeTable->GetNumber("tclass", 0.0) == CUBE_ID ? CUBE : CONE;
-    double tx = limeTable->GetNumber("tx", 0.0); //degrees
-    double ty = limeTable->GetNumber("ty", 0.0); //degrees
-
-    double xPositionRelativeToRobot = LIME_LIGHT_HEIGHT * tan((LIME_LIGHT_ANGLE + ty) * (M_PI/180)); //how much game object is infront of the robot
-    double yPositionRelativeToRobot = xPositionRelativeToRobot * tan(tx * (M_PI/180)); //how much game object is on the horizontal axis
-
-    double dist = sqrt(pow(xPositionRelativeToRobot, 2) + pow(yPositionRelativeToRobot, 2));
-
-    state.currentGamePiece.relativePosition = frc::Translation2d(units::meter_t{xPositionRelativeToRobot}, units::meter_t{yPositionRelativeToRobot});
-    
-    
-    double xGlobalPosition = getPose_m().X().to<double>() + dist * sin(getPose_m().Rotation().Radians().to<double>());
-    double yGlobalPosition = getPose_m().Y().to<double>() + dist * cos(getPose_m().Rotation().Radians().to<double>());
-
-    state.currentGamePiece.globalPosition = frc::Translation2d(units::meter_t(xGlobalPosition), units::meter_t(yGlobalPosition));
-}
-
-frc::Translation2d Drivetrain::getCurrentGamePiecePositionRelativeToTheRobot(){
-    setCurrentGamePiecePosition();
-    return state.currentGamePiece.relativePosition;
-}
-
-frc::Translation2d Drivetrain::getCurrentGamePiecePositionGlobal() {
-    setCurrentGamePiecePosition();
-    return state.currentGamePiece.globalPosition;
-}
-
-void Drivetrain::setLimelightPipeline(LimelightPipes pipeline){
-    limeTable->PutNumber("pipeline", pipeline);
 }
 
 frc2::FunctionalCommand* Drivetrain::getResetOdom() {

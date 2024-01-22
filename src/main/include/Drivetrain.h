@@ -4,6 +4,7 @@
 #include "units/acceleration.h"
 #include "units/length.h"
 #include "valkyrie/sensors/AprilTagsSensor.h"
+#include "valkyrie/sensors/GamePieceSensor.h"
 #include "valkyrie/BaseSubsystem.h"
 #include "Constants.h"
 #include "valkyrie/Swerve.h"
@@ -25,6 +26,7 @@
 
 #include <frc/geometry/Translation2d.h>
 #include <frc/geometry/Pose2d.h>
+#include <frc/geometry/Pose3d.h>
 #include <frc/geometry/Rotation2d.h>
 #include <frc/kinematics/DifferentialDriveWheelSpeeds.h>
 #include <frc/controller/SimpleMotorFeedforward.h>
@@ -217,6 +219,7 @@ public:
      //returns angle within the range [-180, 180]
      double angleWrap(double degrees);
 
+
      /**
       * Returns the position of the robot on the field in meters
       * @return the pose of the robot (x and y are in meters)
@@ -230,10 +233,6 @@ public:
       */
      frc::SwerveDriveKinematics<SWERVE_COUNT>* getKinematics();
 
-     void limelightHoming(LimelightPipes pipe);
-     frc::Translation2d getCurrentGamePiecePositionRelativeToTheRobot();
-     frc::Translation2d getCurrentGamePiecePositionGlobal();
-     void setCurrentGamePiecePosition();
      void angleLock();
 
      frc2::FunctionalCommand* getResetOdom();
@@ -295,6 +294,8 @@ private:
      bool swerveNoError;
      
      std::vector<valor::AprilTagsSensor*> aprilTagSensors;
+
+     valor::GamePieceSensor* gamePieceCamera;
 
      units::meter_t visionAcceptanceRadius;
 
