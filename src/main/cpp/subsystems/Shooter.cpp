@@ -36,6 +36,23 @@ Shooter::Shooter(frc::TimedRobot *_robot, frc::DigitalInput* _beamBreak) :
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
+    pathplanner::NamedCommands::registerCommand("Shoot", std::move(
+        frc2::SequentialCommandGroup(
+            frc2::InstantCommand(
+                [this]() {
+                    // shooter->state.isShooting = true;
+                    state.flywheel = Shooter::FlywheelState::SHOOTING;
+                }
+            ),
+            frc2::WaitCommand(1_s),
+            frc2::InstantCommand(
+                [this]() {
+                    // shooter->state.isShooting = false;
+                    state.flywheel = Shooter::FlywheelState::NOT_SHOOTING;
+                }
+            )
+        )
+    ).ToPtr());
 }
 
 void Shooter::resetState()
