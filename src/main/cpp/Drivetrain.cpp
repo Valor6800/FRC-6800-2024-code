@@ -68,11 +68,6 @@ using namespace pathplanner;
 
 #define AUTO_VISION_THRESHOLD 4.0f //meters
 
-#define MODULE_DIFF 0.2_m // temp number. pls change
-#define ALPHA_MODULE_DIFF 0.2413_m
-#define DRIVE_BASE_RADIUS 0.3_m // temp number pls hange
-#define ALPHA_DRIVE_BASE_RADIUS 0.36_m
-
 #define X_TIME 214.85f
 
 #define MODULE_DIFF_XS {1, 1, -1, -1}

@@ -11,9 +11,6 @@
 
 #include <frc/RobotController.h>
 
-#define WHEEL_INIT {0.3106f, 0.4369f, 0.4780f, 0.7372f}
-#define ALPHA_WHEEL_INIT {0.3867f, 0.8890f, 0.0763f, 0.6103f}
-
 #define DRIVE_DEADBAND 0.05f
 #define MAG_ENCODER_TICKS_PER_REV 4096.0f
 
