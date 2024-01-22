@@ -3,14 +3,14 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/CommandScheduler.h>
 #include <frc/RobotController.h>
+#include <Constants.h>
 
 #include <ctime>
 
 #define ALPHA_TEAM_NUMBER 6801
 
 Robot::Robot() : 
-isAlpha(frc::RobotController::GetTeamNumber() == ALPHA_TEAM_NUMBER), 
-drivetrain(this, isAlpha), 
+drivetrain(this), 
 valorAuto(), 
 beamBreak(DIOPorts::BEAM_BREAK_PORT), 
 shooter(this, &beamBreak), 

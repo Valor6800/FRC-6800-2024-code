@@ -9,6 +9,11 @@
 
 #include <cmath>
 #include <iostream>
+#include <frc/RobotController.h>
+#include "units/angle.h"
+#include "units/length.h"
+#include <vector>
+
 // When trying to compile against other targets for simulation, cmath doesn't include M_PI
 //   Therefore if not defined, define M_PI for use on other targets
 #ifndef M_PI
@@ -65,3 +70,42 @@ namespace CANIDs {
     constexpr static int RIGHT_CLIMBER = 24; // rando number
     constexpr static int LEFT_CLIMBER = 25; // rando number
 }
+
+// Constants that stay the same across bots should not go here
+class Constants { 
+    public:
+        /*
+        To use a global Constants:: instead of using an object, the function/variable used must be "static".
+        The reason that can't happen here is that for functions/variables to be static, the values they use must also be static.
+        Because GetTeamNumber isn't static, team number can't be static, and therefore none of the getters can be static either. 
+        */
+        int teamNumber{frc::RobotController::GetTeamNumber()};
+
+        units::degree_t pigeonMountPitch(){ switch (teamNumber){ 
+            case 6801: return 0_deg; 
+            default: return 0_deg; 
+        }};
+        units::degree_t pigeonMountRoll(){ switch (teamNumber){ 
+            case 6801: return -0.395508_deg;
+            default: return 0_deg; 
+        }};
+        units::degree_t pigeonMountYaw(){ switch (teamNumber){ 
+            case 6801: return -1.477661_deg; 
+            default: return 0_deg; 
+        }};
+
+        std::vector<double> swerveZeros(){ switch (teamNumber){
+            case 6801: return {0.3867, 0.8890, 0.0763, 0.610};
+            default: return {0.3106, 0.4369, 0.4780, 0.7372};
+        }};
+
+        units::meter_t moduleDiff(){ switch (teamNumber){
+            case 6801: return 0.2413_m; 
+            default: return 0.2_m; // Temp number; TODO: Change it
+        }};
+        units::meter_t driveBaseRadius(){ switch (teamNumber){
+            case 6801: return 0.36_m; 
+            default: return 0.3_m; // Temp number; TODO: Change it
+        }};
+};
+

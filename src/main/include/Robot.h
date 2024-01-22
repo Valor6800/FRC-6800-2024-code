@@ -34,9 +34,6 @@ class Robot : public frc::TimedRobot {
         void TeleopPeriodic() override;
         void TestPeriodic() override;
         void AutonomousExit() override;
-
-        // A check for Alpha was specifically chosen because in the case the check brakes it defaults to comp numbers
-        bool isAlpha;
         
     private:
         valor::Gamepad gamepadOperator{OIConstants::GAMEPAD_OPERATOR_LOCATION};

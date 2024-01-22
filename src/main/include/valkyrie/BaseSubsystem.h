@@ -14,6 +14,8 @@
 #include <wpi/sendable/SendableBuilder.h>
 #include <wpi/sendable/SendableHelper.h>
 
+#include <Constants.h>
+
 namespace valor {
 
 /**
@@ -173,6 +175,9 @@ class BaseSubsystem : public frc2::Subsystem, public wpi::Sendable, public wpi::
         valor::Gamepad *operatorGamepad;
         valor::Gamepad *driverGamepad;
 
+    protected:
+        Constants constants{Constants()}; // THIS IS EXTRAORDIDNARLY AWFUL
+
     private:
         
         void Periodic()
@@ -185,5 +190,6 @@ class BaseSubsystem : public frc2::Subsystem, public wpi::Sendable, public wpi::
             if (!robot->IsDisabled())
                 assignOutputs();
         }
+
 };
 }

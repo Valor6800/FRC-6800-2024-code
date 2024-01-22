@@ -81,17 +81,8 @@ using namespace pathplanner;
 #define DRIVETRAIN_CAN_BUS ""
 #define PIGEON_CAN_BUS "baseCAN"
 
-#define PIGEON_MOUNT_PITCH 0_deg
-#define PIGEON_MOUNT_ROLL 0_deg
-#define PIGEON_MOUNT_YAW 0_deg
-#define ALPHA_PIGEON_MOUNT_PITCH 0_deg
-#define ALPHA_PIGEON_MOUNT_ROLL -0.395508_deg
-#define ALPHA_PIGEON_MOUNT_YAW -1.477661_deg
-
-Drivetrain::Drivetrain(frc::TimedRobot *_robot, bool _isAlpha) : valor::BaseSubsystem(_robot, "Drivetrain"),
-                        isAlpha(_isAlpha),
+Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Drivetrain"),
                         driveMaxSpeed(MOTOR_FREE_SPEED / 60.0 / DRIVE_GEAR_RATIO * WHEEL_DIAMETER_M * M_PI),
-                        swerveModuleDiff(isAlpha ? ALPHA_MODULE_DIFF : MODULE_DIFF),
                         rotMaxSpeed(ROT_SPEED_MUL * 2 * M_PI),
                         autoMaxSpeed(AUTO_MAX_SPEED),
                         autoMaxAccel(AUTO_MAX_SPEED/AUTO_MAX_ACCEL_SECONDS),
@@ -122,11 +113,7 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot, bool _isAlpha) : valor::BaseSubs
                                 (units::degree_t) LIMELIGHT_PITCH,
                                 (units::degree_t) LIMELIGHT_YAW,
                             }
-                        }),
-                        pigeonMountPitch(isAlpha ? ALPHA_PIGEON_MOUNT_PITCH : PIGEON_MOUNT_PITCH),
-                        pigeonMountRoll(isAlpha ? ALPHA_PIGEON_MOUNT_ROLL : PIGEON_MOUNT_ROLL),
-                        pigeonMountYaw(isAlpha ? ALPHA_PIGEON_MOUNT_YAW : PIGEON_MOUNT_YAW),
-                        driveBaseRadius(isAlpha ? ALPHA_DRIVE_BASE_RADIUS : DRIVE_BASE_RADIUS)
+                        })
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -153,8 +140,8 @@ void Drivetrain::configSwerveModule(int i)
    int MDX[] = MODULE_DIFF_XS;
    int MDY[] = MODULE_DIFF_YS;
 
-    motorLocations[i] = frc::Translation2d{swerveModuleDiff * MDX[i],
-                                           swerveModuleDiff * MDY[i]};
+    motorLocations[i] = frc::Translation2d{constants.moduleDiff() * MDX[i],
+                                           constants.moduleDiff() * MDY[i]};
 
     valor::PIDF azimuthPID;
     azimuthPID.velocity = AZIMUTH_K_VEL;
@@ -214,9 +201,9 @@ void Drivetrain::init()
         ctre::phoenix6::configs::Pigeon2Configuration{}
         .WithMountPose(
             ctre::phoenix6::configs::MountPoseConfigs{}
-            .WithMountPosePitch(pigeonMountPitch.to<double>())
-            .WithMountPoseRoll(pigeonMountRoll.to<double>())
-            .WithMountPoseYaw(pigeonMountYaw.to<double>())
+            .WithMountPosePitch(constants.pigeonMountPitch().to<double>())
+            .WithMountPoseRoll(constants.pigeonMountRoll().to<double>())
+            .WithMountPoseYaw(constants.pigeonMountYaw().to<double>())
         )
     );
 
@@ -257,7 +244,7 @@ void Drivetrain::init()
             PIDConstants(getXPIDF().P, getXPIDF().I, getXPIDF().D), // Translation PID constants
             PIDConstants(getThetaPIDF().P, getThetaPIDF().I, getThetaPIDF().D), // Rotation PID constants
             units::meters_per_second_t{driveMaxSpeed}, // Max module speed, in m/s
-            driveBaseRadius, // Drive base radius in meters. Distance from robot center to furthest module.
+            constants.driveBaseRadius(), // Drive base radius in meters. Distance from robot center to furthest module.
             ReplanningConfig() // Default path replanning config. See the API for the options here
         ),
         []() {
@@ -367,7 +354,7 @@ void Drivetrain::assignOutputs()
 void Drivetrain::pullSwerveModuleZeroReference(){
     swerveNoError = true;
     for (size_t i = 0; i < swerveModules.size(); i++) {
-        swerveNoError &= swerveModules[i]->loadAndSetAzimuthZeroReference(isAlpha);
+        swerveNoError &= swerveModules[i]->loadAndSetAzimuthZeroReference(constants.swerveZeros());
     }
 }
 

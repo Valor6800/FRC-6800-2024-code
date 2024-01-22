@@ -72,7 +72,7 @@ public:
       * 
       * @param robot Top level robot object to parse out smart dashboard and table information
       */
-     Drivetrain(frc::TimedRobot *robot, bool isAlpha);
+     Drivetrain(frc::TimedRobot *robot);
 
      /**
       * @brief Destroy the Drivetrain object
@@ -241,7 +241,6 @@ public:
 private:
      
      double driveMaxSpeed;
-     units::meter_t swerveModuleDiff;
      double rotMaxSpeed;
      double autoMaxSpeed;
      double autoMaxAccel;

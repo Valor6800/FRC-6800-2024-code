@@ -85,7 +85,7 @@ void Swerve<AzimuthMotor, DriveMotor>::resetDriveEncoder()
 }
 
 template<class AzimuthMotor, class DriveMotor>
-bool Swerve<AzimuthMotor, DriveMotor>::loadAndSetAzimuthZeroReference(bool isAlpha)
+bool Swerve<AzimuthMotor, DriveMotor>::loadAndSetAzimuthZeroReference(std::vector<double> storedPositions)
 {
     // Read the encoder position. If the encoder position isn't returned, set the position to what the wheels
     //   are currently. The pit crew sets the wheels straight in pre-match setup. They should be close enough
@@ -95,12 +95,6 @@ bool Swerve<AzimuthMotor, DriveMotor>::loadAndSetAzimuthZeroReference(bool isAlp
     if (currPos == 0) {
         return false;
     }
-
-    std::vector<double> storedPositions;
-    if (isAlpha)
-        storedPositions = ALPHA_WHEEL_INIT;
-    else
-        storedPositions = WHEEL_INIT;
 
     double storedPos = 0.0;
 
