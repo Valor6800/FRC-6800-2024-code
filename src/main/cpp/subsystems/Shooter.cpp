@@ -4,6 +4,12 @@
 #include "valkyrie/controllers/NeutralMode.h"
 #include "valkyrie/controllers/PIDF.h"
 
+#include <pathplanner/lib/auto/NamedCommands.h>
+
+#include <frc2/command/SequentialCommandGroup.h>
+#include <frc2/command/InstantCommand.h>
+#include <frc2/command/WaitCommand.h>
+
 #define PIVOT_ROTATE_K_VEL 81.36f
 #define PIVOT_ROTATE_K_ACC 8136.0f
 #define PIVOT_ROTATE_K_P 3.0f
@@ -40,6 +46,23 @@ Shooter::Shooter(frc::TimedRobot *_robot, Climber *_climber, Drivetrain *_drive)
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
+    pathplanner::NamedCommands::registerCommand("Shoot", std::move(
+        frc2::SequentialCommandGroup(
+            frc2::InstantCommand(
+                [this]() {
+                    // shooter->state.isShooting = true;
+                    state.flywheel = Shooter::FlywheelState::SHOOTING;
+                }
+            ),
+            frc2::WaitCommand(1_s),
+            frc2::InstantCommand(
+                [this]() {
+                    // shooter->state.isShooting = false;
+                    state.flywheel = Shooter::FlywheelState::NOT_SHOOTING;
+                }
+            )
+        )
+    ).ToPtr());
 }
 
 void Shooter::resetState()

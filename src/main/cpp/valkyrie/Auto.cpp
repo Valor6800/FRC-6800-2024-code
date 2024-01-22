@@ -16,49 +16,6 @@ using namespace pathplanner;
 
 Auto::Auto(Intake* _intake, Shooter* _shooter) : intake(_intake), shooter(_shooter){
     table = nt::NetworkTableInstance::GetDefault().GetTable("auto");
-    table->PutString("New auto name", "");
-    table->PutBoolean("Add to and update autos list", false);
-    table->PutString("shooting", "not");
-    table->PutString("picking", "not");
-
-
-
-    NamedCommands::registerCommand("Intake", std::move(
-        frc2::SequentialCommandGroup(
-            frc2::InstantCommand(
-                [this]() {
-                    // shooter->state.isShooting = true;
-                    intake->state.activation = Intake::Activation_State::DEPOLOYED;
-                    intake->state.intake = Intake::Intake_State::INTAKING;
-                }
-            ),
-            frc2::WaitCommand(1_s),
-            frc2::InstantCommand(
-                [this]() {
-                    // shooter->state.isShooting = false;
-                    intake->state.activation = Intake::Activation_State::STOWED;
-                    intake->state.intake = Intake::Intake_State::STAGNANT;
-                }
-            )
-        )
-    ).ToPtr());
-    NamedCommands::registerCommand("Shoot", std::move(
-        frc2::SequentialCommandGroup(
-            frc2::InstantCommand(
-                [this]() {
-                    // shooter->state.isShooting = true;
-                    shooter->state.flywheel = Shooter::FlywheelState::SHOOTING;
-                }
-            ),
-            frc2::WaitCommand(1_s),
-            frc2::InstantCommand(
-                [this]() {
-                    // shooter->state.isShooting = false;
-                    shooter->state.flywheel = Shooter::FlywheelState::NOT_SHOOTING;
-                }
-            )
-        )
-    ).ToPtr());
 }
 
 frc2::CommandPtr Auto::makeAuto(std::string autoName){
