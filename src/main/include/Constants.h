@@ -57,21 +57,14 @@ namespace CANIDs {
     constexpr static int DRIVE_CANS[4] = {2, 4, 6, 8};
     constexpr static int AZIMUTH_CANS[4] = {1, 3, 5, 7};
     constexpr static int PIGEON_CAN = 61;
-    constexpr static int INTAKE_LEAD_CAN = 12;
-    constexpr static int CARRIAGE_MAIN = 9;
-    constexpr static int CARRIAGE_FOLLOW = 10;
-    constexpr static int ARM_ROTATE = 11;
-    constexpr static int ARM_CANCODER = 14;
-    constexpr static int WRIST = 15;
-    constexpr static int WRIST_CANCODER = 16;
     constexpr static int CANDLE = 60;
-    constexpr static int INTERNAL_INTAKE = 17; // rando number
+    constexpr static int INTERNAL_INTAKE = 13;
     constexpr static int EXTERNAL_INTAKE = 9;
-    constexpr static int EXTERNAL_DROPDOWN = 19; // rando number
-    constexpr static int ANGLE_CONTROLLER = 20; // rando number
-    constexpr static int RIGHT_SHOOTER_WHEEL_CONTROLLER = 10; // rando number
-    constexpr static int LEFT_SHOOTER_WHEEL_CONTROLLER = 11; // rando number
-    constexpr static int HANDOFF_CONTROLLER = 23; // rando number
+    constexpr static int EXTERNAL_DEPLOYMENT = 19; // rando number
+    constexpr static int PIVOT = 20; // rando number
+    constexpr static int RIGHT_SHOOTER_WHEEL_CONTROLLER = 10;
+    constexpr static int LEFT_SHOOTER_WHEEL_CONTROLLER = 11;
+    constexpr static int FEEDER = 12;
     constexpr static int RIGHT_CLIMBER = 24; // rando number
     constexpr static int LEFT_CLIMBER = 25; // rando number
 }

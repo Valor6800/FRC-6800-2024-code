@@ -16,8 +16,8 @@
 
 Intake::Intake(frc::TimedRobot *_robot, frc::DigitalInput *_beamBreak) :
     valor::BaseSubsystem(_robot, "Intake"),
-    RollerMotor(CANIDs::EXTERNAL_INTAKE, valor::NeutralMode::Brake, false),
-    // ActivationMotor(CANIDs::EXTERNAL_DROPDOWN, valor::NeutralMode::Brake, false),
+    rollerMotor(CANIDs::EXTERNAL_INTAKE, valor::NeutralMode::Coast, true),
+    // ActivationMotor(CANIDs::EXTERNAL_DROPDOWN, valor::NeutralMode::Coast, false),
     beam(_beamBreak),
     debounce(_robot, "Intake")
 {
@@ -25,20 +25,16 @@ Intake::Intake(frc::TimedRobot *_robot, frc::DigitalInput *_beamBreak) :
     init();
 }
 
-Intake::~Intake()
-{
-}
-
 void Intake::resetState()
 {
-    state.activation = STOWED;
-    state.intake = STAGNANT;
-    state.detection = NOTE_NOTDETECTED;
+    state.activationState = false;
+    state.detectionState = false;
+    state.intakeState = STAGNANT;
 }
 
 void Intake::init()
 {
-    RollerMotor.setConversion(1.0 / OTB_ROLLER_GEAR_RATIO * 360);
+    rollerMotor.setConversion(1.0 / OTB_ROLLER_GEAR_RATIO * 360);
     // ActivationMotor.setConversion(1.0 / OTB_DROPDOWN_GEAR_RATIO * 360);
 
     resetState();
@@ -49,68 +45,39 @@ void Intake::init()
 
 void Intake::assessInputs()
 {
-    if(driverGamepad->GetLeftBumperPressed())
-    {
-        state.intake = INTAKING;
-        state.activation = DEPOLOYED;
+    if (driverGamepad == nullptr || operatorGamepad == nullptr )
+        return;
+
+    if (driverGamepad->GetLeftBumper()) {
+        state.intakeState = INTAKE_STATE::INTAKE;
+        state.activationState = true;
+    } else if (operatorGamepad->DPadDown()) {
+        state.intakeState = INTAKE_STATE::OUTTAKE;
+        state.activationState = true;
+    } else {
+        state.intakeState = INTAKE_STATE::STAGNANT;
+        state.activationState = false;
     }
-    /*else
-    {
-        if(operatorGamepad->leftTriggerActive())
-        {
-            state.intake = OUTTAKE;
-            state.activation = DEPOLOYED;
-        }*/
-    else
-    {
-        state.intake = STAGNANT;
-        state.activation = STOWED;
-    }
-    state.detection = beam->Get() ? NOTE_DETECTED : NOTE_NOTDETECTED; 
+    state.detectionState = beam->Get(); 
 }
 
 void Intake::analyzeDashboard()
 {
-    IntakeRotMaxSpeed = table->GetNumber("Intake Power", ROLLER_MOTOR_INTAKE_POWER);
-    OuttakeRotMaxSpeed = table->GetNumber("Outtake Power", ROLLER_MOTOR_OUTTAKE_POWER);
+    state.intakeForwardSpeed = table->GetNumber("Intake Power", ROLLER_MOTOR_INTAKE_POWER);
+    state.intakeReverseSpeed = table->GetNumber("Outtake Power", ROLLER_MOTOR_OUTTAKE_POWER);
 }
 
 void Intake::assignOutputs()
 {
-    if(state.activation == DEPOLOYED)
-    {
-        // ActivationMotor.setPosition(OTB_DEPLOYED_POSITION);
-    }
-    else if(state.activation == STOWED)
-    {
-        // ActivationMotor.setPosition(OTB_STOWED_POSITION);
-    }
+    // ActivationMotor.setPosition(state.activation ? OTB_DEPLOYED_POSITION : OTB_STOWED_POSITION);
 
-    if(state.intake == INTAKING)
-    {
-        RollerMotor.setPower(IntakeRotMaxSpeed);
+    if (state.intakeState == INTAKE_STATE::INTAKE) {
+        rollerMotor.setPower(state.intakeForwardSpeed);
+    } else if(state.intakeState == INTAKE_STATE::OUTTAKE) {
+        rollerMotor.setPower(state.intakeReverseSpeed);
+    } else {
+        rollerMotor.setPower(0);
     }
-    else if(state.intake == OUTTAKE)
-    {
-        RollerMotor.setPower(OuttakeRotMaxSpeed);
-    }
-    else
-    {
-        RollerMotor.setPower(0);
-    }
-    if(state.detection == NOTE_DETECTED)
-    {
-        // LED ON
-    }
-    else
-    {
-        // LED OFF
-    }
-}
-
-double Intake::getOTBRollerSpeed()
-{
-    return RollerMotor.getSpeed();
 }
 
 void Intake::InitSendable(wpi::SendableBuilder& builder)
@@ -119,25 +86,19 @@ void Intake::InitSendable(wpi::SendableBuilder& builder)
 
     builder.AddDoubleProperty(
         "isDropdown",
-        [this] {return state.activation;},
+        [this] {return state.activationState;},
         nullptr
     );
 
     builder.AddDoubleProperty(
         "isIntaking",
-        [this] {return state.intake;},
+        [this] {return state.intakeState;},
         nullptr
     );
 
     builder.AddDoubleProperty(
         "isNote",
-        [this] {return state.detection;},
-        nullptr
-    );
-
-    builder.AddDoubleProperty(
-        "OTBrollerSpeed",
-        [this] {return getOTBRollerSpeed();},
+        [this] {return state.detectionState;},
         nullptr
     );
 
@@ -151,8 +112,4 @@ void Intake::InitSendable(wpi::SendableBuilder& builder)
         [this] {return beam->Get();},
         nullptr
     );
-
-    table->PutNumber("Activation State", state.activation);
-    table->PutNumber("Intake State", state.intake);
-    table->PutNumber("Detection State", state.detection);
 }

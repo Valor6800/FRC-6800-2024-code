@@ -15,8 +15,6 @@ public:
 
     Intake(frc::TimedRobot *robot, frc::DigitalInput *_beamBreak);
 
-    ~Intake();
-
     void resetState();
     void init();
 
@@ -26,44 +24,29 @@ public:
 
     void InitSendable(wpi::SendableBuilder& builder);
 
-    enum Activation_State
+    enum INTAKE_STATE
     {
-        DEPOLOYED,
-        STOWED
-    };
-
-    enum Intake_State
-    {
-        INTAKING,
+        INTAKE,
         STAGNANT,
         OUTTAKE
     };
 
-    enum Detection_State
-    {
-        NOTE_DETECTED,
-        NOTE_NOTDETECTED
-    };
-
     struct x
     {
-        Activation_State activation;
-        Intake_State intake;
-        Detection_State detection;
+        INTAKE_STATE intakeState;
+        bool activationState;
+        bool detectionState;
+
+        double intakeForwardSpeed;
+        double intakeReverseSpeed;
 
     } state;
 
 private:
 
-    valor::NeoController RollerMotor;
+    valor::NeoController rollerMotor;
     // valor::NeoController ActivationMotor;
 
     frc::DigitalInput* beam;
     valor::DebounceSensor debounce;
-
-    double getOTBRollerSpeed();
-
-    double IntakeRotMaxSpeed;
-    double OuttakeRotMaxSpeed;
-    double dropDownMaxSpeed;
 };

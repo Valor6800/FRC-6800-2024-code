@@ -22,12 +22,10 @@ class Shooter : public valor::BaseSubsystem
 {
 public:
     //valor::NeoController pivotMotors;
-    valor::NeoController LeftflywheelMotors;
-    valor::NeoController RightflywheelMotors;
+    valor::NeoController leftFlywheelMotor;
+    valor::NeoController rightFlywheelMotor;
 
     Shooter(frc::TimedRobot *robot, frc::DigitalInput* beamBreak);
-
-    ~Shooter();
 
     void resetState();
 
@@ -39,14 +37,14 @@ public:
     
     void InitSendable(wpi::SendableBuilder& builder);
 
-    enum FlywheelState
+    enum FLYWHEEL_STATE
     {
         NOT_SHOOTING,
         SPOOLED,
         SHOOTING
     };
 
-    enum PivotState
+    enum PIVOT_STATE
     {
         SUBWOOFER,
         PODIUM,
@@ -56,16 +54,21 @@ public:
 
     struct x
     {
-        PivotState pivot;
-        FlywheelState flywheel;
+        PIVOT_STATE pivotState;
+        FLYWHEEL_STATE flywheelState;
+
+        double leftShooterPower;
+        double leftSpoolPower;
+        double leftStandbyPower;
+
+        double rightShooterPower;
+        double rightSpoolPower;
+        double rightStandbyPower;
+
+        units::degree_t pivotAngle;
     } state;
 
 private:
-    units::degree_t calculatingPivotingAngle;
-
     valor::PIDF pivotPID;
-
     frc::DigitalInput* beamBreak;
-
-    double leftShootPwr, rightShootPwr, leftSpooledPwr, rightSpooledPwr;
 };

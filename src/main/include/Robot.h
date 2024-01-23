@@ -12,10 +12,12 @@
 
 #include <frc/DriverStation.h>
 #include <frc/DataLogManager.h>
-#include <subsystems/Shooter.h>
 
 #include <frc/livewindow/LiveWindow.h>
+
+#include <subsystems/Shooter.h>
 #include "subsystems/Intake.h"
+#include "subsystems/Feeder.h"
 
 #include <fstream>
 #include "frc/DigitalInput.h"
@@ -47,6 +49,7 @@ class Robot : public frc::TimedRobot {
           
         Shooter shooter;
         Intake intake;
+        Feeder feeder;
 
         std::ofstream outfile;        
 };

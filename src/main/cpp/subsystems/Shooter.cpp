@@ -17,12 +17,13 @@
 #define PODIUM_ANG 45.0_deg
 #define STARTING_LINE_ANG 60.0_deg
 
-#define SHOOT_LEFT_POWER -1.0f
-#define SPOOLED_LEFT_POWER -0.8f
-#define SHOOT_RIGHT_POWER 1.0f
-#define SPOOLED_RIGHT_POWER 0.8f
-#define OFF_LEFT_POWER 0.0f
-#define OFF_RIGHT_POWER 0.0f
+#define LEFT_SHOOT_POWER 0.8f
+#define LEFT_SHOOT_SPOOL 0.5f
+#define LEFT_SHOOT_STANDBY 0.0f
+
+#define RIGHT_SHOOT_POWER 0.8f
+#define RIGHT_SHOOT_SPOOL 0.5f
+#define RIGHT_SHOOT_STANDBY 0.0f
 
 #define SHOOTER_ROTATE_GEAR_RATIO 1.0f
 #define SHOOTER_ROTATE_FORWARD_LIMIT 90.0_deg
@@ -31,27 +32,18 @@
 Shooter::Shooter(frc::TimedRobot *_robot, frc::DigitalInput* _beamBreak) :
     valor::BaseSubsystem(_robot, "Shooter"),
     //pivotMotors(CANIDs::ANGLE_CONTROLLER, valor::NeutralMode::Brake, false),
-    LeftflywheelMotors(CANIDs::LEFT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Brake, false),
-    RightflywheelMotors(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Brake, false),
-    beamBreak(_beamBreak),
-    leftShootPwr(SHOOT_LEFT_POWER),
-    rightShootPwr(SHOOT_RIGHT_POWER),
-    leftSpooledPwr(SPOOLED_LEFT_POWER),
-    rightSpooledPwr(SPOOLED_RIGHT_POWER)
-
+    leftFlywheelMotor(CANIDs::LEFT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false),
+    rightFlywheelMotor(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false),
+    beamBreak(_beamBreak)
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
 }
 
-Shooter::~Shooter()
-{
-}
-
 void Shooter::resetState()
 {
-    state.flywheel = FlywheelState::NOT_SHOOTING;
-    state.pivot = PivotState::SUBWOOFER;
+    state.flywheelState = FLYWHEEL_STATE::NOT_SHOOTING;
+    state.pivotState = PIVOT_STATE::SUBWOOFER;
 }
 
 void Shooter::init()
@@ -70,11 +62,14 @@ void Shooter::init()
     // pivotMotors.setForwardLimit(SHOOTER_ROTATE_FORWARD_LIMIT.to<double>());
     // pivotMotors.setReverseLimit(SHOOTER_ROTATE_REVERSE_LIMIT.to<double>());
     // pivotMotors.setPIDF(pivotPID, 0);
-    table->PutNumber("Left shoot power", leftShootPwr);
-    table->PutNumber("Right shoot power", rightShootPwr);
-    table->PutNumber("Left spooled power", leftSpooledPwr);
-    table->PutNumber("Right spooled power", rightSpooledPwr);
 
+    table->PutNumber("Left Shooter Power", LEFT_SHOOT_POWER);
+    table->PutNumber("Left Shooter Spool", LEFT_SHOOT_SPOOL);
+    table->PutNumber("Left Shooter Standby", LEFT_SHOOT_STANDBY);
+
+    table->PutNumber("Right Shooter Power", RIGHT_SHOOT_POWER);
+    table->PutNumber("Right Shooter Spool", RIGHT_SHOOT_SPOOL);
+    table->PutNumber("Right Shooter Standby", RIGHT_SHOOT_STANDBY);
 
     resetState();
 
@@ -82,21 +77,23 @@ void Shooter::init()
 
 void Shooter::assessInputs()
 {
+    if (driverGamepad == nullptr || operatorGamepad == nullptr )
+        return;
     //SHOOT LOGIC
     if (driverGamepad->rightTriggerActive()) {
-        state.flywheel = FlywheelState::SHOOTING;
+        state.flywheelState = FLYWHEEL_STATE::SHOOTING;
     }
-    else if (beamBreak->Get()) {
-        state.flywheel = FlywheelState::SPOOLED;
+    else if (operatorGamepad->leftTriggerActive()) {
+        state.flywheelState = FLYWHEEL_STATE::SPOOLED;
     }
     else {
-        state.flywheel = FlywheelState::NOT_SHOOTING;
+        state.flywheelState = FLYWHEEL_STATE::NOT_SHOOTING;
     } 
 
     //PIVOT LOGIC
-    if (driverGamepad->GetAButton()) {
-        state.pivot = PivotState::SUBWOOFER;
-    }
+    // if (driverGamepad->GetAButton()) {
+    //     state.pivot = PivotState::SUBWOOFER;
+    // }
    /* else if (operatorGamepad->GetRightBumperPressed()) {
         state.pivot = PivotState::PODIUM;
     }
@@ -110,11 +107,16 @@ void Shooter::assessInputs()
 
 void Shooter::analyzeDashboard()
 {
-    calculatingPivotingAngle = 0.0_deg;
-    leftShootPwr = table->GetNumber("Left shoot power", leftShootPwr);
-    rightShootPwr = table->GetNumber("Right shoot power", rightShootPwr);
-    leftSpooledPwr = table->GetNumber("Left spooled power", leftSpooledPwr);
-    rightSpooledPwr = table->GetNumber("Right spooled power", rightSpooledPwr);}
+    state.pivotAngle = 0.0_deg;
+
+    state.leftShooterPower = table->GetNumber("Left Shooter Power", LEFT_SHOOT_POWER);
+    state.leftSpoolPower = table->GetNumber("Left Shooter Spool", LEFT_SHOOT_SPOOL);
+    state.leftStandbyPower = table->GetNumber("Left Shooter Standby", LEFT_SHOOT_STANDBY);
+
+    state.rightShooterPower = table->GetNumber("Right Shooter Power", RIGHT_SHOOT_POWER);
+    state.rightSpoolPower = table->GetNumber("Right Shooter Spool", RIGHT_SHOOT_SPOOL);
+    state.rightStandbyPower = table->GetNumber("Right Shooter Standby", RIGHT_SHOOT_STANDBY);
+}
 
 void Shooter::assignOutputs()
 {
@@ -134,17 +136,15 @@ void Shooter::assignOutputs()
     // }
 
     //SHOOTER
-    if(state.flywheel == FlywheelState::SHOOTING){
-        LeftflywheelMotors.setPower(leftShootPwr);
-        RightflywheelMotors.setPower(rightShootPwr);
-    }
-    else if(state.flywheel == FlywheelState::SPOOLED){
-        LeftflywheelMotors.setPower(leftSpooledPwr);
-        RightflywheelMotors.setPower(rightSpooledPwr);
-    }
-    else{
-        RightflywheelMotors.setPower(OFF_LEFT_POWER);
-        LeftflywheelMotors.setPower(OFF_RIGHT_POWER);
+    if (state.flywheelState == FLYWHEEL_STATE::SHOOTING) {
+        leftFlywheelMotor.setPower(state.leftShooterPower);
+        rightFlywheelMotor.setPower(state.rightShooterPower);
+    } else if (state.flywheelState == FLYWHEEL_STATE::SPOOLED) {
+        leftFlywheelMotor.setPower(state.leftSpoolPower);
+        rightFlywheelMotor.setPower(state.rightSpoolPower);
+    } else {
+        leftFlywheelMotor.setPower(state.leftStandbyPower);
+        rightFlywheelMotor.setPower(state.rightStandbyPower);
     }
 }
 
@@ -154,41 +154,14 @@ void Shooter::InitSendable(wpi::SendableBuilder& builder)
 
     builder.AddIntegerProperty(
         "flywheel state",
-        [this] {return state.flywheel;},
+        [this] {return state.flywheelState;},
         nullptr
     );
 
-    builder.AddIntegerProperty(
-        "pivot state",
-        [this] {return state.pivot;},
-        nullptr
-    );
-
-    builder.AddDoubleProperty(
-        "Left shoot power", 
-        [this] { return leftShootPwr; },
-        nullptr
-    );
-
-    builder.AddDoubleProperty(
-        "Right shoot power", 
-        [this] { return rightShootPwr; },
-        nullptr
-    );
-
-    builder.AddDoubleProperty(
-        "Left spooled power", 
-        [this] { return leftSpooledPwr; },
-        nullptr
-    );
-
-    builder.AddDoubleProperty(
-        "Right spooled power", 
-        [this] { return rightSpooledPwr; },
-        nullptr
-    );
-
-
-
+    // builder.AddIntegerProperty(
+    //     "pivot state",
+    //     [this] {return state.pivot;},
+    //     nullptr
+    // );
 
 }
