@@ -14,8 +14,6 @@
 #include <wpi/sendable/SendableBuilder.h>
 #include <wpi/sendable/SendableHelper.h>
 
-#include <Constants.h>
-
 namespace valor {
 
 /**
