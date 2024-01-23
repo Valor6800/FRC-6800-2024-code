@@ -3,9 +3,6 @@
 #include <frc/TimedRobot.h>
 #include <Drivetrain.h>
 
-#include "subsystems/Shooter.h"
-#include "subsystems/Intake.h"
-
 namespace valor {
 
 class Auto
