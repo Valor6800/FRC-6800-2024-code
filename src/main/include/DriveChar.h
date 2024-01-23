@@ -17,7 +17,6 @@ class DriveChar : public valor::BaseSubsystem {
 
   void assignOutputs() override;
 
-  frc2::CommandPtr GetAutonomousCommand();
   void InitSendable(wpi::SendableBuilder& builder);
   
  private:
