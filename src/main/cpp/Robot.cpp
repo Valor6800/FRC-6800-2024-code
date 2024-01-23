@@ -7,8 +7,6 @@
 
 #include <ctime>
 
-#define ALPHA_TEAM_NUMBER 6801
-
 Robot::Robot() : 
 drivetrain(this), 
 valorAuto(), 
