@@ -135,8 +135,8 @@ void Drivetrain::configSwerveModule(int i)
    int MDX[] = MODULE_DIFF_XS;
    int MDY[] = MODULE_DIFF_YS;
 
-    motorLocations[i] = frc::Translation2d{constants.moduleDiff() * MDX[i],
-                                           constants.moduleDiff() * MDY[i]};
+    motorLocations[i] = frc::Translation2d{Constants::moduleDiff() * MDX[i],
+                                           Constants::moduleDiff() * MDY[i]};
 
     valor::PIDF azimuthPID;
     azimuthPID.velocity = AZIMUTH_K_VEL;
@@ -196,9 +196,9 @@ void Drivetrain::init()
         ctre::phoenix6::configs::Pigeon2Configuration{}
         .WithMountPose(
             ctre::phoenix6::configs::MountPoseConfigs{}
-            .WithMountPosePitch(constants.pigeonMountPitch().to<double>())
-            .WithMountPoseRoll(constants.pigeonMountRoll().to<double>())
-            .WithMountPoseYaw(constants.pigeonMountYaw().to<double>())
+            .WithMountPosePitch(Constants::pigeonMountPitch().to<double>())
+            .WithMountPoseRoll(Constants::pigeonMountRoll().to<double>())
+            .WithMountPoseYaw(Constants::pigeonMountYaw().to<double>())
         )
     );
 
@@ -239,7 +239,7 @@ void Drivetrain::init()
             PIDConstants(getXPIDF().P, getXPIDF().I, getXPIDF().D), // Translation PID constants
             PIDConstants(getThetaPIDF().P, getThetaPIDF().I, getThetaPIDF().D), // Rotation PID constants
             units::meters_per_second_t{driveMaxSpeed}, // Max module speed, in m/s
-            constants.driveBaseRadius(), // Drive base radius in meters. Distance from robot center to furthest module.
+            Constants::driveBaseRadius(), // Drive base radius in meters. Distance from robot center to furthest module.
             ReplanningConfig() // Default path replanning config. See the API for the options here
         ),
         []() {
@@ -349,7 +349,7 @@ void Drivetrain::assignOutputs()
 void Drivetrain::pullSwerveModuleZeroReference(){
     swerveNoError = true;
     for (size_t i = 0; i < swerveModules.size(); i++) {
-        swerveNoError &= swerveModules[i]->loadAndSetAzimuthZeroReference(constants.swerveZeros());
+        swerveNoError &= swerveModules[i]->loadAndSetAzimuthZeroReference();
     }
 }
 

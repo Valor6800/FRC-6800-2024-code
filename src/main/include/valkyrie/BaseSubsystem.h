@@ -175,9 +175,6 @@ class BaseSubsystem : public frc2::Subsystem, public wpi::Sendable, public wpi::
         valor::Gamepad *operatorGamepad;
         valor::Gamepad *driverGamepad;
 
-    protected:
-        Constants constants{Constants()}; // THIS IS EXTRAORDIDNARLY AWFUL
-
     private:
         
         void Periodic()

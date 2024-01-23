@@ -8,6 +8,7 @@
 #include <cmath>
 #include <iostream>
 #include <string>
+#include <Constants.h>
 
 #include <frc/RobotController.h>
 
@@ -82,7 +83,7 @@ void Swerve<AzimuthMotor, DriveMotor>::resetDriveEncoder()
 }
 
 template<class AzimuthMotor, class DriveMotor>
-bool Swerve<AzimuthMotor, DriveMotor>::loadAndSetAzimuthZeroReference(std::vector<double> storedPositions)
+bool Swerve<AzimuthMotor, DriveMotor>::loadAndSetAzimuthZeroReference()
 {
     // Read the encoder position. If the encoder position isn't returned, set the position to what the wheels
     //   are currently. The pit crew sets the wheels straight in pre-match setup. They should be close enough
@@ -96,7 +97,7 @@ bool Swerve<AzimuthMotor, DriveMotor>::loadAndSetAzimuthZeroReference(std::vecto
     double storedPos = 0.0;
 
     if (wheelIdx >= 0 && wheelIdx <= 3){
-        storedPos = storedPositions[wheelIdx];
+        storedPos = Constants::swerveZeros()[wheelIdx];
     }
     
     // Get the remainder of the delta so the encoder can wrap
