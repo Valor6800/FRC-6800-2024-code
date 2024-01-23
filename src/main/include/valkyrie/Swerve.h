@@ -76,7 +76,7 @@ public:
      * Loads the current azimuth absolute encoder reference position and sets selected sensor encoder
      * @return if the mag encoder was successfully 
      */
-    bool loadAndSetAzimuthZeroReference();
+    bool loadAndSetAzimuthZeroReference(std::vector<double> offsets);
 
     frc::Rotation2d getAzimuthPosition();
 

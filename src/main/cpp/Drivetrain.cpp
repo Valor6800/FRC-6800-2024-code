@@ -349,7 +349,7 @@ void Drivetrain::assignOutputs()
 void Drivetrain::pullSwerveModuleZeroReference(){
     swerveNoError = true;
     for (size_t i = 0; i < swerveModules.size(); i++) {
-        swerveNoError &= swerveModules[i]->loadAndSetAzimuthZeroReference();
+        swerveNoError &= swerveModules[i]->loadAndSetAzimuthZeroReference(Constants::swerveZeros());
     }
 }
 
