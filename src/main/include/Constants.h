@@ -109,4 +109,13 @@ namespace Constants {
             case ALPHA_TEAM_NUMBER: return 0.36_m; 
             default: return 0.3_m; // Temp number; TODO: Change it
         }};
+
+        static std::vector<bool> swerveDrivesReversals(){ switch (teamNumber){
+            case ALPHA_TEAM_NUMBER: return {true, false, false, false};
+            default: return {false, false, false, false};
+        }};
+        static std::vector<bool> swerveAzimuthsReversals(){ switch (teamNumber){
+            case ALPHA_TEAM_NUMBER: return {true, false, true, true};
+            default: return {true, true, true, true};
+        }};
 }

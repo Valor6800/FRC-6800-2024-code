@@ -148,7 +148,7 @@ void Drivetrain::configSwerveModule(int i)
 
     azimuthControllers.push_back(new SwerveAzimuthMotor(CANIDs::AZIMUTH_CANS[i],
                                                       valor::NeutralMode::Brake,
-                                                      i != 1,
+                                                      Constants::swerveAzimuthsReversals()[i],
                                                       DRIVETRAIN_CAN_BUS));
     azimuthControllers[i]->setConversion(1.0 / AZIMUTH_GEAR_RATIO);
     azimuthControllers[i]->setPIDF(azimuthPID, 0);
@@ -163,7 +163,7 @@ void Drivetrain::configSwerveModule(int i)
 
     driveControllers.push_back(new SwerveDriveMotor(CANIDs::DRIVE_CANS[i],
                                                     valor::NeutralMode::Coast,
-                                                    i == 0,
+                                                    Constants::swerveDrivesReversals()[i],
                                                     DRIVETRAIN_CAN_BUS));
     driveControllers[i]->setConversion(1.0 / DRIVE_GEAR_RATIO * M_PI * WHEEL_DIAMETER_M);
     driveControllers[i]->setPIDF(drivePID, 0);
