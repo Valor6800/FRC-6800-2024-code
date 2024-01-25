@@ -279,7 +279,7 @@ double Drivetrain::angleWrap(double degrees)
 
 void Drivetrain::assessInputs()
 {
-    if (!driverGamepad) return;
+    if (!driverGamepad || !operatorGamepad) return;
 
     if (driverGamepad->GetBackButtonPressed()) {
         resetGyro();
@@ -454,7 +454,7 @@ frc::ChassisSpeeds Drivetrain::getRobotRelativeSpeeds(){
         swerveModules[1]->getState(),
         swerveModules[2]->getState(),
         swerveModules[3]->getState()
-    }; 
+    };
     return kinematics->ToChassisSpeeds(moduleStates);
 }
 
@@ -677,6 +677,22 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
             [this]
             {
                 return state.stage;
+            },
+            nullptr
+        );
+        builder.AddIntegerProperty(
+            "xVelocity",
+            [this]
+            {
+                return getRobotRelativeSpeeds().vx.to<double>();
+            },
+            nullptr
+        );
+        builder.AddIntegerProperty(
+            "yVelocity",
+            [this]
+            {
+                return getRobotRelativeSpeeds().vy.to<double>();
             },
             nullptr
         );
