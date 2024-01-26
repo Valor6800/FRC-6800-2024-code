@@ -78,6 +78,9 @@ void Shooter::init()
     table->PutNumber("Right Shooter Spool", RIGHT_SHOOT_SPOOL);
     table->PutNumber("Right Shooter Standby", RIGHT_SHOOT_STANDBY);
 
+    table->PutNumber("Left Shooter Current", leftFlywheelMotor.getCurrent());
+    table->PutNumber("Right Shooter Current", rightFlywheelMotor.getCurrent());
+
     resetState();
 
 }
