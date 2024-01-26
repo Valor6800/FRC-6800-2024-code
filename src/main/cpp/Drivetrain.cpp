@@ -83,6 +83,8 @@ using namespace pathplanner;
 #define DRIVETRAIN_CAN_BUS ""
 #define PIGEON_CAN_BUS "baseCAN"
 
+#define KP_ROTATE 0.006f
+
 Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Drivetrain"),
                         driveMaxSpeed(MOTOR_FREE_SPEED / 60.0 / DRIVE_GEAR_RATIO * WHEEL_DIAMETER_M * M_PI),
                         rotMaxSpeed(ROT_SPEED_MUL * 2 * M_PI),
@@ -323,14 +325,17 @@ void Drivetrain::analyzeDashboard()
 void Drivetrain::assignOutputs()
 {    
     if (state.lock){angleLock();}
-    if(state.isHeadingTrack) calculateSpeakerLockAngle();
     state.xSpeedMPS = units::velocity::meters_per_second_t{state.xSpeed * driveMaxSpeed};
     state.ySpeedMPS = units::velocity::meters_per_second_t{state.ySpeed * driveMaxSpeed};
     state.rotRPS = units::angular_velocity::radians_per_second_t{state.rot * rotMaxSpeed};
 
     if (state.xPose){
         setXMode();
-    } else if (state.adas){
+    } else if(state.isHeadingTrack){
+        calculateSpeakerLockAngle();
+        drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
+    }
+    else if (state.adas){
         drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
     } 
     else {
@@ -355,7 +360,7 @@ void Drivetrain::calculateSpeakerLockAngle(){
             (roboXPos.to<double>() - SPEAKER_RED_X.to<double>())
         ));
     }
-    state.rot = clampAngleRadianRange(targetRotAngle, PI);
+    state.rotRPS = units::angular_velocity::radians_per_second_t((KP_ROTATE * clampAngleRadianRange(targetRotAngle, PI))*driveMaxSpeed);
 }
 
 units::angular_velocity::radians_per_second_t Drivetrain::getAngleError(units::radian_t targetAngle, double kP){
