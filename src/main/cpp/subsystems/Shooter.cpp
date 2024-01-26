@@ -29,6 +29,8 @@
 #define SHOOTER_ROTATE_FORWARD_LIMIT 90.0_deg
 #define SHOOTER_ROTATE_REVERSE_LIMIT 0.0_deg
 
+#define SHOOTER_VOLTAGE_COMPENSATION 10.0f
+
 Shooter::Shooter(frc::TimedRobot *_robot, frc::DigitalInput* _beamBreak) :
     valor::BaseSubsystem(_robot, "Shooter"),
     //pivotMotors(CANIDs::ANGLE_CONTROLLER, valor::NeutralMode::Brake, false),
@@ -57,6 +59,11 @@ void Shooter::init()
     pivotPID.error = PIVOT_ROTATE_K_ERROR;
     pivotPID.aFF = PIVOT_ROTATE_K_AFF;
     pivotPID.aFFTarget = PIVOT_ROTATE_K_AFF_POS;
+
+    units::voltage::volt_t volt {SHOOTER_VOLTAGE_COMPENSATION};
+
+    leftFlywheelMotor.setVoltageCompensation(volt);
+    rightFlywheelMotor.setVoltageCompensation(volt);
 
     // pivotMotors.setConversion(1.0 / SHOOTER_ROTATE_GEAR_RATIO * 360);
     // pivotMotors.setForwardLimit(SHOOTER_ROTATE_FORWARD_LIMIT.to<double>());

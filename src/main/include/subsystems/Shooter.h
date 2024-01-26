@@ -66,6 +66,7 @@ public:
         double rightStandbyPower;
 
         units::degree_t pivotAngle;
+
     } state;
 
 private:

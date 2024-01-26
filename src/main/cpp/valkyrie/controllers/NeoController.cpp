@@ -20,6 +20,11 @@ void NeoController::init()
     motor->RestoreFactoryDefaults();
     motor->SetInverted(inverted);
     setNeutralMode(neutralMode);
+
+    motor->EnableVoltageCompensation(true);
+    units::voltage::volt_t volt{10};
+    motor->SetVoltage(volt);
+
     setRange(0,-1,1);
     valor::PIDF motionPIDF;
     setPIDF(motionPIDF, 0);
@@ -79,6 +84,11 @@ void NeoController::setConversion(double _conversion)
     // convert from minutes to seconds for velocity
     encoder.SetVelocityConversionFactor(_conversion / 60.0);
    
+}
+
+void NeoController::setVoltageCompensation(units::voltage::volt_t volt)
+{
+    motor->SetVoltage(volt);
 }
 
 void NeoController::setRange(int slot, double min, double max)

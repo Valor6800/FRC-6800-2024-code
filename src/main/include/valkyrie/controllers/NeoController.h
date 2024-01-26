@@ -39,6 +39,7 @@ public:
     void setRange(int slot, double min, double max);
 
     void setConversion(double);
+    void setVoltageCompensation(units::voltage::volt_t);
 
     void setProfile(int slot);
     void setNeutralMode(valor::NeutralMode nmode);
