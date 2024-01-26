@@ -95,7 +95,6 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "
                         rotMaxAccel(rotMaxSpeed * 0.5),
                         pigeon(CANIDs::PIGEON_CAN, PIGEON_CAN_BUS),
                         motorLocations(wpi::empty_array),
-                        initPositions(wpi::empty_array),
                         kinematics(NULL),
                         estimator(NULL),
                         config(NULL),
@@ -181,8 +180,6 @@ void Drivetrain::init()
     aprilChocolate.setPipe(valor::VisionSensor::PIPELINE_0);
     aprilLemon.setPipe(valor::VisionSensor::PIPELINE_0);
 
-    initPositions.fill(frc::SwerveModulePosition{0_m, frc::Rotation2d(0_rad)});
-
     for (int i = 0; i < SWERVE_COUNT; i++)
     {
         configSwerveModule(i);
@@ -199,7 +196,7 @@ void Drivetrain::init()
     );
 
     kinematics = new frc::SwerveDriveKinematics<SWERVE_COUNT>(motorLocations);
-    estimator = new frc::SwerveDrivePoseEstimator<SWERVE_COUNT>(*kinematics, pigeon.GetRotation2d(), initPositions, frc::Pose2d{0_m, 0_m, 0_rad});
+    estimator = new frc::SwerveDrivePoseEstimator<SWERVE_COUNT>(*kinematics, pigeon.GetRotation2d(), getModuleStates(), frc::Pose2d{0_m, 0_m, 0_rad});
     config = new frc::TrajectoryConfig(units::velocity::meters_per_second_t{autoMaxSpeed}, units::acceleration::meters_per_second_squared_t{autoMaxAccel});
 
     xPIDF.P = KPX;
@@ -305,13 +302,9 @@ void Drivetrain::analyzeDashboard()
         pullSwerveModuleZeroReference();
 
     estimator->UpdateWithTime(frc::Timer::GetFPGATimestamp(),
-                            getPigeon(),
-                            {
-                                swerveModules[0]->getModulePosition(),
-                                swerveModules[1]->getModulePosition(),
-                                swerveModules[2]->getModulePosition(),
-                                swerveModules[3]->getModulePosition()
-                            });
+        getPigeon(),
+        getModuleStates()
+    );
 
     frc::Pose2d botpose;
     if (aprilVanilla.hasTarget()) {
@@ -415,16 +408,21 @@ void Drivetrain::resetGyro(){
     resetOdometry(desiredPose);
 }
 
-void Drivetrain::resetOdometry(frc::Pose2d pose)
+wpi::array<frc::SwerveModulePosition, SWERVE_COUNT> Drivetrain::getModuleStates()
 {
     wpi::array<frc::SwerveModulePosition, SWERVE_COUNT> modulePositions = wpi::array<frc::SwerveModulePosition, SWERVE_COUNT>(wpi::empty_array);
-
+    auto prevPose = estimator->GetEstimatedPosition();
     for (size_t i = 0; i < swerveModules.size(); i++)
     {
-        modulePositions[i] = swerveModules[i]->getModulePosition();
+        modulePositions[i] = swerveModules[i]->getModulePosition(prevPose);
     }
+    return modulePositions;
+}
 
-    estimator->ResetPosition(getPigeon(), modulePositions, pose);
+void Drivetrain::resetOdometry(frc::Pose2d pose)
+{
+    aprilLL.setPipe(valor::VisionSensor::PIPELINE_0);
+    estimator->ResetPosition(getPigeon(), getModuleStates(), pose);
 }
 
 frc::Rotation2d Drivetrain::getPigeon() {

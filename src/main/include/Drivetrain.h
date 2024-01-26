@@ -269,9 +269,7 @@ private:
 
      wpi::array<frc::Translation2d, SWERVE_COUNT> motorLocations;
 
-     wpi::array<frc::SwerveModulePosition, SWERVE_COUNT> initPositions;
-
-
+     wpi::array<frc::SwerveModulePosition, SWERVE_COUNT> getModuleStates();
 
      frc::SwerveDriveKinematics<SWERVE_COUNT> * kinematics;
      frc::SwerveDrivePoseEstimator<SWERVE_COUNT> * estimator;
