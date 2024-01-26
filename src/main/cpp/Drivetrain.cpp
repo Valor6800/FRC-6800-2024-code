@@ -283,6 +283,21 @@ double Drivetrain::angleWrap(double degrees)
     return start - 180;
 }
 
+frc2::CommandPtr Drivetrain::customSysIdQuasistatic(frc2::sysid::Direction direction) {
+    double outputSign = direction == frc2::sysid::Direction::kForward ? 1.0 : -1.0;
+
+    return frc2::SequentialCommandGroup(
+        frc2::InstantCommand([this](){
+            timer.Start();
+            state.driveWithVolts = true;
+        }),
+        frc2::WaitCommand(10_s),
+        frc2::InstantCommand([this](){
+            state.driveWith
+        })
+    ).ToPtr();
+}
+
 void Drivetrain::assessInputs()
 {
     if (!driverGamepad) return;
@@ -303,12 +318,53 @@ void Drivetrain::assessInputs()
     }
 
     state.xPose = driverGamepad->GetXButton();
+
+    if (operatorGamepad->GetAButtonPressed()) {
+        state.driveWithVolts = true;
+        timer.Restart();
+    }
+    else if (operatorGamepad->GetAButton()) {
+        timer.Start();
+        state.driveWithVolts = true;
+        state.driveVolts = 1 * timer.Get() * 1_V / 1_s;
+    } else {
+        driveVolts(0_V);
+        state.driveWithVolts = false;
+    }
+
+    if (operatorGamepad->GetBButtonPressed()) {
+        state.driveWithVolts = true;
+        timer.Restart();
+    }
+    else if (operatorGamepad->GetBButton()) {
+        timer.Start();
+        state.driveWithVolts = true;
+        state.driveVolts = -1 * timer.Get() * 1_V / 1_s;
+    } else {
+        driveVolts(0_V);
+        state.driveWithVolts = false;
+    }
+    
+    // if (operatorGamepad->GetAButtonReleased()) {
+    //     driveVolts(0_V);
+    //     state.driveWithVolts = false;
+    //     state.driveVolts = 0_V;
+    // }
+    // if (operatorGamepad->GetAButton()) {
+    //     state.driveWithVolts = true;
+    //     state.driveVolts = 2_V;
+    // } else {
+    //     driveVolts(0_V);
+    //     state.driveWithVolts = false;
+    //     state.driveVolts = 0_V;
+    // }
 }
 
 void Drivetrain::analyzeDashboard()
 {
     if (table->GetBoolean("Load Swerve Mag Encoder",false))
         pullSwerveModuleZeroReference();
+    table->PutNumber("cur number", timer.Get().to<double>());
 
     estimator->UpdateWithTime(frc::Timer::GetFPGATimestamp(),
                             getPigeon(),
@@ -341,14 +397,22 @@ void Drivetrain::assignOutputs()
     state.ySpeedMPS = units::velocity::meters_per_second_t{state.ySpeed * driveMaxSpeed};
     state.rotRPS = units::angular_velocity::radians_per_second_t{state.rot * rotMaxSpeed};
 
-    if (state.xPose){
-        setXMode();
-    } else if (state.adas){
-        drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
-    } 
-    else {
-        setDriveMotorNeutralMode(valor::NeutralMode::Coast);
-        drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
+    // if (state.xPose){
+    //     setXMode();
+    // } else if (state.adas){
+    //     drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
+    // } 
+    // else {
+    //     setDriveMotorNeutralMode(valor::NeutralMode::Coast);
+    //     drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
+    // }
+
+    // if (operatorGamepad->GetAButtonPressed()) {
+    //     frc2::CommandPtr cmd = customSysIdQuasistatic(frc2::sysid::Direction::kForward);
+    //     cmd.Schedule();
+    // }
+    if (state.driveWithVolts) {
+        driveVolts(state.driveVolts);
     }
 }
 
@@ -470,6 +534,12 @@ void Drivetrain::setModuleStates(wpi::array<frc::SwerveModuleState, SWERVE_COUNT
     for (int i = 0; i < SWERVE_COUNT; i++)
     {
         swerveModules[i]->setDesiredState(desiredStates[i], false);
+    }
+}
+
+void Drivetrain::driveVolts(units::volt_t voltage){
+    for (SwerveDriveMotor* driveMotor : driveControllers) {
+        driveMotor->setVoltage(voltage);
     }
 }
 
@@ -711,5 +781,47 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
             },
             nullptr
         );
+
+        builder.AddDoubleArrayProperty(
+            "swerve volts",
+            [this] {
+                std::vector<double> stuff;
+                for (SwerveDriveMotor* motor : driveControllers) {
+                    stuff.push_back((motor->getSpeed() * frc::RobotController::GetBatteryVoltage()).to<double>());
+                    // stuff.push_back(motor->getPosition());
+                }
+                return stuff;
+            },
+            nullptr
+        );
+
+        builder.AddDoubleArrayProperty(
+            "swerve positions",
+            [this] {
+                std::vector<double> stuff;
+                for (SwerveDriveMotor* motor : driveControllers) {
+                    // stuff.push_back((motor->getSpeed() * frc::RobotController::GetBatteryVoltage()).to<double>());
+                    stuff.push_back(motor->getPosition());
+                }
+                return stuff;
+            },
+            nullptr
+        );
+
+        builder.AddBooleanProperty(
+            "trying to run with volts",
+            [this] {
+                return state.driveWithVolts;
+            },
+            nullptr
+        );
+        builder.AddDoubleProperty(
+            "voltage to run with",
+            [this] {
+                return state.driveVolts.to<double>();
+            },
+            nullptr
+        );
+
     }
 

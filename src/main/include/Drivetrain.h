@@ -145,6 +145,9 @@ public:
           frc::Pose2d prevPose;
 
           units::second_t startTimestamp; // generic
+
+          bool driveWithVolts;
+          units::volt_t driveVolts;
      } state;
      
      
@@ -243,6 +246,12 @@ public:
 
      frc2::CommandPtr SysIdQuasistatic(frc2::sysid::Direction direction);
      frc2::CommandPtr SysIdDynamic(frc2::sysid::Direction direction);
+          
+     frc2::CommandPtr customSysIdQuasistatic(frc2::sysid::Direction direction);
+     // frc2::CommandPtr customSysIdDynamic(frc2::sysid::Direction direction);
+
+
+     void driveVolts(units::volt_t voltage);
 
 private:
      
@@ -292,6 +301,7 @@ private:
                           std::nullopt},
       frc2::sysid::Mechanism{
           [this](units::volt_t driveVoltage) {
+               table->PutString("trying to set voltage!", "true!!");
             for (SwerveDriveMotor* driveMotor : driveControllers) {
                driveMotor->setVoltage(driveVoltage);
             }
@@ -307,4 +317,6 @@ private:
                }
           },
           this}};
+
+     frc::Timer timer;
 };
