@@ -351,8 +351,10 @@ units::radian_t Drivetrain::calculateSpeakerLockAngle(){
 }
 
 units::angular_velocity::radians_per_second_t Drivetrain::getAngleError(units::radian_t angle, double kP){
-    units::radian_t robotRotation = estimator->GetEstimatedPosition().Rotation().Radians();
-    return units::angular_velocity::radians_per_second_t(kP*clampAngleRadianRange(robotRotation - angle));
+    // units::radian_t robotRotation = estimator->GetEstimatedPosition().Rotation().Radians();
+    // return units::angular_velocity::radians_per_second_t(kP*clampAngleRadianRange(robotRotation - angle));
+    units::angular_velocity::radians_per_second_t ang_error;
+    return ang_error;
 }
 
 units::radian_t Drivetrain::clampAngleRadianRange(units::radian_t angle){
