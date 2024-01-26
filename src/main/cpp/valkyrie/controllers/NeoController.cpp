@@ -86,9 +86,12 @@ void NeoController::setConversion(double _conversion)
    
 }
 
-void NeoController::setVoltageCompensation(units::voltage::volt_t volt)
-{
+void NeoController::setVoltageCompensation(units::voltage::volt_t volt){
     motor->SetVoltage(volt);
+}
+
+double NeoController::getVoltageCompensation(){
+    return motor->GetVoltageCompensationNominalVoltage();
 }
 
 void NeoController::setRange(int slot, double min, double max)

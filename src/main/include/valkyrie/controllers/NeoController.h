@@ -40,6 +40,7 @@ public:
 
     void setConversion(double);
     void setVoltageCompensation(units::voltage::volt_t);
+    double getVoltageCompensation();
 
     void setProfile(int slot);
     void setNeutralMode(valor::NeutralMode nmode);
