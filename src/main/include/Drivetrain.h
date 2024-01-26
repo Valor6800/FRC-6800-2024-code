@@ -97,9 +97,9 @@ public:
      void assignOutputs();
 
      void resetState();
-     units::radian_t calculateSpeakerLockAngle();
+     void calculateSpeakerLockAngle();
      units::angular_velocity::radians_per_second_t getAngleError(units::radian_t angle, double kP);
-     units::radian_t clampAngleRadianRange(units::radian_t angle);
+     double clampAngleRadianRange(units::radian_t angle, double max);
 
      void InitSendable(wpi::SendableBuilder& builder);
 
@@ -114,7 +114,7 @@ public:
           double xSpeed;
           double ySpeed;
           double rot;
-          
+  
           bool adas;
           bool lock;
 
@@ -124,6 +124,7 @@ public:
 
           bool isLeveled;
           bool abovePitchThreshold;
+          bool isHeadingTrack;
 
           bool topTape;
           bool bottomTape;

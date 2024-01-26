@@ -287,6 +287,7 @@ void Drivetrain::assessInputs()
     if (!state.lock){
     state.rot = driverGamepad->rightStickX(3);
     }
+    state.isHeadingTrack = operatorGamepad->GetAButtonPressed();
 
     state.xPose = driverGamepad->GetXButton();
 }
@@ -322,6 +323,7 @@ void Drivetrain::analyzeDashboard()
 void Drivetrain::assignOutputs()
 {    
     if (state.lock){angleLock();}
+    if(state.isHeadingTrack) calculateSpeakerLockAngle();
     state.xSpeedMPS = units::velocity::meters_per_second_t{state.xSpeed * driveMaxSpeed};
     state.ySpeedMPS = units::velocity::meters_per_second_t{state.ySpeed * driveMaxSpeed};
     state.rotRPS = units::angular_velocity::radians_per_second_t{state.rot * rotMaxSpeed};
@@ -337,28 +339,32 @@ void Drivetrain::assignOutputs()
     }
 }
 
-units::radian_t Drivetrain::calculateSpeakerLockAngle(){
+void Drivetrain::calculateSpeakerLockAngle(){
     units::radian_t targetRotAngle;
     units::meter_t roboXPos = estimator->GetEstimatedPosition().X();
     units::meter_t roboYPos = estimator->GetEstimatedPosition().Y();
     if(frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue){
-        targetRotAngle = units::radian_t(M_PI + atan((roboYPos.to<double>() - SPEAKER_Y.to<double>())/(roboXPos.to<double>() - SPEAKER_BLUE_X.to<double>())));
+        targetRotAngle = units::radian_t(atan2(
+            (roboYPos.to<double>() - SPEAKER_Y.to<double>()),
+            (roboXPos.to<double>() - SPEAKER_BLUE_X.to<double>())
+        ));
     }
     else{
-        targetRotAngle = units::radian_t(atan((roboYPos.to<double>() - SPEAKER_Y.to<double>())/(roboXPos.to<double>() - SPEAKER_RED_X.to<double>())));
+        targetRotAngle = units::radian_t(atan2(
+            (roboYPos.to<double>() - SPEAKER_Y.to<double>()),
+            (roboXPos.to<double>() - SPEAKER_RED_X.to<double>())
+        ));
     }
-    return targetRotAngle;
+    state.rot = clampAngleRadianRange(targetRotAngle, PI);
 }
 
-units::angular_velocity::radians_per_second_t Drivetrain::getAngleError(units::radian_t angle, double kP){
-    // units::radian_t robotRotation = estimator->GetEstimatedPosition().Rotation().Radians();
-    // return units::angular_velocity::radians_per_second_t(kP*clampAngleRadianRange(robotRotation - angle));
-    units::angular_velocity::radians_per_second_t ang_error;
-    return ang_error;
+units::angular_velocity::radians_per_second_t Drivetrain::getAngleError(units::radian_t targetAngle, double kP){
+    units::radian_t robotRotation = getPigeon().Radians();
+    return units::angular_velocity::radians_per_second_t{kP * clampAngleRadianRange(robotRotation-targetAngle, PI)};;
 }
 
-units::radian_t Drivetrain::clampAngleRadianRange(units::radian_t angle){
-    return (angle)/(M_PI / 2);
+double Drivetrain::clampAngleRadianRange(units::radian_t angle, double max){
+    return ((angle)/(max)).to<double>();
 }
 
 void Drivetrain::pullSwerveModuleZeroReference(){

@@ -71,6 +71,8 @@ void Shooter::init()
     table->PutNumber("Right Shooter Spool", RIGHT_SHOOT_SPOOL);
     table->PutNumber("Right Shooter Standby", RIGHT_SHOOT_STANDBY);
 
+    
+
     resetState();
 
 }
