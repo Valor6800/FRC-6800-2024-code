@@ -81,6 +81,14 @@ void NeoController::setConversion(double _conversion)
    
 }
 
+void NeoController::setMotorInversion(bool invert){
+    motor->SetInverted(invert);
+}
+
+bool NeoController::getMotorInversion(){
+    return motor->GetInverted();
+}
+
 void NeoController::setRange(int slot, double min, double max)
 {
     pidController.SetOutputRange(min, max, slot);

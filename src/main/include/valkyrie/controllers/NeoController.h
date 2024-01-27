@@ -40,6 +40,9 @@ public:
 
     void setConversion(double);
 
+    void setMotorInversion(bool);
+    bool getMotorInversion();
+
     void setProfile(int slot);
     void setNeutralMode(valor::NeutralMode nmode);
 
