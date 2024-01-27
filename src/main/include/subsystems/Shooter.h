@@ -65,6 +65,11 @@ public:
         double rightSpoolPower;
         double rightStandbyPower;
 
+        double rightShooterCurrent;
+        double leftShooterCurrent;
+
+        double voltageComp;
+
         units::degree_t pivotAngle;
 
     } state;

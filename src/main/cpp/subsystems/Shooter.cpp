@@ -78,8 +78,11 @@ void Shooter::init()
     table->PutNumber("Right Shooter Spool", RIGHT_SHOOT_SPOOL);
     table->PutNumber("Right Shooter Standby", RIGHT_SHOOT_STANDBY);
 
-    table->PutNumber("Left Shooter Current", leftFlywheelMotor.getCurrent());
+
     table->PutNumber("Right Shooter Current", rightFlywheelMotor.getCurrent());
+    table->PutNumber("Left Shooter Current", leftFlywheelMotor.getCurrent());
+
+    table->PutNumber("Shooter Voltage Compensation", SHOOTER_VOLTAGE_COMPENSATION);
 
     resetState();
 
@@ -126,6 +129,11 @@ void Shooter::analyzeDashboard()
     state.rightShooterPower = table->GetNumber("Right Shooter Power", RIGHT_SHOOT_POWER);
     state.rightSpoolPower = table->GetNumber("Right Shooter Spool", RIGHT_SHOOT_SPOOL);
     state.rightStandbyPower = table->GetNumber("Right Shooter Standby", RIGHT_SHOOT_STANDBY);
+
+    state.rightShooterCurrent = table->GetNumber("Right Shooter Current", rightFlywheelMotor.getCurrent());
+    state.leftShooterCurrent = table->GetNumber("Left Shooter Current", leftFlywheelMotor.getCurrent());
+
+    state.voltageComp = table->GetNumber("Voltage Compensation", SHOOTER_VOLTAGE_COMPENSATION);
 }
 
 void Shooter::assignOutputs()
@@ -165,6 +173,18 @@ void Shooter::InitSendable(wpi::SendableBuilder& builder)
     builder.AddIntegerProperty(
         "flywheel state",
         [this] {return state.flywheelState;},
+        nullptr
+    );
+
+    builder.AddDoubleProperty(
+        "rightFlywheelCurrent",
+        [this] {return state.rightShooterCurrent;},
+        nullptr
+    );
+
+    builder.AddDoubleProperty(
+        "leftFlywheelCurrent",
+        [this] {return state.leftShooterCurrent;},
         nullptr
     );
 
