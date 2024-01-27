@@ -12,11 +12,13 @@
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Rotation2d.h>
 #include <frc/trajectory/TrajectoryGenerator.h>
+#include <frc/DigitalInput.h>
 #include <frc/DigitalOutput.h>
 
 #include <frc2/command/FunctionalCommand.h>
 #include <unordered_map>
 #include "valkyrie/Gamepad.h"
+#include "Drivetrain.h"
 
 class Shooter : public valor::BaseSubsystem
 {
@@ -25,7 +27,7 @@ public:
     valor::NeoController leftFlywheelMotor;
     valor::NeoController rightFlywheelMotor;
 
-    Shooter(frc::TimedRobot *robot);
+    Shooter(frc::TimedRobot *robot, frc::DigitalInput* beamBreak, Drivetrain *drivetrain);
 
     void resetState();
 
@@ -35,7 +37,9 @@ public:
     void analyzeDashboard();
     void assignOutputs();
 
-    units::degree_t calculatePivotAngle();
+    void getTargetPivotAngle();
+    units::radian_t getPivotErrorAngle();
+    void setPivotAngle();
 
     void calculateRootsT();
     void bisectionTheorem();
@@ -66,4 +70,10 @@ public:
         units::angular_velocity::revolutions_per_minute_t rightFlywheelTargetVelocity;
         units::degree_t pivotAngle;
     } state;
+
+private:
+
+    Drivetrain *drivetrain;
+    valor::PIDF pivotPID;
+    frc::DigitalInput* beamBreak;
 };

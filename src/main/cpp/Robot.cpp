@@ -11,8 +11,9 @@ Robot::Robot() :
     drivetrain(this), 
     valorAuto(), 
     beamBreak(DIOPorts::BEAM_BREAK_PORT), 
-    shooter(this),
-    feeder(this, &beamBreak)
+    shooter(this, &beamBreak, &drivetrain), 
+    intake(this, &beamBreak),
+    feeder(this)
 {
     frc::TimedRobot();
 }

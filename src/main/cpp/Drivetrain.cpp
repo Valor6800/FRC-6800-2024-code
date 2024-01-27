@@ -18,10 +18,6 @@
 
 using namespace pathplanner;
 
-#define SPEAKER_Y 5.543042_m
-#define SPEAKER_BLUE_X 0.0_m
-#define SPEAKER_RED_X 16.4846_m
-
 #define TXRANGE  30.0f
 #define KPIGEON 2.0f
 #define KLIMELIGHT -29.8f
@@ -56,6 +52,9 @@ using namespace pathplanner;
 #define PIGEON_CAN_BUS "baseCAN"
 
 #define KP_ROTATE -0.6f
+#define SPEAKER_Y 5.543042_m
+#define SPEAKER_BLUE_X 0.0_m
+#define SPEAKER_RED_X 16.4846_m
 #define SPEAKER_X_OFFSET 0.15f
 #define SPEAKER_Y_OFFSET 0.00f
 

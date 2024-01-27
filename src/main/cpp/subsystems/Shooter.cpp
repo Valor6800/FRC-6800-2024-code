@@ -1,6 +1,10 @@
 #include "subsystems/Shooter.h"
+<<<<<<< HEAD
 #include "Constants.h"
 #include "units/angular_velocity.h"
+#include <frc/DriverStation.h>
+#include <iostream>
+#include <math.h>
 #include "valkyrie/controllers/NeutralMode.h"
 #include "valkyrie/controllers/PIDF.h"
 
@@ -31,11 +35,21 @@
 #define RIGHT_SPOOL_POWER 50.0f
 #define RIGHT_STANDBY_POWER 0.0f
 
-Shooter::Shooter(frc::TimedRobot *_robot) :
+#define SPEAKER_Y 5.543042_m
+#define SPEAKER_BLUE_X 0.0_m
+#define SPEAKER_RED_X 16.4846_m
+#define SPEAKER_X_OFFSET 0.15f
+#define SPEAKER_Y_OFFSET 0.00f
+#define SPEAKER_HEIGHT 2.0431125f
+#define SPEAKER_Z_OFFSET 0.0f
+
+Shooter::Shooter(frc::TimedRobot *_robot, frc::DigitalInput* _beamBreak, Drivetrain *_drive) :
     valor::BaseSubsystem(_robot, "Shooter"),
     //pivotMotors(CANIDs::ANGLE_CONTROLLER, valor::NeutralMode::Brake, false),
     leftFlywheelMotor(CANIDs::LEFT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false),
-    rightFlywheelMotor(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false)
+    rightFlywheelMotor(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false),
+    beamBreak(_beamBreak),
+    drivetrain(_drive)
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -171,6 +185,32 @@ units::degree_t Shooter::calculatePivotAngle(){
     units::degree_t targetPivotAngle = units::degree_t(3);
     return targetPivotAngle;
 }
+
+void Shooter::getTargetPivotAngle(){
+    units::meter_t robotX = drivetrain->getPose_m().X();
+    units::meter_t robotY = drivetrain->getPose_m().Y();
+    double distance = 5;
+    double changeInY = robotY.to<double>() - SPEAKER_Y.to<double>();
+    if(frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue){
+        double changeInX = robotX.to<double>() - SPEAKER_BLUE_X.to<double>();
+        distance = sqrtf(pow(changeInX, 2) + pow(changeInY, 2));
+    }
+    else{
+        double changeInX = robotX.to<double>() - SPEAKER_RED_X.to<double>();
+        distance = sqrtf(pow(changeInX, 2) + pow(changeInY, 2));
+    }
+    double angle = atan2(SPEAKER_HEIGHT + table->GetNumber("Speaker Z Offset", SPEAKER_Z_OFFSET), distance);
+    state.targetPivotAngle = units::radian_t(angle);
+}
+
+units::radian_t Shooter::getPivotErrorAngle(){
+    return state.pivotAngle - state.targetPivotAngle;
+}
+
+void Shooter::setPivotAngle(){
+
+}
+
 
 void Shooter::calculateRootsT(){
     // add future code for solving roots of the quartic that results from the vector expression
