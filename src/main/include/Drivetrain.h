@@ -262,6 +262,7 @@ private:
      frc::ChassisSpeeds getRobotRelativeSpeeds();
 
      void configSwerveModule(int);
+     void calculateCarpetPose();
 
      std::vector<valor::Swerve<SwerveAzimuthMotor, SwerveDriveMotor> *> swerveModules;
      std::vector<SwerveAzimuthMotor *> azimuthControllers;
@@ -273,6 +274,8 @@ private:
 
      frc::SwerveDriveKinematics<SWERVE_COUNT> * kinematics;
      frc::SwerveDrivePoseEstimator<SWERVE_COUNT> * estimator;
+     frc::SwerveDrivePoseEstimator<SWERVE_COUNT> * calculatedEstimator;
+     frc::Pose2d previousPose;
 
      frc::TrajectoryConfig * config;
 

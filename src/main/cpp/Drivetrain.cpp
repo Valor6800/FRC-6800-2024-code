@@ -97,6 +97,7 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "
                         motorLocations(wpi::empty_array),
                         kinematics(NULL),
                         estimator(NULL),
+                        calculatedEstimator(NULL),
                         config(NULL),
                         swerveNoError(true),
                         aprilVanilla(_robot, "limelight-vanilla", Constants::vanillaCameraPosition()),
@@ -119,6 +120,7 @@ Drivetrain::~Drivetrain()
     }
 
     delete estimator;
+    delete calculatedEstimator;
     delete config;
 }
 
@@ -197,6 +199,7 @@ void Drivetrain::init()
 
     kinematics = new frc::SwerveDriveKinematics<SWERVE_COUNT>(motorLocations);
     estimator = new frc::SwerveDrivePoseEstimator<SWERVE_COUNT>(*kinematics, pigeon.GetRotation2d(), getModuleStates(), frc::Pose2d{0_m, 0_m, 0_rad});
+    calculatedEstimator = new frc::SwerveDrivePoseEstimator<SWERVE_COUNT>(*kinematics, pigeon.GetRotation2d(), getModuleStates(), frc::Pose2d{0_m, 0_m, 0_rad});
     config = new frc::TrajectoryConfig(units::velocity::meters_per_second_t{autoMaxSpeed}, units::acceleration::meters_per_second_squared_t{autoMaxAccel});
 
     xPIDF.P = KPX;
@@ -296,6 +299,27 @@ void Drivetrain::assessInputs()
     state.xPose = driverGamepad->GetXButton();
 }
 
+void Drivetrain::calculateCarpetPose()
+{
+    calculatedEstimator->UpdateWithTime(frc::Timer::GetFPGATimestamp(),
+        getPigeon(),
+        getModuleStates()
+    );
+    frc::Pose2d newPose = calculatedEstimator->GetEstimatedPosition();
+    units::meter_t deltaX = newPose.X() - previousPose.X();
+    double factor = deltaX < units::meter_t{0} ? 1.05 : 1;
+    calculatedEstimator->AddVisionMeasurement(
+        frc::Pose2d{
+            factor * deltaX + previousPose.X(),
+            newPose.Y(),
+            newPose.Rotation()
+        },
+        frc::Timer::GetFPGATimestamp(),
+        {0.1, 0.1, 0.1}
+    );
+    previousPose = calculatedEstimator->GetEstimatedPosition();
+}
+
 void Drivetrain::analyzeDashboard()
 {
     if (table->GetBoolean("Load Swerve Mag Encoder",false))
@@ -305,6 +329,7 @@ void Drivetrain::analyzeDashboard()
         getPigeon(),
         getModuleStates()
     );
+    calculateCarpetPose();
 
     frc::Pose2d botpose;
     if (aprilVanilla.hasTarget()) {
@@ -411,18 +436,17 @@ void Drivetrain::resetGyro(){
 wpi::array<frc::SwerveModulePosition, SWERVE_COUNT> Drivetrain::getModuleStates()
 {
     wpi::array<frc::SwerveModulePosition, SWERVE_COUNT> modulePositions = wpi::array<frc::SwerveModulePosition, SWERVE_COUNT>(wpi::empty_array);
-    auto prevPose = estimator->GetEstimatedPosition();
     for (size_t i = 0; i < swerveModules.size(); i++)
     {
-        modulePositions[i] = swerveModules[i]->getModulePosition(prevPose);
+        modulePositions[i] = swerveModules[i]->getModulePosition();
     }
     return modulePositions;
 }
 
 void Drivetrain::resetOdometry(frc::Pose2d pose)
 {
-    aprilLL.setPipe(valor::VisionSensor::PIPELINE_0);
     estimator->ResetPosition(getPigeon(), getModuleStates(), pose);
+    calculatedEstimator->ResetPosition(getPigeon(), getModuleStates(), pose);
 }
 
 frc::Rotation2d Drivetrain::getPigeon() {
@@ -670,13 +694,14 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
             nullptr
         );
         builder.AddDoubleArrayProperty(
-            "prevPose",
+            "calculatedPose",
             [this] 
             { 
+                frc::Pose2d estimatedPose = calculatedEstimator->GetEstimatedPosition();
                 std::vector<double> pose;
-                pose.push_back(state.prevPose.X().to<double>());
-                pose.push_back(state.prevPose.Y().to<double>());
-                pose.push_back(state.prevPose.Rotation().Degrees().to<double>());
+                pose.push_back(estimatedPose.X().to<double>());
+                pose.push_back(estimatedPose.Y().to<double>());
+                pose.push_back(estimatedPose.Rotation().Degrees().to<double>());
                 return pose;
             },
             nullptr
