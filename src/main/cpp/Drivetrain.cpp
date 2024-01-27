@@ -83,7 +83,8 @@ using namespace pathplanner;
 #define DRIVETRAIN_CAN_BUS ""
 #define PIGEON_CAN_BUS "baseCAN"
 
-#define KP_ROTATE 0.006f
+#define KP_ROTATE -0.6f
+
 
 Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Drivetrain"),
                         driveMaxSpeed(MOTOR_FREE_SPEED / 60.0 / DRIVE_GEAR_RATIO * WHEEL_DIAMETER_M * M_PI),
@@ -219,6 +220,7 @@ void Drivetrain::init()
     table->PutBoolean("Load Swerve Mag Encoder", false);
 
     table->PutNumber("KPLIMELIGHT", KP_LIMELIGHT);
+    table->PutNumber("KP_ROTATION", KP_ROTATE);
 
     state.lock = false;
 
@@ -279,7 +281,7 @@ void Drivetrain::assessInputs()
         resetGyro();
     }
 
-    state.adas = driverGamepad->GetAButton();
+
     state.topTape = operatorGamepad->DPadUp();
     state.bottomTape = operatorGamepad->DPadRight();
     state.lock = state.adas || driverGamepad->GetBButton();
@@ -289,7 +291,7 @@ void Drivetrain::assessInputs()
     if (!state.lock){
     state.rot = driverGamepad->rightStickX(3);
     }
-    state.isHeadingTrack = operatorGamepad->GetAButtonPressed();
+    state.isHeadingTrack = driverGamepad->GetAButton();
 
     state.xPose = driverGamepad->GetXButton();
 }
@@ -320,6 +322,9 @@ void Drivetrain::analyzeDashboard()
     if (driverGamepad->GetStartButton() && (aprilVanilla.hasTarget() || aprilChocolate.hasTarget() || aprilLemon.hasTarget())){
             resetOdometry(botpose);
     }
+    getSpeakerLockAngleRPS();
+    double kP = table->GetNumber("KP_ROTATION", KP_ROTATE);
+    state.angleRPS = units::angular_velocity::radians_per_second_t(getAngleError().to<double>()*kP*rotMaxSpeed);
 }
 
 void Drivetrain::assignOutputs()
@@ -332,8 +337,8 @@ void Drivetrain::assignOutputs()
     if (state.xPose){
         setXMode();
     } else if(state.isHeadingTrack){
-        calculateSpeakerLockAngle();
-        drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
+
+        drive(state.xSpeedMPS, state.ySpeedMPS, state.angleRPS, true);
     }
     else if (state.adas){
         drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
@@ -344,7 +349,7 @@ void Drivetrain::assignOutputs()
     }
 }
 
-void Drivetrain::calculateSpeakerLockAngle(){
+void Drivetrain::getSpeakerLockAngleRPS(){
     units::radian_t targetRotAngle;
     units::meter_t roboXPos = estimator->GetEstimatedPosition().X();
     units::meter_t roboYPos = estimator->GetEstimatedPosition().Y();
@@ -360,12 +365,12 @@ void Drivetrain::calculateSpeakerLockAngle(){
             (roboXPos.to<double>() - SPEAKER_RED_X.to<double>())
         ));
     }
-    state.rotRPS = units::angular_velocity::radians_per_second_t((KP_ROTATE * clampAngleRadianRange(targetRotAngle, PI))*driveMaxSpeed);
+    state.targetAngle = targetRotAngle;
 }
 
-units::angular_velocity::radians_per_second_t Drivetrain::getAngleError(units::radian_t targetAngle, double kP){
-    units::radian_t robotRotation = getPigeon().Radians();
-    return units::angular_velocity::radians_per_second_t{kP * clampAngleRadianRange(robotRotation-targetAngle, PI)};;
+units::radian_t Drivetrain::getAngleError(){
+    units::radian_t robotRotation = estimator->GetEstimatedPosition().Rotation().Radians();
+    return (robotRotation - state.targetAngle);
 }
 
 double Drivetrain::clampAngleRadianRange(units::radian_t angle, double max){
@@ -736,6 +741,24 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
                 states.push_back(swerveModules[3]->getState().speed.to<double>());
                 return states;
             },
+            nullptr
+        );
+
+        builder.AddDoubleProperty(
+            "targetAngle",
+            [this] {return (units::degree_t(state.targetAngle)).to<double>();},
+            nullptr
+        );
+
+        builder.AddDoubleProperty(
+            "errorAngle",
+            [this] {return (units::degree_t(getAngleError()).to<double>());},
+            nullptr
+        );
+
+        builder.AddDoubleProperty(
+            "errorAngleRPS",
+            [this] {return (state.angleRPS).to<double>();},
             nullptr
         );
     }
