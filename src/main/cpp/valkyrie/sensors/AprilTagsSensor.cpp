@@ -1,6 +1,10 @@
 #include "valkyrie/sensors/AprilTagsSensor.h"
 #include "units/angle.h"
 #include <array>
+#include "units/time.h"
+#include <cmath>
+
+#define OUTLIER_EDGE 4.0f //meters
 
 using namespace valor;
 
@@ -24,13 +28,18 @@ frc::Pose3d AprilTagsSensor::getGlobalPose() {
     );
 }
 
-void AprilTagsSensor::applyVisionMeasurement(frc::SwerveDrivePoseEstimator<4> *estimator, double doubt) {
+void AprilTagsSensor::applyVisionMeasurement(frc::SwerveDrivePoseEstimator<4> *estimator, double outlier, double doubtX, double doubtY, double doubtRot) {
     if (!hasTarget()) return;
+ 
+    std::vector<double> botToTargetPose = limeTable->GetNumberArray("botpose_targetspace", std::span<const double>());
+    if (sqrtf(powf(botToTargetPose[0], 2) + powf(botToTargetPose[1], 2)) >= outlier) return;
+
     setTotalLatency();
+
     estimator->AddVisionMeasurement(
         currState.ToPose2d(),  
         frc::Timer::GetFPGATimestamp() - totalLatency,
-        {doubt, doubt, doubt}
+        {doubtX, doubtY, doubtRot}
     );
 }
 

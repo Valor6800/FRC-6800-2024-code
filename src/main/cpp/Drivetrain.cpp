@@ -87,6 +87,8 @@ using namespace pathplanner;
 #define SPEAKER_X_OFFSET 0.15f
 #define SPEAKER_Y_OFFSET 0.00f
 
+#define VISION_OUTLIER 4.0f // meters
+
 Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Drivetrain"),
                         driveMaxSpeed(MOTOR_FREE_SPEED / 60.0 / DRIVE_GEAR_RATIO * WHEEL_DIAMETER_M * M_PI),
                         rotMaxSpeed(ROT_SPEED_MUL * 2 * M_PI),
@@ -220,6 +222,11 @@ void Drivetrain::init()
     table->PutNumber("Vision Std", 3.0);
     table->PutBoolean("Load Swerve Mag Encoder", false);
 
+    table->PutNumber("Vision Outlier", VISION_OUTLIER );
+    table->PutNumber("DoubtX", 1.0);
+    table->PutNumber("DoubtY", 1.0);
+    table->PutNumber("DoubtRot", 1.0);
+
     table->PutNumber("KPLIMELIGHT", KP_LIMELIGHT);
     table->PutNumber("KP_ROTATION", KP_ROTATE);
     table->PutNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET);
@@ -332,6 +339,30 @@ void Drivetrain::analyzeDashboard()
     calculateCarpetPose();
 
     frc::Pose2d botpose;
+
+    aprilVanilla.applyVisionMeasurement(
+        estimator,
+        table->GetNumber("Vision Outlier", VISION_OUTLIER ),
+        table->GetNumber("DoubtX", 1.0),
+        table->GetNumber("DoubtY", 1.0),
+        table->GetNumber("DoubtRot", 1.0)
+    );
+
+    aprilChocolate.applyVisionMeasurement(
+        estimator,
+        table->GetNumber("Vision Outlier", VISION_OUTLIER ),
+        table->GetNumber("DoubtX", 1.0),
+        table->GetNumber("DoubtY", 1.0),
+        table->GetNumber("DoubtRot", 1.0)
+    );
+
+    aprilLemon.applyVisionMeasurement(
+        estimator,
+        table->GetNumber("Vision Outlier", VISION_OUTLIER ),
+        table->GetNumber("DoubtX", 1.0),
+        table->GetNumber("DoubtY", 1.0),
+        table->GetNumber("DoubtRot", 1.0)
+    );
 
     if (aprilVanilla.hasTarget()) {
         botpose = aprilVanilla.getSensor().ToPose2d();
