@@ -84,7 +84,8 @@ using namespace pathplanner;
 #define PIGEON_CAN_BUS "baseCAN"
 
 #define KP_ROTATE -0.6f
-
+#define SPEAKER_X_OFFSET 0.15f
+#define SPEAKER_Y_OFFSET 0.00f
 
 Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Drivetrain"),
                         driveMaxSpeed(MOTOR_FREE_SPEED / 60.0 / DRIVE_GEAR_RATIO * WHEEL_DIAMETER_M * M_PI),
@@ -221,6 +222,8 @@ void Drivetrain::init()
 
     table->PutNumber("KPLIMELIGHT", KP_LIMELIGHT);
     table->PutNumber("KP_ROTATION", KP_ROTATE);
+    table->PutNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET);
+    table->PutNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET);
 
     state.lock = false;
 
@@ -324,6 +327,8 @@ void Drivetrain::analyzeDashboard()
     }
     getSpeakerLockAngleRPS();
     double kP = table->GetNumber("KP_ROTATION", KP_ROTATE);
+    double speakerXOffset = table->GetNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET);
+    double speakerYOffset = table->GetNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET);
     state.angleRPS = units::angular_velocity::radians_per_second_t(getAngleError().to<double>()*kP*rotMaxSpeed);
 }
 
@@ -355,14 +360,14 @@ void Drivetrain::getSpeakerLockAngleRPS(){
     units::meter_t roboYPos = estimator->GetEstimatedPosition().Y();
     if(frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue){
         targetRotAngle = units::radian_t(atan2(
-            (roboYPos.to<double>() - SPEAKER_Y.to<double>()),
-            (roboXPos.to<double>() - SPEAKER_BLUE_X.to<double>())
+            (roboYPos.to<double>() - (SPEAKER_Y.to<double>() +  table->GetNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET))),
+            (roboXPos.to<double>() - (SPEAKER_BLUE_X.to<double>() +  table->GetNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET)))
         ));
     }
     else{
         targetRotAngle = units::radian_t(atan2(
-            (roboYPos.to<double>() - SPEAKER_Y.to<double>()),
-            (roboXPos.to<double>() - SPEAKER_RED_X.to<double>())
+            (roboYPos.to<double>() - (SPEAKER_Y.to<double>() + table->GetNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET))),
+            (roboXPos.to<double>() - (SPEAKER_RED_X.to<double>() + table->GetNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET)))
         ));
     }
     state.targetAngle = targetRotAngle;
