@@ -23,9 +23,9 @@ namespace valor
 
             void InitSendable(wpi::SendableBuilder& builder) override;
 
-        private:
             void applyVisionMeasurement(frc::SwerveDrivePoseEstimator<4> *estimator, double doubt = 1);
 
+        private:
             frc::Pose3d getGlobalPose() override;
             
     };

@@ -417,16 +417,6 @@ frc::Pose2d Drivetrain::getPose_m()
     return estimator->GetEstimatedPosition();
 }
 
-// Deprecated
-void Drivetrain::addVisionMeasurement(frc::Pose2d visionPose, double doubt=1){
-    if (aprilVanilla.hasTarget())   
-        estimator->AddVisionMeasurement(
-            visionPose,  
-            frc::Timer::GetFPGATimestamp(),
-            {doubt, 999999.0, 999999.0}
-        ); 
-}
-
 void Drivetrain::resetGyro(){
     frc::Pose2d initialPose = getPose_m();
     frc::Pose2d desiredPose = frc::Pose2d(initialPose.X(), initialPose.Y(), frc::Rotation2d(0_deg));
@@ -545,7 +535,10 @@ frc2::FunctionalCommand* Drivetrain::getResetOdom() {
                 (aprilLemon.hasTarget() && (aprilLemon.getSensor().ToPose2d().X() > 0_m && aprilLemon.getSensor().ToPose2d().Y() > 0_m))
             ){
                 table->PutNumber("resetting odom", table->GetNumber("resetting odom", 0) + 1);
-                addVisionMeasurement(aprilVanilla.getSensor().ToPose2d(), 1.0); // Deprecated
+                aprilVanilla.applyVisionMeasurement(estimator);
+                aprilLemon.applyVisionMeasurement(estimator);
+                aprilChocolate.applyVisionMeasurement(estimator);
+
                 table->PutBoolean("resetting", true);
             }
             else {
