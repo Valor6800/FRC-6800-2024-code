@@ -13,7 +13,8 @@ Robot::Robot() :
     beamBreak(DIOPorts::BEAM_BREAK_PORT), 
     shooter(this, &beamBreak), 
     intake(this, &beamBreak),
-    feeder(this)
+    feeder(this),
+    SysID(this, &drivetrain)
 {
     frc::TimedRobot();
 }
@@ -30,6 +31,8 @@ void Robot::RobotInit() {
 
     feeder.setGamepads(&gamepadOperator, &gamepadDriver);
     feeder.resetState();
+
+    SysID.setGamepads(&gamepadOperator, &gamepadDriver);
 
     frc::LiveWindow::EnableAllTelemetry();
     frc::DataLogManager::Start();

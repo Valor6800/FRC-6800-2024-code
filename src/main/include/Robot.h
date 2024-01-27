@@ -9,6 +9,7 @@
 
 #include "Drivetrain.h"
 #include "valkyrie/Auto.h"
+#include "DriveChar.h"
 
 #include <frc/DriverStation.h>
 #include <frc/DataLogManager.h>
@@ -50,6 +51,7 @@ class Robot : public frc::TimedRobot {
         Shooter shooter;
         Intake intake;
         Feeder feeder;
+        DriveChar SysID;
 
         std::ofstream outfile;        
 };
