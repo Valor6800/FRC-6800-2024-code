@@ -339,6 +339,10 @@ void Drivetrain::analyzeDashboard()
     doubtRot = table->GetNumber("DoubtRot", 1.0);
     visionAcceptanceRadius = (units::meter_t) table->GetNumber("Vision Acceptance", VISION_ACCEPTANCE.to<double>());
 
+    for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
+        aprilLime->applyVisionMeasurement(estimator, visionAcceptanceRadius, doubtX, doubtY);
+    }
+
     if (driverGamepad->GetStartButton()) {
         for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
             if (aprilLime->hasTarget()) {
@@ -354,10 +358,6 @@ void Drivetrain::analyzeDashboard()
     double speakerXOffset = table->GetNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET);
     double speakerYOffset = table->GetNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET);
     state.angleRPS = units::angular_velocity::radians_per_second_t(getAngleError().to<double>()*kP*rotMaxSpeed);
-
-    for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
-        aprilLime->applyVisionMeasurement(estimator, visionAcceptanceRadius, doubtX, doubtY);
-    }
     
 }
 
