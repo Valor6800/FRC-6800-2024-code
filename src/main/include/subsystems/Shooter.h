@@ -39,7 +39,6 @@ public:
 
     void getTargetPivotAngle();
     units::radian_t getPivotErrorAngle();
-    void setPivotAngle();
 
     void calculateRootsT();
     void bisectionTheorem();

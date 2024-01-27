@@ -136,16 +136,16 @@ void Shooter::analyzeDashboard()
     state.pivotAngle = 0.0_deg;
 
     //NEED PIVOT MOTOR
-    // if(state.pivot == PivotState::SUBWOOFER){
+    // if(state.targetPivotAngle == PivotState::SUBWOOFER){
     //     pivotMotors.setPosition(SUBWOOFER_ANG.to<double>());
     // }
-    // else if(state.pivot == PivotState::PODIUM){
+    // else if(state.targetPivotAngle == PivotState::PODIUM){
     //     pivotMotors.setPosition(PODIUM_ANG.to<double>());
     // }
-    // else if(state.pivot == PivotState::STARTING_LINE){
+    // else if(state.targetPivotAngle == PivotState::STARTING_LINE){
     //     pivotMotors.setPosition(STARTING_LINE_ANG.to<double>());
     // }
-    // else if(state.pivot == PivotState::TRACKING){
+    // else if(state.targetPivotAngle == PivotState::TRACKING){
     //     pivotMotors.setPosition(calculatingPivotingAngle.to<double>());
     // }
 
@@ -205,10 +205,6 @@ void Shooter::getTargetPivotAngle(){
 
 units::radian_t Shooter::getPivotErrorAngle(){
     return state.pivotAngle - state.targetPivotAngle;
-}
-
-void Shooter::setPivotAngle(){
-
 }
 
 
