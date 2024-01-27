@@ -288,4 +288,5 @@ private:
      valor::AprilTagsSensor aprilChocolate;
      valor::AprilTagsSensor aprilLemon;
 
+     double doubtX, doubtY, doubtRot;
 };

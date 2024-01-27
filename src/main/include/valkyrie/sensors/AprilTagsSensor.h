@@ -3,6 +3,7 @@
 #include "frc/estimator/PoseEstimator.h"
 #include "frc/estimator/SwerveDrivePoseEstimator.h"
 #include "frc/geometry/Pose3d.h"
+#include "units/length.h"
 #include "units/velocity.h"
 #include "valkyrie/sensors/VisionSensor.h"
 #include "networktables/NetworkTableInstance.h"
@@ -23,7 +24,7 @@ namespace valor
 
             void InitSendable(wpi::SendableBuilder& builder) override;
 
-            void applyVisionMeasurement(frc::SwerveDrivePoseEstimator<4> *estimator, double outlier, double doubtX = 1, double doubtY = 1, double doubtRot = 1);
+            void applyVisionMeasurement(frc::SwerveDrivePoseEstimator<4> *estimator, units::meter_t outlier, double doubtX = 1, double doubtY = 1, double doubtRot = 1);
 
         private:
             frc::Pose3d getGlobalPose() override;

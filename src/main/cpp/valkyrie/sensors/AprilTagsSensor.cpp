@@ -1,6 +1,7 @@
 #include "valkyrie/sensors/AprilTagsSensor.h"
 #include "units/angle.h"
 #include <array>
+#include "units/length.h"
 #include "units/time.h"
 #include <cmath>
 
@@ -28,11 +29,11 @@ frc::Pose3d AprilTagsSensor::getGlobalPose() {
     );
 }
 
-void AprilTagsSensor::applyVisionMeasurement(frc::SwerveDrivePoseEstimator<4> *estimator, double outlier, double doubtX, double doubtY, double doubtRot) {
+void AprilTagsSensor::applyVisionMeasurement(frc::SwerveDrivePoseEstimator<4> *estimator, units::meter_t outlier, double doubtX, double doubtY, double doubtRot) {
     if (!hasTarget()) return;
  
     std::vector<double> botToTargetPose = limeTable->GetNumberArray("botpose_targetspace", std::span<const double>());
-    if (sqrtf(powf(botToTargetPose[0], 2) + powf(botToTargetPose[1], 2)) >= outlier) return;
+    if (sqrtf(powf(botToTargetPose[0], 2) + powf(botToTargetPose[1], 2)) >= outlier.to<double>()) return;
 
     setTotalLatency();
 

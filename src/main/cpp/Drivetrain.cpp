@@ -87,7 +87,7 @@ using namespace pathplanner;
 #define SPEAKER_X_OFFSET 0.15f
 #define SPEAKER_Y_OFFSET 0.00f
 
-#define VISION_OUTLIER 4.0f // meters
+#define VISION_OUTLIER 4.0_m // meters
 
 Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Drivetrain"),
                         driveMaxSpeed(MOTOR_FREE_SPEED / 60.0 / DRIVE_GEAR_RATIO * WHEEL_DIAMETER_M * M_PI),
@@ -222,7 +222,7 @@ void Drivetrain::init()
     table->PutNumber("Vision Std", 3.0);
     table->PutBoolean("Load Swerve Mag Encoder", false);
 
-    table->PutNumber("Vision Outlier", VISION_OUTLIER );
+    table->PutNumber("Vision Outlier", VISION_OUTLIER.to<double>() );
     table->PutNumber("DoubtX", 1.0);
     table->PutNumber("DoubtY", 1.0);
     table->PutNumber("DoubtRot", 1.0);
@@ -340,29 +340,9 @@ void Drivetrain::analyzeDashboard()
 
     frc::Pose2d botpose;
 
-    aprilVanilla.applyVisionMeasurement(
-        estimator,
-        table->GetNumber("Vision Outlier", VISION_OUTLIER ),
-        table->GetNumber("DoubtX", 1.0),
-        table->GetNumber("DoubtY", 1.0),
-        table->GetNumber("DoubtRot", 1.0)
-    );
-
-    aprilChocolate.applyVisionMeasurement(
-        estimator,
-        table->GetNumber("Vision Outlier", VISION_OUTLIER ),
-        table->GetNumber("DoubtX", 1.0),
-        table->GetNumber("DoubtY", 1.0),
-        table->GetNumber("DoubtRot", 1.0)
-    );
-
-    aprilLemon.applyVisionMeasurement(
-        estimator,
-        table->GetNumber("Vision Outlier", VISION_OUTLIER ),
-        table->GetNumber("DoubtX", 1.0),
-        table->GetNumber("DoubtY", 1.0),
-        table->GetNumber("DoubtRot", 1.0)
-    );
+    doubtX = table->GetNumber("DoubtX", 1.0);
+    doubtY = table->GetNumber("DoubtY", 1.0);
+    doubtRot = table->GetNumber("DoubtRot", 1.0);
 
     if (aprilVanilla.hasTarget()) {
         botpose = aprilVanilla.getSensor().ToPose2d();
@@ -390,11 +370,14 @@ void Drivetrain::analyzeDashboard()
 
 void Drivetrain::assignOutputs()
 {    
+    aprilVanilla.applyVisionMeasurement(estimator, VISION_OUTLIER, doubtX, doubtY, doubtRot);
+    aprilChocolate.applyVisionMeasurement(estimator, VISION_OUTLIER, doubtX, doubtY, doubtRot);
+    aprilLemon.applyVisionMeasurement(estimator, VISION_OUTLIER, doubtX, doubtY, doubtRot);
+
     if (state.lock){angleLock();}
     state.xSpeedMPS = units::velocity::meters_per_second_t{state.xSpeed * driveMaxSpeed};
     state.ySpeedMPS = units::velocity::meters_per_second_t{state.ySpeed * driveMaxSpeed};
     state.rotRPS = units::angular_velocity::radians_per_second_t{state.rot * rotMaxSpeed};
-
     if (state.xPose){
         setXMode();
     } else if(state.isHeadingTrack){
@@ -573,9 +556,9 @@ frc2::FunctionalCommand* Drivetrain::getResetOdom() {
                 (aprilLemon.hasTarget() && (aprilLemon.getSensor().ToPose2d().X() > 0_m && aprilLemon.getSensor().ToPose2d().Y() > 0_m))
             ){
                 table->PutNumber("resetting odom", table->GetNumber("resetting odom", 0) + 1);
-                aprilVanilla.applyVisionMeasurement(estimator);
-                aprilLemon.applyVisionMeasurement(estimator);
-                aprilChocolate.applyVisionMeasurement(estimator);
+                aprilVanilla.applyVisionMeasurement(estimator, VISION_OUTLIER);
+                aprilLemon.applyVisionMeasurement(estimator, VISION_OUTLIER);
+                aprilChocolate.applyVisionMeasurement(estimator, VISION_OUTLIER);
 
                 table->PutBoolean("resetting", true);
             }
