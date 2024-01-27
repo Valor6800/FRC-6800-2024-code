@@ -80,7 +80,7 @@ using namespace pathplanner;
 #define SPEAKER_X_OFFSET 0.15f
 #define SPEAKER_Y_OFFSET 0.00f
 
-#define VISION_OUTLIER 4.0_m // meters
+#define VISION_ACCEPTANCE 4.0_m // meters
 
 Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Drivetrain"),
                         driveMaxSpeed(MOTOR_FREE_SPEED / 60.0 / DRIVE_GEAR_RATIO * WHEEL_DIAMETER_M * M_PI),
@@ -215,7 +215,7 @@ void Drivetrain::init()
     table->PutNumber("Vision Std", 3.0);
     table->PutBoolean("Load Swerve Mag Encoder", false);
 
-    table->PutNumber("Vision Outlier", VISION_OUTLIER.to<double>() );
+    table->PutNumber("Vision Acceptance", VISION_ACCEPTANCE.to<double>() );
     table->PutNumber("DoubtX", 1.0);
     table->PutNumber("DoubtY", 1.0);
     table->PutNumber("DoubtRot", 1.0);
@@ -337,6 +337,7 @@ void Drivetrain::analyzeDashboard()
     doubtX = table->GetNumber("DoubtX", 1.0);
     doubtY = table->GetNumber("DoubtY", 1.0);
     doubtRot = table->GetNumber("DoubtRot", 1.0);
+    visionAcceptanceRadius = (units::meter_t) table->GetNumber("Vision Acceptance", VISION_ACCEPTANCE.to<double>());
 
     if (aprilVanilla.hasTarget()) {
         botpose = aprilVanilla.getSensor().ToPose2d();
@@ -364,9 +365,9 @@ void Drivetrain::analyzeDashboard()
 
 void Drivetrain::assignOutputs()
 {    
-    aprilVanilla.applyVisionMeasurement(estimator, VISION_OUTLIER, doubtX, doubtY);
-    aprilChocolate.applyVisionMeasurement(estimator, VISION_OUTLIER, doubtX, doubtY);
-    aprilLemon.applyVisionMeasurement(estimator, VISION_OUTLIER, doubtX, doubtY);
+    aprilVanilla.applyVisionMeasurement(estimator, visionAcceptanceRadius, doubtX, doubtY);
+    aprilChocolate.applyVisionMeasurement(estimator, visionAcceptanceRadius, doubtX, doubtY);
+    aprilLemon.applyVisionMeasurement(estimator, visionAcceptanceRadius, doubtX, doubtY);
 
 
     if (state.lock){angleLock();}
@@ -554,9 +555,9 @@ frc2::FunctionalCommand* Drivetrain::getResetOdom() {
 
                 table->PutNumber("resetting odom", table->GetNumber("resetting odom", 0) + 1);
 
-                aprilVanilla.applyVisionMeasurement(estimator, VISION_OUTLIER);
-                aprilLemon.applyVisionMeasurement(estimator, VISION_OUTLIER);
-                aprilChocolate.applyVisionMeasurement(estimator, VISION_OUTLIER);
+                aprilVanilla.applyVisionMeasurement(estimator, VISION_ACCEPTANCE);
+                aprilLemon.applyVisionMeasurement(estimator, VISION_ACCEPTANCE);
+                aprilChocolate.applyVisionMeasurement(estimator, VISION_ACCEPTANCE);
 
 
                 table->PutBoolean("resetting", true);
