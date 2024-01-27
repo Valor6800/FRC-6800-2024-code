@@ -73,13 +73,7 @@ void DriveChar::InitSendable(wpi::SendableBuilder& builder)
 {
     builder.SetSmartDashboardType("Subsystem");
     builder.AddDoubleProperty(
-        "Voltage",
-        [this] {return motorVoltage;},
-        nullptr
-    );
-    builder.AddDoubleProperty(
         "State",
         [this] {return state.testType;},
-        nullptr
-    );
+        nullptr);
 }

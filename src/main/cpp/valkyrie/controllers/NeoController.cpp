@@ -91,6 +91,11 @@ double NeoController::getCurrent()
     return motor->GetOutputCurrent();
 }
 
+double NeoController::getVoltage()
+{
+    return motor->GetBusVoltage() * motor->GetAppliedOutput();
+}
+
 /**
  * Get the position in units (specified by conversion)
  */
@@ -184,4 +189,8 @@ void NeoController::InitSendable(wpi::SendableBuilder& builder)
         "Inverted", 
         [this] { return inverted; },
         nullptr);
-}
+    builder.AddDoubleProperty(
+        "Voltage",
+        [this] { return getVoltage(); },
+        nullptr);
+    }
