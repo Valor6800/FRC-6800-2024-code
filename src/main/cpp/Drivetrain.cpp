@@ -342,7 +342,7 @@ void Drivetrain::assignOutputs()
     } 
     else {
         setDriveMotorNeutralMode(valor::NeutralMode::Coast);
-        drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
+        //drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
     }
 }
 

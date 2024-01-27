@@ -11,8 +11,10 @@
 class DriveChar : public valor::BaseSubsystem
 {
 public: 
-    DriveChar(frc::TimedRobot *_robot, Drivetrain* _drive);
+    DriveChar(frc::TimedRobot *_robot);
 
+    void resetState() override;
+    
     void init() override;
     void assessInputs() override;
     void analyzeDashboard() override;
@@ -28,9 +30,9 @@ public:
     void InitSendable(wpi::SendableBuilder &builder) override;
 
     enum TestType{
+        NO_MOVE,
         QUASISTATIC,
-        DYNAMIC,
-        NO_MOVE
+        DYNAMIC
     };
 
     struct x
@@ -40,5 +42,8 @@ public:
     }state;
 
 private:
-    Drivetrain* drive;
+    valor::NeoController frontLeftMotor;
+    valor::NeoController frontRightMotor;
+    valor::NeoController backLeftMotor;
+    valor::NeoController backRightMotor;
 };

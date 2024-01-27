@@ -125,6 +125,11 @@ double NeoController::getAbsEncoderPosition()
     return extEncoder.GetPosition();
 }
 
+void NeoController::setVoltage(double voltage)
+{
+    pidController.SetReference(voltage, rev::CANSparkMax::ControlType::kVoltage, currentPidSlot);
+}
+
 /**
  * Set the position in units (specified by conversion). Example: inches
  */

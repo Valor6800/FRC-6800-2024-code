@@ -8,20 +8,20 @@
 #include <ctime>
 
 Robot::Robot() : 
-    drivetrain(this), 
+    // drivetrain(this), 
     valorAuto(), 
     beamBreak(DIOPorts::BEAM_BREAK_PORT), 
     shooter(this, &beamBreak), 
     intake(this, &beamBreak),
     feeder(this),
-    SysID(this, &drivetrain)
+    SysID(this)
 {
     frc::TimedRobot();
 }
 
 void Robot::RobotInit() {
-    drivetrain.setGamepads(&gamepadOperator, &gamepadDriver);
-    drivetrain.resetState();
+    // drivetrain.setGamepads(&gamepadOperator, &gamepadDriver);
+    // drivetrain.resetState();
 
     intake.setGamepads(&gamepadOperator, &gamepadDriver);
     intake.resetState();
@@ -33,6 +33,7 @@ void Robot::RobotInit() {
     feeder.resetState();
 
     SysID.setGamepads(&gamepadOperator, &gamepadDriver);
+    SysID.resetState();
 
     frc::LiveWindow::EnableAllTelemetry();
     frc::DataLogManager::Start();
@@ -64,10 +65,10 @@ void Robot::DisabledPeriodic() { }
  * RobotContainer} class.
  */
 void Robot::AutonomousInit() {
-    drivetrain.resetState();
-    drivetrain.state.matchStart = frc::Timer::GetFPGATimestamp().to<double>();
-    drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Brake);
-    drivetrain.pullSwerveModuleZeroReference();
+    // drivetrain.resetState();
+    // drivetrain.state.matchStart = frc::Timer::GetFPGATimestamp().to<double>();
+    // drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Brake);
+    // drivetrain.pullSwerveModuleZeroReference();
 
     intake.resetState();
     feeder.resetState();
@@ -77,15 +78,15 @@ void Robot::AutonomousInit() {
 }
 
 void Robot::AutonomousExit() {
-    drivetrain.state.xPose = true;
+    // drivetrain.state.xPose = true;
 }
 
 void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
-    drivetrain.pullSwerveModuleZeroReference();
-    drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Coast);
+    // drivetrain.pullSwerveModuleZeroReference();
+    // drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Coast);
 
     autoCommand.Cancel();
 }
