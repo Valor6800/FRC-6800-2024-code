@@ -170,6 +170,8 @@ void Drivetrain::resetState()
 void Drivetrain::init()
 {
     aprilVanilla.setPipe(valor::VisionSensor::PIPELINE_0);
+    aprilChocolate.setPipe(valor::VisionSensor::PIPELINE_0);
+    aprilLemon.setPipe(valor::VisionSensor::PIPELINE_0);
 
     initPositions.fill(frc::SwerveModulePosition{0_m, frc::Rotation2d(0_rad)});
 
@@ -299,18 +301,17 @@ void Drivetrain::analyzeDashboard()
                                 swerveModules[3]->getModulePosition()
                             });
 
+    frc::Pose2d botpose;
     if (aprilVanilla.hasTarget()) {
-        frc::Pose2d botpose = aprilVanilla.getSensor().ToPose2d();
-            // estimator->AddVisionMeasurement(
-            //     state.visionPose,  
-            //     frc::Timer::GetFPGATimestamp(),
-            //     {visionStd, visionStd, visionStd}
-            // ); 
-        
-        
-        if (driverGamepad->GetStartButton()){
+        botpose = aprilVanilla.getSensor().ToPose2d();
+    } else if (aprilChocolate.hasTarget()) {
+        botpose = aprilChocolate.getSensor().ToPose2d();
+    } else if (aprilLemon.hasTarget()) {
+        botpose = aprilLemon.getSensor().ToPose2d();
+    }
+
+    if (driverGamepad->GetStartButton() && (aprilVanilla.hasTarget() || aprilChocolate.hasTarget() || aprilLemon.hasTarget())){
             resetOdometry(botpose);
-        }
     }
 }
 
@@ -349,6 +350,7 @@ frc::Pose2d Drivetrain::getPose_m()
     return estimator->GetEstimatedPosition();
 }
 
+// Deprecated
 void Drivetrain::addVisionMeasurement(frc::Pose2d visionPose, double doubt=1){
     if (aprilVanilla.hasTarget())   
         estimator->AddVisionMeasurement(
@@ -366,9 +368,6 @@ void Drivetrain::resetGyro(){
 
 void Drivetrain::resetOdometry(frc::Pose2d pose)
 {
-
-    aprilVanilla.setPipe(valor::VisionSensor::PIPELINE_0);
-
     wpi::array<frc::SwerveModulePosition, SWERVE_COUNT> modulePositions = wpi::array<frc::SwerveModulePosition, SWERVE_COUNT>(wpi::empty_array);
 
     for (size_t i = 0; i < swerveModules.size(); i++)
@@ -466,13 +465,20 @@ frc2::FunctionalCommand* Drivetrain::getResetOdom() {
     return new frc2::FunctionalCommand(
         [&]{ // onBegin
             aprilVanilla.setPipe(valor::VisionSensor::PIPELINE_0);
+            aprilChocolate.setPipe(valor::VisionSensor::PIPELINE_0);
+            aprilLemon.setPipe(valor::VisionSensor::PIPELINE_0);
+
             state.startTimestamp = frc::Timer::GetFPGATimestamp();
         },
         [&]{ // continuously running
             table->PutNumber("resetting maybe", true);
-            if (aprilVanilla.hasTarget() && (aprilVanilla.getSensor().ToPose2d().X() > 0_m && aprilVanilla.getSensor().ToPose2d().Y() > 0_m)){
+            if (
+                (aprilVanilla.hasTarget() && (aprilVanilla.getSensor().ToPose2d().X() > 0_m && aprilVanilla.getSensor().ToPose2d().Y() > 0_m)) ||
+                (aprilChocolate.hasTarget() && (aprilChocolate.getSensor().ToPose2d().X() > 0_m && aprilChocolate.getSensor().ToPose2d().Y() > 0_m)) ||
+                (aprilLemon.hasTarget() && (aprilLemon.getSensor().ToPose2d().X() > 0_m && aprilLemon.getSensor().ToPose2d().Y() > 0_m))
+            ){
                 table->PutNumber("resetting odom", table->GetNumber("resetting odom", 0) + 1);
-                addVisionMeasurement(aprilVanilla.getSensor().ToPose2d(), 1.0);
+                addVisionMeasurement(aprilVanilla.getSensor().ToPose2d(), 1.0); // Deprecated
                 table->PutBoolean("resetting", true);
             }
             else {
@@ -556,8 +562,6 @@ frc2::InstantCommand* Drivetrain::getSetXMode(){
 void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
     {
         builder.SetSmartDashboardType("Subsystem");
-
-        builder.AddBooleanProperty("Target?", [this] {return aprilVanilla.hasTarget();}, nullptr);
 
         builder.AddDoubleProperty(
             "xSpeed",
