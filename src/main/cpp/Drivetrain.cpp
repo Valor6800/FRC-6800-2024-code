@@ -340,7 +340,7 @@ void Drivetrain::analyzeDashboard()
     visionAcceptanceRadius = (units::meter_t) table->GetNumber("Vision Acceptance", VISION_ACCEPTANCE.to<double>());
 
     for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
-        aprilLime->applyVisionMeasurement(estimator, visionAcceptanceRadius, doubtX, doubtY);
+        aprilLime->applyVisionMeasurement(calculatedEstimator, visionAcceptanceRadius, doubtX, doubtY);
     }
 
     if (driverGamepad->GetStartButton()) {
@@ -386,8 +386,8 @@ void Drivetrain::assignOutputs()
 
 void Drivetrain::getSpeakerLockAngleRPS(){
     units::radian_t targetRotAngle;
-    units::meter_t roboXPos = estimator->GetEstimatedPosition().X();
-    units::meter_t roboYPos = estimator->GetEstimatedPosition().Y();
+    units::meter_t roboXPos = calculatedEstimator->GetEstimatedPosition().X();
+    units::meter_t roboYPos = calculatedEstimator->GetEstimatedPosition().Y();
     if(frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue){
         targetRotAngle = units::radian_t(atan2(
             (roboYPos.to<double>() - (SPEAKER_Y.to<double>() +  table->GetNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET))),
@@ -404,7 +404,7 @@ void Drivetrain::getSpeakerLockAngleRPS(){
 }
 
 units::radian_t Drivetrain::getAngleError(){
-    units::radian_t robotRotation = estimator->GetEstimatedPosition().Rotation().Radians();
+    units::radian_t robotRotation = calculatedEstimator->GetEstimatedPosition().Rotation().Radians();
     return (robotRotation - state.targetAngle);
 }
 
