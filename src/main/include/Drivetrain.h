@@ -6,6 +6,8 @@
 #include "valkyrie/BaseSubsystem.h"
 #include "Constants.h"
 #include "valkyrie/Swerve.h"
+#include <map>
+#include <string>
 #include <vector>
 #include "valkyrie/controllers/PhoenixController.h"
 #include "valkyrie/controllers/NeoController.h"
@@ -288,6 +290,9 @@ private:
      valor::AprilTagsSensor aprilVanilla;
      valor::AprilTagsSensor aprilChocolate;
      valor::AprilTagsSensor aprilLemon;
+     valor::AprilTagsSensor aprilMint;
+     
+     std::vector<valor::AprilTagsSensor> aprilTagSensors;
 
      double doubtX, doubtY, doubtRot;
      units::meter_t visionAcceptanceRadius;

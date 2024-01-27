@@ -97,12 +97,11 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "
                         swerveNoError(true),
                         aprilVanilla(_robot, "limelight-vanilla", Constants::vanillaCameraPosition()),
                         aprilChocolate(_robot, "limelight-choco", Constants::chocolateCameraPosition()),
-                        aprilLemon(_robot, "limelight-lemon", Constants::lemonCameraPosition())
+                        aprilLemon(_robot, "limelight-lemon", Constants::lemonCameraPosition()),
+                        aprilMint(_robot, "limelight-mint", Constants::mintCameraPosition())
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
-
-    
 }
 
 Drivetrain::~Drivetrain()
@@ -176,6 +175,7 @@ void Drivetrain::init()
     aprilVanilla.setPipe(valor::VisionSensor::PIPELINE_0);
     aprilChocolate.setPipe(valor::VisionSensor::PIPELINE_0);
     aprilLemon.setPipe(valor::VisionSensor::PIPELINE_0);
+    aprilMint.setPipe(valor::VisionSensor::PIPELINE_0);
 
     for (int i = 0; i < SWERVE_COUNT; i++)
     {
@@ -345,6 +345,8 @@ void Drivetrain::analyzeDashboard()
         botpose = aprilChocolate.getSensor().ToPose2d();
     } else if (aprilLemon.hasTarget()) {
         botpose = aprilLemon.getSensor().ToPose2d();
+    } else if (aprilMint.hasTarget()) {
+        botpose = aprilMint.getSensor().ToPose2d();
     }
 
     getSpeakerLockAngleRPS();
@@ -353,22 +355,18 @@ void Drivetrain::analyzeDashboard()
     double speakerYOffset = table->GetNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET);
     state.angleRPS = units::angular_velocity::radians_per_second_t(getAngleError().to<double>()*kP*rotMaxSpeed);
 
-    aprilLemon.applyVisionMeasurement(estimator);
-    aprilChocolate.applyVisionMeasurement(estimator);
-    aprilVanilla.applyVisionMeasurement(estimator);
-
-    if (driverGamepad->GetStartButton() && (aprilVanilla.hasTarget() || aprilChocolate.hasTarget() || aprilLemon.hasTarget())){
+    if (driverGamepad->GetStartButton() && (aprilVanilla.hasTarget() || aprilChocolate.hasTarget() || aprilLemon.hasTarget() || aprilMint.hasTarget())){
         resetOdometry(botpose);
     }
-    
+
+    aprilVanilla.applyVisionMeasurement(estimator, visionAcceptanceRadius, doubtX, doubtY);
+    aprilChocolate.applyVisionMeasurement(estimator, visionAcceptanceRadius, doubtX, doubtY);
+    aprilLemon.applyVisionMeasurement(estimator, visionAcceptanceRadius, doubtX, doubtY);
+    aprilMint.applyVisionMeasurement(estimator, visionAcceptanceRadius, doubtX, doubtY);   
 }
 
 void Drivetrain::assignOutputs()
 {    
-    aprilVanilla.applyVisionMeasurement(estimator, visionAcceptanceRadius, doubtX, doubtY);
-    aprilChocolate.applyVisionMeasurement(estimator, visionAcceptanceRadius, doubtX, doubtY);
-    aprilLemon.applyVisionMeasurement(estimator, visionAcceptanceRadius, doubtX, doubtY);
-
 
     if (state.lock){angleLock();}
     state.xSpeedMPS = units::velocity::meters_per_second_t{state.xSpeed * driveMaxSpeed};
@@ -541,6 +539,7 @@ frc2::FunctionalCommand* Drivetrain::getResetOdom() {
             aprilVanilla.setPipe(valor::VisionSensor::PIPELINE_0);
             aprilChocolate.setPipe(valor::VisionSensor::PIPELINE_0);
             aprilLemon.setPipe(valor::VisionSensor::PIPELINE_0);
+            aprilMint.setPipe(valor::VisionSensor::PIPELINE_0);
 
             state.startTimestamp = frc::Timer::GetFPGATimestamp();
         },
@@ -550,7 +549,8 @@ frc2::FunctionalCommand* Drivetrain::getResetOdom() {
             if (
                 (aprilVanilla.hasTarget() && (aprilVanilla.getSensor().ToPose2d().X() > 0_m && aprilVanilla.getSensor().ToPose2d().Y() > 0_m)) ||
                 (aprilChocolate.hasTarget() && (aprilChocolate.getSensor().ToPose2d().X() > 0_m && aprilChocolate.getSensor().ToPose2d().Y() > 0_m)) ||
-                (aprilLemon.hasTarget() && (aprilLemon.getSensor().ToPose2d().X() > 0_m && aprilLemon.getSensor().ToPose2d().Y() > 0_m))
+                (aprilLemon.hasTarget() && (aprilLemon.getSensor().ToPose2d().X() > 0_m && aprilLemon.getSensor().ToPose2d().Y() > 0_m)) ||
+                (aprilMint.hasTarget() && (aprilMint.getSensor().ToPose2d().X() > 0_m && aprilMint.getSensor().ToPose2d().Y() > 0_m))
             ){
 
                 table->PutNumber("resetting odom", table->GetNumber("resetting odom", 0) + 1);
@@ -558,6 +558,7 @@ frc2::FunctionalCommand* Drivetrain::getResetOdom() {
                 aprilVanilla.applyVisionMeasurement(estimator, VISION_ACCEPTANCE);
                 aprilLemon.applyVisionMeasurement(estimator, VISION_ACCEPTANCE);
                 aprilChocolate.applyVisionMeasurement(estimator, VISION_ACCEPTANCE);
+                aprilMint.applyVisionMeasurement(estimator, VISION_ACCEPTANCE);
 
 
                 table->PutBoolean("resetting", true);

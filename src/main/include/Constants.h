@@ -123,7 +123,16 @@ namespace Constants {
 
         static frc::Pose3d mintCameraPosition(){ switch (teamNumber) {
             case ALPHA_TEAM_NUMBER: return frc::Pose3d();
-            default: return frc::Pose3d();
+            default: return frc::Pose3d{
+                0.19923125_m,
+                -0.17224375_m,
+                0.28575_m,
+                frc::Rotation3d{
+                    180_deg,
+                    28_deg,
+                    0_deg
+                }
+            };
         }};
 
         static frc::Pose3d vanillaCameraPosition(){ switch (teamNumber) {
