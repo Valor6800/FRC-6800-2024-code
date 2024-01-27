@@ -13,6 +13,7 @@
 #include "frc/geometry/Rotation3d.h"
 #include "units/angle.h"
 #include "units/length.h"
+#include <string>
 #include <vector>
 #include <cscore.h>
 #include <frc/geometry/Pose3d.h>
@@ -167,4 +168,11 @@ namespace Constants {
                 }
             };
         }};
+
+        static std::vector<std::pair<const char*, frc::Pose3d>> aprilCameras{
+                    std::pair("limelight-mint", mintCameraPosition()),
+                    std::pair("limelight-lemon", lemonCameraPosition()),
+                    std::pair("limelight-choco", chocolateCameraPosition()),
+                    std::pair("limelight-vanilla", vanillaCameraPosition())
+        };
 }

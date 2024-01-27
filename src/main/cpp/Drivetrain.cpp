@@ -6,6 +6,7 @@
 #include <pathplanner/lib/util/HolonomicPathFollowerConfig.h>
 #include <pathplanner/lib/util/PIDConstants.h>
 #include <pathplanner/lib/util/ReplanningConfig.h>
+#include <string>
 #include "Constants.h"
 #include "units/length.h"
 #include "valkyrie/sensors/AprilTagsSensor.h"
@@ -94,11 +95,7 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "
                         estimator(NULL),
                         calculatedEstimator(NULL),
                         config(NULL),
-                        swerveNoError(true),
-                        aprilVanilla(_robot, "limelight-vanilla", Constants::vanillaCameraPosition()),
-                        aprilChocolate(_robot, "limelight-choco", Constants::chocolateCameraPosition()),
-                        aprilLemon(_robot, "limelight-lemon", Constants::lemonCameraPosition()),
-                        aprilMint(_robot, "limelight-mint", Constants::mintCameraPosition())
+                        swerveNoError(true)
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -172,10 +169,14 @@ void Drivetrain::resetState()
 
 void Drivetrain::init()
 {
-    aprilVanilla.setPipe(valor::VisionSensor::PIPELINE_0);
-    aprilChocolate.setPipe(valor::VisionSensor::PIPELINE_0);
-    aprilLemon.setPipe(valor::VisionSensor::PIPELINE_0);
-    aprilMint.setPipe(valor::VisionSensor::PIPELINE_0);
+
+    for (std::pair<const char*, frc::Pose3d> aprilCam : Constants::aprilCameras) {
+        aprilTagSensors.push_back(new valor::AprilTagsSensor(robot, aprilCam.first, aprilCam.second));
+    }
+
+    for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
+        aprilLime->setPipe(valor::VisionSensor::PIPELINE_0);
+    }
 
     for (int i = 0; i < SWERVE_COUNT; i++)
     {
@@ -332,21 +333,20 @@ void Drivetrain::analyzeDashboard()
     calculateCarpetPose();
 
     frc::Pose2d botpose;
-
     
     doubtX = table->GetNumber("DoubtX", 1.0);
     doubtY = table->GetNumber("DoubtY", 1.0);
     doubtRot = table->GetNumber("DoubtRot", 1.0);
     visionAcceptanceRadius = (units::meter_t) table->GetNumber("Vision Acceptance", VISION_ACCEPTANCE.to<double>());
 
-    if (aprilVanilla.hasTarget()) {
-        botpose = aprilVanilla.getSensor().ToPose2d();
-    } else if (aprilChocolate.hasTarget()) {
-        botpose = aprilChocolate.getSensor().ToPose2d();
-    } else if (aprilLemon.hasTarget()) {
-        botpose = aprilLemon.getSensor().ToPose2d();
-    } else if (aprilMint.hasTarget()) {
-        botpose = aprilMint.getSensor().ToPose2d();
+    if (driverGamepad->GetStartButton()) {
+        for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
+            if (aprilLime->hasTarget()) {
+                botpose = aprilLime->getSensor().ToPose2d();
+                resetOdometry(botpose);
+                break;
+            }
+        }
     }
 
     getSpeakerLockAngleRPS();
@@ -355,18 +355,15 @@ void Drivetrain::analyzeDashboard()
     double speakerYOffset = table->GetNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET);
     state.angleRPS = units::angular_velocity::radians_per_second_t(getAngleError().to<double>()*kP*rotMaxSpeed);
 
-    if (driverGamepad->GetStartButton() && (aprilVanilla.hasTarget() || aprilChocolate.hasTarget() || aprilLemon.hasTarget() || aprilMint.hasTarget())){
-        resetOdometry(botpose);
+    for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
+        aprilLime->applyVisionMeasurement(estimator, visionAcceptanceRadius, doubtX, doubtY);
     }
-
-    aprilVanilla.applyVisionMeasurement(estimator, visionAcceptanceRadius, doubtX, doubtY);
-    aprilChocolate.applyVisionMeasurement(estimator, visionAcceptanceRadius, doubtX, doubtY);
-    aprilLemon.applyVisionMeasurement(estimator, visionAcceptanceRadius, doubtX, doubtY);
-    aprilMint.applyVisionMeasurement(estimator, visionAcceptanceRadius, doubtX, doubtY);   
+    
 }
 
 void Drivetrain::assignOutputs()
 {    
+    
 
     if (state.lock){angleLock();}
     state.xSpeedMPS = units::velocity::meters_per_second_t{state.xSpeed * driveMaxSpeed};
@@ -536,35 +533,24 @@ void Drivetrain::angleLock(){
 frc2::FunctionalCommand* Drivetrain::getResetOdom() {
     return new frc2::FunctionalCommand(
         [&]{ // onBegin
-            aprilVanilla.setPipe(valor::VisionSensor::PIPELINE_0);
-            aprilChocolate.setPipe(valor::VisionSensor::PIPELINE_0);
-            aprilLemon.setPipe(valor::VisionSensor::PIPELINE_0);
-            aprilMint.setPipe(valor::VisionSensor::PIPELINE_0);
+            for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
+                aprilLime->setPipe(valor::VisionSensor::PIPELINE_0);
+            }
 
             state.startTimestamp = frc::Timer::GetFPGATimestamp();
         },
         [&]{ // continuously running
             table->PutNumber("resetting maybe", true);
 
-            if (
-                (aprilVanilla.hasTarget() && (aprilVanilla.getSensor().ToPose2d().X() > 0_m && aprilVanilla.getSensor().ToPose2d().Y() > 0_m)) ||
-                (aprilChocolate.hasTarget() && (aprilChocolate.getSensor().ToPose2d().X() > 0_m && aprilChocolate.getSensor().ToPose2d().Y() > 0_m)) ||
-                (aprilLemon.hasTarget() && (aprilLemon.getSensor().ToPose2d().X() > 0_m && aprilLemon.getSensor().ToPose2d().Y() > 0_m)) ||
-                (aprilMint.hasTarget() && (aprilMint.getSensor().ToPose2d().X() > 0_m && aprilMint.getSensor().ToPose2d().Y() > 0_m))
-            ){
-
-                table->PutNumber("resetting odom", table->GetNumber("resetting odom", 0) + 1);
-
-                aprilVanilla.applyVisionMeasurement(estimator, VISION_ACCEPTANCE);
-                aprilLemon.applyVisionMeasurement(estimator, VISION_ACCEPTANCE);
-                aprilChocolate.applyVisionMeasurement(estimator, VISION_ACCEPTANCE);
-                aprilMint.applyVisionMeasurement(estimator, VISION_ACCEPTANCE);
-
-
-                table->PutBoolean("resetting", true);
-            }
-            else {
-                table->PutBoolean("resetting", false);
+            for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
+                if (aprilLime->hasTarget() && (aprilLime->getSensor().ToPose2d().X() > 0_m && aprilLime->getSensor().ToPose2d().Y() > 0_m)) {
+                    table->PutNumber("resetting odom", table->GetNumber("resetting odom", 0) + 1);
+                    aprilLime->applyVisionMeasurement(estimator, (units::meter_t) table->GetNumber("Vision Acceptance", VISION_ACCEPTANCE.to<double>()));
+                    table->PutBoolean("resetting", true);
+                    break;
+                } else {
+                    table->PutBoolean("resetting", false);
+                }
             }
         },
         [&](bool){ // onEnd

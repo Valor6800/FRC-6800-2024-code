@@ -286,13 +286,8 @@ private:
      valor::PIDF thetaPIDF;
 
      bool swerveNoError;
-
-     valor::AprilTagsSensor aprilVanilla;
-     valor::AprilTagsSensor aprilChocolate;
-     valor::AprilTagsSensor aprilLemon;
-     valor::AprilTagsSensor aprilMint;
      
-     std::vector<valor::AprilTagsSensor> aprilTagSensors;
+     std::vector<valor::AprilTagsSensor*> aprilTagSensors;
 
      double doubtX, doubtY, doubtRot;
      units::meter_t visionAcceptanceRadius;
