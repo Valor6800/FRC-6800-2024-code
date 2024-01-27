@@ -397,15 +397,24 @@ void Drivetrain::getSpeakerLockAngleRPS(){
     else{
         targetRotAngle = units::radian_t(atan2(
             (roboYPos.to<double>() - (SPEAKER_Y.to<double>() + table->GetNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET))),
-            (roboXPos.to<double>() - (SPEAKER_RED_X.to<double>() + table->GetNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET)))
+            (roboXPos.to<double>() - (SPEAKER_RED_X.to<double>() - table->GetNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET)))
         ));
     }
     state.targetAngle = targetRotAngle;
 }
 
 units::radian_t Drivetrain::getAngleError(){
-    units::radian_t robotRotation = calculatedEstimator->GetEstimatedPosition().Rotation().Radians();
-    return (robotRotation - state.targetAngle);
+    units::radian_t robotRotation = estimator->GetEstimatedPosition().Rotation().Radians();
+    double errorAngle = robotRotation.to<double>() - state.targetAngle.to<double>();
+    if(errorAngle > (PI/2)) {
+        return units::radian_t(errorAngle - 2*PI);
+    }
+    else if(errorAngle < (PI/2)){
+        return units::radian_t(2*PI - errorAngle);
+    }
+    else{
+        return (robotRotation - state.targetAngle);
+    }
 }
 
 double Drivetrain::clampAngleRadianRange(units::radian_t angle, double max){
