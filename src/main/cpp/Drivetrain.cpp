@@ -340,6 +340,7 @@ void Drivetrain::analyzeDashboard()
 
     frc::Pose2d botpose;
 
+    
     doubtX = table->GetNumber("DoubtX", 1.0);
     doubtY = table->GetNumber("DoubtY", 1.0);
     doubtRot = table->GetNumber("DoubtRot", 1.0);
@@ -550,15 +551,19 @@ frc2::FunctionalCommand* Drivetrain::getResetOdom() {
         },
         [&]{ // continuously running
             table->PutNumber("resetting maybe", true);
+
             if (
                 (aprilVanilla.hasTarget() && (aprilVanilla.getSensor().ToPose2d().X() > 0_m && aprilVanilla.getSensor().ToPose2d().Y() > 0_m)) ||
                 (aprilChocolate.hasTarget() && (aprilChocolate.getSensor().ToPose2d().X() > 0_m && aprilChocolate.getSensor().ToPose2d().Y() > 0_m)) ||
                 (aprilLemon.hasTarget() && (aprilLemon.getSensor().ToPose2d().X() > 0_m && aprilLemon.getSensor().ToPose2d().Y() > 0_m))
             ){
+
                 table->PutNumber("resetting odom", table->GetNumber("resetting odom", 0) + 1);
+
                 aprilVanilla.applyVisionMeasurement(estimator, VISION_OUTLIER);
                 aprilLemon.applyVisionMeasurement(estimator, VISION_OUTLIER);
                 aprilChocolate.applyVisionMeasurement(estimator, VISION_OUTLIER);
+
 
                 table->PutBoolean("resetting", true);
             }
