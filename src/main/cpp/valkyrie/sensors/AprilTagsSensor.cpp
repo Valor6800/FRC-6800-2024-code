@@ -17,6 +17,10 @@ frc::Pose3d AprilTagsSensor::getGlobalPose() {
     if (!hasTarget()) return frc::Pose3d();
     std::vector<double> botPose = limeTable->GetNumberArray("botpose_wpiblue", std::span<double>());
     
+    std::vector<double> botToTargetPose = limeTable->GetNumberArray("botpose_targetspace", std::span<const double>());
+    if (botToTargetPose.size() == 6) distance = units::meter_t(sqrtf(powf(botToTargetPose[0], 2) + powf(botToTargetPose[1], 2)));
+    else distance = 0_m;
+
     return frc::Pose3d(
         (units::meter_t) botPose[0],
         (units::meter_t) botPose[1],
@@ -32,9 +36,11 @@ frc::Pose3d AprilTagsSensor::getGlobalPose() {
 void AprilTagsSensor::applyVisionMeasurement(frc::SwerveDrivePoseEstimator<4> *estimator, units::meter_t outlier, double doubtX, double doubtY, double doubtRot) {
     if (!hasTarget()) return;
  
-    std::vector<double> botToTargetPose = limeTable->GetNumberArray("botpose_targetspace", std::span<const double>());
-    if (sqrtf(powf(botToTargetPose[0], 2) + powf(botToTargetPose[1], 2)) >= outlier.to<double>()) return;
+    //std::vector<double> botToTargetPose = limeTable->GetNumberArray("botpose_targetspace", std::span<const double>());
+    //if (botToTargetPose.size() == 6) distance = units::meter_t(sqrtf(powf(botToTargetPose[0], 2) + powf(botToTargetPose[1], 2)));
+    //else distance = 0_m; return;
 
+    if (distance >= outlier) return;
     units::millisecond_t totalLatency = getTotalLatency();
 
     estimator->AddVisionMeasurement(
@@ -82,4 +88,5 @@ void AprilTagsSensor::InitSendable(wpi::SendableBuilder& builder) {
         nullptr
     );
     builder.AddDoubleProperty("totalLatency", [this] {return getTotalLatency().to<double>();}, nullptr);
+    builder.AddDoubleProperty("distanceFromTarget", [this] {return distance.to<double>();}, nullptr);
 }

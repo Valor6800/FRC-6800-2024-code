@@ -9,6 +9,7 @@
 #include "Constants.h"
 #include "units/length.h"
 #include "valkyrie/sensors/AprilTagsSensor.h"
+#include "units/length.h"
 #include "valkyrie/sensors/VisionSensor.h"
 #include "frc/geometry/Pose3d.h"
 #include "frc/geometry/Rotation3d.h"
@@ -25,14 +26,6 @@ using namespace pathplanner;
 #define KLIMELIGHT -29.8f
 // #define KP_LOCK 0.2f
 #define KP_LIMELIGHT 0.7f
-
-#define LIMELIGHT_X 12300.0f //meters
-#define LIMELIGHT_Y 0.3302f //meters
-#define LIMELIGHT_Z 0.62865f //meters
-
-#define LIMELIGHT_ROLL 0.0f //degrees
-#define LIMELIGHT_PITCH 0.0f //degrees
-#define LIMELIGHT_YAW 0.0f //degrees
 
 #define KPX 60.0f //50
 #define KIX 0.0f //0
@@ -371,9 +364,10 @@ void Drivetrain::analyzeDashboard()
 
 void Drivetrain::assignOutputs()
 {    
-    aprilVanilla.applyVisionMeasurement(estimator, VISION_OUTLIER, doubtX, doubtY, doubtRot);
-    aprilChocolate.applyVisionMeasurement(estimator, VISION_OUTLIER, doubtX, doubtY, doubtRot);
-    aprilLemon.applyVisionMeasurement(estimator, VISION_OUTLIER, doubtX, doubtY, doubtRot);
+    aprilVanilla.applyVisionMeasurement(estimator, VISION_OUTLIER, doubtX, doubtY);
+    aprilChocolate.applyVisionMeasurement(estimator, VISION_OUTLIER, doubtX, doubtY);
+    aprilLemon.applyVisionMeasurement(estimator, VISION_OUTLIER, doubtX, doubtY);
+
 
     if (state.lock){angleLock();}
     state.xSpeedMPS = units::velocity::meters_per_second_t{state.xSpeed * driveMaxSpeed};

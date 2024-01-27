@@ -28,6 +28,7 @@ namespace valor
 
         private:
             frc::Pose3d getGlobalPose() override;
+            units::meter_t distance{0_m};
             
     };
 } // namespace valor
