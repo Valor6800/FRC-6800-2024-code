@@ -6,6 +6,9 @@
 #include <pathplanner/lib/util/HolonomicPathFollowerConfig.h>
 #include <pathplanner/lib/util/PIDConstants.h>
 #include <pathplanner/lib/util/ReplanningConfig.h>
+#include "Constants.h"
+#include "units/length.h"
+#include "valkyrie/sensors/AprilTagsSensor.h"
 #include "valkyrie/sensors/VisionSensor.h"
 #include "frc/geometry/Pose3d.h"
 #include "frc/geometry/Rotation3d.h"
@@ -19,7 +22,7 @@ using namespace pathplanner;
 // #define KP_LOCK 0.2f
 #define KP_LIMELIGHT 0.7f
 
-#define LIMELIGHT_X 0.22225f //meters
+#define LIMELIGHT_X 12300.0f //meters
 #define LIMELIGHT_Y 0.3302f //meters
 #define LIMELIGHT_Z 0.62865f //meters
 
@@ -89,26 +92,9 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "
                         estimator(NULL),
                         config(NULL),
                         swerveNoError(true),
-                        aprilLL(_robot, "limelight-vanilla", frc::Pose3d{
-                            (units::length::meter_t) LIMELIGHT_X,
-                            (units::length::meter_t) LIMELIGHT_Y,
-                            (units::length::meter_t) LIMELIGHT_Z,
-                            frc::Rotation3d{
-                                (units::degree_t) LIMELIGHT_ROLL,
-                                (units::degree_t) LIMELIGHT_PITCH,
-                                (units::degree_t) LIMELIGHT_YAW,
-                            }
-                        }),
-                        aprilChocolate(_robot, "limelight-choco", frc::Pose3d{
-                            (units::length::meter_t) -LIMELIGHT_X,
-                            (units::length::meter_t) LIMELIGHT_Y,
-                            (units::length::meter_t) LIMELIGHT_Z,
-                            frc::Rotation3d{
-                                (units::degree_t) LIMELIGHT_ROLL,
-                                (units::degree_t) LIMELIGHT_PITCH,
-                                (units::degree_t) LIMELIGHT_YAW,
-                            }
-                        })
+                        aprilVanilla(_robot, "limelight-vanilla", Constants::vanillaCameraPosition()),
+                        aprilChocolate(_robot, "limelight-choco", Constants::chocolateCameraPosition()),
+                        aprilLemon(_robot, "limelight-lemon", Constants::lemonCameraPosition())
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -183,7 +169,7 @@ void Drivetrain::resetState()
 
 void Drivetrain::init()
 {
-    aprilLL.setPipe(valor::VisionSensor::PIPELINE_0);
+    aprilVanilla.setPipe(valor::VisionSensor::PIPELINE_0);
 
     initPositions.fill(frc::SwerveModulePosition{0_m, frc::Rotation2d(0_rad)});
 
@@ -313,8 +299,8 @@ void Drivetrain::analyzeDashboard()
                                 swerveModules[3]->getModulePosition()
                             });
 
-    if (aprilLL.hasTarget()) {
-        frc::Pose2d botpose = aprilLL.getSensor().ToPose2d();
+    if (aprilVanilla.hasTarget()) {
+        frc::Pose2d botpose = aprilVanilla.getSensor().ToPose2d();
             // estimator->AddVisionMeasurement(
             //     state.visionPose,  
             //     frc::Timer::GetFPGATimestamp(),
@@ -364,7 +350,7 @@ frc::Pose2d Drivetrain::getPose_m()
 }
 
 void Drivetrain::addVisionMeasurement(frc::Pose2d visionPose, double doubt=1){
-    if (aprilLL.hasTarget())   
+    if (aprilVanilla.hasTarget())   
         estimator->AddVisionMeasurement(
             visionPose,  
             frc::Timer::GetFPGATimestamp(),
@@ -381,7 +367,7 @@ void Drivetrain::resetGyro(){
 void Drivetrain::resetOdometry(frc::Pose2d pose)
 {
 
-    aprilLL.setPipe(valor::VisionSensor::PIPELINE_0);
+    aprilVanilla.setPipe(valor::VisionSensor::PIPELINE_0);
 
     wpi::array<frc::SwerveModulePosition, SWERVE_COUNT> modulePositions = wpi::array<frc::SwerveModulePosition, SWERVE_COUNT>(wpi::empty_array);
 
@@ -479,14 +465,14 @@ void Drivetrain::angleLock(){
 frc2::FunctionalCommand* Drivetrain::getResetOdom() {
     return new frc2::FunctionalCommand(
         [&]{ // onBegin
-            aprilLL.setPipe(valor::VisionSensor::PIPELINE_0);
+            aprilVanilla.setPipe(valor::VisionSensor::PIPELINE_0);
             state.startTimestamp = frc::Timer::GetFPGATimestamp();
         },
         [&]{ // continuously running
             table->PutNumber("resetting maybe", true);
-            if (aprilLL.hasTarget() && (aprilLL.getSensor().ToPose2d().X() > 0_m && aprilLL.getSensor().ToPose2d().Y() > 0_m)){
+            if (aprilVanilla.hasTarget() && (aprilVanilla.getSensor().ToPose2d().X() > 0_m && aprilVanilla.getSensor().ToPose2d().Y() > 0_m)){
                 table->PutNumber("resetting odom", table->GetNumber("resetting odom", 0) + 1);
-                addVisionMeasurement(aprilLL.getSensor().ToPose2d(), 1.0);
+                addVisionMeasurement(aprilVanilla.getSensor().ToPose2d(), 1.0);
                 table->PutBoolean("resetting", true);
             }
             else {
@@ -571,7 +557,7 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
     {
         builder.SetSmartDashboardType("Subsystem");
 
-        builder.AddBooleanProperty("Target?", [this] {return aprilLL.hasTarget();}, nullptr);
+        builder.AddBooleanProperty("Target?", [this] {return aprilVanilla.hasTarget();}, nullptr);
 
         builder.AddDoubleProperty(
             "xSpeed",

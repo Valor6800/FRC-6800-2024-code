@@ -277,7 +277,8 @@ private:
 
      bool swerveNoError;
 
-     valor::AprilTagsSensor aprilLL;
+     valor::AprilTagsSensor aprilVanilla;
      valor::AprilTagsSensor aprilChocolate;
+     valor::AprilTagsSensor aprilLemon;
 
 };

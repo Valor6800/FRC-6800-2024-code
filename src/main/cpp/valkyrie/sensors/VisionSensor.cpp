@@ -1,4 +1,5 @@
 #include "valkyrie/sensors/VisionSensor.h"
+#include "units/angle.h"
 #include "valkyrie/sensors/BaseSensor.h"
 
 using namespace valor;
@@ -9,20 +10,20 @@ VisionSensor::VisionSensor(frc::TimedRobot* robot, const char *name, frc::Pose3d
 {
     wpi::SendableRegistry::AddLW(this, "VisionSensor", sensorName);
     reset();
-    setCameraPose();
+    setCameraPose(cameraPose);
 }
 
-void VisionSensor::setCameraPose(){
+void VisionSensor::setCameraPose(frc::Pose3d camPose){
     if (limeTable == nullptr) return;
-    double x = cameraPose.X().to<double>();
-    double y = cameraPose.Y().to<double>();
-    double z = cameraPose.Z().to<double>();
-    double pitch = cameraPose.Rotation().X().to<double>();
-    double roll = cameraPose.Rotation().Y().to<double>();
-    double yaw = cameraPose.Rotation().Z().to<double>();
+    double x = camPose.X().to<double>();
+    double y = camPose.Y().to<double>();
+    double z = camPose.Z().to<double>();
+    double pitch = camPose.Rotation().X().convert<units::angle::degrees>().to<double>();
+    double roll = camPose.Rotation().Y().convert<units::angle::degrees>().to<double>();
+    double yaw = camPose.Rotation().Z().convert<units::angle::degrees>().to<double>();
 
-    std::array<double, 6> camPose = std::array<double, 6>{x, y, z, pitch, roll, yaw};
-    limeTable->PutNumberArray("camerapose_robotspace_set", camPose);
+    std::array<double, 6> camPosition = std::array<double, 6>{x, y, z, pitch, roll, yaw};
+    limeTable->PutNumberArray("camerapose_robotspace_set", camPosition);
 }
 
 void VisionSensor::reset() {

@@ -10,10 +10,12 @@
 #include <cmath>
 #include <iostream>
 #include <frc/RobotController.h>
+#include "frc/geometry/Rotation3d.h"
 #include "units/angle.h"
 #include "units/length.h"
 #include <vector>
 #include <cscore.h>
+#include <frc/geometry/Pose3d.h>
 #include "networktables/NetworkTable.h"
 
 
@@ -117,5 +119,43 @@ namespace Constants {
         static std::vector<bool> swerveAzimuthsReversals(){ switch (teamNumber){
             case ALPHA_TEAM_NUMBER: return {true, false, true, true};
             default: return {true, true, true, true};
+        }};
+
+        static frc::Pose3d mintCameraPosition(){ switch (teamNumber) {
+            case ALPHA_TEAM_NUMBER: return frc::Pose3d();
+            default: return frc::Pose3d();
+        }};
+
+        static frc::Pose3d vanillaCameraPosition(){ switch (teamNumber) {
+            case ALPHA_TEAM_NUMBER: return frc::Pose3d();
+            default: return frc::Pose3d();
+        }};
+
+        static frc::Pose3d chocolateCameraPosition(){ switch (teamNumber) {
+            case ALPHA_TEAM_NUMBER: return frc::Pose3d();
+            default: return frc::Pose3d();
+        }};
+
+        static frc::Pose3d lemonCameraPosition(){ switch (teamNumber){
+            case ALPHA_TEAM_NUMBER: return frc::Pose3d{
+                -0.0635_m,
+                0.3175_m,
+                0.6731_m,
+                frc::Rotation3d{
+                    0_deg,
+                    28_deg,
+                    0_deg
+                }
+            };
+            default: return frc::Pose3d{
+                -0.0635_m,
+                0.3175_m,
+                0.6731_m,
+                frc::Rotation3d{
+                    0_deg,
+                    28_deg,
+                    0_deg
+                }
+            };
         }};
 }

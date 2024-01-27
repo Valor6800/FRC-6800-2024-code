@@ -1,4 +1,6 @@
 #include "valkyrie/sensors/AprilTagsSensor.h"
+#include "units/angle.h"
+#include <array>
 
 using namespace valor;
 
@@ -41,4 +43,22 @@ void AprilTagsSensor::InitSendable(wpi::SendableBuilder& builder) {
     builder.AddDoubleProperty("ty", [this]{ return ty;}, nullptr);
     builder.AddBooleanProperty("hasTarget", [this]{ return hasTarget();}, nullptr);
     builder.AddBooleanProperty("limeTableExist", [this] {return limeTable != nullptr;}, nullptr);
+    builder.AddDoubleArrayProperty(
+        "cameraPose",
+        [this]
+        {
+            return limeTable->GetNumberArray(
+                "camerapose_robotspace",
+                std::array<double, 6> {
+                    cameraPose.X().to<double>(),
+                    cameraPose.Y().to<double>(),
+                    cameraPose.Z().to<double>(),
+                    cameraPose.Rotation().X().convert<units::degree>().to<double>(),
+                    cameraPose.Rotation().Y().convert<units::degree>().to<double>(),
+                    cameraPose.Rotation().Z().convert<units::degree>().to<double>()
+                }
+            );
+        },
+        nullptr
+    );
 }
