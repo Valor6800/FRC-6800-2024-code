@@ -79,8 +79,10 @@ void Shooter::init()
 
 void Shooter::assessInputs()
 {
-    if (driverGamepad == nullptr || operatorGamepad == nullptr )
+    if (driverGamepad == nullptr || operatorGamepad == nullptr ||
+        !driverGamepad->IsConnected() || !operatorGamepad->IsConnected())
         return;
+
     //SHOOT LOGIC
     if (driverGamepad->rightTriggerActive()) {
         state.flywheelState = FLYWHEEL_STATE::SHOOTING;

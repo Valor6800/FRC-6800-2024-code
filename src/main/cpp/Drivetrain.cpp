@@ -226,8 +226,6 @@ void Drivetrain::init()
     table->PutNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET);
     table->PutNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET);
 
-    state.lock = false;
-
     resetState();
 
     AutoBuilder::configureHolonomic(
@@ -281,23 +279,20 @@ void Drivetrain::assessInputs()
 {
     if (!driverGamepad || !operatorGamepad) return;
 
-    if (driverGamepad->GetBackButtonPressed()) {
-        resetGyro();
+    if (operatorGamepad->IsConnected()) {
+        state.topTape = operatorGamepad->DPadUp();
+        state.bottomTape = operatorGamepad->DPadRight();
     }
 
-
-    state.topTape = operatorGamepad->DPadUp();
-    state.bottomTape = operatorGamepad->DPadRight();
-    state.lock = state.adas || driverGamepad->GetBButton();
-
-    state.xSpeed = driverGamepad->leftStickY(2);
-    state.ySpeed = driverGamepad->leftStickX(2);
-    if (!state.lock){
-    state.rot = driverGamepad->rightStickX(3);
+    if (driverGamepad->IsConnected()) {
+        if (driverGamepad->GetBackButtonPressed()) {
+            resetGyro();
+        }
+        state.xSpeed = driverGamepad->leftStickY(2);
+        state.ySpeed = driverGamepad->leftStickX(2);
+        state.rot = driverGamepad->rightStickX(3);
+        state.isHeadingTrack = driverGamepad->leftTriggerActive();
     }
-    state.isHeadingTrack = driverGamepad->GetAButton();
-
-    state.xPose = driverGamepad->GetXButton();
 }
 
 void Drivetrain::calculateCarpetPose()
@@ -343,16 +338,6 @@ void Drivetrain::analyzeDashboard()
         aprilLime->applyVisionMeasurement(calculatedEstimator, visionAcceptanceRadius, doubtX, doubtY);
     }
 
-    if (driverGamepad->GetStartButton()) {
-        for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
-            if (aprilLime->hasTarget()) {
-                botpose = aprilLime->getSensor().ToPose2d();
-                resetOdometry(botpose);
-                break;
-            }
-        }
-    }
-
     getSpeakerLockAngleRPS();
     double kP = table->GetNumber("KP_ROTATION", KP_ROTATE);
     double speakerXOffset = table->GetNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET);
@@ -365,20 +350,12 @@ void Drivetrain::assignOutputs()
 {    
     
 
-    if (state.lock){angleLock();}
     state.xSpeedMPS = units::velocity::meters_per_second_t{state.xSpeed * driveMaxSpeed};
     state.ySpeedMPS = units::velocity::meters_per_second_t{state.ySpeed * driveMaxSpeed};
     state.rotRPS = units::angular_velocity::radians_per_second_t{state.rot * rotMaxSpeed};
-    if (state.xPose){
-        setXMode();
-    } else if(state.isHeadingTrack){
-
+    if (state.isHeadingTrack) {
         drive(state.xSpeedMPS, state.ySpeedMPS, state.angleRPS, true);
-    }
-    else if (state.adas){
-        drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
-    } 
-    else {
+    } else {
         setDriveMotorNeutralMode(valor::NeutralMode::Coast);
         drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
     }

@@ -62,7 +62,6 @@ void Robot::DisabledPeriodic() { }
  */
 void Robot::AutonomousInit() {
     drivetrain.resetState();
-    drivetrain.state.matchStart = frc::Timer::GetFPGATimestamp().to<double>();
     drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Brake);
     drivetrain.pullSwerveModuleZeroReference();
 
@@ -74,7 +73,6 @@ void Robot::AutonomousInit() {
 }
 
 void Robot::AutonomousExit() {
-    drivetrain.state.xPose = true;
 }
 
 void Robot::AutonomousPeriodic() {

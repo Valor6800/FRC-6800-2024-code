@@ -120,13 +120,8 @@ public:
 
           units::radian_t targetAngle;
           units::angular_velocity::radians_per_second_t angleRPS;
-  
-          bool adas;
-          bool lock;
 
           LimelightPipes limeLocation;
-          
-          bool xPose;
 
           bool isLeveled;
           bool abovePitchThreshold;
@@ -136,14 +131,6 @@ public:
           bool bottomTape;
 
           int stage;
-
-          int trackingID;
-          double visionOdomDiff;
-
-          double matchStart;
-
-          frc::Pose2d visionPose;
-          frc::Pose2d prevVisionPose;
 
           units::velocity::meters_per_second_t xSpeedMPS;
           units::velocity::meters_per_second_t ySpeedMPS;

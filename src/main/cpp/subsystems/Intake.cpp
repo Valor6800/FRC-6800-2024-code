@@ -45,7 +45,8 @@ void Intake::init()
 
 void Intake::assessInputs()
 {
-    if (driverGamepad == nullptr || operatorGamepad == nullptr )
+    if (driverGamepad == nullptr || operatorGamepad == nullptr ||
+        !driverGamepad->IsConnected() || !operatorGamepad->IsConnected())
         return;
 
     if (driverGamepad->GetLeftBumper()) {
