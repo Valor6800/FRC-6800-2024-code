@@ -332,6 +332,7 @@ void Drivetrain::analyzeDashboard()
     calculateCarpetPose();
 
     frc::Pose2d botpose;
+
     if (aprilVanilla.hasTarget()) {
         botpose = aprilVanilla.getSensor().ToPose2d();
     } else if (aprilChocolate.hasTarget()) {
@@ -340,14 +341,20 @@ void Drivetrain::analyzeDashboard()
         botpose = aprilLemon.getSensor().ToPose2d();
     }
 
-    if (driverGamepad->GetStartButton() && (aprilVanilla.hasTarget() || aprilChocolate.hasTarget() || aprilLemon.hasTarget())){
-            resetOdometry(botpose);
-    }
     getSpeakerLockAngleRPS();
     double kP = table->GetNumber("KP_ROTATION", KP_ROTATE);
     double speakerXOffset = table->GetNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET);
     double speakerYOffset = table->GetNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET);
     state.angleRPS = units::angular_velocity::radians_per_second_t(getAngleError().to<double>()*kP*rotMaxSpeed);
+
+    aprilLemon.applyVisionMeasurement(estimator);
+    aprilChocolate.applyVisionMeasurement(estimator);
+    aprilVanilla.applyVisionMeasurement(estimator);
+
+    if (driverGamepad->GetStartButton() && (aprilVanilla.hasTarget() || aprilChocolate.hasTarget() || aprilLemon.hasTarget())){
+        resetOdometry(botpose);
+    }
+    
 }
 
 void Drivetrain::assignOutputs()

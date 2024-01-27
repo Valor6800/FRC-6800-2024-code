@@ -71,4 +71,5 @@ void AprilTagsSensor::InitSendable(wpi::SendableBuilder& builder) {
         },
         nullptr
     );
+    builder.AddDoubleProperty("totalLatency", [this] {return totalLatency.to<double>();}, nullptr);
 }
