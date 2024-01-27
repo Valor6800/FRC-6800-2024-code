@@ -35,7 +35,7 @@ void AprilTagsSensor::applyVisionMeasurement(frc::SwerveDrivePoseEstimator<4> *e
     std::vector<double> botToTargetPose = limeTable->GetNumberArray("botpose_targetspace", std::span<const double>());
     if (sqrtf(powf(botToTargetPose[0], 2) + powf(botToTargetPose[1], 2)) >= outlier.to<double>()) return;
 
-    setTotalLatency();
+    units::millisecond_t totalLatency = getTotalLatency();
 
     estimator->AddVisionMeasurement(
         currState.ToPose2d(),  
@@ -81,5 +81,5 @@ void AprilTagsSensor::InitSendable(wpi::SendableBuilder& builder) {
         },
         nullptr
     );
-    builder.AddDoubleProperty("totalLatency", [this] {return totalLatency.to<double>();}, nullptr);
+    builder.AddDoubleProperty("totalLatency", [this] {return getTotalLatency().to<double>();}, nullptr);
 }

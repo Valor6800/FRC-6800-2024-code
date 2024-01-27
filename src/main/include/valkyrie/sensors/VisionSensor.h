@@ -51,9 +51,8 @@ class VisionSensor : public valor::BaseSensor<frc::Pose3d> {
     protected:
         double tx, ty, tv;
         int pipe;
-        units::time::millisecond_t totalLatency;
 
-        void setTotalLatency();
+        units::millisecond_t getTotalLatency();
         virtual frc::Pose3d getGlobalPose() = 0;
 
         frc::Pose3d cameraPose;

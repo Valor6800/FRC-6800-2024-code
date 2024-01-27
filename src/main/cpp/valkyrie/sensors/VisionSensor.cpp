@@ -43,8 +43,8 @@ bool VisionSensor::hasTarget() {
     return limeTable != nullptr && tv == 1;
 }
 
-void VisionSensor::setTotalLatency() {
-    totalLatency = (units::millisecond_t) (limeTable->GetNumber("cl", 0.0) + limeTable->GetNumber("tl", 0.0));
+units::millisecond_t VisionSensor::getTotalLatency() {
+    return (units::millisecond_t) (limeTable->GetNumber("cl", 0.0) + limeTable->GetNumber("tl", 0.0));
 }
 
 
