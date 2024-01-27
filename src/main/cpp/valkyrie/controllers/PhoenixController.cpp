@@ -145,6 +145,14 @@ void PhoenixController::setConversion(double _conversion)
     conversion = _conversion;
 }
 
+void PhoenixController::setMotorInversion(bool invert){
+    motor->SetInverted(invert);
+}
+
+bool PhoenixController::getMotorInversion(){
+    return motor->GetInverted();
+}
+
 double PhoenixController::getCurrent()
 {
     return motor->GetTorqueCurrent().GetValueAsDouble();

@@ -34,7 +34,9 @@ public:
     void setRange(int slot, double min, double max);
     
     void setConversion(double);
-    
+
+    void setMotorInversion(bool);
+    bool getMotorInversion();
 
     void setProfile(int slot);
     double getAbsEncoderPosition();
