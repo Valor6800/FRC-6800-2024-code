@@ -1,5 +1,7 @@
 #pragma once
 
+#include "frc/estimator/PoseEstimator.h"
+#include "frc/estimator/SwerveDrivePoseEstimator.h"
 #include "frc/geometry/Pose3d.h"
 #include "units/velocity.h"
 #include "valkyrie/sensors/VisionSensor.h"
@@ -22,6 +24,9 @@ namespace valor
             void InitSendable(wpi::SendableBuilder& builder) override;
 
         private:
+            void applyVisionMeasurement(frc::SwerveDrivePoseEstimator<4> *estimator, double doubt = 1);
+
             frc::Pose3d getGlobalPose() override;
+            
     };
 } // namespace valor

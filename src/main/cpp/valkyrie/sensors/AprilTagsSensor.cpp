@@ -24,6 +24,16 @@ frc::Pose3d AprilTagsSensor::getGlobalPose() {
     );
 }
 
+void AprilTagsSensor::applyVisionMeasurement(frc::SwerveDrivePoseEstimator<4> *estimator, double doubt) {
+    if (!hasTarget()) return;
+    setTotalLatency();
+    estimator->AddVisionMeasurement(
+        currState.ToPose2d(),  
+        frc::Timer::GetFPGATimestamp() - totalLatency,
+        {doubt, doubt, doubt}
+    );
+}
+
 void AprilTagsSensor::InitSendable(wpi::SendableBuilder& builder) {
     builder.SetSmartDashboardType("Subsystem");
 

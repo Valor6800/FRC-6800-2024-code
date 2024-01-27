@@ -1,5 +1,6 @@
 #include "valkyrie/sensors/VisionSensor.h"
 #include "units/angle.h"
+#include "units/time.h"
 #include "valkyrie/sensors/BaseSensor.h"
 
 using namespace valor;
@@ -42,6 +43,10 @@ bool VisionSensor::hasTarget() {
     return limeTable != nullptr && tv == 1;
 }
 
+void VisionSensor::setTotalLatency() {
+    totalLatency = (units::millisecond_t) (limeTable->GetNumber("cl", 0.0) + limeTable->GetNumber("tl", 0.0));
+}
+
 
 units::velocity::meters_per_second_t VisionSensor::getError(int pipe, double kPLimeLight) {
     if (limeTable != nullptr && hasTarget()) {
@@ -63,7 +68,7 @@ void VisionSensor::calculate(){
     tx = limeTable->GetNumber("tx", 0.0);
     ty = limeTable->GetNumber("ty", 0.0);
     pipe = limeTable->GetNumber("pipeline", 0);
-
+    
     currState = getSensor();
     
 }
