@@ -97,6 +97,9 @@ public:
      void assignOutputs();
 
      void resetState();
+     units::radian_t calculateSpeakerLockAngle();
+     units::angular_velocity::radians_per_second_t getAngleError(units::radian_t angle, double kP);
+     units::radian_t clampAngleRadianRange(units::radian_t angle);
 
      void InitSendable(wpi::SendableBuilder& builder);
 

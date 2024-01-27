@@ -148,8 +148,21 @@ void Shooter::assignOutputs()
     }
 }
 
-void Shooter::InitSendable(wpi::SendableBuilder& builder)
-{
+units::degree_t calculatePivotAngle(){
+    units::degree_t targetPivotAngle = units::degree_t(3);
+    return targetPivotAngle;
+}
+
+void calculateRootsT(){
+    // add future code for solving roots of the quartic that results from the vector expression
+}
+
+void bisectionTheorem(){
+    // neccessary for calculateRootsT where the bisection method is used to estimate these values
+}
+
+void Shooter::InitSendable(wpi::SendableBuilder& builder){
+
     builder.SetSmartDashboardType("Shooter");
 
     builder.AddIntegerProperty(
@@ -158,10 +171,33 @@ void Shooter::InitSendable(wpi::SendableBuilder& builder)
         nullptr
     );
 
-    // builder.AddIntegerProperty(
-    //     "pivot state",
-    //     [this] {return state.pivot;},
-    //     nullptr
-    // );
+    /* builder.AddIntegerProperty(
+        "pivot state",
+        [this] {return state.pivot;},
+        nullptr
+    ); */
 
+    builder.AddDoubleProperty(
+        "Left shoot power", 
+        [this] { return state.leftShooterPower; },
+        nullptr
+    );
+
+    builder.AddDoubleProperty(
+        "Right shoot power", 
+        [this] { return state.rightShooterPower; },
+        nullptr
+    );
+
+    builder.AddDoubleProperty(
+        "Left spooled power", 
+        [this] { return state.leftSpoolPower; },
+        nullptr
+    );
+
+    builder.AddDoubleProperty(
+        "Right spooled power", 
+        [this] { return state.rightSpoolPower; },
+        nullptr
+    );
 }

@@ -34,6 +34,11 @@ public:
     void assessInputs();
     void analyzeDashboard();
     void assignOutputs();
+
+    units::degree_t calculatePivotAngle();
+
+    void calculateRootsT();
+    void bisectionTheorem();
     
     void InitSendable(wpi::SendableBuilder& builder);
 

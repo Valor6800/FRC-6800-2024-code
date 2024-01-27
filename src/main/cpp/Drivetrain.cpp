@@ -16,6 +16,10 @@
 
 using namespace pathplanner;
 
+#define SPEAKER_Y 5.543042_m
+#define SPEAKER_BLUE_X 0.0_m
+#define SPEAKER_RED_X 16.4846_m
+
 #define TXRANGE  30.0f
 #define KPIGEON 2.0f
 #define KLIMELIGHT -29.8f
@@ -333,6 +337,28 @@ void Drivetrain::assignOutputs()
     }
 }
 
+units::radian_t Drivetrain::calculateSpeakerLockAngle(){
+    units::radian_t targetRotAngle;
+    units::meter_t roboXPos = estimator->GetEstimatedPosition().X();
+    units::meter_t roboYPos = estimator->GetEstimatedPosition().Y();
+    if(frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue){
+        targetRotAngle = units::radian_t(M_PI + atan((roboYPos.to<double>() - SPEAKER_Y.to<double>())/(roboXPos.to<double>() - SPEAKER_BLUE_X.to<double>())));
+    }
+    else{
+        targetRotAngle = units::radian_t(atan((roboYPos.to<double>() - SPEAKER_Y.to<double>())/(roboXPos.to<double>() - SPEAKER_RED_X.to<double>())));
+    }
+    return targetRotAngle;
+}
+
+units::angular_velocity::radians_per_second_t Drivetrain::getAngleError(units::radian_t angle, double kP){
+    units::radian_t robotRotation = estimator->GetEstimatedPosition().Rotation().Radians();
+    return units::angular_velocity::radians_per_second_t(kP*clampAngleRadianRange(robotRotation - angle));
+}
+
+units::radian_t Drivetrain::clampAngleRadianRange(units::radian_t angle){
+    return (angle)/(M_PI / 2);
+}
+
 void Drivetrain::pullSwerveModuleZeroReference(){
     swerveNoError = true;
     for (size_t i = 0; i < swerveModules.size(); i++) {
@@ -378,21 +404,18 @@ void Drivetrain::resetOdometry(frc::Pose2d pose)
     estimator->ResetPosition(getPigeon(), modulePositions, pose);
 }
 
-frc::Rotation2d Drivetrain::getPigeon() 
-{
+frc::Rotation2d Drivetrain::getPigeon() {
     return pigeon.GetRotation2d();
 }
 
-void Drivetrain::resetDriveEncoders()
-{
+void Drivetrain::resetDriveEncoders(){
     for (size_t i = 0; i < swerveModules.size(); i++)
     {
         swerveModules[i]->resetDriveEncoder();
     }
 }
 
-void Drivetrain::drive(units::velocity::meters_per_second_t vx_mps, units::velocity::meters_per_second_t vy_mps, units::angular_velocity::radians_per_second_t omega_radps, bool isFOC)
-{
+void Drivetrain::drive(units::velocity::meters_per_second_t vx_mps, units::velocity::meters_per_second_t vy_mps, units::angular_velocity::radians_per_second_t omega_radps, bool isFOC){
     auto states = getModuleStates(vx_mps,
                                   vy_mps,
                                   omega_radps,
@@ -443,8 +466,7 @@ frc::ChassisSpeeds Drivetrain::getRobotRelativeSpeeds(){
     return kinematics->ToChassisSpeeds(moduleStates);
 }
 
-void Drivetrain::setModuleStates(wpi::array<frc::SwerveModuleState, SWERVE_COUNT> desiredStates)
-{ 
+void Drivetrain::setModuleStates(wpi::array<frc::SwerveModuleState, SWERVE_COUNT> desiredStates){ 
     kinematics->DesaturateWheelSpeeds(&desiredStates, units::velocity::meters_per_second_t{autoMaxSpeed});
     for (int i = 0; i < SWERVE_COUNT; i++)
     {
