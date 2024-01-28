@@ -357,14 +357,16 @@ void Drivetrain::analyzeDashboard()
     double kP = table->GetNumber("KP_ROTATION", KP_ROTATE);
     double speakerXOffset = table->GetNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET);
     double speakerYOffset = table->GetNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET);
-    state.angleRPS = units::angular_velocity::radians_per_second_t(getAngleError().to<double>()*kP*rotMaxSpeed);
-    
+    if(frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue){
+        state.angleRPS = units::angular_velocity::radians_per_second_t(getAngleError().to<double>()*kP*rotMaxSpeed);
+    }
+    else{
+        state.angleRPS = units::angular_velocity::radians_per_second_t(getAngleError().to<double>()*-kP*rotMaxSpeed);
+    }
 }
 
 void Drivetrain::assignOutputs()
-{    
-    
-
+{
     if (state.lock){angleLock();}
     state.xSpeedMPS = units::velocity::meters_per_second_t{state.xSpeed * driveMaxSpeed};
     state.ySpeedMPS = units::velocity::meters_per_second_t{state.ySpeed * driveMaxSpeed};
@@ -406,11 +408,11 @@ void Drivetrain::getSpeakerLockAngleRPS(){
 units::radian_t Drivetrain::getAngleError(){
     units::radian_t robotRotation = estimator->GetEstimatedPosition().Rotation().Radians();
     double errorAngle = robotRotation.to<double>() - state.targetAngle.to<double>();
-    if(errorAngle > (PI/2)) {
+    if(errorAngle > PI) {
         return units::radian_t(errorAngle - 2*PI);
     }
-    else if(errorAngle < (PI/2)){
-        return units::radian_t(2*PI - errorAngle);
+    else if(errorAngle < -PI){
+        return units::radian_t(2*PI + errorAngle);
     }
     else{
         return (robotRotation - state.targetAngle);
