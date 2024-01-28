@@ -20,19 +20,17 @@ public:
     void analyzeDashboard() override;
     void assignOutputs() override;
 
-    void upVoltage();
     double voltageCommand;
     double motorVoltage;
-    double position;
-    double velocity;
-    double voltage;
 
     void InitSendable(wpi::SendableBuilder &builder) override;
 
     enum TestType{
         NO_MOVE,
-        QUASISTATIC,
-        DYNAMIC
+        QUASISTATIC_F,
+        DYNAMIC_F,
+        QUASISTATIC_R,
+        DYNAMIC_R
     };
 
     struct x

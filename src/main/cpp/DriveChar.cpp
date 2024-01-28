@@ -4,10 +4,10 @@
 #include <frc2/command/Commands.h>
 
 DriveChar::DriveChar(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "SysID"),
-    frontLeftMotor(2,valor::NeutralMode::Brake,true,""),
-    frontRightMotor(4,valor::NeutralMode::Brake,false,""),
-    backLeftMotor(6,valor::NeutralMode::Brake,false,""),
-    backRightMotor(8,valor::NeutralMode::Brake,false,"")
+    frontLeftMotor(2,valor::NeutralMode::Brake, true, ""),
+    frontRightMotor(4,valor::NeutralMode::Brake, false, ""),
+    backLeftMotor(6,valor::NeutralMode::Brake, false, ""),
+    backRightMotor(8,valor::NeutralMode::Brake, false, "")
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -17,7 +17,6 @@ void DriveChar::init()
 {
     voltageCommand = 0.0;
     table->PutNumber("Voltage", voltageCommand);
-    table->PutNumber("State", state.testType);
 }
 
 void DriveChar::resetState()
@@ -32,14 +31,17 @@ void DriveChar::assessInputs()
         return;
 
     if (operatorGamepad->GetYButtonPressed()){
-        state.testType = DYNAMIC;
+        state.testType = DYNAMIC_F;
     } else if (operatorGamepad->GetAButtonPressed()){
-        state.testType = QUASISTATIC;
+        state.testType = DYNAMIC_R; 
+    } else if (operatorGamepad->DPadUp()){
+        state.testType = QUASISTATIC_F;
+    } else if (operatorGamepad->DPadDown()){
+        state.testType = QUASISTATIC_R;
     } else if (operatorGamepad->GetXButtonPressed()){
         state.testType = NO_MOVE;
+        voltageCommand = 0.0;
     }
-
-    table->PutNumber("State", state.testType);
 }
 
 void DriveChar::analyzeDashboard()
@@ -49,31 +51,63 @@ void DriveChar::analyzeDashboard()
 
 void DriveChar::assignOutputs()
 {
-    if (state.testType == DYNAMIC){
+    if (state.testType == DYNAMIC_F || state.testType == DYNAMIC_R){
         motorVoltage = 7;
-    } else if (state.testType == QUASISTATIC){
+    } else if (state.testType == QUASISTATIC_F || state.testType == QUASISTATIC_R){
         voltageCommand += 1.0/50.0;
-        table->PutNumber("Voltage", voltageCommand);
         motorVoltage = voltageCommand;
     } else if (state.testType == NO_MOVE){
         motorVoltage = 0.0;
     } else {
         motorVoltage = 0.0;
     }
+
+    if (state.testType == DYNAMIC_F || state.testType == QUASISTATIC_F){
+        frontLeftMotor.setInversion(true);
+        frontRightMotor.setInversion(false);
+        backLeftMotor.setInversion(false);
+        backRightMotor.setInversion(false);
+    }else if (state.testType == DYNAMIC_R || state.testType == QUASISTATIC_R){
+        frontLeftMotor.setInversion(false);
+        frontRightMotor.setInversion(true);
+        backLeftMotor.setInversion(true);
+        backRightMotor.setInversion(true);
+    }
+
     frontLeftMotor.setVoltage(motorVoltage);
     frontRightMotor.setVoltage(motorVoltage);
     backLeftMotor.setVoltage(motorVoltage);
     backRightMotor.setVoltage(motorVoltage);
-    // position = drive->getPose_m().X().to<double>();
-    // velocity = motorVoltage / 12.0 * drive->getDriveMaxSpeed();
-    // drive->drive(units::velocity::meters_per_second_t(velocity), 0.0_mps, units::angular_velocity::radians_per_second_t(0.0), true);
+    
+    if (state.testType == QUASISTATIC_F){
+        table->PutString("State", "quasistatic-forward");
+    } else if (state.testType == DYNAMIC_F){
+        table->PutString("State", "dynamic-forward");    
+    } else if (state.testType == QUASISTATIC_R){
+        table->PutString("State", "quasistatic-reverse");
+    } else if (state.testType == DYNAMIC_R){
+        table->PutString("State", "dynamic-reverse");   
+    }
 }
 
 void DriveChar::InitSendable(wpi::SendableBuilder& builder)
 {
     builder.SetSmartDashboardType("Subsystem");
-    builder.AddDoubleProperty(
-        "State",
-        [this] {return state.testType;},
-        nullptr);
+    // builder.AddStringProperty(
+    //     "State",
+    //     [this] 
+    //     {
+    //         if (state.testType == QUASISTATIC_F){
+    //             return "quasistatic-forward";
+    //         } else if (state.testType == DYNAMIC_F){
+    //             return "dynamic-forward";
+    //         } else if (state.testType == QUASISTATIC_R){
+    //             return "quasistatic-reverse";
+    //         } else if (state.testType == DYNAMIC_R){
+    //             return "dynamic-reverse";
+    //         } else{
+    //             return "";
+    //         }
+    //     },
+    //     nullptr);
 }
