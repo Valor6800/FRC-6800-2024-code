@@ -135,6 +135,11 @@ void NeoController::setVoltage(double voltage)
     pidController.SetReference(voltage, rev::CANSparkMax::ControlType::kVoltage, currentPidSlot);
 }
 
+void NeoController::setInversion(bool direction)
+{
+    motor->SetInverted(direction);
+}
+
 /**
  * Set the position in units (specified by conversion). Example: inches
  */
@@ -160,6 +165,7 @@ void NeoController::setPower(double power)
 {
     motor->Set(power);
 }
+
 
 void NeoController::setNeutralMode(valor::NeutralMode mode){  
     motor->SetIdleMode(mode == valor::NeutralMode::Brake ? rev::CANSparkMax::IdleMode::kBrake : rev::CANSparkMax::IdleMode::kCoast);

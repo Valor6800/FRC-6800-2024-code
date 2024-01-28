@@ -32,6 +32,7 @@ public:
     void setPosition(double);
     void setSpeed(double);
     void setPower(double);
+    void setInversion(bool);
     
     void setupFollower(int, bool = false);
     
