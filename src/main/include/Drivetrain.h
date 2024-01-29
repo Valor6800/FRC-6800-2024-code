@@ -102,6 +102,7 @@ public:
      void resetState();
      void getSpeakerLockAngleRPS();
      units::radian_t getAngleError();
+     void setAlignmentAngle();
      double clampAngleRadianRange(units::radian_t angle, double max);
 
      void InitSendable(wpi::SendableBuilder& builder);
@@ -134,6 +135,8 @@ public:
 
           bool topTape;
           bool bottomTape;
+
+          bool isAlign;
 
           int stage;
 

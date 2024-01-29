@@ -83,6 +83,9 @@ using namespace pathplanner;
 
 #define VISION_ACCEPTANCE 4.0_m // meters
 
+#define BLUE_SOURCE_ROT_ANGLE 0.0 // radians
+#define RED_SOURCE_ROT_ANGLE 0.0 // radians
+
 Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Drivetrain"),
                         driveMaxSpeed(MOTOR_FREE_SPEED / 60.0 / DRIVE_GEAR_RATIO * WHEEL_DIAMETER_M * M_PI),
                         rotMaxSpeed(ROT_SPEED_MUL * 2 * M_PI),
@@ -226,6 +229,9 @@ void Drivetrain::init()
     table->PutNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET);
     table->PutNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET);
 
+    table->PutNumber("BLUE SOURCE ALIGNMENT ANGLE", BLUE_SOURCE_ROT_ANGLE);
+    table->PutNumber("RED SOURCE ALIGNMENT ANGLE", RED_SOURCE_ROT_ANGLE);
+
     state.lock = false;
 
     resetState();
@@ -285,6 +291,7 @@ void Drivetrain::assessInputs()
         resetGyro();
     }
 
+    state.isAlign = driverGamepad->GetBButton(); // not set button
 
     state.topTape = operatorGamepad->DPadUp();
     state.bottomTape = operatorGamepad->DPadRight();
@@ -353,8 +360,7 @@ void Drivetrain::analyzeDashboard()
         }
     }
 
-    getSpeakerLockAngleRPS();
-    double kPRot = table->GetNumber("KP_ROTATION", KP_ROTATE);
+    double kPRot = table->GetNumber("KP_ROTATION_BLUE", KP_ROTATE);
     double speakerXOffset = table->GetNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET);
     double speakerYOffset = table->GetNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET);
     state.angleRPS = units::angular_velocity::radians_per_second_t(getAngleError().to<double>()*kPRot*rotMaxSpeed);
@@ -369,7 +375,9 @@ void Drivetrain::assignOutputs()
     if (state.xPose){
         setXMode();
     } else if(state.isHeadingTrack){
-
+        drive(state.xSpeedMPS, state.ySpeedMPS, state.angleRPS, true);
+    }
+    else if(state.isAlign){
         drive(state.xSpeedMPS, state.ySpeedMPS, state.angleRPS, true);
     }
     else if (state.adas){
@@ -411,6 +419,14 @@ units::radian_t Drivetrain::getAngleError(){
     }
     else{
         return (robotRotation - state.targetAngle);
+    }
+}
+
+void Drivetrain::setAlignmentAngle(){
+    if(frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue){
+        state.targetAngle = units::radian_t(table->GetNumber("BLUE SOURCE ALIGNMENT ANGLE", BLUE_SOURCE_ROT_ANGLE));
+    }else{
+        state.targetAngle = units::radian_t(table->GetNumber("RED SOURCE ALIGNMENT ANGLE", RED_SOURCE_ROT_ANGLE));
     }
 }
 
