@@ -361,7 +361,7 @@ void Drivetrain::analyzeDashboard()
         state.angleRPS = units::angular_velocity::radians_per_second_t(getAngleError().to<double>()*kP*rotMaxSpeed);
     }
     else{
-        state.angleRPS = units::angular_velocity::radians_per_second_t(getAngleError().to<double>()*-kP*rotMaxSpeed);
+        state.angleRPS = units::angular_velocity::radians_per_second_t(getAngleError().to<double>()*kP*rotMaxSpeed);
     }
 }
 
