@@ -77,7 +77,8 @@ using namespace pathplanner;
 #define DRIVETRAIN_CAN_BUS ""
 #define PIGEON_CAN_BUS "baseCAN"
 
-#define KP_ROTATE -0.6f
+#define KP_ROTATE_BLUE -0.6f
+#define KP_ROTATE_RED -0.6f
 #define SPEAKER_X_OFFSET 0.15f
 #define SPEAKER_Y_OFFSET 0.00f
 
@@ -222,7 +223,8 @@ void Drivetrain::init()
     table->PutNumber("DoubtRot", 1.0);
 
     table->PutNumber("KPLIMELIGHT", KP_LIMELIGHT);
-    table->PutNumber("KP_ROTATION", KP_ROTATE);
+    table->PutNumber("KP_ROTATION_BLUE", KP_ROTATE_BLUE);
+    table->PutNumber("KP_ROTATION_RED", KP_ROTATE_RED);
     table->PutNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET);
     table->PutNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET);
 
@@ -354,14 +356,15 @@ void Drivetrain::analyzeDashboard()
     }
 
     getSpeakerLockAngleRPS();
-    double kP = table->GetNumber("KP_ROTATION", KP_ROTATE);
+    double kPBlue = table->GetNumber("KP_ROTATION_BLUE", KP_ROTATE_BLUE);
+    double kPRed = table->GetNumber("KP_ROTATION_RED", KP_ROTATE_RED);
     double speakerXOffset = table->GetNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET);
     double speakerYOffset = table->GetNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET);
     if(frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue){
-        state.angleRPS = units::angular_velocity::radians_per_second_t(getAngleError().to<double>()*kP*rotMaxSpeed);
+        state.angleRPS = units::angular_velocity::radians_per_second_t(getAngleError().to<double>()*kPBlue*rotMaxSpeed);
     }
     else{
-        state.angleRPS = units::angular_velocity::radians_per_second_t(getAngleError().to<double>()*kP*rotMaxSpeed);
+        state.angleRPS = units::angular_velocity::radians_per_second_t(getAngleError().to<double>()*kPRed*rotMaxSpeed);
     }
 }
 
