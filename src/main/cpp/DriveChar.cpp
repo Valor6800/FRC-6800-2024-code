@@ -87,27 +87,12 @@ void DriveChar::assignOutputs()
         table->PutString("State", "quasistatic-reverse");
     } else if (state.testType == DYNAMIC_R){
         table->PutString("State", "dynamic-reverse");   
+    } else if (state.testType == NO_MOVE){
+        table->PutString("State", "none");
     }
 }
 
 void DriveChar::InitSendable(wpi::SendableBuilder& builder)
 {
     builder.SetSmartDashboardType("Subsystem");
-    // builder.AddStringProperty(
-    //     "State",
-    //     [this] 
-    //     {
-    //         if (state.testType == QUASISTATIC_F){
-    //             return "quasistatic-forward";
-    //         } else if (state.testType == DYNAMIC_F){
-    //             return "dynamic-forward";
-    //         } else if (state.testType == QUASISTATIC_R){
-    //             return "quasistatic-reverse";
-    //         } else if (state.testType == DYNAMIC_R){
-    //             return "dynamic-reverse";
-    //         } else{
-    //             return "";
-    //         }
-    //     },
-    //     nullptr);
 }
