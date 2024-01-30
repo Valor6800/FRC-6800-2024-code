@@ -3,6 +3,8 @@
 #include "valkyrie/controllers/PIDF.h"
 #include "valkyrie/controllers/NeutralMode.h"
 
+#include <units/voltage.h>
+
 #include <string>
 
 #include <wpi/sendable/Sendable.h>
@@ -116,6 +118,15 @@ public:
     virtual double getCurrent() = 0;
 
     /**
+     * @brief Get the motors voltage
+     * 
+     * Get the instantaneous voltage of the motor that the controller owns
+     * 
+     * @return volt_t Instantaneous voltage of the motor
+     */
+    virtual units::volt_t getVoltage() = 0;
+
+    /**
      * @brief Get the motors speed
      * 
      * Units by default are in rotations per second of the motor shaft.
@@ -167,6 +178,15 @@ public:
      * 
      */
     virtual void setPower(double power) = 0;
+
+    /**
+     * @brief Set the motor voltage
+     * 
+     * Units are in volts.
+     * 
+     * To be defined by the implemented BaseController class
+    */
+    virtual void setVoltage(units::volt_t voltage) = 0;
 
     /**
      * @brief If a motor is paired with another motor, setup that other motor as a follower

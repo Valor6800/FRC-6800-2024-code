@@ -38,6 +38,7 @@
 #include <frc2/command/WaitCommand.h>
 #include <frc/TimedRobot.h>
 #include <frc2/command/FunctionalCommand.h>
+#include <frc2/command/sysid/SysIdRoutine.h>
 
 #include <rev/CANSparkMax.h>
 #include <ctre/phoenix6/Pigeon2.hpp>
@@ -262,8 +263,12 @@ public:
      frc2::InstantCommand* getSetXMode();
 
      void setDriveMotorNeutralMode(valor::NeutralMode mode);
+     
+	frc2::CommandPtr getSysIdCommand();
 
 private:
+     void logSysId(frc::sysid::SysIdRoutineLog* log);
+     void setSysIdVoltage(units::volt_t voltage);
      
      double driveMaxSpeed;
      double rotMaxSpeed;
@@ -307,4 +312,7 @@ private:
 
      double doubtX, doubtY, doubtRot;
      units::meter_t visionAcceptanceRadius;
+
+     frc2::sysid::SysIdRoutine sysid;
+     frc2::CommandPtr sysIdrunner;
 };

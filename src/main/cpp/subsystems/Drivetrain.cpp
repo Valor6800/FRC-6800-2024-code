@@ -1,4 +1,4 @@
-#include "Drivetrain.h"
+#include "subsystems/Drivetrain.h"
 #include <frc/DriverStation.h>
 #include <iostream>
 #include <math.h>
@@ -96,6 +96,7 @@ using namespace pathplanner;
 #define RED_LEFT_TRAP_ROT_ANGLE 2.16421f
 #define RED_CENTER_TRAP_ROT_ANGLE 0.0f
 #define RED_LOCK_ANGLE 3.14159f
+#include <frc/sysid/SysIdRoutineLog.h>
 
 Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Drivetrain"),
                         driveMaxSpeed(MOTOR_FREE_SPEED / 60.0 / DRIVE_GEAR_RATIO * WHEEL_DIAMETER_M * M_PI),
@@ -109,7 +110,19 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "
                         estimator(NULL),
                         calculatedEstimator(NULL),
                         config(NULL),
-                        swerveNoError(true)
+                        swerveNoError(true),
+                        sysid(frc2::sysid::Config{std::nullopt, std::nullopt, std::nullopt, std::nullopt},
+                            frc2::sysid::Mechanism{
+                                [this](units::volt_t driveVoltage) {
+                                    setSysIdVoltage(driveVoltage);
+                                },
+                                [this](frc::sysid::SysIdRoutineLog* log) {
+                                    logSysId(log);
+                                },
+                                this
+                            }
+                        ),
+                        sysIdrunner(getSysIdCommand())
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -127,6 +140,16 @@ Drivetrain::~Drivetrain()
     delete estimator;
     delete calculatedEstimator;
     delete config;
+}
+
+void Drivetrain::logSysId(frc::sysid::SysIdRoutineLog* log)
+{
+    for (size_t i = 0; i < driveControllers.size(); i++) {
+        log->Motor("module " + i)
+            .voltage(driveControllers[i]->getVoltage())
+            .position(units::meter_t{driveControllers[i]->getPosition()})
+            .velocity(units::meters_per_second_t{driveControllers[i]->getSpeed()});
+    }
 }
 
 void Drivetrain::configSwerveModule(int i)
@@ -239,6 +262,8 @@ void Drivetrain::init()
     table->PutNumber("KP_ROTATION", KP_ROTATE);
     table->PutNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET);
     table->PutNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET);
+    
+    table->PutBoolean("Run SysId", false);
 
 
     state.lock = false;
@@ -270,6 +295,40 @@ void Drivetrain::init()
         },
         this // Reference to this subsystem to set requirements
     );
+}
+
+frc2::CommandPtr Drivetrain::getSysIdCommand() {
+	return frc2::cmd::Sequence(
+		frc2::InstantCommand([this]() { setSysIdVoltage(0_V);  }).ToPtr(),
+		frc2::cmd::Wait(0.5_s),
+		sysid.Quasistatic(frc2::sysid::Direction::kForward),
+		frc2::cmd::Wait(6_s),
+		frc2::InstantCommand([this]() {
+            setSysIdVoltage(0_V);
+            sysid.RecordState(frc::sysid::State::kNone);
+        }).ToPtr(),
+		frc2::cmd::Wait(0.5_s),
+		sysid.Quasistatic(frc2::sysid::Direction::kReverse),
+		frc2::cmd::Wait(6_s),
+		frc2::InstantCommand([this]() {
+            setSysIdVoltage(0_V);
+            sysid.RecordState(frc::sysid::State::kNone);
+        }).ToPtr(),
+		frc2::cmd::Wait(0.5_s),
+		sysid.Dynamic(frc2::sysid::Direction::kForward),
+		frc2::cmd::Wait(4_s),
+		frc2::InstantCommand([this]() {
+            setSysIdVoltage(0_V);
+            sysid.RecordState(frc::sysid::State::kNone);
+        }).ToPtr(),
+		frc2::cmd::Wait(0.5_s),
+		sysid.Dynamic(frc2::sysid::Direction::kReverse),
+		frc2::cmd::Wait(4_s),
+		frc2::InstantCommand([this]() {
+            setSysIdVoltage(0_V);
+            sysid.RecordState(frc::sysid::State::kNone);
+        }).ToPtr()
+	);
 }
 
 std::vector<valor::Swerve<Drivetrain::SwerveAzimuthMotor, Drivetrain::SwerveDriveMotor> *> Drivetrain::getSwerveModules()
@@ -345,6 +404,18 @@ void Drivetrain::calculateCarpetPose()
 
 void Drivetrain::analyzeDashboard()
 {
+    // Button for SysId selected
+    if (table->GetBoolean("Run SysId", false)) {
+        // Has not been scheduled yet
+        if (!sysIdrunner.IsScheduled()) {
+            sysIdrunner = getSysIdCommand();
+            sysIdrunner.Schedule();
+        }
+    // Button for SysId not selected, but previously was
+    } else if (sysIdrunner.IsScheduled()) {
+        sysIdrunner.Cancel();
+    }
+
     if (table->GetBoolean("Load Swerve Mag Encoder",false))
         pullSwerveModuleZeroReference();
 
@@ -639,6 +710,13 @@ double Drivetrain::getRotationMaxSpeed() {
 
 double Drivetrain::getRotationMaxAcceleration() {
     return rotMaxAccel;
+}
+
+void Drivetrain::setSysIdVoltage(units::volt_t voltage)
+{
+    for (size_t i = 0; i < driveControllers.size(); i++) {
+        driveControllers[i]->setVoltage(voltage);
+    }
 }
 
 frc::TrajectoryConfig & Drivetrain::getTrajectoryConfig() {    

@@ -19,12 +19,14 @@ public:
     double getPosition();
     double getSpeed();
     double getCurrent();
+    units::volt_t getVoltage();
 
     void setEncoderPosition(double position);
     
     void setPosition(double);
     void setSpeed(double);
     void setPower(double);
+    void setVoltage(units::volt_t) override;
 
     void setupFollower(int, bool = false);
     

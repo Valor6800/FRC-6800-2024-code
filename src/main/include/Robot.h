@@ -7,7 +7,6 @@
 #include "Constants.h"
 #include "valkyrie/Gamepad.h"
 
-#include "Drivetrain.h"
 #include "valkyrie/Auto.h"
 
 #include <frc/DriverStation.h>
@@ -15,6 +14,7 @@
 
 #include <frc/livewindow/LiveWindow.h>
 
+#include "subsystems/Drivetrain.h"
 #include <subsystems/Shooter.h>
 #include "subsystems/Intake.h"
 #include "subsystems/Feeder.h"

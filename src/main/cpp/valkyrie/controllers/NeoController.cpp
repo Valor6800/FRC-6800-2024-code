@@ -123,6 +123,11 @@ double NeoController::getSpeed()
     return encoder.GetVelocity();
 }
 
+units::volt_t NeoController::getVoltage()
+{
+    return units::volt_t{motor->GetBusVoltage() * motor->GetAppliedOutput()};
+}
+
 void NeoController::setEncoderPosition(double position)
 {
     encoder.SetPosition(position);
@@ -157,6 +162,11 @@ void NeoController::setSpeed(double speed)
 void NeoController::setPower(double power)
 {
     motor->Set(power);
+}
+
+void NeoController::setVoltage(units::volt_t volts)
+{
+    motor->SetVoltage(volts);
 }
 
 void NeoController::setNeutralMode(valor::NeutralMode mode){  

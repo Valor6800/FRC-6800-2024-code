@@ -174,6 +174,11 @@ double PhoenixController::getSpeed()
     return rotorPosSignal.GetValueAsDouble();
 }
 
+units::volt_t PhoenixController::getVoltage()
+{
+    return motor->GetMotorVoltage().GetValue();
+}
+
 void PhoenixController::setRange(int slot, double min, double max)
 {
     
@@ -201,6 +206,11 @@ void PhoenixController::setPower(double speed)
     controls::VoltageOut request{0_V};
     request.Output = units::make_unit<units::volt_t>(speed * 12);
     motor->SetControl(request);
+}
+
+void PhoenixController::setVoltage(units::volt_t voltage)
+{
+    motor->SetVoltage(voltage);
 }
 
 void PhoenixController::setProfile(int profile)

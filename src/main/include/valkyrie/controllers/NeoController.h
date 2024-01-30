@@ -22,6 +22,7 @@ public:
     double getCurrent();
     double getPosition();
     double getSpeed();
+    units::volt_t getVoltage();
 
     int getProfile();
 
@@ -30,6 +31,7 @@ public:
     void setPosition(double);
     void setSpeed(double);
     void setPower(double);
+    void setVoltage(units::volt_t) override;
     
     void setupFollower(int, bool = false);
     
