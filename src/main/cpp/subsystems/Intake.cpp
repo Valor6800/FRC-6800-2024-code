@@ -58,7 +58,7 @@ void Intake::assessInputs()
         state.intakeState = INTAKE_STATE::STAGNANT;
         state.activationState = false;
     }
-    state.detectionState = beam->Get(); 
+    state.detectionState = !beam->Get(); 
 }
 
 void Intake::analyzeDashboard()
@@ -109,7 +109,7 @@ void Intake::InitSendable(wpi::SendableBuilder& builder)
 
     builder.AddBooleanProperty(
         "beamDetection",
-        [this] {return beam->Get();},
+        [this] {return !beam->Get();},
         nullptr
     );
 }
