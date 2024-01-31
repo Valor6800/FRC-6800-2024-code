@@ -17,6 +17,10 @@ void DriveChar::init()
 {
     voltageCommand = 0.0;
     table->PutNumber("Voltage", voltageCommand);
+    frontLeftMotor.setConversion(1.0 / 5.51 * M_PI * 0.0973);
+    frontRightMotor.setConversion(1.0 / 5.51 * M_PI * 0.0973);
+    backLeftMotor.setConversion(1.0 / 5.51 * M_PI * 0.0973);
+    backRightMotor.setConversion(1.0 / 5.51 * M_PI * 0.0973);
 }
 
 void DriveChar::resetState()
