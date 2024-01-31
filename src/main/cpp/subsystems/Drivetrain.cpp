@@ -145,7 +145,7 @@ Drivetrain::~Drivetrain()
 void Drivetrain::logSysId(frc::sysid::SysIdRoutineLog* log)
 {
     for (size_t i = 0; i < driveControllers.size(); i++) {
-        log->Motor("module " + i)
+        log->Motor(std::strcat("module ", std::string(i).c_str()))
             .voltage(driveControllers[i]->getVoltage())
             .position(units::meter_t{driveControllers[i]->getPosition()})
             .velocity(units::meters_per_second_t{driveControllers[i]->getSpeed()});
@@ -263,7 +263,10 @@ void Drivetrain::init()
     table->PutNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET);
     table->PutNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET);
     
-    table->PutBoolean("Run SysId", false);
+    table->PutBoolean("Run SysId Quasistatic Forward", false);
+    table->PutBoolean("Run SysId Quasistatic Backward", false);
+    table->PutBoolean("Run SysId Dynamic Forward", false);
+    table->PutBoolean("Run SysId Dynamic Backward", false);
 
 
     state.lock = false;
@@ -297,37 +300,19 @@ void Drivetrain::init()
     );
 }
 
-frc2::CommandPtr Drivetrain::getSysIdCommand() {
+frc2::CommandPtr Drivetrain::quaistaticSysid(frc::sysid::Direction direction) {
 	return frc2::cmd::Sequence(
 		frc2::InstantCommand([this]() { setSysIdVoltage(0_V);  }).ToPtr(),
 		frc2::cmd::Wait(0.5_s),
-		sysid.Quasistatic(frc2::sysid::Direction::kForward),
-		frc2::cmd::Wait(6_s),
-		frc2::InstantCommand([this]() {
-            setSysIdVoltage(0_V);
-            sysid.RecordState(frc::sysid::State::kNone);
-        }).ToPtr(),
+		sysid.Dynamic(direction)
+	);
+}
+
+frc2::CommandPtr Drivetrain::dynamicSysid(frc::sysid::Direction direction) {
+	return frc2::cmd::Sequence(
+		frc2::InstantCommand([this]() { setSysIdVoltage(0_V);  }).ToPtr(),
 		frc2::cmd::Wait(0.5_s),
-		sysid.Quasistatic(frc2::sysid::Direction::kReverse),
-		frc2::cmd::Wait(6_s),
-		frc2::InstantCommand([this]() {
-            setSysIdVoltage(0_V);
-            sysid.RecordState(frc::sysid::State::kNone);
-        }).ToPtr(),
-		frc2::cmd::Wait(0.5_s),
-		sysid.Dynamic(frc2::sysid::Direction::kForward),
-		frc2::cmd::Wait(4_s),
-		frc2::InstantCommand([this]() {
-            setSysIdVoltage(0_V);
-            sysid.RecordState(frc::sysid::State::kNone);
-        }).ToPtr(),
-		frc2::cmd::Wait(0.5_s),
-		sysid.Dynamic(frc2::sysid::Direction::kReverse),
-		frc2::cmd::Wait(4_s),
-		frc2::InstantCommand([this]() {
-            setSysIdVoltage(0_V);
-            sysid.RecordState(frc::sysid::State::kNone);
-        }).ToPtr()
+		sysid.Quasistatic(direction)
 	);
 }
 
@@ -405,10 +390,28 @@ void Drivetrain::calculateCarpetPose()
 void Drivetrain::analyzeDashboard()
 {
     // Button for SysId selected
-    if (table->GetBoolean("Run SysId", false)) {
+    if (table->GetBoolean("Run SysId Quasistatic Forward", false)) {
         // Has not been scheduled yet
         if (!sysIdrunner.IsScheduled()) {
-            sysIdrunner = getSysIdCommand();
+            sysIdrunner = quaistaticSysid(frc2::sysid::Direction::kForward);
+            sysIdrunner.Schedule();
+        }
+    } else if (table->GetBoolean("Run SysId Quasistatic Backward", false)) {
+        // Has not been scheduled yet
+        if (!sysIdrunner.IsScheduled()) {
+            sysIdrunner = quaistaticSysid(frc2::sysid::Direction::kReverse);
+            sysIdrunner.Schedule();
+        }
+    } else if (table->GetBoolean("Run SysId Dynamic Forward", false)) {
+        // Has not been scheduled yet
+        if (!sysIdrunner.IsScheduled()) {
+            sysIdrunner = dynamicSysid(frc2::sysid::Direction::kForward);
+            sysIdrunner.Schedule();
+        }
+    } else if (table->GetBoolean("Run SysId Dynamic Backward", false)) {
+        // Has not been scheduled yet
+        if (!sysIdrunner.IsScheduled()) {
+            sysIdrunner = dynamicSysid(frc2::sysid::Direction::kReverse);
             sysIdrunner.Schedule();
         }
     // Button for SysId not selected, but previously was
