@@ -403,7 +403,7 @@ void Drivetrain::getSpeakerLockAngleRPS(){
         targetRotAngle = units::radian_t(atan2(
             (roboYPos.to<double>() - (SPEAKER_Y.to<double>() + table->GetNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET))),
             (roboXPos.to<double>() - (SPEAKER_RED_X.to<double>() - table->GetNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET)))
-        ));
+        )) + units::radian_t(PI);
     }
     state.targetAngle = targetRotAngle;
 }
