@@ -35,6 +35,8 @@ public:
     void analyzeDashboard();
     void assignOutputs();
 
+    double getRightFlywheelVelocityError();
+    double getLeftFlywheelVelocityError();
     units::degree_t calculatePivotAngle();
 
     void calculateRootsT();
@@ -69,6 +71,8 @@ public:
         double rightShooterPower;
         double rightSpoolPower;
         double rightStandbyPower;
+
+        double flywheelTargetVelocity;
 
         units::degree_t pivotAngle;
     } state;

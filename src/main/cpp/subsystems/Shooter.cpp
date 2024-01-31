@@ -29,6 +29,12 @@
 #define SHOOTER_ROTATE_FORWARD_LIMIT 90.0_deg
 #define SHOOTER_ROTATE_REVERSE_LIMIT 0.0_deg
 
+#define FLYWHEEL_MAX_RPM 5500.0f // theorhetical max is 5550
+#define FLYWHEEL_DEFAULT_VELOCITY 0.0f
+#define FLYWHEEL_VELOCITY_KP 0.6f
+#define FLYWHEEL_VELOCITY_SPOOLING 200.0f
+#define FLYWHEEL_VELOCITY_SHOOTING 2000.0f
+
 Shooter::Shooter(frc::TimedRobot *_robot, frc::DigitalInput* _beamBreak) :
     valor::BaseSubsystem(_robot, "Shooter"),
     //pivotMotors(CANIDs::ANGLE_CONTROLLER, valor::NeutralMode::Brake, false),
@@ -44,6 +50,7 @@ void Shooter::resetState()
 {
     state.flywheelState = FLYWHEEL_STATE::NOT_SHOOTING;
     state.pivotState = PIVOT_STATE::SUBWOOFER;
+    state.flywheelTargetVelocity = 0;
 }
 
 void Shooter::init()
@@ -71,10 +78,13 @@ void Shooter::init()
     table->PutNumber("Right Shooter Spool", RIGHT_SHOOT_SPOOL);
     table->PutNumber("Right Shooter Standby", RIGHT_SHOOT_STANDBY);
 
-    
+    table->PutNumber("Flywheel Stationary Velocity", FLYWHEEL_DEFAULT_VELOCITY);
+    table->PutNumber("Flywheel Velocity P Value", FLYWHEEL_VELOCITY_KP);
+
+    table->PutNumber("Flywheel Shooting Velocity", FLYWHEEL_VELOCITY_SHOOTING);
+    table->PutNumber("Flywheel Spooling Velocity", FLYWHEEL_VELOCITY_SPOOLING);
 
     resetState();
-
 }
 
 void Shooter::assessInputs()
@@ -84,12 +94,15 @@ void Shooter::assessInputs()
     //SHOOT LOGIC
     if (driverGamepad->rightTriggerActive()) {
         state.flywheelState = FLYWHEEL_STATE::SHOOTING;
+        state.flywheelTargetVelocity = FLYWHEEL_VELOCITY_SHOOTING;
     }
     else if (operatorGamepad->leftTriggerActive()) {
         state.flywheelState = FLYWHEEL_STATE::SPOOLED;
+        state.flywheelTargetVelocity = FLYWHEEL_VELOCITY_SPOOLING;
     }
     else {
         state.flywheelState = FLYWHEEL_STATE::NOT_SHOOTING;
+        state.flywheelTargetVelocity = 0;
     } 
 
     //PIVOT LOGIC
@@ -118,6 +131,9 @@ void Shooter::analyzeDashboard()
     state.rightShooterPower = table->GetNumber("Right Shooter Power", RIGHT_SHOOT_POWER);
     state.rightSpoolPower = table->GetNumber("Right Shooter Spool", RIGHT_SHOOT_SPOOL);
     state.rightStandbyPower = table->GetNumber("Right Shooter Standby", RIGHT_SHOOT_STANDBY);
+
+    double flywheelTargetVelocity = table->GetNumber("Flywheel Stationary Velocity", state.flywheelTargetVelocity);
+    double kP = table->GetNumber("Flywheel Velocity P Value", FLYWHEEL_VELOCITY_KP);
 }
 
 void Shooter::assignOutputs()
@@ -139,27 +155,37 @@ void Shooter::assignOutputs()
 
     //SHOOTER
     if (state.flywheelState == FLYWHEEL_STATE::SHOOTING) {
-        leftFlywheelMotor.setPower(state.leftShooterPower);
-        rightFlywheelMotor.setPower(state.rightShooterPower);
+        leftFlywheelMotor.setPower(table->GetNumber("Flywheel Velocity P Value", FLYWHEEL_VELOCITY_KP)*(getLeftFlywheelVelocityError() / FLYWHEEL_MAX_RPM));
+        rightFlywheelMotor.setPower(table->GetNumber("Flywheel Velocity P Value", FLYWHEEL_VELOCITY_KP)*(getRightFlywheelVelocityError() / FLYWHEEL_MAX_RPM));
     } else if (state.flywheelState == FLYWHEEL_STATE::SPOOLED) {
-        leftFlywheelMotor.setPower(state.leftSpoolPower);
-        rightFlywheelMotor.setPower(state.rightSpoolPower);
+        leftFlywheelMotor.setPower(table->GetNumber("Flywheel Velocity P Value", FLYWHEEL_VELOCITY_KP)*(getLeftFlywheelVelocityError() / FLYWHEEL_MAX_RPM));
+        rightFlywheelMotor.setPower(table->GetNumber("Flywheel Velocity P Value", FLYWHEEL_VELOCITY_KP)*(getRightFlywheelVelocityError() / FLYWHEEL_MAX_RPM));
     } else {
-        leftFlywheelMotor.setPower(state.leftStandbyPower);
-        rightFlywheelMotor.setPower(state.rightStandbyPower);
+        leftFlywheelMotor.setPower(table->GetNumber("Flywheel Velocity P Value", FLYWHEEL_VELOCITY_KP)*(getLeftFlywheelVelocityError() / FLYWHEEL_MAX_RPM));
+        rightFlywheelMotor.setPower(table->GetNumber("Flywheel Velocity P Value", FLYWHEEL_VELOCITY_KP)*(getRightFlywheelVelocityError() / FLYWHEEL_MAX_RPM));
     }
 }
 
-units::degree_t calculatePivotAngle(){
+double Shooter::getRightFlywheelVelocityError(){
+    double rightFlywheelSpeed = rightFlywheelMotor.getSpeed();
+    return state.flywheelTargetVelocity - rightFlywheelSpeed;
+}
+
+double Shooter::getLeftFlywheelVelocityError(){
+    double leftFlywheelSpeed = leftFlywheelMotor.getSpeed();
+    return state.flywheelTargetVelocity - leftFlywheelSpeed;
+}
+
+units::degree_t Shooter::calculatePivotAngle(){
     units::degree_t targetPivotAngle = units::degree_t(3);
     return targetPivotAngle;
 }
 
-void calculateRootsT(){
+void Shooter::calculateRootsT(){
     // add future code for solving roots of the quartic that results from the vector expression
 }
 
-void bisectionTheorem(){
+void Shooter::bisectionTheorem(){
     // neccessary for calculateRootsT where the bisection method is used to estimate these values
 }
 
@@ -200,6 +226,35 @@ void Shooter::InitSendable(wpi::SendableBuilder& builder){
     builder.AddDoubleProperty(
         "Right spooled power", 
         [this] { return state.rightSpoolPower; },
+        nullptr
+    );
+
+    builder.AddDoubleProperty(
+        "Target Flywheel Velocity",
+        [this] {return state.flywheelTargetVelocity;},
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "Right Flywheel Power",
+        [this] {return table->GetNumber("Flywheel Velocity P Value", FLYWHEEL_VELOCITY_KP)*(getRightFlywheelVelocityError() / FLYWHEEL_MAX_RPM);},
+        nullptr
+    );
+
+    builder.AddDoubleProperty(
+        "Left Flywheel Power",
+        [this] {return table->GetNumber("Flywheel Velocity P Value", FLYWHEEL_VELOCITY_KP)*(getLeftFlywheelVelocityError() / FLYWHEEL_MAX_RPM);},
+        nullptr
+    );
+
+    builder.AddDoubleProperty(
+        "Right Flywheel Vel. Error",
+        [this] {return getRightFlywheelVelocityError();},
+        nullptr
+    );
+
+    builder.AddDoubleProperty(
+        "Left Flywheel Vel. Error",
+        [this] {return getLeftFlywheelVelocityError();},
         nullptr
     );
 }
