@@ -35,8 +35,8 @@ public:
     void analyzeDashboard();
     void assignOutputs();
 
-    double getRightFlywheelVelocityError();
-    double getLeftFlywheelVelocityError();
+    units::angular_velocity::revolutions_per_minute_t getRightFlywheelVelocityError();
+    units::angular_velocity::revolutions_per_minute_t getLeftFlywheelVelocityError();
     units::degree_t calculatePivotAngle();
 
     void calculateRootsT();
@@ -72,7 +72,7 @@ public:
         double rightSpoolPower;
         double rightStandbyPower;
 
-        double flywheelTargetVelocity;
+        units::angular_velocity::revolutions_per_minute_t flywheelTargetVelocity;
 
         units::degree_t pivotAngle;
     } state;
