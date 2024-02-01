@@ -72,6 +72,10 @@ namespace CANIDs {
     constexpr static int LEFT_CLIMBER = 25; // rando number
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-function"
+
+
 // Constants that stay the same across bots should not go here
 namespace Constants { 
     // public:
@@ -176,3 +180,5 @@ namespace Constants {
                     std::pair("limelight-vanilla", vanillaCameraPosition())
         };
 }
+
+#pragma GCC diagnostic pop
