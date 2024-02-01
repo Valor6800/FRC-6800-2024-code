@@ -264,8 +264,8 @@ public:
 
      void setDriveMotorNeutralMode(valor::NeutralMode mode);
      
-     frc2::CommandPtr Drivetrain::quaistaticSysid(frc2::sysid::Direction);
-     frc2::CommandPtr Drivetrain::dynamicSysid(frc2::sysid::Direction);
+     frc2::CommandPtr quaistaticSysid(frc2::sysid::Direction);
+     frc2::CommandPtr dynamicSysid(frc2::sysid::Direction);
 
 private:
      void logSysId(frc::sysid::SysIdRoutineLog* log);
