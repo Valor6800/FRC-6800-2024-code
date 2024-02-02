@@ -16,21 +16,39 @@
     },
     {
       "anchor": {
-        "x": 1.9226257350103788,
-        "y": 4.858057989677207
+        "x": 2.1685868564879494,
+        "y": 4.767449314918885
       },
       "prevControl": {
-        "x": 1.7154247538265655,
-        "y": 4.653093337931586
+        "x": 1.9613858753041358,
+        "y": 4.562484663173263
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Shoot right"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Spool",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Spool"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -39,13 +57,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -35.0,
+    "rotation": -16.246291195335587,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "PreLoad",
   "previewStartingState": {
-    "rotation": 180.0,
+    "rotation": 0.0,
     "velocity": 0
   },
   "useDefaultConstraints": true
