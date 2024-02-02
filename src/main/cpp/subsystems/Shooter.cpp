@@ -42,19 +42,30 @@ Shooter::Shooter(frc::TimedRobot *_robot, frc::DigitalInput* _beamBreak) :
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
-    pathplanner::NamedCommands::registerCommand("Shoot", std::move(
+    pathplanner::NamedCommands::registerCommand("Shoot sequence", std::move(
         frc2::SequentialCommandGroup(
             frc2::InstantCommand(
                 [this]() {
                     // shooter->state.isShooting = true;
-                    state.flywheel = Shooter::FlywheelState::SHOOTING;
+                    state.flywheelState = Shooter::FLYWHEEL_STATE::SHOOTING;
                 }
             ),
             frc2::WaitCommand(1_s),
             frc2::InstantCommand(
                 [this]() {
                     // shooter->state.isShooting = false;
-                    state.flywheel = Shooter::FlywheelState::NOT_SHOOTING;
+                    state.flywheelState = Shooter::FLYWHEEL_STATE::NOT_SHOOTING;
+                }
+            )
+        )
+    ).ToPtr());
+
+    pathplanner::NamedCommands::registerCommand("Spool", std::move(
+        frc2::SequentialCommandGroup(
+            frc2::InstantCommand(
+                [this]() {
+                    // shooter->state.isShooting = true;
+                    state.flywheelState = Shooter::FLYWHEEL_STATE::SPOOLED;
                 }
             )
         )
