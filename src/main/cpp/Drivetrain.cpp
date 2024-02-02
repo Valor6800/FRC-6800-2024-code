@@ -354,7 +354,7 @@ void Drivetrain::analyzeDashboard()
     }
 
     getSpeakerLockAngleRPS();
-    double kPRot = table->GetNumber("KP_ROTATION_BLUE", KP_ROTATE);
+    double kPRot = table->GetNumber("KP_ROTATION", KP_ROTATE);
     double speakerXOffset = table->GetNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET);
     double speakerYOffset = table->GetNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET);
     state.angleRPS = units::angular_velocity::radians_per_second_t(getAngleError().to<double>()*kPRot*rotMaxSpeed);
