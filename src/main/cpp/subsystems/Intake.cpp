@@ -19,7 +19,7 @@
 
 #define ROLLER_MOTOR_INTAKE_POWER 0.8f
 #define ROLLER_MOTOR_OUTTAKE_POWER -0.8f
-
+ 
 Intake::Intake(frc::TimedRobot *_robot, frc::DigitalInput *_beamBreak) :
     valor::BaseSubsystem(_robot, "Intake"),
     rollerMotor(CANIDs::EXTERNAL_INTAKE, valor::NeutralMode::Coast, true),
@@ -29,21 +29,22 @@ Intake::Intake(frc::TimedRobot *_robot, frc::DigitalInput *_beamBreak) :
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
-    pathplanner::NamedCommands::registerCommand("Intake", std::move(
+    pathplanner::NamedCommands::registerCommand("Enable intake", std::move(
         frc2::SequentialCommandGroup(
             frc2::InstantCommand(
                 [this]() {
                     // shooter->state.isShooting = true;
-                    state.activation = Intake::Activation_State::DEPOLOYED;
-                    state.intake = Intake::Intake_State::INTAKING;
+                    state.intakeState = Intake::INTAKE_STATE::INTAKE;
                 }
-            ),
-            frc2::WaitCommand(1_s),
+            )
+        )
+    ).ToPtr());
+    pathplanner::NamedCommands::registerCommand("Disable intake", std::move(
+        frc2::SequentialCommandGroup(
             frc2::InstantCommand(
                 [this]() {
-                    // shooter->state.isShooting = false;
-                    state.activation = Intake::Activation_State::STOWED;
-                    state.intake = Intake::Intake_State::STAGNANT;
+                    // shooter->state.isShooting = true;
+                    state.intakeState = Intake::INTAKE_STATE::STAGNANT;
                 }
             )
         )
