@@ -43,6 +43,9 @@
 #define SPEAKER_HEIGHT 2.0431125f
 #define SPEAKER_Z_OFFSET 0.0f
 
+#define SHOOTER_SPEED 7.0f
+#define GRAVITY 9.81f
+
 Shooter::Shooter(frc::TimedRobot *_robot, frc::DigitalInput* _beamBreak, Drivetrain *_drive) :
     valor::BaseSubsystem(_robot, "Shooter"),
     //pivotMotors(CANIDs::ANGLE_CONTROLLER, valor::NeutralMode::Brake, false),
@@ -187,6 +190,7 @@ units::degree_t Shooter::calculatePivotAngle(){
 }
 
 void Shooter::getTargetPivotAngle(){
+void Shooter::getLaserTargetPivotAngle(){
     units::meter_t robotX = drivetrain->getPose_m().X();
     units::meter_t robotY = drivetrain->getPose_m().Y();
     double distance = 5;
@@ -200,6 +204,23 @@ void Shooter::getTargetPivotAngle(){
         distance = sqrtf(pow(changeInX, 2) + pow(changeInY, 2));
     }
     double angle = atan2(SPEAKER_HEIGHT + table->GetNumber("Speaker Z Offset", SPEAKER_Z_OFFSET), distance);
+    state.targetPivotAngle = units::radian_t(angle);
+}
+
+void Shooter::getArcTargetPivotAngle(){
+    units::meter_t robotX = drivetrain->getPose_m().X();
+    units::meter_t robotY = drivetrain->getPose_m().Y();
+    double distance = 5;
+    double changeInY = robotY.to<double>() - SPEAKER_Y.to<double>();
+    if(frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue){
+        double changeInX = robotX.to<double>() - SPEAKER_BLUE_X.to<double>();
+        distance = sqrtf(pow(changeInX, 2) + pow(changeInY, 2));
+    }
+    else{
+        double changeInX = robotX.to<double>() - SPEAKER_RED_X.to<double>();
+        distance = sqrtf(pow(changeInX, 2) + pow(changeInY, 2));
+    }
+    double angle = atan2(pow(SHOOTER_SPEED, 2) - sqrt(pow(SHOOTER_SPEED, 4) - (GRAVITY*(GRAVITY*pow(distance, 2) + 2*SPEAKER_HEIGHT*pow(SHOOTER_SPEED, 2)))), GRAVITY*distance);
     state.targetPivotAngle = units::radian_t(angle);
 }
 

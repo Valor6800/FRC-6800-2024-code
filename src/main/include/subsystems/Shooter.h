@@ -37,7 +37,8 @@ public:
     void analyzeDashboard();
     void assignOutputs();
 
-    void getTargetPivotAngle();
+    void getLaserTargetPivotAngle();
+    void getArcTargetPivotAngle();
     units::radian_t getPivotErrorAngle();
 
     void calculateRootsT();
