@@ -89,9 +89,9 @@ using namespace pathplanner;
 #define BLUE_LOCK_ANGLE 0.0f
 
 #define RED_AMP_ROT_ANGLE -1.5708f
-#define RED_SOURCE_ROT_ANGLE 0.5236f
-#define RED_RIGHT_TRAP_ROT_ANGLE -0.7854f
-#define RED_LOCK_ANGLE 0.0f
+#define RED_SOURCE_ROT_ANGLE -2.0245f
+#define RED_RIGHT_TRAP_ROT_ANGLE -2.17851f
+#define RED_LOCK_ANGLE 3.14159f
 
 Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Drivetrain"),
                         driveMaxSpeed(MOTOR_FREE_SPEED / 60.0 / DRIVE_GEAR_RATIO * WHEEL_DIAMETER_M * M_PI),
@@ -308,6 +308,8 @@ void Drivetrain::assessInputs()
     state.xSpeed = driverGamepad->leftStickY(2);
     state.ySpeed = driverGamepad->leftStickX(2);
 
+    state.rot = driverGamepad->rightStickX(3);
+
     if(state.isHeadingTrack) getSpeakerLockAngleRPS();
     else if(state.sourceAlign) setAlignmentAngle(Alignment::SOURCE);
     else if(state.ampAlign) setAlignmentAngle(Alignment::AMP);
@@ -368,24 +370,18 @@ void Drivetrain::analyzeDashboard()
             }
         }
     }
-
-    double kPRot = table->GetNumber("KP_ROTATION_BLUE", KP_ROTATE);
-    state.angleRPS = units::angular_velocity::radians_per_second_t(getAngleError().to<double>()*kPRot*rotMaxSpeed);
 }
 
 void Drivetrain::assignOutputs()
 {
-    if (state.lock){angleLock();}
+    double kPRot = table->GetNumber("KP_ROTATION", KP_ROTATE);
+    state.angleRPS = units::angular_velocity::radians_per_second_t{getAngleError().to<double>()*kPRot*rotMaxSpeed};
     state.xSpeedMPS = units::velocity::meters_per_second_t{state.xSpeed * driveMaxSpeed};
     state.ySpeedMPS = units::velocity::meters_per_second_t{state.ySpeed * driveMaxSpeed};
     state.rotRPS = units::angular_velocity::radians_per_second_t{state.rot * rotMaxSpeed};
-    if (state.xPose)
-        setXMode();
-    else if(state.ampAlign || state.trapAlign || state.sourceAlign || state.isHeadingTrack || state.thetaLock){
+
+    if(state.ampAlign || state.trapAlign || state.sourceAlign || state.isHeadingTrack || state.thetaLock){
         drive(state.xSpeedMPS, state.ySpeedMPS, state.angleRPS, true);
-    }
-    else if (state.adas){
-        drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
     } 
     else {
         setDriveMotorNeutralMode(valor::NeutralMode::Coast);
@@ -407,7 +403,7 @@ void Drivetrain::getSpeakerLockAngleRPS(){
         targetRotAngle = units::radian_t(atan2(
             (roboYPos.to<double>() - (SPEAKER_Y.to<double>() + table->GetNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET))),
             (roboXPos.to<double>() - (SPEAKER_RED_X.to<double>() - table->GetNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET)))
-        )) + units::radian_t(PI);
+        ));
     }
     state.targetAngle = targetRotAngle;
 }
