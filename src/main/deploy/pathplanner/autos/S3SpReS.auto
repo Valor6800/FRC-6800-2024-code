@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.48438732155674197,
-      "y": 3.8461879274136805
+      "x": 1.5429336914223,
+      "y": 4.80385074593535
     },
-    "rotation": 0.0
+    "rotation": -179.93424158036123
   },
   "command": {
     "type": "sequential",
@@ -60,13 +60,13 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "Deploy intake"
+                        "name": "Enable intake"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "Enable intake"
+                        "name": "Deploy intake"
                       }
                     }
                   ]
