@@ -13,17 +13,16 @@
 #define PIVOT_ROTATE_K_AFF 0.0f
 #define PIVOT_ROTATE_K_AFF_POS 0.0f
 
+#define SHOOTER_K_P 0.00007f
+#define SHOOTER_K_F 0.00014f
+
 #define SUBWOOFER_ANG 30.0_deg
 #define PODIUM_ANG 45.0_deg
 #define STARTING_LINE_ANG 60.0_deg
 
-#define LEFT_SHOOT_POWER 0.8f
-#define LEFT_SHOOT_SPOOL 0.5f
+#define LEFT_SHOOT_POWER 4500.0f
+#define LEFT_SHOOT_SPOOL 3500.0f
 #define LEFT_SHOOT_STANDBY 0.0f
-
-#define RIGHT_SHOOT_POWER 0.8f
-#define RIGHT_SHOOT_SPOOL 0.5f
-#define RIGHT_SHOOT_STANDBY 0.0f
 
 #define SHOOTER_ROTATE_GEAR_RATIO 1.0f
 #define SHOOTER_ROTATE_FORWARD_LIMIT 90.0_deg
@@ -33,7 +32,6 @@ Shooter::Shooter(frc::TimedRobot *_robot, frc::DigitalInput* _beamBreak) :
     valor::BaseSubsystem(_robot, "Shooter"),
     //pivotMotors(CANIDs::ANGLE_CONTROLLER, valor::NeutralMode::Brake, false),
     leftFlywheelMotor(CANIDs::LEFT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false),
-    rightFlywheelMotor(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false),
     beamBreak(_beamBreak)
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
@@ -48,6 +46,7 @@ void Shooter::resetState()
 
 void Shooter::init()
 {
+    valor::PIDF pivotPID;
     pivotPID.velocity = PIVOT_ROTATE_K_VEL.to<double>();
     pivotPID.acceleration = PIVOT_ROTATE_K_ACC_MUL;
     pivotPID.F = PIVOT_ROTATE_K_F;
@@ -58,20 +57,23 @@ void Shooter::init()
     pivotPID.aFF = PIVOT_ROTATE_K_AFF;
     pivotPID.aFFTarget = PIVOT_ROTATE_K_AFF_POS;
 
+    valor::PIDF shooterPIDF;
+    shooterPIDF.P = SHOOTER_K_P;
+    shooterPIDF.F = SHOOTER_K_F;
+
+    leftFlywheelMotor.setupFollower(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, true);
+    leftFlywheelMotor.setReverseLimit(0);
+    leftFlywheelMotor.setPIDF(shooterPIDF, 0);
+    leftFlywheelMotor.setConversion(1.0);
+
     // pivotMotors.setConversion(1.0 / SHOOTER_ROTATE_GEAR_RATIO * 360);
     // pivotMotors.setForwardLimit(SHOOTER_ROTATE_FORWARD_LIMIT.to<double>());
     // pivotMotors.setReverseLimit(SHOOTER_ROTATE_REVERSE_LIMIT.to<double>());
     // pivotMotors.setPIDF(pivotPID, 0);
 
-    table->PutNumber("Left Shooter Power", LEFT_SHOOT_POWER);
-    table->PutNumber("Left Shooter Spool", LEFT_SHOOT_SPOOL);
-    table->PutNumber("Left Shooter Standby", LEFT_SHOOT_STANDBY);
-
-    table->PutNumber("Right Shooter Power", RIGHT_SHOOT_POWER);
-    table->PutNumber("Right Shooter Spool", RIGHT_SHOOT_SPOOL);
-    table->PutNumber("Right Shooter Standby", RIGHT_SHOOT_STANDBY);
-
-    
+    table->PutNumber("Shooter RPM", LEFT_SHOOT_POWER);
+    table->PutNumber("Shooter Spool RPM", LEFT_SHOOT_SPOOL);
+    table->PutNumber("Shooter Standby RPM", LEFT_SHOOT_STANDBY);    
 
     resetState();
 
@@ -111,13 +113,9 @@ void Shooter::analyzeDashboard()
 {
     state.pivotAngle = 0.0_deg;
 
-    state.leftShooterPower = table->GetNumber("Left Shooter Power", LEFT_SHOOT_POWER);
-    state.leftSpoolPower = table->GetNumber("Left Shooter Spool", LEFT_SHOOT_SPOOL);
-    state.leftStandbyPower = table->GetNumber("Left Shooter Standby", LEFT_SHOOT_STANDBY);
-
-    state.rightShooterPower = table->GetNumber("Right Shooter Power", RIGHT_SHOOT_POWER);
-    state.rightSpoolPower = table->GetNumber("Right Shooter Spool", RIGHT_SHOOT_SPOOL);
-    state.rightStandbyPower = table->GetNumber("Right Shooter Standby", RIGHT_SHOOT_STANDBY);
+    state.leftShooterPower = table->GetNumber("Shooter RPM", LEFT_SHOOT_POWER);
+    state.leftSpoolPower = table->GetNumber("Shooter Spool RPM", LEFT_SHOOT_SPOOL);
+    state.leftStandbyPower = table->GetNumber("Shooter Standby RPM", LEFT_SHOOT_STANDBY);
 }
 
 void Shooter::assignOutputs()
@@ -139,14 +137,11 @@ void Shooter::assignOutputs()
 
     //SHOOTER
     if (state.flywheelState == FLYWHEEL_STATE::SHOOTING) {
-        leftFlywheelMotor.setPower(state.leftShooterPower);
-        rightFlywheelMotor.setPower(state.rightShooterPower);
+        leftFlywheelMotor.setSpeed(state.leftShooterPower);
     } else if (state.flywheelState == FLYWHEEL_STATE::SPOOLED) {
-        leftFlywheelMotor.setPower(state.leftSpoolPower);
-        rightFlywheelMotor.setPower(state.rightSpoolPower);
+        leftFlywheelMotor.setSpeed(state.leftSpoolPower);
     } else {
-        leftFlywheelMotor.setPower(state.leftStandbyPower);
-        rightFlywheelMotor.setPower(state.rightStandbyPower);
+        leftFlywheelMotor.setSpeed(state.leftStandbyPower);
     }
 }
 
@@ -178,28 +173,4 @@ void Shooter::InitSendable(wpi::SendableBuilder& builder){
         [this] {return state.pivot;},
         nullptr
     ); */
-
-    builder.AddDoubleProperty(
-        "Left shoot power", 
-        [this] { return state.leftShooterPower; },
-        nullptr
-    );
-
-    builder.AddDoubleProperty(
-        "Right shoot power", 
-        [this] { return state.rightShooterPower; },
-        nullptr
-    );
-
-    builder.AddDoubleProperty(
-        "Left spooled power", 
-        [this] { return state.leftSpoolPower; },
-        nullptr
-    );
-
-    builder.AddDoubleProperty(
-        "Right spooled power", 
-        [this] { return state.rightSpoolPower; },
-        nullptr
-    );
 }

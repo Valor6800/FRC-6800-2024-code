@@ -21,9 +21,6 @@
 class Shooter : public valor::BaseSubsystem
 {
 public:
-    //valor::NeoController pivotMotors;
-    valor::NeoController leftFlywheelMotor;
-    valor::NeoController rightFlywheelMotor;
 
     Shooter(frc::TimedRobot *robot, frc::DigitalInput* beamBreak);
 
@@ -66,14 +63,12 @@ public:
         double leftSpoolPower;
         double leftStandbyPower;
 
-        double rightShooterPower;
-        double rightSpoolPower;
-        double rightStandbyPower;
-
         units::degree_t pivotAngle;
     } state;
 
 private:
-    valor::PIDF pivotPID;
+    //valor::NeoController pivotMotors;
+    valor::NeoController leftFlywheelMotor;
+    
     frc::DigitalInput* beamBreak;
 };
