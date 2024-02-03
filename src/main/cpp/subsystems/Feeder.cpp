@@ -3,6 +3,11 @@
 #include <math.h>
 #include "valkyrie/controllers/NeutralMode.h"
 #include "Constants.h"
+#include <pathplanner/lib/auto/NamedCommands.h>
+
+#include <frc2/command/SequentialCommandGroup.h>
+#include <frc2/command/InstantCommand.h>
+#include <frc2/command/WaitCommand.h>
 
 #define INTAKE_FORWARD_POWER 0.8f
 #define INTAKE_REVERSE_POWER -0.8f
@@ -17,6 +22,23 @@ Feeder::Feeder(frc::TimedRobot *_robot) :
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
+    pathplanner::NamedCommands::registerCommand("Shoot sequence-feeder", std::move(
+        frc2::SequentialCommandGroup(
+            frc2::InstantCommand(
+                [this]() {
+                    // shooter->state.isShooting = true;
+                    state.feederState = Feeder::ROLLER_STATE::INTAKE;
+                }
+            ),
+            frc2::WaitCommand(1_s),
+            frc2::InstantCommand(
+                [this]() {
+                    // shooter->state.isShooting = false;
+                    state.feederState = Feeder::ROLLER_STATE::STAGNANT;
+                }
+            )
+        )
+    ).ToPtr());
 }
 
 void Feeder::resetState()

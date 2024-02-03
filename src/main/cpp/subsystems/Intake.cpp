@@ -49,6 +49,26 @@ Intake::Intake(frc::TimedRobot *_robot, frc::DigitalInput *_beamBreak) :
             )
         )
     ).ToPtr());
+    pathplanner::NamedCommands::registerCommand("Deploy intake", std::move(
+        frc2::SequentialCommandGroup(
+            frc2::InstantCommand(
+                [this]() {
+                    // shooter->state.isShooting = true;
+                    state.activationState = true;
+                }
+            )
+        )
+    ).ToPtr());
+    pathplanner::NamedCommands::registerCommand("Retract intake", std::move(
+        frc2::SequentialCommandGroup(
+            frc2::InstantCommand(
+                [this]() {
+                    // shooter->state.isShooting = true;
+                    state.activationState = false;
+                }
+            )
+        )
+    ).ToPtr());
 }
 
 void Intake::resetState()
