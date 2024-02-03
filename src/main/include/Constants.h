@@ -21,7 +21,7 @@
 
 
 #define ALPHA_TEAM_NUMBER 6801
-
+#define SIDE_SWIPE_TEAM_NUMBER 6808
 // When trying to compile against other targets for simulation, cmath doesn't include M_PI
 //   Therefore if not defined, define M_PI for use on other targets
 #ifndef M_PI
@@ -88,45 +88,63 @@ namespace Constants {
 
         static units::degree_t pigeonMountPitch(){ switch (teamNumber){ 
             case ALPHA_TEAM_NUMBER: return 0_deg; 
+            case SIDE_SWIPE_TEAM_NUMBER: return 0_deg;  
             default: return 0_deg; 
         }};
         static units::degree_t pigeonMountRoll(){ switch (teamNumber){ 
             case ALPHA_TEAM_NUMBER: return -0.395508_deg;
+            case SIDE_SWIPE_TEAM_NUMBER: return 0_deg;  
             default: return 0_deg; 
         }};
         static units::degree_t pigeonMountYaw(){ switch (teamNumber){ 
             case ALPHA_TEAM_NUMBER: return -1.477661_deg; 
+            case SIDE_SWIPE_TEAM_NUMBER: return 0_deg;  
             default: return 0_deg; 
         }};
 
         static std::vector<double> swerveZeros(){ switch (teamNumber){
             case ALPHA_TEAM_NUMBER: return {0.3867, 0.8890, 0.0763, 0.610};
+            case SIDE_SWIPE_TEAM_NUMBER: return {0.3106, 0.4369, 0.4780, 0.7372};
             default: return {0.3106, 0.4369, 0.4780, 0.7372};
         }};
 
         static units::meter_t moduleDiff(){ switch (teamNumber){
             case ALPHA_TEAM_NUMBER: return 0.2413_m; 
+            case SIDE_SWIPE_TEAM_NUMBER: return 0.2_m;
             default: return 0.2_m; // Temp number; TODO: Change it
         }};
         static units::meter_t driveBaseRadius(){ switch (teamNumber){
             case ALPHA_TEAM_NUMBER: return 0.36_m; 
+            case SIDE_SWIPE_TEAM_NUMBER: return 0.3_m;
             default: return 0.3_m; // Temp number; TODO: Change it
         }};
 
         static std::vector<bool> swerveDrivesReversals(){ switch (teamNumber){
             case ALPHA_TEAM_NUMBER: return {true, false, false, false};
+            case SIDE_SWIPE_TEAM_NUMBER: return {false, false, false, false}; 
             default: return {false, false, false, false};
         }};
         static std::vector<bool> swerveAzimuthsReversals(){ switch (teamNumber){
             case ALPHA_TEAM_NUMBER: return {true, false, true, true};
+            case SIDE_SWIPE_TEAM_NUMBER: return {true, true, true, true};
             default: return {true, true, true, true};
         }};
 
         static frc::Pose3d mintCameraPosition(){ switch (teamNumber) {
             case ALPHA_TEAM_NUMBER: return frc::Pose3d();
+            case SIDE_SWIPE_TEAM_NUMBER: return frc::Pose3d{
+                0.2921_m, //x
+                -0.16906875_m, //y
+                0.28575_m, //z
+                frc::Rotation3d{
+                    -180_deg, 
+                    28_deg,
+                    0_deg
+                }
+            };
             default: return frc::Pose3d{
-                 0.2921_m, //x
-                 -0.16906875_m, //y
+                0.2921_m, //x
+                -0.16906875_m, //y
                 0.28575_m, //z
                 frc::Rotation3d{
                     -180_deg, 
@@ -138,16 +156,28 @@ namespace Constants {
 
         static frc::Pose3d vanillaCameraPosition(){ switch (teamNumber) {
             case ALPHA_TEAM_NUMBER: return frc::Pose3d();
+            case SIDE_SWIPE_TEAM_NUMBER: return frc::Pose3d();
             default: return frc::Pose3d();
         }};
 
         static frc::Pose3d chocolateCameraPosition(){ switch (teamNumber) {
             case ALPHA_TEAM_NUMBER: return frc::Pose3d();
+            case SIDE_SWIPE_TEAM_NUMBER: return frc::Pose3d();
             default: return frc::Pose3d();
         }};
 
         static frc::Pose3d lemonCameraPosition(){ switch (teamNumber){
             case ALPHA_TEAM_NUMBER: return frc::Pose3d{
+                -0.0635_m,
+                0.3175_m,
+                0.6731_m,
+                frc::Rotation3d{
+                    0_deg,
+                    28_deg,
+                    0_deg
+                }
+            };
+            case SIDE_SWIPE_TEAM_NUMBER: return frc::Pose3d{
                 -0.0635_m,
                 0.3175_m,
                 0.6731_m,
