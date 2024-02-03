@@ -16,6 +16,7 @@ class Auto
         frc2::CommandPtr makeAuto(std::string autoName);
         std::shared_ptr<nt::NetworkTable> table;
         frc::SendableChooser<std::string> m_chooser;
+        std::vector<frc2::CommandPtr> pathCommands;
 };
 
 }

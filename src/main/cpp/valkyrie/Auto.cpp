@@ -6,6 +6,7 @@
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/WaitCommand.h>
 
+#include <pathplanner/lib/auto/AutoBuilder.h>
 #include <filesystem>
 
 using namespace valor;
@@ -19,7 +20,21 @@ Auto::Auto(){
 }
 
 frc2::CommandPtr Auto::makeAuto(std::string autoName){
-    return pathplanner::PathPlannerAuto(autoName).ToPtr();
+    // return pathplanner::PathPlannerAuto(autoName).ToPtr();
+    std::vector<std::shared_ptr<PathPlannerPath>> paths = PathPlannerAuto::getPathGroupFromAutoFile(autoName);
+    pathCommands.clear();
+    for (int i = 0; i < paths.size(); i++) {
+        frc2::CommandPtr moveCmd = AutoBuilder::followPathWithEvents(paths[paths.size() - 1 - i]);
+        if (i != 0){
+            pathCommands.push_back(std::move(moveCmd).AndThen(std::move(pathCommands[i - 1])));
+        } else {
+            pathCommands.push_back(std::move(moveCmd));
+        }
+
+    }
+    // as a result, pathCommands[1] will be missing the first path, pathComannds[2] the first and second, etc. 
+    std::reverse(pathCommands.begin(), pathCommands.end());
+    return std::move(pathCommands[0]);
 }
 
 frc2::CommandPtr Auto::getCurrentAuto(){
