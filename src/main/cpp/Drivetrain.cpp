@@ -83,8 +83,15 @@ using namespace pathplanner;
 
 #define VISION_ACCEPTANCE 4.0_m // meters
 
-#define BLUE_SOURCE_ROT_ANGLE 0.0 // radians
-#define RED_SOURCE_ROT_ANGLE 0.0 // radians
+#define BLUE_SOURCE_ROT_ANGLE -0.5236f 
+#define BLUE_TRAP_ROT_ANGLE 0.7854f
+#define BLUE_AMP_ROT_ANGLE -1.5708f
+#define BLUE_LOCK_ANGLE 0.0f
+
+#define RED_AMP_ROT_ANGLE 0.0f
+#define RED_SOURCE_ROT_ANGLE 0.0f
+#define RED_TRAP_ROT_ANGLE 0.0f
+#define RED_LOCK_ANGLE 0.0f
 
 Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Drivetrain"),
                         driveMaxSpeed(MOTOR_FREE_SPEED / 60.0 / DRIVE_GEAR_RATIO * WHEEL_DIAMETER_M * M_PI),
@@ -229,8 +236,6 @@ void Drivetrain::init()
     table->PutNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET);
     table->PutNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET);
 
-    table->PutNumber("BLUE SOURCE ALIGNMENT ANGLE", BLUE_SOURCE_ROT_ANGLE);
-    table->PutNumber("RED SOURCE ALIGNMENT ANGLE", RED_SOURCE_ROT_ANGLE);
 
     state.lock = false;
 
@@ -291,20 +296,21 @@ void Drivetrain::assessInputs()
         resetGyro();
     }
 
-    state.isAlign = driverGamepad->GetBButton(); // not set button
+    state.ampAlign = driverGamepad->GetBButton();
+    state.isHeadingTrack = driverGamepad->leftTriggerActive();
+    state.trapAlign = driverGamepad->GetXButton();
+    state.sourceAlign = driverGamepad->GetYButton();
+    state.thetaLock = driverGamepad->GetAButton();
 
     state.topTape = operatorGamepad->DPadUp();
     state.bottomTape = operatorGamepad->DPadRight();
-    state.lock = state.adas || driverGamepad->GetBButton();
 
     state.xSpeed = driverGamepad->leftStickY(2);
     state.ySpeed = driverGamepad->leftStickX(2);
     if (!state.lock){
     state.rot = driverGamepad->rightStickX(3);
     }
-    state.isHeadingTrack = driverGamepad->GetAButton();
 
-    state.xPose = driverGamepad->GetXButton();
 }
 
 void Drivetrain::calculateCarpetPose()
@@ -360,9 +366,12 @@ void Drivetrain::analyzeDashboard()
         }
     }
 
+    if (driverGamepad->leftTriggerActive()) getSpeakerLockAngleRPS();
+    if (driverGamepad->GetAButton()) setAlignmentAngle(Alignment::LOCK);
+    if (driverGamepad->GetBButton()) setAlignmentAngle(Alignment::AMP);
+    if (driverGamepad->GetXButton()) setAlignmentAngle(Alignment::TRAP);
+    if (driverGamepad->GetYButton()) setAlignmentAngle(Alignment::SOURCE);
     double kPRot = table->GetNumber("KP_ROTATION_BLUE", KP_ROTATE);
-    double speakerXOffset = table->GetNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET);
-    double speakerYOffset = table->GetNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET);
     state.angleRPS = units::angular_velocity::radians_per_second_t(getAngleError().to<double>()*kPRot*rotMaxSpeed);
 }
 
@@ -372,12 +381,9 @@ void Drivetrain::assignOutputs()
     state.xSpeedMPS = units::velocity::meters_per_second_t{state.xSpeed * driveMaxSpeed};
     state.ySpeedMPS = units::velocity::meters_per_second_t{state.ySpeed * driveMaxSpeed};
     state.rotRPS = units::angular_velocity::radians_per_second_t{state.rot * rotMaxSpeed};
-    if (state.xPose){
+    if (state.xPose)
         setXMode();
-    } else if(state.isHeadingTrack){
-        drive(state.xSpeedMPS, state.ySpeedMPS, state.angleRPS, true);
-    }
-    else if(state.isAlign){
+    else if(state.ampAlign || state.trapAlign || state.sourceAlign || state.isHeadingTrack || state.thetaLock){
         drive(state.xSpeedMPS, state.ySpeedMPS, state.angleRPS, true);
     }
     else if (state.adas){
@@ -422,11 +428,18 @@ units::radian_t Drivetrain::getAngleError(){
     }
 }
 
-void Drivetrain::setAlignmentAngle(){
+void Drivetrain::setAlignmentAngle(Alignment align){
     if(frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue){
-        state.targetAngle = units::radian_t(table->GetNumber("BLUE SOURCE ALIGNMENT ANGLE", BLUE_SOURCE_ROT_ANGLE));
-    }else{
-        state.targetAngle = units::radian_t(table->GetNumber("RED SOURCE ALIGNMENT ANGLE", RED_SOURCE_ROT_ANGLE));
+        if (align == Alignment::AMP) state.targetAngle = units::radian_t(BLUE_AMP_ROT_ANGLE);
+        else if (align == Alignment::TRAP) state.targetAngle = units::radian_t(BLUE_TRAP_ROT_ANGLE);
+        else if (align == Alignment::SOURCE) state.targetAngle = units::radian_t(BLUE_SOURCE_ROT_ANGLE);
+        else state.targetAngle = units::radian_t(BLUE_LOCK_ANGLE);
+    }
+    else{
+        if(align == Alignment::AMP) state.targetAngle = units::radian_t(RED_AMP_ROT_ANGLE);
+        else if (align == Alignment::TRAP) state.targetAngle= units::radian_t(RED_TRAP_ROT_ANGLE);
+        else if (align == Alignment::SOURCE) state.targetAngle = units::radian_t(RED_SOURCE_ROT_ANGLE);
+        else state.targetAngle = units::radian_t(RED_LOCK_ANGLE);
     }
 }
 

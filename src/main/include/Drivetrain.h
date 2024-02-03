@@ -98,12 +98,7 @@ public:
      void assessInputs();
      void analyzeDashboard();
      void assignOutputs();
-
      void resetState();
-     void getSpeakerLockAngleRPS();
-     units::radian_t getAngleError();
-     void setAlignmentAngle();
-     double clampAngleRadianRange(units::radian_t angle, double max);
 
      void InitSendable(wpi::SendableBuilder& builder);
 
@@ -112,6 +107,15 @@ public:
           TAPE_MID,
           TAPE_HIGH
      };
+
+     enum Alignment{
+          SOURCE,
+          TRAP,
+          AMP,
+          LOCK
+     };
+
+     
 
      struct x
      {
@@ -131,12 +135,17 @@ public:
 
           bool isLeveled;
           bool abovePitchThreshold;
-          bool isHeadingTrack;
+
 
           bool topTape;
           bool bottomTape;
 
           bool isAlign;
+          bool isHeadingTrack;
+          bool thetaLock;
+          bool sourceAlign;
+          bool trapAlign;
+          bool ampAlign;
 
           int stage;
 
@@ -235,6 +244,10 @@ public:
      double getAutoMaxAcceleration();
      double getRotationMaxSpeed();
      double getRotationMaxAcceleration();
+     void setAlignmentAngle(Drivetrain::Alignment align);
+     void getSpeakerLockAngleRPS();
+     units::radian_t getAngleError();
+     double clampAngleRadianRange(units::radian_t angle, double max);
 
      void setAutoMaxAcceleration(double acceleration, double multiplier);
 
