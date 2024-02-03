@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 2.2900959760152695,
-      "y": 1.0774109479408873
+      "x": 2.0903753689418436,
+      "y": 1.0
     },
-    "rotation": 0.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Move n rotate"
+            "pathName": "Rotaate"
           }
         }
       ]
