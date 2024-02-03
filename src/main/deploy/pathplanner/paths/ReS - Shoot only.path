@@ -75,40 +75,6 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Intake",
-      "waypointRelativePos": 1.25,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Enable intake"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Disable intake",
-      "waypointRelativePos": 2.3000000000000003,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Disable intake"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
       "name": "Shoot",
       "waypointRelativePos": 0.75,
       "command": {
@@ -118,13 +84,13 @@
             {
               "type": "named",
               "data": {
-                "name": "Shoot sequence-feeder"
+                "name": "Shoot sequence-shooter"
               }
             },
             {
               "type": "named",
               "data": {
-                "name": "Shoot sequence-shooter"
+                "name": "Shoot sequence-feeder"
               }
             }
           ]
