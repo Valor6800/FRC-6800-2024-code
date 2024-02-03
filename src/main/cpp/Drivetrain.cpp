@@ -88,9 +88,9 @@ using namespace pathplanner;
 #define BLUE_AMP_ROT_ANGLE -1.5708f
 #define BLUE_LOCK_ANGLE 0.0f
 
-#define RED_AMP_ROT_ANGLE 0.0f
-#define RED_SOURCE_ROT_ANGLE 0.0f
-#define RED_TRAP_ROT_ANGLE 0.0f
+#define RED_AMP_ROT_ANGLE -1.5708f
+#define RED_SOURCE_ROT_ANGLE 0.5236f
+#define RED_RIGHT_TRAP_ROT_ANGLE -0.7854f
 #define RED_LOCK_ANGLE 0.0f
 
 Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Drivetrain"),
@@ -435,7 +435,7 @@ void Drivetrain::setAlignmentAngle(Alignment align){
     }
     else{
         if(align == Alignment::AMP) state.targetAngle = units::radian_t(RED_AMP_ROT_ANGLE);
-        else if (align == Alignment::TRAP) state.targetAngle= units::radian_t(RED_TRAP_ROT_ANGLE);
+        else if (align == Alignment::TRAP) state.targetAngle= units::radian_t(RED_RIGHT_TRAP_ROT_ANGLE);
         else if (align == Alignment::SOURCE) state.targetAngle = units::radian_t(RED_SOURCE_ROT_ANGLE);
         else state.targetAngle = units::radian_t(RED_LOCK_ANGLE);
     }
