@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 2.2900959760152695,
-      "y": 1.0774109479408873
+      "x": 0.4713477772174151,
+      "y": 3.7735871126351532
     },
-    "rotation": 0.0
+    "rotation": -0.5609645401216823
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Move n rotate"
+            "pathName": "S1Sp"
           }
         }
       ]

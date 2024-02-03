@@ -132,7 +132,7 @@
       }
     },
     {
-      "name": "Spool",
+      "name": "Spool pre 2nd shoot",
       "waypointRelativePos": 2.75,
       "command": {
         "type": "parallel",
@@ -152,7 +152,7 @@
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 2.0,
-    "maxAngularVelocity": 180.0,
+    "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 360.0
   },
   "goalEndState": {
