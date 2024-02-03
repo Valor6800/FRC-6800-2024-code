@@ -26,22 +26,9 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "parallel",
+                      "type": "named",
                       "data": {
-                        "commands": [
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Shoot sequence-feeder"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Shoot sequence-shooter"
-                            }
-                          }
-                        ]
+                        "name": "Shoot sequence-feeder"
                       }
                     },
                     {
@@ -54,22 +41,9 @@
                 }
               },
               {
-                "type": "sequential",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Deploy intake"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Enable intake"
-                      }
-                    }
-                  ]
+                  "name": "Shoot sequence-shooter"
                 }
               }
             ]
@@ -82,15 +56,9 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Disable intake"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "ReS"
+            "pathName": "ReS - Shoot only"
           }
         },
         {
@@ -100,13 +68,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Shoot sequence-feeder"
+                  "name": "Shoot sequence-shooter"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Shoot sequence-shooter"
+                  "name": "Shoot sequence-feeder"
                 }
               }
             ]
