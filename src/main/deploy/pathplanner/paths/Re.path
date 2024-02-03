@@ -16,45 +16,21 @@
     },
     {
       "anchor": {
-        "x": 3.435032010030614,
-        "y": 5.64353675120582
+        "x": 2.890018068152122,
+        "y": 5.572019226189894
       },
       "prevControl": {
-        "x": 2.3720228895174227,
-        "y": 5.504566258119786
+        "x": 2.6886406296174976,
+        "y": 5.356167518524941
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Rex"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.75,
-      "rotationDegrees": 43.75281720649117,
-      "rotateFast": true
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [
-    {
-      "name": "intake",
-      "waypointRelativePos": 0.0,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Enable intake"
-              }
-            }
-          ]
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -63,7 +39,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -0.09000000000003183,
+    "rotation": -33.04462146524782,
     "rotateFast": false
   },
   "reversed": false,
