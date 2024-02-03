@@ -28,11 +28,11 @@ using namespace pathplanner;
 // #define KP_LOCK 0.2f
 #define KP_LIMELIGHT 0.7f
 
-#define KPX 60.0f //50
+#define KPX 22.0f //50
 #define KIX 0.0f //0
 #define KDX 0.0f //.1
 
-#define KPT 15.0f //15
+#define KPT 8.0f //15
 #define KIT 0.0f
 #define KDT 0.0f
 
@@ -205,7 +205,7 @@ void Drivetrain::init()
     resetState();
 
     AutoBuilder::configureHolonomic(
-        [this](){ return getPose_m(); }, // Robot pose supplier
+        [this](){ return calculatedEstimator->GetEstimatedPosition(); }, // Robot pose supplier
         [this](frc::Pose2d pose){ resetOdometry(pose); }, // Method to reset odometry (will be called if your auto has a starting pose)
         [this](){ return getRobotRelativeSpeeds(); }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         [this](frc::ChassisSpeeds speeds){ driveRobotRelative(speeds); }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
@@ -659,7 +659,7 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
                 std::vector<double> pose;
                 pose.push_back(getPose_m().X().to<double>());
                 pose.push_back(getPose_m().Y().to<double>());
-                pose.push_back(getPose_m().Rotation().Degrees().to<double>());
+                pose.push_back(getPose_m().Rotation().Radians().to<double>());
                 return pose;
             },
             nullptr
@@ -672,7 +672,7 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
                 std::vector<double> pose;
                 pose.push_back(estimatedPose.X().to<double>());
                 pose.push_back(estimatedPose.Y().to<double>());
-                pose.push_back(estimatedPose.Rotation().Degrees().to<double>());
+                pose.push_back(estimatedPose.Rotation().Radians().to<double>());
                 return pose;
             },
             nullptr
