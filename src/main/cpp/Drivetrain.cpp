@@ -415,7 +415,7 @@ void Drivetrain::getSpeakerLockAngleRPS(){
 }
 
 units::radian_t Drivetrain::getAngleError(){
-    units::radian_t robotRotation = estimator->GetEstimatedPosition().Rotation().Radians();
+    units::radian_t robotRotation = calculatedEstimator->GetEstimatedPosition().Rotation().Radians();
     double errorAngle = robotRotation.to<double>() - state.targetAngle.to<double>();
     if(errorAngle > PI) {
         return units::radian_t(errorAngle - 2*PI);
