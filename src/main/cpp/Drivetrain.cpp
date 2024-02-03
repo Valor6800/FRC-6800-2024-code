@@ -84,7 +84,7 @@ using namespace pathplanner;
 #define VISION_ACCEPTANCE 4.0_m // meters
 
 #define BLUE_SOURCE_ROT_ANGLE -0.5236f 
-#define BLUE_TRAP_ROT_ANGLE 0.7854f
+#define BLUE_RIGHT_TRAP_ROT_ANGLE 0.7854f
 #define BLUE_AMP_ROT_ANGLE -1.5708f
 #define BLUE_LOCK_ANGLE 0.0f
 
@@ -307,9 +307,12 @@ void Drivetrain::assessInputs()
 
     state.xSpeed = driverGamepad->leftStickY(2);
     state.ySpeed = driverGamepad->leftStickX(2);
-    if (!state.lock){
-    state.rot = driverGamepad->rightStickX(3);
-    }
+
+    if(state.isHeadingTrack) getSpeakerLockAngleRPS();
+    else if(state.sourceAlign) setAlignmentAngle(Alignment::SOURCE);
+    else if(state.ampAlign) setAlignmentAngle(Alignment::AMP);
+    else if(state.trapAlign) setAlignmentAngle(Alignment::TRAP);
+    else if(state.thetaLock) setAlignmentAngle(Alignment::LOCK);
 
 }
 
@@ -366,11 +369,6 @@ void Drivetrain::analyzeDashboard()
         }
     }
 
-    if (driverGamepad->leftTriggerActive()) getSpeakerLockAngleRPS();
-    if (driverGamepad->GetAButton()) setAlignmentAngle(Alignment::LOCK);
-    if (driverGamepad->GetBButton()) setAlignmentAngle(Alignment::AMP);
-    if (driverGamepad->GetXButton()) setAlignmentAngle(Alignment::TRAP);
-    if (driverGamepad->GetYButton()) setAlignmentAngle(Alignment::SOURCE);
     double kPRot = table->GetNumber("KP_ROTATION_BLUE", KP_ROTATE);
     state.angleRPS = units::angular_velocity::radians_per_second_t(getAngleError().to<double>()*kPRot*rotMaxSpeed);
 }
@@ -431,7 +429,7 @@ units::radian_t Drivetrain::getAngleError(){
 void Drivetrain::setAlignmentAngle(Alignment align){
     if(frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue){
         if (align == Alignment::AMP) state.targetAngle = units::radian_t(BLUE_AMP_ROT_ANGLE);
-        else if (align == Alignment::TRAP) state.targetAngle = units::radian_t(BLUE_TRAP_ROT_ANGLE);
+        else if (align == Alignment::TRAP) state.targetAngle = units::radian_t(BLUE_RIGHT_TRAP_ROT_ANGLE);
         else if (align == Alignment::SOURCE) state.targetAngle = units::radian_t(BLUE_SOURCE_ROT_ANGLE);
         else state.targetAngle = units::radian_t(BLUE_LOCK_ANGLE);
     }
