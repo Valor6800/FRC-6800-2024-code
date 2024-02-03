@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.5429336914223,
-      "y": 4.80385074593535
+      "x": 0.4713477772174151,
+      "y": 3.7735871126351532
     },
-    "rotation": -179.93424158036123
+    "rotation": 0.10097361039306176
   },
   "command": {
     "type": "sequential",
@@ -43,18 +43,12 @@
                           }
                         ]
                       }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Spool"
-                      }
                     }
                   ]
                 }
               },
               {
-                "type": "sequential",
+                "type": "parallel",
                 "data": {
                   "commands": [
                     {
@@ -82,9 +76,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Disable intake"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Disable intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Retract intake"
+                }
+              }
+            ]
           }
         },
         {
