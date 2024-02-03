@@ -14,8 +14,8 @@
 #define PIVOT_ROTATE_K_AFF 0.0f
 #define PIVOT_ROTATE_K_AFF_POS 0.0f
 
-#define FLYWHEEL_ROTATE_K_F 0.002f // v/rpm
-#define FLYWHEEL_ROTATE_K_P 0.004f // v/rpm
+#define FLYWHEEL_ROTATE_K_F 0.0115f // v/rpm
+#define FLYWHEEL_ROTATE_K_P 0.00345f // v/rpm
 
 #define SUBWOOFER_ANG 30.0_deg
 #define PODIUM_ANG 45.0_deg
@@ -69,7 +69,7 @@ void Shooter::init()
     flywheelPID.F = FLYWHEEL_ROTATE_K_F;
     flywheelPID.P = FLYWHEEL_ROTATE_K_P;
     
-    leftFlywheelMotor.setupFollower(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, true);
+    leftFlywheelMotor.setupFollower(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, false);
     leftFlywheelMotor.setPIDF(flywheelPID, 0);
     leftFlywheelMotor.setReverseLimit(0.0);
     leftFlywheelMotor.setConversion(1);
