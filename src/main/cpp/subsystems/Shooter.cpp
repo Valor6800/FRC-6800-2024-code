@@ -42,7 +42,7 @@ Shooter::Shooter(frc::TimedRobot *_robot, frc::DigitalInput* _beamBreak) :
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
-    pathplanner::NamedCommands::registerCommand("Shoot sequence", std::move(
+    pathplanner::NamedCommands::registerCommand("Shoot sequence-shooter", std::move(
         frc2::SequentialCommandGroup(
             frc2::InstantCommand(
                 [this]() {
