@@ -22,6 +22,8 @@ namespace valor
             */
             AprilTagsSensor(frc::TimedRobot* robot, const char *name, frc::Pose3d _cameraPose);
 
+            int getTagID();
+
             void InitSendable(wpi::SendableBuilder& builder) override;
 
             void applyVisionMeasurement(frc::SwerveDrivePoseEstimator<4> *estimator, units::meter_t outlier, double doubtX = 1, double doubtY = 1, double doubtRot = 1);

@@ -85,12 +85,16 @@ using namespace pathplanner;
 
 #define BLUE_SOURCE_ROT_ANGLE -0.5236f 
 #define BLUE_RIGHT_TRAP_ROT_ANGLE 0.7854f
+#define BLUE_LEFT_TRAP_ROT_ANGLE 0.00f
+#define BLUE_CENTER_TRAP_ROT_ANGLE 0.0f
 #define BLUE_AMP_ROT_ANGLE -1.5708f
 #define BLUE_LOCK_ANGLE 0.0f
 
 #define RED_AMP_ROT_ANGLE -1.5708f
 #define RED_SOURCE_ROT_ANGLE -2.0245f
-#define RED_RIGHT_TRAP_ROT_ANGLE -2.17851f
+#define RED_RIGHT_TRAP_ROT_ANGLE -2.07694f
+#define RED_LEFT_TRAP_ROT_ANGLE 2.16421f
+#define RED_CENTER_TRAP_ROT_ANGLE 0.0f
 #define RED_LOCK_ANGLE 3.14159f
 
 Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Drivetrain"),
@@ -425,13 +429,37 @@ units::radian_t Drivetrain::getAngleError(){
 void Drivetrain::setAlignmentAngle(Alignment align){
     if(frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue){
         if (align == Alignment::AMP) state.targetAngle = units::radian_t(BLUE_AMP_ROT_ANGLE);
-        else if (align == Alignment::TRAP) state.targetAngle = units::radian_t(BLUE_RIGHT_TRAP_ROT_ANGLE);
+        else if (align == Alignment::TRAP){
+            for(valor::AprilTagsSensor* aprilLime :  aprilTagSensors){
+                if(aprilLime->getTagID() == 16){
+                    state.targetAngle = units::radian_t(BLUE_RIGHT_TRAP_ROT_ANGLE);
+                }
+                else if(aprilLime->getTagID() == 15){
+                    state.targetAngle = units::radian_t(BLUE_LEFT_TRAP_ROT_ANGLE);
+                }
+                else if(aprilLime->getTagID() == 14){
+                    state.targetAngle = units::radian_t(BLUE_CENTER_TRAP_ROT_ANGLE);
+                }
+            }
+        }
         else if (align == Alignment::SOURCE) state.targetAngle = units::radian_t(BLUE_SOURCE_ROT_ANGLE);
         else state.targetAngle = units::radian_t(BLUE_LOCK_ANGLE);
     }
     else{
         if(align == Alignment::AMP) state.targetAngle = units::radian_t(RED_AMP_ROT_ANGLE);
-        else if (align == Alignment::TRAP) state.targetAngle= units::radian_t(RED_RIGHT_TRAP_ROT_ANGLE);
+        else if (align == Alignment::TRAP){
+            for(valor::AprilTagsSensor* aprilLime :  aprilTagSensors){
+                if(aprilLime->getTagID() == 12){
+                    state.targetAngle = units::radian_t(RED_RIGHT_TRAP_ROT_ANGLE);
+                }
+                else if(aprilLime->getTagID() == 11){
+                    state.targetAngle = units::radian_t(RED_LEFT_TRAP_ROT_ANGLE);
+                }
+                else if(aprilLime->getTagID() == 13){
+                    state.targetAngle = units::radian_t(RED_CENTER_TRAP_ROT_ANGLE);
+                }
+            }
+        }
         else if (align == Alignment::SOURCE) state.targetAngle = units::radian_t(RED_SOURCE_ROT_ANGLE);
         else state.targetAngle = units::radian_t(RED_LOCK_ANGLE);
     }

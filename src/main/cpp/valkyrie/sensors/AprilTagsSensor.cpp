@@ -50,6 +50,12 @@ void AprilTagsSensor::applyVisionMeasurement(frc::SwerveDrivePoseEstimator<4> *e
     );
 }
 
+int AprilTagsSensor::getTagID(){
+    if (!hasTarget()) return -1;
+
+    return limeTable->GetNumber("tid", -1);
+}
+
 void AprilTagsSensor::InitSendable(wpi::SendableBuilder& builder) {
     builder.SetSmartDashboardType("Subsystem");
 
