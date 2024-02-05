@@ -1,7 +1,7 @@
 #include "subsystems/Climber.h"
 
 Climber::Climber(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Climber"), 
-climbMotor(9, valor::NeutralMode::Brake, false)
+climbMotor(CANIDs::LEFT_CLIMBER, valor::NeutralMode::Brake, false)
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -11,7 +11,7 @@ void Climber::init()
 {
     target_pose = 0;
     climbMotor.setEncoderPosition(0);
-    climbMotor.setupFollower(10, false);
+    climbMotor.setupFollower(CANIDs::RIGHT_CLIMBER, false);
     speed_multiplier = 1.00;
     climbMotor.setForwardLimit(20);
     climbMotor.setReverseLimit(0);
