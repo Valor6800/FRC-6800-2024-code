@@ -31,9 +31,21 @@
 #define LEFT_SPOOL_POWER 50.0f
 #define LEFT_STANDBY_POWER 0.0f
 
-#define RIGHT_SHOOT_POWER 66.66f
-#define RIGHT_SPOOL_POWER 50.0f
-#define RIGHT_STANDBY_POWER 0.0f
+#define FLYWHEEL_ROTATE_GEAR_RATIO 1.0f
+#define FLYWHEEL_ROTATE_FORWARD_LIMIT 90.0_deg
+#define FLYWHEEL_ROTATE_REVERSE_LIMIT 0.0_deg
+
+<<<<<<< HEAD
+#define FLYWHEEL_DEFAULT_VELOCITY 0.0f
+#define FLYWHEEL_VELOCITY_KP 0.6f
+#define FLYWHEEL_VELOCITY_SPOOLING 200.0f
+#define FLYWHEEL_VELOCITY_SHOOTING 2000.0f
+=======
+#define PIVOT_GEAR_RATIO 238.14f
+#define SHOOTER_ROTATE_FORWARD_LIMIT 90.0_deg
+#define SHOOTER_ROTATE_REVERSE_LIMIT 0.0_deg
+#define TICKS_PER_REVOLUTION 42.0f
+>>>>>>> 7f170a4 (Added pivot PID)
 
 #define SPEAKER_Y 5.543042_m
 #define SPEAKER_BLUE_X 0.0_m
@@ -46,9 +58,13 @@
 #define SHOOTER_SPEED 7.0f
 #define GRAVITY 9.81f
 
+#define PIVOT_SUBWOOFER_POSITION 0.0f
+#define PIVOT_PODIUM_POSITION 0.00f
+#define PIVOT_STARTING_LINE_POSITION 0.00f
+
 Shooter::Shooter(frc::TimedRobot *_robot, frc::DigitalInput* _beamBreak, Drivetrain *_drive) :
     valor::BaseSubsystem(_robot, "Shooter"),
-    //pivotMotors(CANIDs::ANGLE_CONTROLLER, valor::NeutralMode::Brake, false),
+    pivotMotor(CANIDs::PIVOT, valor::NeutralMode::Brake, false),
     leftFlywheelMotor(CANIDs::LEFT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false),
     rightFlywheelMotor(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false),
     beamBreak(_beamBreak),
@@ -61,6 +77,7 @@ Shooter::Shooter(frc::TimedRobot *_robot, frc::DigitalInput* _beamBreak, Drivetr
 void Shooter::resetState()
 {
     state.flywheelState = FLYWHEEL_STATE::NOT_SHOOTING;
+<<<<<<< HEAD
     state.pivotState = PIVOT_STATE::SUBWOOFER;
     state.leftFlywheelTargetVelocity = units::angular_velocity::revolutions_per_minute_t(0);
     state.rightFlywheelTargetVelocity = units::angular_velocity::revolutions_per_minute_t(0);
@@ -76,6 +93,7 @@ void Shooter::init()
     pivotPID.aFF = PIVOT_ROTATE_K_AFF;
     pivotPID.aFFTarget = PIVOT_ROTATE_K_AFF_POS;
 
+<<<<<<< HEAD
     valor::PIDF flywheelPID;
     flywheelPID.maxVelocity = FLYWHEEL_ROTATE_K_VEL;
     flywheelPID.maxAcceleration = FLYWHEEL_ROTATE_K_ACC;
@@ -90,6 +108,12 @@ void Shooter::init()
     // pivotMotors.setForwardLimit(SHOOTER_ROTATE_FORWARD_LIMIT.to<double>());
     // pivotMotors.setReverseLimit(SHOOTER_ROTATE_REVERSE_LIMIT.to<double>());
     // pivotMotors.setPIDF(pivotPID, 0);
+=======
+    pivotMotor.setConversion(PIVOT_GEAR_RATIO*TICKS_PER_REVOLUTION / 2*M_PI);
+    pivotMotor.setForwardLimit(SHOOTER_ROTATE_FORWARD_LIMIT.to<double>());
+    pivotMotor.setReverseLimit(SHOOTER_ROTATE_REVERSE_LIMIT.to<double>());
+    pivotMotor.setPIDF(pivotPID, 0);
+>>>>>>> 7f170a4 (Added pivot PID)
 
     table->PutNumber("Left Flywheel Shoot RPM", LEFT_SHOOT_POWER);
     table->PutNumber("Left Flywheel Spool RPM", LEFT_SPOOL_POWER);
@@ -110,6 +134,9 @@ void Shooter::assessInputs()
 
     //SHOOT LOGIC
     if (driverGamepad->rightTriggerActive() || operatorGamepad->rightTriggerActive()) {
+=======
+    if (driverGamepad->rightTriggerActive()) {
+>>>>>>> 7f170a4 (Added pivot PID)
         state.flywheelState = FLYWHEEL_STATE::SHOOTING;
     }
     else if (operatorGamepad->leftTriggerActive()) {
@@ -119,19 +146,18 @@ void Shooter::assessInputs()
         state.flywheelState = FLYWHEEL_STATE::SPOOLED;
     } 
 
-    //PIVOT LOGIC
-    // if (driverGamepad->GetAButton()) {
-    //     state.pivot = PivotState::SUBWOOFER;
-    // }
-   /* else if (operatorGamepad->GetRightBumperPressed()) {
-        state.pivot = PivotState::PODIUM;
+    if (operatorGamepad->rightTriggerActive()) {
+        state.pivot = PIVOT_STATE::SUBWOOFER;
+    }
+    else if (operatorGamepad->GetRightBumperPressed()) {
+        state.pivot = PIVOT_STATE::PODIUM;
     }
     else if (operatorGamepad->GetLeftBumperPressed()) { 
-        state.pivot = PivotState::STARTING_LINE;
+        state.pivot = PIVOT_STATE::STARTING_LINE;
     }
     else if (operatorGamepad->leftTriggerActive()) {
-        state.pivot = PivotState::TRACKING;*/
-    
+        state.pivot = PIVOT_STATE::TRACKING;    
+    }
 }
 
 void Shooter::analyzeDashboard()
@@ -189,22 +215,87 @@ units::degree_t Shooter::calculatePivotAngle(){
     return targetPivotAngle;
 }
 
-void Shooter::getTargetPivotAngle(){
 void Shooter::getLaserTargetPivotAngle(){
     units::meter_t robotX = drivetrain->getPose_m().X();
     units::meter_t robotY = drivetrain->getPose_m().Y();
     double distance = 5;
+    state.leftShooterPower = table->GetNumber("Left Shooter Power", LEFT_SHOOT_POWER);
+    state.leftSpoolPower = table->GetNumber("Left Shooter Spool", LEFT_SHOOT_SPOOL);
+    state.leftStandbyPower = table->GetNumber("Left Shooter Standby", LEFT_SHOOT_STANDBY);
+
+    state.rightShooterPower = table->GetNumber("Right Shooter Power", RIGHT_SHOOT_POWER);
+    state.rightSpoolPower = table->GetNumber("Right Shooter Spool", RIGHT_SHOOT_SPOOL);
+    state.rightStandbyPower = table->GetNumber("Right Shooter Standby", RIGHT_SHOOT_STANDBY);
+
+    double speakerXOffset = table->GetNumber("Speaker X Offset", SPEAKER_X_OFFSET);
+    double speakerYOffset = table->GetNumber("Speaker Y Offset", SPEAKER_Y_OFFSET);
+    double speakerZOffset = table->GetNumber("Speaker Z Offset", SPEAKER_Z_OFFSET);
+
+    switch (state.pivot){
+        case PIVOT_STATE::SUBWOOFER:
+            state.targetPivotAngle = units::radian_t(table->GetNumber("Pivot Subwoofer Angle", PIVOT_SUBWOOFER_POSITION));
+            break;
+        case PIVOT_STATE::PODIUM:
+            state.targetPivotAngle = units::radian_t(table->GetNumber("Pivot Podium Angle", PIVOT_PODIUM_POSITION));
+            break;
+        case PIVOT_STATE::STARTING_LINE:
+            state.targetPivotAngle = units::radian_t(table->GetNumber("Pivot Starting Line Angle", PIVOT_STARTING_LINE_POSITION));
+            break;
+        case PIVOT_STATE::TRACKING:
+            getTargetPivotAngle(true);
+            break;
+        default:
+            state.targetPivotAngle = units::radian_t(table->GetNumber("Pivot Subwoofer Angle", PIVOT_SUBWOOFER_POSITION));
+            break;
+    }
+}
+
+void Shooter::assignOutputs()
+{
+
+    pivotMotor.setPosition(state.targetPivotAngle.to<double>());
+
+    if (state.flywheelState == FLYWHEEL_STATE::SHOOTING) {
+        leftFlywheelMotor.setPower(state.leftShooterPower);
+        rightFlywheelMotor.setPower(state.rightShooterPower);
+    } else if (state.flywheelState == FLYWHEEL_STATE::SPOOLED) {
+        leftFlywheelMotor.setPower(state.leftSpoolPower);
+        rightFlywheelMotor.setPower(state.rightSpoolPower);
+    } else {
+        leftFlywheelMotor.setPower(state.leftStandbyPower);
+        rightFlywheelMotor.setPower(state.rightStandbyPower);
+    }
+}
+
+void Shooter::getTargetPivotAngle(bool laser){
+    units::meter_t robotX = drivetrain->getCalculatedPose_m().X();
+    units::meter_t robotY = drivetrain->getCalculatedPose_m().Y();
+    double distance = sqrt(pow(robotX.to<double>(), 2) + pow(robotY.to<double>(), 2));
     double changeInY = robotY.to<double>() - SPEAKER_Y.to<double>();
-    if(frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue){
+    if(laser){
+        if(frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue){
         double changeInX = robotX.to<double>() - SPEAKER_BLUE_X.to<double>();
         distance = sqrtf(pow(changeInX, 2) + pow(changeInY, 2));
     }
+        else{
+            double changeInX = robotX.to<double>() - SPEAKER_RED_X.to<double>();
+            distance = sqrtf(pow(changeInX, 2) + pow(changeInY, 2));
+        }
+        double angle = atan2(SPEAKER_HEIGHT + table->GetNumber("Speaker Z Offset", SPEAKER_Z_OFFSET), distance);
+        state.targetPivotAngle = units::radian_t(angle);
+    }
     else{
-        double changeInX = robotX.to<double>() - SPEAKER_RED_X.to<double>();
+        if(frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue){
+        double changeInX = robotX.to<double>() - SPEAKER_BLUE_X.to<double>();
         distance = sqrtf(pow(changeInX, 2) + pow(changeInY, 2));
     }
-    double angle = atan2(SPEAKER_HEIGHT + table->GetNumber("Speaker Z Offset", SPEAKER_Z_OFFSET), distance);
-    state.targetPivotAngle = units::radian_t(angle);
+        else{
+            double changeInX = robotX.to<double>() - SPEAKER_RED_X.to<double>();
+            distance = sqrtf(pow(changeInX, 2) + pow(changeInY, 2));
+        }
+        double angle = atan2(pow(SHOOTER_SPEED, 2) - sqrt(pow(SHOOTER_SPEED, 4) - (GRAVITY*(GRAVITY*pow(distance, 2) + 2*SPEAKER_HEIGHT*pow(SHOOTER_SPEED, 2)))), GRAVITY*distance);
+        state.targetPivotAngle = units::radian_t(angle);
+    }
 }
 
 void Shooter::getArcTargetPivotAngle(){

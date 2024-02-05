@@ -23,7 +23,7 @@
 class Shooter : public valor::BaseSubsystem
 {
 public:
-    //valor::NeoController pivotMotors;
+    valor::NeoController pivotMotor;
     valor::NeoController leftFlywheelMotor;
     valor::NeoController rightFlywheelMotor;
 
@@ -37,7 +37,7 @@ public:
     void analyzeDashboard();
     void assignOutputs();
 
-    void getLaserTargetPivotAngle();
+    void getTargetPivotAngle(bool laser);
     void getArcTargetPivotAngle();
     units::radian_t getPivotErrorAngle();
 
@@ -63,7 +63,7 @@ public:
 
     struct x
     {
-        PIVOT_STATE pivotState;
+        PIVOT_STATE pivot;
         FLYWHEEL_STATE flywheelState;
 
         units::angular_velocity::revolutions_per_minute_t leftFlywheelTargetVelocity;
