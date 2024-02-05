@@ -43,13 +43,13 @@ using namespace pathplanner;
 #define KDT 0.0f
 #define KFT 0.0f
 
-#define AZIMUTH_K_P 0.00001f
+#define AZIMUTH_K_P 10.0f
 #define AZIMUTH_K_I 0.0f
 #define AZIMUTH_K_D 0.0f
-#define AZIMUTH_K_E 0.0027f
+#define AZIMUTH_K_V 1.45f
 
-#define AZIMUTH_K_VEL 10.0f
-#define AZIMUTH_K_ACC_MUL 0.05f
+#define AZIMUTH_K_VEL 6.0f
+#define AZIMUTH_K_ACC 130.0f
 
 #define DRIVE_K_P 0.001f
 #define DRIVE_K_I 0.0f
@@ -140,11 +140,11 @@ void Drivetrain::configSwerveModule(int i)
 
     valor::PIDF azimuthPID;
     azimuthPID.velocity = AZIMUTH_K_VEL;
-    azimuthPID.acceleration = AZIMUTH_K_ACC_MUL;
+    azimuthPID.acceleration = AZIMUTH_K_ACC;
     azimuthPID.P = AZIMUTH_K_P;
     azimuthPID.I = AZIMUTH_K_I;
     azimuthPID.D = AZIMUTH_K_D;
-    azimuthPID.error = AZIMUTH_K_E;
+    azimuthPID.F = AZIMUTH_K_V;
 
     azimuthControllers.push_back(new SwerveAzimuthMotor(CANIDs::AZIMUTH_CANS[i],
                                                       valor::NeutralMode::Brake,
