@@ -146,16 +146,13 @@ void Shooter::assessInputs()
         state.flywheelState = FLYWHEEL_STATE::SPOOLED;
     } 
 
-    if (operatorGamepad->rightTriggerActive()) {
-        state.pivot = PIVOT_STATE::SUBWOOFER;
-    }
-    else if (operatorGamepad->GetRightBumperPressed()) {
+    if (operatorGamepad->GetRightBumperPressed()) {
         state.pivot = PIVOT_STATE::PODIUM;
     }
     else if (operatorGamepad->GetLeftBumperPressed()) { 
         state.pivot = PIVOT_STATE::STARTING_LINE;
     }
-    else if (operatorGamepad->leftTriggerActive()) {
+    else if (operatorGamepad->GetAButton()) {
         state.pivot = PIVOT_STATE::TRACKING;    
     }
 }
@@ -232,9 +229,6 @@ void Shooter::getLaserTargetPivotAngle(){
     double speakerZOffset = table->GetNumber("Speaker Z Offset", SPEAKER_Z_OFFSET);
 
     switch (state.pivot){
-        case PIVOT_STATE::SUBWOOFER:
-            state.targetPivotAngle = units::radian_t(table->GetNumber("Pivot Subwoofer Angle", PIVOT_SUBWOOFER_POSITION));
-            break;
         case PIVOT_STATE::PODIUM:
             state.targetPivotAngle = units::radian_t(table->GetNumber("Pivot Podium Angle", PIVOT_PODIUM_POSITION));
             break;
