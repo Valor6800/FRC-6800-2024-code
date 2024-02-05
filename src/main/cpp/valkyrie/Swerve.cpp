@@ -28,7 +28,8 @@ Swerve<AzimuthMotor, DriveMotor>::Swerve(AzimuthMotor* _azimuthMotor,
                                                     DriveMotor* _driveMotor,
                                                     frc::Translation2d _wheelLocation) :
     azimuthMotor(_azimuthMotor),
-    driveMotor(_driveMotor)
+    driveMotor(_driveMotor),
+    cancoder(nullptr)
 {
     if (_wheelLocation.X() > units::meter_t{0} && _wheelLocation.Y() > units::meter_t{0}) wheelIdx = 0;
     else if (_wheelLocation.X() > units::meter_t{0} && _wheelLocation.Y() < units::meter_t{0}) wheelIdx = 1;
@@ -38,7 +39,16 @@ Swerve<AzimuthMotor, DriveMotor>::Swerve(AzimuthMotor* _azimuthMotor,
     wpi::SendableRegistry::AddLW(this, "Swerve", "Module " + std::to_string(wheelIdx));
     initialMagEncoderValue = getMagEncoderCount();
 }
-    
+
+template<class AzimuthMotor, class DriveMotor>
+void Swerve<AzimuthMotor, DriveMotor>::setupCANCoder(int deviceId, std::string canbus)
+{
+    cancoder = new ctre::phoenix6::hardware::CANcoder(deviceId, canbus);
+    ctre::phoenix6::configs::MagnetSensorConfigs config;
+    config.AbsoluteSensorRange = ctre::phoenix6::signals::AbsoluteSensorRangeValue::Unsigned_0To1;
+    cancoder->GetConfigurator().Apply(config);
+}
+
 template<class AzimuthMotor, class DriveMotor>
 frc::SwerveModulePosition Swerve<AzimuthMotor, DriveMotor>::getModulePosition()
 {
@@ -89,6 +99,7 @@ bool Swerve<AzimuthMotor, DriveMotor>::loadAndSetAzimuthZeroReference(std::vecto
     //   if the mag encoders aren't working.
     //   Protects against issues as seen in: https://www.youtube.com/watch?v=MGxpWNcv-VM
     double currPos = getMagEncoderCount();
+    if (cancoder) currPos = cancoder->GetAbsolutePosition().GetValueAsDouble();
     if (currPos == 0) {
         return false;
     }
@@ -193,6 +204,12 @@ void Swerve<AzimuthMotor, DriveMotor>::InitSendable(wpi::SendableBuilder& builde
     (
         "position: distance",
         [this] { return getModulePosition().distance.template to<double>(); },
+        nullptr
+    );
+    builder.AddDoubleProperty
+    (
+        "cancoder",
+        [this] { return cancoder ? cancoder->GetAbsolutePosition().GetValueAsDouble() : 0; },
         nullptr
     );
 }
