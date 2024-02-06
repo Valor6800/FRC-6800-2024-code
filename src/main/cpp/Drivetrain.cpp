@@ -414,8 +414,8 @@ units::radian_t Drivetrain::getAngleError(){
     }
 }
 
-double Drivetrain::clampAngleRadianRange(units::radian_t angle, double max){
-    return ((angle)/(max)).to<double>();
+units::radian_t Drivetrain::clampAngleRadianRange(units::radian_t angle, double max){
+    return units::radian_t((angle)/(max));
 }
 
 void Drivetrain::pullSwerveModuleZeroReference(){

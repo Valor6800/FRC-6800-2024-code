@@ -94,16 +94,39 @@ public:
       * * Resetting the drivetrain state
       */
      void init();
-
+     /**
+      * @brief Responsible for setting states to values based on controller inputs. 
+     */
      void assessInputs();
+     /**
+      * @brief Reponsible for displaying values to the dashboard and getting values from the dashboard to calculate values. 
+     */
      void analyzeDashboard();
+     /**
+      * 
+     */
      void assignOutputs();
-
+     /**
+      * @brief Resets robot odometry, swerve modules, and drive encoders.
+     */
      void resetState();
+     /**
+      * @brief Calculates and sets the heading lock angle.
+     */
      void getSpeakerLockAngleRPS();
+     /**
+      * @brief Returns the error between the current robot heading and the target robot heading.
+     */
      units::radian_t getAngleError();
-     double clampAngleRadianRange(units::radian_t angle, double max);
-
+     /**
+      * @brief Returns a radian that is clamped between -1 and 1.
+      * @param angle The angle to be clamped.
+      * @param max The max possible angle.
+     */
+     units::radian_t clampAngleRadianRange(units::radian_t angle, double max);
+     /**
+      * @brief Responsible for sending values to advantage scope for logging
+     */
      void InitSendable(wpi::SendableBuilder& builder);
 
      enum LimelightPipes{
