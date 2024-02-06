@@ -149,9 +149,9 @@ void Drivetrain::configSwerveModule(int i)
     azimuthControllers.push_back(new SwerveAzimuthMotor(CANIDs::AZIMUTH_CANS[i],
                                                       valor::NeutralMode::Brake,
                                                       Constants::swerveAzimuthsReversals()[i],
+                                                      1.0 / AZIMUTH_GEAR_RATIO,
+                                                      azimuthPID,
                                                       PIGEON_CAN_BUS));
-    azimuthControllers[i]->setConversion(1.0 / AZIMUTH_GEAR_RATIO);
-    azimuthControllers[i]->setPIDF(azimuthPID, 0);
 
     valor::PIDF drivePID;
     drivePID.velocity = DRIVE_K_VEL;

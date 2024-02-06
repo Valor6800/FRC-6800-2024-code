@@ -106,7 +106,7 @@ namespace Constants {
         static std::vector<double> swerveZeros(){ switch (teamNumber){
             case ALPHA_TEAM_NUMBER: return {0.3867, 0.8890, 0.0763, 0.610};
             case SIDE_SWIPE_TEAM_NUMBER: return {0.3106, 0.4369, 0.4780, 0.7372};
-            default: return {0.424805, -0.151855, 0.468606, 0.082031};
+            default: return {0.4240722, 0.857666, 0.46378, 0.078125};
         }};
 
         static units::meter_t moduleDiff(){ switch (teamNumber){
@@ -122,13 +122,13 @@ namespace Constants {
 
         static std::vector<bool> swerveDrivesReversals(){ switch (teamNumber){
             case ALPHA_TEAM_NUMBER: return {true, false, false, false};
-            case SIDE_SWIPE_TEAM_NUMBER: return {false, false, false, false}; 
-            default: return {false, false, false, false}; // Temp value; TODO: Change it
+            case SIDE_SWIPE_TEAM_NUMBER: return {false, false, false, false};
+            default: return {true, false, false, false};
         }};
         static std::vector<bool> swerveAzimuthsReversals(){ switch (teamNumber){
             case ALPHA_TEAM_NUMBER: return {true, false, true, true};
             case SIDE_SWIPE_TEAM_NUMBER: return {true, true, true, true};
-            default: return {true, true, true, true}; // Temp value; TODO: Change it
+            default: return {true, false, true, true};
         }};
 
         static frc::Pose3d mintCameraPosition(){ switch (teamNumber) {

@@ -27,31 +27,33 @@ PhoenixController::PhoenixController(int canID,
                                              valor::NeutralMode _mode,
                                              bool _inverted,
                                              std::string canbus) :
-    BaseController(new hardware::TalonFX{canID, canbus}, _inverted, _mode)
+    BaseController(new hardware::TalonFX{canID, canbus}, _inverted, _mode),
+    status(),
+    req_position(units::turn_t{0}),
+    req_velocity(units::turns_per_second_t{0}),
+    req_voltage(units::volt_t{0})
 {
     init();
 }
 
+PhoenixController::PhoenixController(int canID,
+                                             valor::NeutralMode _mode,
+                                             bool _inverted,
+                                             double gearRatio,
+                                             valor::PIDF pidf,
+                                             std::string canbus) :
+    BaseController(new hardware::TalonFX{canID, canbus}, _inverted, _mode),
+    status(),
+    req_position(units::turn_t{0}),
+    req_velocity(units::turns_per_second_t{0}),
+    req_voltage(units::volt_t{0})
+{
+    init(gearRatio, pidf);
+}
+
+
 void PhoenixController::init()
 {
-    motor->GetConfigurator().Apply(configs::TalonFXConfiguration{});
-    motor->SetInverted(inverted);
-    setNeutralMode(neutralMode);
-
-    // Current limiting configuration
-    configs::CurrentLimitsConfigs currentLimits{};
-    currentLimits.StatorCurrentLimit = STATOR_CURRENT_LIMIT;
-    currentLimits.StatorCurrentLimitEnable = true;
-    currentLimits.SupplyCurrentLimit = SUPPLY_CURRENT_LIMIT;
-    currentLimits.SupplyCurrentLimitEnable = true;
-    currentLimits.SupplyTimeThreshold = SUPPLY_TIME_THRESHOLD;
-    motor->GetConfigurator().Apply(currentLimits);
-
-    // Deadband configuration
-    // configs::MotorOutputConfigs config{};
-    // config.DutyCycleNeutralDeadband = FALCON_DEADBAND;
-    // motor->GetConfigurator().Apply(config);
-
     valor::PIDF motionPIDF;
     motionPIDF.P = FALCON_PIDF_KP;
     motionPIDF.I = FALCON_PIDF_KI;
@@ -61,8 +63,37 @@ void PhoenixController::init()
     motionPIDF.velocity = FALCON_PIDF_KV;
     motionPIDF.acceleration = FALCON_PIDF_KA;
 
-    setPIDF(motionPIDF, 0);
-    reset();
+    init(1, motionPIDF);
+}
+
+void PhoenixController::init(double gearRatio, valor::PIDF pidf)
+{
+    req_position.Slot = 0;
+    req_position.UpdateFreqHz = 0_Hz;
+    req_velocity.Slot = 0;
+    req_velocity.UpdateFreqHz = 0_Hz;
+    
+    configs::TalonFXConfiguration config;
+
+    config.MotorOutput.Inverted = inverted;
+    config.MotorOutput.NeutralMode = neutralMode == valor::NeutralMode::Brake ?
+        signals::NeutralModeValue::Brake :
+        signals::NeutralModeValue::Coast;
+
+    // Current limiting configuration
+    config.CurrentLimits.StatorCurrentLimit = STATOR_CURRENT_LIMIT;
+    config.CurrentLimits.StatorCurrentLimitEnable = true;
+    config.CurrentLimits.SupplyCurrentLimit = SUPPLY_CURRENT_LIMIT;
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    config.CurrentLimits.SupplyTimeThreshold = SUPPLY_TIME_THRESHOLD;
+
+    // Deadband configuration
+    config.MotorOutput.DutyCycleNeutralDeadband = FALCON_DEADBAND;
+
+    setPIDF(config, pidf, 0);
+    setConversion(config, gearRatio);
+
+    status = motor->GetConfigurator().Apply(config, units::second_t{5});
 
     wpi::SendableRegistry::AddLW(this, "PhoenixController", "ID " + std::to_string(motor->GetDeviceID()));
 }
@@ -100,44 +131,43 @@ void PhoenixController::setReverseLimit(double reverse)
     motor->GetConfigurator().Apply(config);
 }
 
+
 void PhoenixController::setPIDF(valor::PIDF _pidf, int slot)
+{
+    configs::TalonFXConfiguration config{};
+    setPIDF(config, _pidf, slot);
+    motor->GetConfigurator().Apply(config);
+}
+
+void PhoenixController::setPIDF(configs::TalonFXConfiguration & config, valor::PIDF _pidf, int slot)
 {
     pidf = _pidf;
 
-    configs::ClosedLoopGeneralConfigs closedLoopConfig{};
-    closedLoopConfig.ContinuousWrap = true;
-    motor->GetConfigurator().Apply(closedLoopConfig);
+    // config.ClosedLoopGeneral.ContinuousWrap = true;
 
     // Generic PIDF configurations
     // Numerator for closed loop controls will be in volts
     // Feedback and feedforward gains are in volts / rpm of motor, NOT mechanism
-    configs::SlotConfigs slotConfig{};
-    slotConfig.SlotNumber = slot;
-    slotConfig.kP = pidf.P;
-    slotConfig.kI = pidf.I;
-    slotConfig.kD = pidf.D;
-    slotConfig.kV = pidf.F;
-    slotConfig.kS = FALCON_PIDF_KS;
+    config.Slot0.kP = pidf.P;
+    config.Slot0.kI = pidf.I;
+    config.Slot0.kD = pidf.D;
+    config.Slot0.kV = pidf.F;
+    config.Slot0.kS = FALCON_PIDF_KS;
 
     // Feedforward gain configuration
     if (pidf.aFF != 0) {
-        slotConfig.GravityType = pidf.aFFType == valor::FeedForwardType::LINEAR ?
+        config.Slot0.GravityType = pidf.aFFType == valor::FeedForwardType::LINEAR ?
             signals::GravityTypeValue::Elevator_Static :
             signals::GravityTypeValue::Arm_Cosine;
-        slotConfig.kG = pidf.aFF;
+        config.Slot0.kG = pidf.aFF;
 
-        configs::FeedbackConfigs feedForwardConfig{};
-        feedForwardConfig.FeedbackRotorOffset = pidf.aFFTarget;
-        motor->GetConfigurator().Apply(feedForwardConfig);
+        config.Feedback.FeedbackRotorOffset = pidf.aFFTarget;
     }
-    motor->GetConfigurator().Apply(slotConfig);
 
     // Motion magic configuration
-    configs::MotionMagicConfigs magicConfig{};
-    magicConfig.MotionMagicCruiseVelocity = pidf.velocity;
-    magicConfig.MotionMagicAcceleration = pidf.acceleration;
-    // magicConfig.MotionMagicJerk = pidf.jerk;
-    motor->GetConfigurator().Apply(magicConfig);
+    config.MotionMagic.MotionMagicCruiseVelocity = pidf.velocity;
+    config.MotionMagic.MotionMagicAcceleration = pidf.acceleration;
+    // config.MotionMagic.MotionMagicJerk = pidf.jerk;
 }
 
 /**
@@ -147,11 +177,16 @@ void PhoenixController::setPIDF(valor::PIDF _pidf, int slot)
 */
 void PhoenixController::setConversion(double _conversion)
 {
+    configs::TalonFXConfiguration config{};
+    setConversion(config, _conversion);
+    motor->GetConfigurator().Apply(config);
+}
+
+void PhoenixController::setConversion(configs::TalonFXConfiguration & config, double _conversion)
+{
     // Why is this inverted? REV's conversion factor is flipped, so syncrhonize between the two vendors
     conversion = 1.0 / _conversion;
-    configs::FeedbackConfigs config{};
-    config.SensorToMechanismRatio = conversion; // Now the value is 13.37 in the example!
-    motor->GetConfigurator().Apply(config);
+    config.Feedback.SensorToMechanismRatio = conversion; // Now the value is 13.37 in the example!
 }
 
 void PhoenixController::setMotorInversion(bool invert){
@@ -199,25 +234,21 @@ void PhoenixController::setRange(int slot, double min, double max)
 */
 void PhoenixController::setPosition(double position)
 {
-    controls::MotionMagicVoltage request{0_tr};
-    request.Slot = currentProfile;
-    request.Position = units::make_unit<units::turn_t>(position); // Mechanism rotations
-    motor->SetControl(request);
+    req_position.Position = units::make_unit<units::turn_t>(position); // Mechanism rotations
+    status = motor->SetControl(req_position);
+
 }
 
 void PhoenixController::setSpeed(double speed)
 {
-    controls::VelocityVoltage request{0_tps};
-    request.Slot = currentProfile;
-    request.Velocity = units::make_unit<units::turns_per_second_t>(speed); // Mechanism rotations
-    motor->SetControl(request);
+    req_velocity.Velocity = units::make_unit<units::turns_per_second_t>(speed); // Mechanism rotations
+    status = motor->SetControl(req_velocity);
 }
 
 void PhoenixController::setPower(double speed)
 {
-    controls::VoltageOut request{0_V};
-    request.Output = units::make_unit<units::volt_t>(speed * 12);
-    motor->SetControl(request);
+    req_voltage.Output = units::make_unit<units::volt_t>(speed * 12);
+    status = motor->SetControl(req_voltage);
 }
 
 void PhoenixController::setProfile(int profile)
@@ -278,5 +309,10 @@ void PhoenixController::InitSendable(wpi::SendableBuilder& builder)
     builder.AddDoubleProperty(
         "Out Volt", 
         [this] { return motor->GetMotorVoltage().GetValueAsDouble(); },
+        nullptr);
+
+    builder.AddIntegerProperty(
+        "Config Status Code", 
+        [this] { return status; },
         nullptr);
 }
