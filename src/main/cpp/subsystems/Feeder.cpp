@@ -46,6 +46,26 @@ Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _beamBreak) :
             )
         )
     ).ToPtr());
+    pathplanner::NamedCommands::registerCommand("Enable feeder", std::move(
+        frc2::SequentialCommandGroup(
+            frc2::InstantCommand(
+                [this]() {
+                    // shooter->state.isShooting = true;
+                    state.feederState = Feeder::ROLLER_STATE::INTAKE;
+                }
+            )
+        )
+    ).ToPtr());
+    pathplanner::NamedCommands::registerCommand("Disable feeder", std::move(
+        frc2::SequentialCommandGroup(
+            frc2::InstantCommand(
+                [this]() {
+                    // shooter->state.isShooting = true;
+                    state.feederState = Feeder::ROLLER_STATE::STAGNANT;
+                }
+            )
+        )
+    ).ToPtr());
 }
 
 void Feeder::resetState()
