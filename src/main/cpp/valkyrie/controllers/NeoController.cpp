@@ -203,4 +203,8 @@ void NeoController::InitSendable(wpi::SendableBuilder& builder)
         "Inverted", 
         [this] { return inverted; },
         nullptr);
+    builder.AddDoubleProperty(
+        "duty cycle",
+        [this] { return motor->GetAppliedOutput(); },
+        nullptr);
 }

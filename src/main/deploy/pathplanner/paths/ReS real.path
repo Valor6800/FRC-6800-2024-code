@@ -32,19 +32,19 @@
     },
     {
       "anchor": {
-        "x": 8.267168552855624,
-        "y": 5.785701182513477
+        "x": 8.278065043134294,
+        "y": 5.799532045278033
       },
       "prevControl": {
-        "x": 7.305616703826,
-        "y": 5.694368009106388
+        "x": 7.31651319410467,
+        "y": 5.708198871870945
       },
       "nextControl": {
-        "x": 8.74073467460555,
-        "y": 5.8306829448190225
+        "x": 8.75163116488422,
+        "y": 5.844513807583579
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Scorch"
     },
     {
       "anchor": {
@@ -75,6 +75,40 @@
   "constraintZones": [],
   "eventMarkers": [
     {
+      "name": "Intake",
+      "waypointRelativePos": 1.25,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Enable intake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Disable intake",
+      "waypointRelativePos": 2.3000000000000003,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Disable intake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
       "name": "Shoot",
       "waypointRelativePos": 0.75,
       "command": {
@@ -84,13 +118,13 @@
             {
               "type": "named",
               "data": {
-                "name": "Shoot sequence-shooter"
+                "name": "Shoot sequence-feeder"
               }
             },
             {
               "type": "named",
               "data": {
-                "name": "Shoot sequence-feeder"
+                "name": "Shoot sequence-shooter"
               }
             }
           ]
@@ -98,7 +132,7 @@
       }
     },
     {
-      "name": "Spool",
+      "name": "Spool pre 2nd shoot",
       "waypointRelativePos": 2.75,
       "command": {
         "type": "parallel",

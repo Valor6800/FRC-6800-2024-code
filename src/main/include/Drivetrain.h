@@ -13,6 +13,8 @@
 #include "valkyrie/controllers/NeoController.h"
 #include "valkyrie/controllers/PIDF.h"
 
+#include "PoseTracker.h"
+
 #include <frc/kinematics/SwerveDriveKinematics.h>
 #include <frc/estimator/SwerveDrivePoseEstimator.h>
 #include <frc/kinematics/ChassisSpeeds.h>
@@ -284,4 +286,7 @@ private:
 
      double doubtX, doubtY, doubtRot;
      units::meter_t visionAcceptanceRadius;
+
+     PoseTracker botPoseTracker;
+     PoseTracker targetPoseTracker;
 };

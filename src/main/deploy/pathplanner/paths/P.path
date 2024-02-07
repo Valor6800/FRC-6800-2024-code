@@ -3,58 +3,65 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 4.06
+        "x": 1.331517437997316,
+        "y": 4.583348248930572
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.607300197101809,
-        "y": 4.064787642133613
+        "x": 1.984861181433601,
+        "y": 4.330718921038202
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.657640990170626,
-        "y": 4.06
+        "x": 2.465008618819321,
+        "y": 4.116334869316152
       },
       "prevControl": {
-        "x": 2.192363264065093,
-        "y": 4.068609762979674
-      },
-      "nextControl": {
-        "x": 2.8154276211868323,
-        "y": 4.057080226672826
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 2.4844259249109566,
-        "y": 3.5606700714868484
-      },
-      "prevControl": {
-        "x": 2.235041042546558,
-        "y": 3.7828321561266995
+        "x": 2.1354587450410882,
+        "y": 4.271581569217604
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Powerloader"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.9,
-      "rotationDegrees": 180.0,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "New Event Marker",
+      "name": "Shoot",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Enable shooter"
+              }
+            },
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 0.35
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Enable feeder"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Disable feeder",
       "waypointRelativePos": 0.75,
       "command": {
         "type": "parallel",
@@ -63,7 +70,24 @@
             {
               "type": "named",
               "data": {
-                "name": "Intake"
+                "name": "Disable feeder"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Enable intake",
+      "waypointRelativePos": 0.45,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Enable intake"
               }
             }
           ]
@@ -79,13 +103,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 138.96729337323617,
+    "rotation": 0.16686900041079036,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "FirstPick",
   "previewStartingState": {
-    "rotation": 137.29,
+    "rotation": -35.888989888069474,
     "velocity": 0
   },
   "useDefaultConstraints": false
