@@ -28,12 +28,12 @@ using namespace pathplanner;
 // #define KP_LOCK 0.2f
 #define KP_LIMELIGHT 0.7f
 
-#define KPX 22.0f //50
+#define KPX 30.0f //50
 #define KIX 0.0f //0
 #define KDX 0.0f //.1
 #define KFX 0.0f
 
-#define KPT 8.0f //15
+#define KPT 20.0f //15
 #define KIT 0.0f
 #define KDT 0.0f
 #define KFT 0.0f
@@ -230,7 +230,7 @@ void Drivetrain::init()
     resetState();
 
     AutoBuilder::configureHolonomic(
-        [this](){ return calculatedEstimator->GetEstimatedPosition(); }, // Robot pose supplier
+        [this](){ return getPose_m(); }, // Robot pose supplier
         [this](frc::Pose2d pose){ resetOdometry(pose); }, // Method to reset odometry (will be called if your auto has a starting pose)
         [this](){ return getRobotRelativeSpeeds(); }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         [this](frc::ChassisSpeeds speeds){ driveRobotRelative(speeds); }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
@@ -358,6 +358,28 @@ void Drivetrain::analyzeDashboard()
             }
         }
     }
+
+    getSpeakerLockAngleRPS();
+    double kPRot = table->GetNumber("KP_ROTATION", KP_ROTATE);
+    double speakerXOffset = table->GetNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET);
+    double speakerYOffset = table->GetNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET);
+    state.angleRPS = units::angular_velocity::radians_per_second_t(getAngleError().to<double>()*kPRot*rotMaxSpeed);
+
+    auto ppTable = nt::NetworkTableInstance::GetDefault().GetTable("PathPlanner");
+    
+    std::vector<double> bp = ppTable->GetNumberArray("currentPose", std::array<double, 3>{0, 0, 0});
+    std::vector<double> tp = ppTable->GetNumberArray("targetPose", std::array<double, 3>{0, 0, 0});
+
+    botPoseTracker.addReading(frc::Pose2d{
+        units::meter_t{bp[0]},
+        units::meter_t{bp[1]},
+        units::radian_t{bp[2]}
+    }, frc::Timer::GetFPGATimestamp());
+    targetPoseTracker.addReading(frc::Pose2d{
+        units::meter_t{tp[0]},
+        units::meter_t{tp[1]},
+        units::radian_t{tp[2]}
+    }, frc::Timer::GetFPGATimestamp());
 }
 
 void Drivetrain::assignOutputs()
@@ -779,6 +801,27 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
         builder.AddDoubleProperty(
             "errorAngleRPS",
             [this] {return (state.angleRPS).to<double>();},
+            nullptr
+        );
+
+        builder.AddDoubleProperty(
+            "velocity current",
+            [this] {return botPoseTracker.getAverageVelocity().to<double>();},
+            nullptr
+        );
+        builder.AddDoubleProperty(
+            "velocity target",
+            [this] {return targetPoseTracker.getAverageVelocity().to<double>();},
+            nullptr
+        );
+        builder.AddDoubleProperty(
+            "acceleration current",
+            [this] {return botPoseTracker.getAverageAcceleration().to<double>();},
+            nullptr
+        );
+        builder.AddDoubleProperty(
+            "acceleration target",
+            [this] {return targetPoseTracker.getAverageAcceleration().to<double>();},
             nullptr
         );
     }

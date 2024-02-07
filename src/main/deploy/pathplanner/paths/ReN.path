@@ -3,59 +3,53 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.0576146059699525,
-        "y": 5.558377783422234
+        "x": 2.890018068152122,
+        "y": 5.572019226189894
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.746895549346655,
-        "y": 6.276156760646855
+        "x": 4.551635586203865,
+        "y": 5.619855720766129
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Rex"
     },
     {
       "anchor": {
-        "x": 8.310340995681992,
-        "y": 7.436646276070331
+        "x": 8.295225887582184,
+        "y": 7.451375927353718
       },
       "prevControl": {
-        "x": 7.348789146652368,
-        "y": 7.345313102663242
+        "x": 6.619340211264334,
+        "y": 7.15645083109466
       },
       "nextControl": {
-        "x": 8.783907117431918,
-        "y": 7.481628038375876
+        "x": 9.391667896217642,
+        "y": 7.644329581358191
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Northstar"
     },
     {
       "anchor": {
-        "x": 4.616929604229579,
-        "y": 6.065460987403457
+        "x": 6.111164795346418,
+        "y": 7.010203295046013
       },
       "prevControl": {
-        "x": 8.083611440371044,
-        "y": 7.920925878888794
+        "x": 7.189054448566073,
+        "y": 7.514602654386154
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 1.0,
-      "rotationDegrees": -0.4328701223663126,
-      "rotateFast": true
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0.8,
+      "name": "Intake",
+      "waypointRelativePos": 0.65,
       "command": {
         "type": "sequential",
         "data": {
@@ -63,29 +57,62 @@
             {
               "type": "named",
               "data": {
-                "name": "Intake"
+                "name": "Enable intake"
               }
             }
           ]
         }
       }
+    },
+    {
+      "name": "Stop shooting",
+      "waypointRelativePos": 0.15,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Disable feeder"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Disable shooter"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Disable intake",
+      "waypointRelativePos": 1.65,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
-    "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0
+    "maxVelocity": 3.5,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 360.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -171.9422880402044,
+    "rotation": 9.3725812818341,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "SecondPick",
   "previewStartingState": {
-    "rotation": 180.0,
+    "rotation": 0.48270900209396905,
     "velocity": 0
   },
   "useDefaultConstraints": false

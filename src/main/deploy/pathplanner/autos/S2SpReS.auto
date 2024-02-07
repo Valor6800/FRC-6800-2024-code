@@ -39,13 +39,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ReS"
+            "pathName": "ReS 1-way"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Shoot sequence-feeder"
+            "name": "Disable intake"
           }
         }
       ]

@@ -14,12 +14,12 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Rotaate"
+            "pathName": null
           }
         }
       ]
     }
   },
-  "folder": null,
+  "folder": "Testing",
   "choreoAuto": false
 }
