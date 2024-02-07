@@ -1,5 +1,6 @@
 # pragma once 
 
+#include "units/angular_velocity.h"
 #include "valkyrie/BaseSubsystem.h"
 #include "valkyrie/controllers/NeoController.h"
 #include "Constants.h"
@@ -23,7 +24,6 @@ class Shooter : public valor::BaseSubsystem
 public:
     //valor::NeoController pivotMotors;
     valor::NeoController leftFlywheelMotor;
-    valor::NeoController rightFlywheelMotor;
 
     Shooter(frc::TimedRobot *robot, frc::DigitalInput* beamBreak);
 
@@ -35,8 +35,6 @@ public:
     void analyzeDashboard();
     void assignOutputs();
 
-    units::angular_velocity::revolutions_per_minute_t getRightFlywheelVelocityError();
-    units::angular_velocity::revolutions_per_minute_t getLeftFlywheelVelocityError();
     units::degree_t calculatePivotAngle();
 
     void calculateRootsT();
@@ -63,14 +61,6 @@ public:
     {
         PIVOT_STATE pivotState;
         FLYWHEEL_STATE flywheelState;
-
-        double leftShooterPower;
-        double leftSpoolPower;
-        double leftStandbyPower;
-
-        double rightShooterPower;
-        double rightSpoolPower;
-        double rightStandbyPower;
 
         units::angular_velocity::revolutions_per_minute_t flywheelTargetVelocity;
         units::degree_t pivotAngle;
