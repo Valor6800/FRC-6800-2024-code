@@ -99,11 +99,11 @@ public:
      */
      void assessInputs();
      /**
-      * @brief Reponsible for displaying values to the dashboard and getting values from the dashboard to calculate values. 
+      * @brief Responsible for displaying values to the dashboard and getting values from the dashboard to calculate values. 
      */
      void analyzeDashboard();
      /**
-      * 
+      * @brief Responsible for using states to set power and position to motors and other electronics.
      */
      void assignOutputs();
      /**
@@ -115,20 +115,25 @@ public:
      */
      void getSpeakerLockAngleRPS();
      /**
-      * @brief Returns the error between the current robot heading and the target robot heading.
+      * @brief Gets the error between the current robot heading and the target robot heading.
+      * @returns Returns the error between the current robot heading and the target robot heading in radians. 
      */
      units::radian_t getAngleError();
      /**
-      * @brief Returns a radian that is clamped between -1 and 1.
+      * @brief Gets a radian that is clamped between -1 and 1.
       * @param angle The angle to be clamped.
       * @param max The max possible angle.
+      * @returns Returns the clamped angle in radians.
      */
      units::radian_t clampAngleRadianRange(units::radian_t angle, double max);
      /**
-      * @brief Responsible for sending values to advantage scope for logging
+      * @brief Responsible for sending values to advantage scope for logging.
      */
      void InitSendable(wpi::SendableBuilder& builder);
-
+     /**!
+      * @enum
+      * @brief An enum that represents the different limelight pipes for detection.
+     */
      enum LimelightPipes{
           APRIL_TAGS,
           TAPE_MID,
@@ -186,25 +191,39 @@ public:
       * @param isFOC true if driving field oriented
       */
      void drive(units::velocity::meters_per_second_t vx_mps, units::velocity::meters_per_second_t vy_mps, units::angular_velocity::radians_per_second_t omega_radps, bool isFOC);
+     /**
+      * @brief Used to drive the robot such that it is not field oriented and is instead robot oriented.
+      * @param speeds The speed of the swerve modules.
+     */
      void driveRobotRelative(frc::ChassisSpeeds speeds);
 
      /**
-      * Directly set the swerve modules to the specified states
+      * @brief Directly set the swerve modules to the specified states
       * @param desiredStates the desired swerve module states
       */
      void setModuleStates(wpi::array<frc::SwerveModuleState, SWERVE_COUNT> desiredStates);
 
-     void resetGyro();
-
      /**
-      * Reset the drive encoders to currently read a position of 0
+      * @brief Used to reset the robot odometry such that the current heading is 0 degrees.
+     */
+     void resetGyro();
+     /**
+      * @brief Reset the drive encoders to currently read a position of 0.
       */
      void resetDriveEncoders();
-
+     /**
+      * @brief Sets the zero references of the swerve modules.
+     */
      void pullSwerveModuleZeroReference();
-
-
+     /**
+      * @brief Gets the rotation of the robot from the pigeon
+      * @returns Retuns a Rotation2D representing the rotation of the robot.
+     */
      frc::Rotation2d getPigeon();
+     /**
+      * @brief Gets the rotation of the robot in field-oriented space
+      * @returns Returns the rotation of the robot in field-oriented space represented in degrees. 
+     */
      units::degree_t getGlobalPitch();
 
      /**
