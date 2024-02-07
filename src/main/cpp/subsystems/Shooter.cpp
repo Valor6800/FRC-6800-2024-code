@@ -226,3 +226,4 @@ void Shooter::InitSendable(wpi::SendableBuilder& builder){
     );
 
 }
+
