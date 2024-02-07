@@ -73,7 +73,6 @@ public:
         double rightStandbyPower;
 
         units::angular_velocity::revolutions_per_minute_t flywheelTargetVelocity;
-
         units::degree_t pivotAngle;
     } state;
 

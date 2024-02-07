@@ -166,16 +166,6 @@ void Shooter::assignOutputs()
     }
 }
 
-units::angular_velocity::revolutions_per_minute_t Shooter::getRightFlywheelVelocityError(){
-    double rightFlywheelSpeed = rightFlywheelMotor.getSpeed();
-    return state.flywheelTargetVelocity - units::angular_velocity::revolutions_per_minute_t(rightFlywheelSpeed);
-}
-
-units::angular_velocity::revolutions_per_minute_t Shooter::getLeftFlywheelVelocityError(){
-    double leftFlywheelSpeed = leftFlywheelMotor.getSpeed();
-    return state.flywheelTargetVelocity - units::angular_velocity::revolutions_per_minute_t(leftFlywheelSpeed);
-}
-
 units::degree_t Shooter::calculatePivotAngle(){
     units::degree_t targetPivotAngle = units::degree_t(3);
     return targetPivotAngle;
@@ -234,27 +224,5 @@ void Shooter::InitSendable(wpi::SendableBuilder& builder){
         [this] {return state.flywheelTargetVelocity.to<double>();},
         nullptr
     );
-    builder.AddDoubleProperty(
-        "Right Flywheel Power",
-        [this] {return table->GetNumber("Flywheel Velocity P Value", FLYWHEEL_VELOCITY_KP)*(getRightFlywheelVelocityError().to<double>() / FLYWHEEL_MAX_RPM);},
-        nullptr
-    );
 
-    builder.AddDoubleProperty(
-        "Left Flywheel Power",
-        [this] {return table->GetNumber("Flywheel Velocity P Value", FLYWHEEL_VELOCITY_KP)*(getLeftFlywheelVelocityError().to<double>() / FLYWHEEL_MAX_RPM);},
-        nullptr
-    );
-
-    builder.AddDoubleProperty(
-        "Right Flywheel Vel. Error",
-        [this] {return getRightFlywheelVelocityError().to<double>();},
-        nullptr
-    );
-
-    builder.AddDoubleProperty(
-        "Left Flywheel Vel. Error",
-        [this] {return getLeftFlywheelVelocityError().to<double>();},
-        nullptr
-    );
 }
