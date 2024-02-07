@@ -97,10 +97,10 @@ void Shooter::assessInputs()
         state.flywheelState = FLYWHEEL_STATE::SHOOTING;
     }
     else if (operatorGamepad->leftTriggerActive()) {
-        state.flywheelState = FLYWHEEL_STATE::SPOOLED;
+        state.flywheelState = FLYWHEEL_STATE::NOT_SHOOTING;
     }
     else {
-        state.flywheelState = FLYWHEEL_STATE::NOT_SHOOTING;
+        state.flywheelState = FLYWHEEL_STATE::SPOOLED;
     } 
 
     //PIVOT LOGIC
@@ -143,12 +143,12 @@ void Shooter::analyzeDashboard()
             state.flywheelTargetVelocity = units::revolutions_per_minute_t(table->GetNumber("Flywheel Shoot RPM", SHOOT_POWER.to<double>()));
             break;
 
-        case SPOOLED:
-            state.flywheelTargetVelocity = units::revolutions_per_minute_t(table->PutNumber("Flywheel Spool RPM", SPOOL_POWER.to<double>()));
+        case NOT_SHOOTING:
+            state.flywheelTargetVelocity = units::revolutions_per_minute_t(table->PutNumber("Flywheel Standby RPM", STANDBY_POWER.to<double>()));
             break;
 
         default:
-            state.flywheelTargetVelocity = units::revolutions_per_minute_t(table->PutNumber("Flywheel Standby RPM", STANDBY_POWER.to<double>()));
+            state.flywheelTargetVelocity = units::revolutions_per_minute_t(table->PutNumber("Flywheel Spool RPM", SPOOL_POWER.to<double>()));
             break;
     }
 }
