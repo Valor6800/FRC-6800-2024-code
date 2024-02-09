@@ -40,6 +40,6 @@ public:
 
 private:
 
-    valor::NeoController feederMotor;
+    // valor::NeoController feederMotor;
     valor::NeoController intakeMotor;
 };

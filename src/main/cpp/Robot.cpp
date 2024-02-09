@@ -8,12 +8,12 @@
 #include <ctime>
 
 Robot::Robot() : 
-    drivetrain(this)
+    drivetrain(this),
     // valorAuto(), 
-    // beamBreak(DIOPorts::BEAM_BREAK_PORT), 
+    beamBreak(DIOPorts::BEAM_BREAK_PORT),
     // shooter(this, &beamBreak), 
-    // intake(this, &beamBreak),
-    // feeder(this)
+    // intake(this, &beamBreak)
+    feeder(this)
 {
     frc::TimedRobot();
 }
@@ -28,8 +28,8 @@ void Robot::RobotInit() {
     // shooter.setGamepads(&gamepadOperator, &gamepadDriver);
     // shooter.resetState();
 
-    // feeder.setGamepads(&gamepadOperator, &gamepadDriver);
-    // feeder.resetState();
+    feeder.setGamepads(&gamepadOperator, &gamepadDriver);
+    feeder.resetState();
 
     frc::LiveWindow::EnableAllTelemetry();
     frc::DataLogManager::Start();
@@ -67,7 +67,7 @@ void Robot::AutonomousInit() {
     drivetrain.pullSwerveModuleZeroReference();
 
     // intake.resetState();
-    // feeder.resetState();
+    feeder.resetState();
 
     // autoCommand = valorAuto.getCurrentAuto();
     // autoCommand.Schedule();

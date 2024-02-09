@@ -45,9 +45,9 @@ class Robot : public frc::TimedRobot {
 
         Drivetrain drivetrain;
         // valor::Auto valorAuto;
-        // frc::DigitalInput beamBreak;  
+        frc::DigitalInput beamBreak;  
           
         // Shooter shooter;
         // Intake intake;
-        // Feeder feeder; 
+        Feeder feeder; 
 };
