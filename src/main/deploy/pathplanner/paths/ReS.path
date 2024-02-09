@@ -36,12 +36,12 @@
         "y": 5.799532045278033
       },
       "prevControl": {
-        "x": 7.3073945236432145,
-        "y": 6.310937912493591
+        "x": 7.283299658180333,
+        "y": 6.26232686734174
       },
       "nextControl": {
-        "x": 9.39493834257096,
-        "y": 5.211098022817172
+        "x": 9.897030336450719,
+        "y": 5.046340623280205
       },
       "isLocked": false,
       "linkedName": "Scorch"
@@ -57,13 +57,18 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Score amp"
     }
   ],
   "rotationTargets": [
     {
       "waypointRelativePos": 1.7,
       "rotationDegrees": -26.044505712853024,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 2.45,
+      "rotationDegrees": -26.0,
       "rotateFast": false
     }
   ],
@@ -115,14 +120,14 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.5,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 4.5,
+    "maxAcceleration": 3.75,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 360.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 15.488480370747672,
+    "rotation": 9.668197360269625,
     "rotateFast": false
   },
   "reversed": false,
@@ -131,5 +136,5 @@
     "rotation": 0.48270900209396905,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }
