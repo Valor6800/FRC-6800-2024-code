@@ -33,7 +33,7 @@ using namespace pathplanner;
 #define KDX 0.0f //.1
 #define KFX 0.0f
 
-#define KPT 20.0f //15
+#define KPT 15.0f //15
 #define KIT 0.0f
 #define KDT 0.0f
 #define KFT 0.0f
