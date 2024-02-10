@@ -46,6 +46,7 @@ public:
     units::velocity::meters_per_second_t getProjectileSpeed(bool type);
     void calculateShootingMovingAngle();
     units::radian_t getPivotErrorAngle();
+    double solveQuadratic(double a, double b, double c);
     double solveCubic(double a, double b, double c, double d);
     double solveQuartic(double a, double b, double c, double d, double e);
     double calculateRootsT(double accX, double accY, double velX, double velY, double posX, double posY);

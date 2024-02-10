@@ -331,25 +331,51 @@ double Shooter::calculateRootsT(double accX, double accY, double velX, double ve
     return solveQuartic(A, B, C, D, E);
 }
 
-double Shooter::solveCubic(double a, double b, double c, double d){
+double Shooter::solveQuadratic(double a, double b, double c){
     if(a == 0){
+        return -c/b;
+    }
+
+    double desCrim = pow(b, 2) - 4*a*c;
+
+    if(desCrim < 0){
         return -1;
     }
+
+    double x1 = (-b + sqrt(desCrim)) / (2*a);
+    double x2 = (-b - sqrt(desCrim)) / (2*a);
+    return x1, x2;
+}
+
+double Shooter::solveCubic(double a, double b, double c, double d){
+    if(a == 0){
+        return solveQuadratic(b, c, d);
+    }
+
     double p = -b/(3*a);
     double q = pow(p, 3) + (b*c - 3*a*d)/(6*pow(a, 2));
     double r = c/(3*a);
 
     double r1 = pow(pow(q, 2) + pow(r - pow(p, 2), 3), 0.5);
+    double r2 = -pow(pow(q, 2) + pow(r - pow(p, 2), 3), 0.5);
+
     double q1 = pow(q + r1, 1.0/3.0);
     double q2 = pow(q - r1, 1.0/3.0);
-    double root = q1 + q2 + p;
-    return root;
+
+    double q3 = pow(q - r2, 1.0/3.0);
+    double q4 = pow(q + r2, 1.0/3.0);
+
+    double root1 = q1 + q2 + p;
+    double root2 = q3 + q4 + p;
+
+    return root1, root2;
 }
 
 double Shooter::solveQuartic(double a1, double b1, double c1, double d1, double e1){
     if(a1 == 0){
         return solveCubic(b1, c1, d1, e1);
     }
+    
     double a = b1/a1;
     double b = c1/a1;
     double c = d1/a1;
@@ -358,24 +384,30 @@ double Shooter::solveQuartic(double a1, double b1, double c1, double d1, double 
     double p = b - (3*pow(a, 2))/8;
     double q = c - ((a*b)/2) + (pow(a, 3)/8);
     double r = d - ((a*c)/4) + ((pow(a, 2)*b)/16) - (3*pow(a, 4)/256);
-    double g = solveCubic(1, 2*p, pow(p, 2) - 4*r, -pow(q, 2));
+    double g1, g2 = solveCubic(1, 2*p, pow(p, 2) - 4*r, -pow(q, 2));
 
-    if(g < 0){
+    if(g1 < 0 && g2 < 0){
         return -1.0;
     }
 
-    double s1 = g - (2*(p + g + (q/sqrt(g))));
+    double s1 = g1 - (2*(p + g1 + (q/sqrt(g1))));
+    double s2 = g2 - (2*(p + g2 + (q/sqrt(g2))));
 
-    if(s1 < 0){
+    if(s1 < 0 && s2 < 0){
         return -1.0;
     }
 
-    double x1 = (-sqrt(g) + sqrt(s1))/(2) - (a/4);
-    double x2 = (-sqrt(g) - sqrt(s1))/(2) - (a/4);
-    double x3 = (sqrt(g) + sqrt(s1))/(2) - (a/4);
-    double x4 = (sqrt(g) - sqrt(s1))/(2) - (a/4);
+    double x1 = (-sqrt(g1) + sqrt(s1))/(2) - (a/4);
+    double x2 = (-sqrt(g1) - sqrt(s1))/(2) - (a/4);
+    double x3 = (sqrt(g1) + sqrt(s1))/(2) - (a/4);
+    double x4 = (sqrt(g1) - sqrt(s1))/(2) - (a/4);
 
-    double solutions[] = {x1, x2, x3, x4};
+    double x11 = (-sqrt(g2) + sqrt(s2))/(2) - (a/4);
+    double x12 = (-sqrt(g2) - sqrt(s2))/(2) - (a/4);
+    double x13 = (sqrt(g2) + sqrt(s2))/(2) - (a/4);
+    double x14 = (sqrt(g2) - sqrt(s2))/(2) - (a/4);
+
+    double solutions[] = {x1, x2, x3, x4, x11, x12, x13, x14};
     double smallest = 900;
     for(int i = 0; i <= 4; i++){
         if(solutions[i] < smallest){
