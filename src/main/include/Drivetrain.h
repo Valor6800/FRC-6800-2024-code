@@ -168,8 +168,7 @@ public:
 
           double prevError;
      } state;
-     
-     
+
      /**
       * Drive the robot with given x, y and rotational velocities using open loop velocity control
       * @param vx_mps the desired x velocity component in meters per second
@@ -231,6 +230,10 @@ public:
       */
      frc::SwerveDriveKinematics<SWERVE_COUNT>* getKinematics();
 
+     void limelightHoming(LimelightPipes pipe);
+     frc::Translation2d getCurrentGamePiecePositionRelativeToTheRobot();
+     frc::Translation2d getCurrentGamePiecePositionGlobal();
+     void setCurrentGamePiecePosition();
      void angleLock();
 
      frc2::FunctionalCommand* getResetOdom();
