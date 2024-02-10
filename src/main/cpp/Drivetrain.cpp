@@ -54,12 +54,13 @@ using namespace pathplanner;
 #define DRIVE_K_P 0.001f
 #define DRIVE_K_I 0.0f
 #define DRIVE_K_D 0.0f
+#define DRIVE_K_F 0.000244f
 #define DRIVE_K_E 0.0027f
 
-#define DRIVE_K_VEL 6.0f
-#define DRIVE_K_ACC_MUL 0.05f
+#define DRIVE_K_VEL 5.0f
+#define DRIVE_K_ACC_MUL 0.1f
 
-#define MOTOR_FREE_SPEED 6380.0f
+#define MOTOR_FREE_SPEED 5676.0f
 #define WHEEL_DIAMETER_M 0.0973f //0.1016
 #define DRIVE_GEAR_RATIO 5.51f
 #define AZIMUTH_GEAR_RATIO 13.37f
@@ -100,15 +101,11 @@ using namespace pathplanner;
 Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Drivetrain"),
                         driveMaxSpeed(MOTOR_FREE_SPEED / 60.0 / DRIVE_GEAR_RATIO * WHEEL_DIAMETER_M * M_PI),
                         rotMaxSpeed(ROT_SPEED_MUL * 2 * M_PI),
-                        autoMaxSpeed(AUTO_MAX_SPEED),
-                        autoMaxAccel(AUTO_MAX_SPEED/AUTO_MAX_ACCEL_SECONDS),
-                        rotMaxAccel(rotMaxSpeed * 0.5),
                         pigeon(CANIDs::PIGEON_CAN, PIGEON_CAN_BUS),
                         motorLocations(wpi::empty_array),
                         kinematics(NULL),
                         estimator(NULL),
                         calculatedEstimator(NULL),
-                        config(NULL),
                         swerveNoError(true)
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
@@ -126,7 +123,6 @@ Drivetrain::~Drivetrain()
 
     delete estimator;
     delete calculatedEstimator;
-    delete config;
 }
 
 void Drivetrain::configSwerveModule(int i)
@@ -159,6 +155,7 @@ void Drivetrain::configSwerveModule(int i)
     drivePID.P = DRIVE_K_P;
     drivePID.I = DRIVE_K_I;
     drivePID.D = DRIVE_K_D;
+    drivePID.F = DRIVE_K_F;
     drivePID.error = DRIVE_K_E;
 
     driveControllers.push_back(new SwerveDriveMotor(CANIDs::DRIVE_CANS[i],
@@ -210,7 +207,6 @@ void Drivetrain::init()
     kinematics = new frc::SwerveDriveKinematics<SWERVE_COUNT>(motorLocations);
     estimator = new frc::SwerveDrivePoseEstimator<SWERVE_COUNT>(*kinematics, pigeon.GetRotation2d(), getModuleStates(), frc::Pose2d{0_m, 0_m, 0_rad});
     calculatedEstimator = new frc::SwerveDrivePoseEstimator<SWERVE_COUNT>(*kinematics, pigeon.GetRotation2d(), getModuleStates(), frc::Pose2d{0_m, 0_m, 0_rad});
-    config = new frc::TrajectoryConfig(units::velocity::meters_per_second_t{autoMaxSpeed}, units::acceleration::meters_per_second_squared_t{autoMaxAccel});
 
     xPIDF.P = KPX;
     xPIDF.I = KIX;
@@ -251,8 +247,8 @@ void Drivetrain::init()
         [this](){ return getRobotRelativeSpeeds(); }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         [this](frc::ChassisSpeeds speeds){ driveRobotRelative(speeds); }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-            PIDConstants(getXPIDF().P, getXPIDF().I, getXPIDF().D), // Translation PID constants
-            PIDConstants(getThetaPIDF().P, getThetaPIDF().I, getThetaPIDF().D), // Rotation PID constants
+            PIDConstants(xPIDF.P, xPIDF.I, xPIDF.D), // Translation PID constants
+            PIDConstants(thetaPIDF.P, thetaPIDF.I, thetaPIDF.D), // Rotation PID constants
             units::meters_per_second_t{driveMaxSpeed}, // Max module speed, in m/s
             Constants::driveBaseRadius(), // Drive base radius in meters. Distance from robot center to furthest module.
             ReplanningConfig() // Default path replanning config. See the API for the options here
@@ -520,22 +516,16 @@ void Drivetrain::resetDriveEncoders(){
 }
 
 void Drivetrain::drive(units::velocity::meters_per_second_t vx_mps, units::velocity::meters_per_second_t vy_mps, units::angular_velocity::radians_per_second_t omega_radps, bool isFOC){
-    auto states = getModuleStates(vx_mps,
+    auto desiredStates = getModuleStates(vx_mps,
                                   vy_mps,
                                   omega_radps,
                                   isFOC);
-    for (size_t i = 0; i < swerveModules.size(); i++)
-    {
-        swerveModules[i]->setDesiredState(states[i], true);
-    }
+    setSwerveDesiredState(desiredStates, true);
 }
 
 void Drivetrain::driveRobotRelative(frc::ChassisSpeeds speeds) {
-    auto states = getModuleStates(speeds);
-    for (size_t i = 0; i < swerveModules.size(); i++)
-    {
-        swerveModules[i]->setDesiredState(states[i], true);
-    }
+    auto desiredStates = getModuleStates(speeds);
+    setSwerveDesiredState(desiredStates, false);
 }
 
 wpi::array<frc::SwerveModuleState, SWERVE_COUNT> Drivetrain::getModuleStates(units::velocity::meters_per_second_t vx_mps,
@@ -548,9 +538,7 @@ wpi::array<frc::SwerveModuleState, SWERVE_COUNT> Drivetrain::getModuleStates(uni
                                                                                            omega_radps,
                                                                                            estimator->GetEstimatedPosition().Rotation())
                                              : frc::ChassisSpeeds{vx_mps, vy_mps, omega_radps};
-    auto states = kinematics->ToSwerveModuleStates(chassisSpeeds);
-    kinematics->DesaturateWheelSpeeds(&states, units::velocity::meters_per_second_t{driveMaxSpeed});
-    return states;
+    return getModuleStates(chassisSpeeds);
 }
 
 wpi::array<frc::SwerveModuleState, SWERVE_COUNT> Drivetrain::getModuleStates(frc::ChassisSpeeds chassisSpeeds)
@@ -570,11 +558,10 @@ frc::ChassisSpeeds Drivetrain::getRobotRelativeSpeeds(){
     return kinematics->ToChassisSpeeds(moduleStates);
 }
 
-void Drivetrain::setModuleStates(wpi::array<frc::SwerveModuleState, SWERVE_COUNT> desiredStates){ 
-    kinematics->DesaturateWheelSpeeds(&desiredStates, units::velocity::meters_per_second_t{autoMaxSpeed});
-    for (int i = 0; i < SWERVE_COUNT; i++)
-    {
-        swerveModules[i]->setDesiredState(desiredStates[i], false);
+void Drivetrain::setSwerveDesiredState(wpi::array<frc::SwerveModuleState, SWERVE_COUNT> desiredStates, bool isDriveOpenLoop)
+{
+    for (int i = 0; i < SWERVE_COUNT; i++) {
+        swerveModules[i]->setDesiredState(desiredStates[i], isDriveOpenLoop);
     }
 }
 
@@ -618,47 +605,6 @@ frc2::FunctionalCommand* Drivetrain::getResetOdom() {
         },
         {}
     );
-}
-
-double Drivetrain::getDriveMaxSpeed() {
-    return driveMaxSpeed;
-}
-
-double Drivetrain::getAutoMaxSpeed() {
-    return autoMaxSpeed;
-}
-
-double Drivetrain::getAutoMaxAcceleration() {
-    return autoMaxAccel;
-}
-
-
-double Drivetrain::getRotationMaxSpeed() {
-    return rotMaxSpeed;
-}
-
-double Drivetrain::getRotationMaxAcceleration() {
-    return rotMaxAccel;
-}
-
-frc::TrajectoryConfig & Drivetrain::getTrajectoryConfig() {    
-    return *config;
-}
-
-valor::PIDF Drivetrain::getXPIDF() {
-    return xPIDF;
-}
-
-valor::PIDF  Drivetrain::getYPIDF() {
-    return yPIDF;
-}
-
-valor::PIDF Drivetrain::getThetaPIDF() {
-    return thetaPIDF;
-}
-
-void Drivetrain::setAutoMaxAcceleration(double acceleration, double multiplier)  {
-
 }
 
 void Drivetrain::setXMode(){

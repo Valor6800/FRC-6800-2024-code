@@ -177,12 +177,6 @@ public:
      void drive(units::velocity::meters_per_second_t vx_mps, units::velocity::meters_per_second_t vy_mps, units::angular_velocity::radians_per_second_t omega_radps, bool isFOC);
      void driveRobotRelative(frc::ChassisSpeeds speeds);
 
-     /**
-      * Directly set the swerve modules to the specified states
-      * @param desiredStates the desired swerve module states
-      */
-     void setModuleStates(wpi::array<frc::SwerveModuleState, SWERVE_COUNT> desiredStates);
-
      void resetGyro();
 
      /**
@@ -239,23 +233,10 @@ public:
 
      frc2::FunctionalCommand* getResetOdom();
 
-     double getDriveMaxSpeed();
-     double getAutoMaxSpeed();
-     double getAutoMaxAcceleration();
-     double getRotationMaxSpeed();
-     double getRotationMaxAcceleration();
      void setAlignmentAngle(Drivetrain::Alignment align);
      void getSpeakerLockAngleRPS();
      units::radian_t getAngleError();
      double clampAngleRadianRange(units::radian_t angle, double max);
-
-     void setAutoMaxAcceleration(double acceleration, double multiplier);
-
-     valor::PIDF getXPIDF();
-     valor::PIDF getYPIDF();
-     valor::PIDF getThetaPIDF();
-
-     frc::TrajectoryConfig & getTrajectoryConfig();
 
      void setXMode();
 
@@ -267,10 +248,9 @@ private:
      
      double driveMaxSpeed;
      double rotMaxSpeed;
-     double autoMaxSpeed;
-     double autoMaxAccel;
-     double rotMaxAccel;
      ctre::phoenix6::hardware::Pigeon2 pigeon;
+
+     void setSwerveDesiredState(wpi::array<frc::SwerveModuleState, SWERVE_COUNT> desiredStates, bool isDriveOpenLoop);
      
      wpi::array<frc::SwerveModuleState, SWERVE_COUNT> getModuleStates(units::velocity::meters_per_second_t,
                                                            units::velocity::meters_per_second_t,
@@ -294,8 +274,6 @@ private:
      frc::SwerveDrivePoseEstimator<SWERVE_COUNT> * estimator;
      frc::SwerveDrivePoseEstimator<SWERVE_COUNT> * calculatedEstimator;
      frc::Pose2d previousPose;
-
-     frc::TrajectoryConfig * config;
 
      valor::PIDF xPIDF;
      valor::PIDF yPIDF;
