@@ -44,8 +44,20 @@ public:
      * @param type A boolean to represent direction, X is true, Y is false
     */
     units::velocity::meters_per_second_t getProjectileSpeed(bool type);
+    /**
+     * @brief Sets the target angle of the pivot when the robot is moving
+    */
     void calculateShootingMovingAngle();
+    /**
+     * @brief Returns the error angle between the target pivot angle and the current pivot angle
+    */
     units::radian_t getPivotErrorAngle();
+    /**
+     * @brief Returns the roots of a polynomial in form ax^2 + bx +c
+     * @param a The first coefficient in a quadratic
+     * @param b The second coefficient in a quadratic
+     * @param c The third coefficient in a quadratic
+    */
     double solveQuadratic(double a, double b, double c);
     double solveCubic(double a, double b, double c, double d);
     double solveQuartic(double a, double b, double c, double d, double e);
