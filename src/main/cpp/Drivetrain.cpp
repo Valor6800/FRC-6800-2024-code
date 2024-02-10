@@ -28,12 +28,12 @@ using namespace pathplanner;
 // #define KP_LOCK 0.2f
 #define KP_LIMELIGHT 0.7f
 
-#define KPX 30.0f //50
+#define KPX 0.0f // 30
 #define KIX 0.0f //0
 #define KDX 0.0f //.1
 #define KFX 0.0f
 
-#define KPT 15.0f //15
+#define KPT 0.0f //15
 #define KIT 0.0f
 #define KDT 0.0f
 #define KFT 0.0f
@@ -51,6 +51,7 @@ using namespace pathplanner;
 #define DRIVE_K_D 0.0f
 #define DRIVE_K_F 0.000168f
 #define DRIVE_K_E 0.1f
+#define DRIVE_K_AFF 0.1f
 
 #define DRIVE_K_VEL 5.0f
 #define DRIVE_K_ACC_MUL 0.1f
@@ -150,6 +151,7 @@ void Drivetrain::configSwerveModule(int i)
     drivePID.D = DRIVE_K_D;
     drivePID.F = DRIVE_K_F;
     drivePID.error = DRIVE_K_E;
+    drivePID.aFF = DRIVE_K_AFF;
 
     driveControllers.push_back(new SwerveDriveMotor(CANIDs::DRIVE_CANS[i],
                                                     valor::NeutralMode::Coast,

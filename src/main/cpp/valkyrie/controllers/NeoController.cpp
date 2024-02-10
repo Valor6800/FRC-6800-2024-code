@@ -10,7 +10,8 @@ NeoController::NeoController(int canID,
     pidController(motor->GetPIDController()),
     encoder(motor->GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor, 42)),
     extEncoder(motor->GetAbsoluteEncoder(rev::SparkAbsoluteEncoder::Type::kDutyCycle)),
-    currentPidSlot(0)
+    currentPidSlot(0),
+    kAFF(0)
 {
     init();
 }
@@ -55,6 +56,7 @@ void NeoController::setReverseLimit(double reverse)
 
 void NeoController::setPIDF(valor::PIDF pidf, int slot)
 {
+    kAFF = pidf.aFF;
     pidController.SetP(pidf.P, slot);
     pidController.SetI(pidf.I, slot);
     pidController.SetD(pidf.D, slot);
@@ -150,7 +152,7 @@ void NeoController::setProfile(int profile)
  */
 void NeoController::setSpeed(double speed)
 {
-    pidController.SetReference(speed / conversion * 60.0, rev::CANSparkMax::ControlType::kVelocity, currentPidSlot, 0.11);
+    pidController.SetReference(speed / conversion * 60.0, rev::CANSparkMax::ControlType::kVelocity, currentPidSlot, kAFF);
 }
 
 void NeoController::setPower(double power)

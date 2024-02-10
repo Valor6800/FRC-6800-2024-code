@@ -56,6 +56,7 @@ private:
     rev::SparkPIDController pidController;
     rev::SparkRelativeEncoder encoder;
     rev::SparkAbsoluteEncoder extEncoder;
+    double kAFF;
 
     int currentPidSlot;
 };

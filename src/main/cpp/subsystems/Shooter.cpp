@@ -209,7 +209,7 @@ void Shooter::analyzeDashboard()
 
 void Shooter::assignOutputs()
 {
-    leftFlywheelMotor.setSpeed(state.flywheelTargetVelocity.to<double>());
+    // leftFlywheelMotor.\setSpeed(state.flywheelTargetVelocity.to<double>());
 }
 
 units::degree_t Shooter::calculatePivotAngle(){
