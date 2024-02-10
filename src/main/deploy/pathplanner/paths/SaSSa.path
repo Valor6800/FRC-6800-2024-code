@@ -3,32 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.890018068152122,
-        "y": 5.572019226189894
+        "x": 5.985716987795153,
+        "y": 6.393448851410923
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.551635586203865,
-        "y": 5.619855720766129
+        "x": 7.0757775587583085,
+        "y": 6.470695864773584
       },
       "isLocked": false,
-      "linkedName": "Rex"
+      "linkedName": "Score amp"
     },
     {
       "anchor": {
-        "x": 8.295225887582184,
-        "y": 7.451375927353718
+        "x": 8.278065043134294,
+        "y": 5.799532045278033
       },
       "prevControl": {
-        "x": 6.619340211264334,
-        "y": 7.15645083109466
+        "x": 7.236520196347684,
+        "y": 5.785497976594912
       },
       "nextControl": {
-        "x": 9.391667896217642,
-        "y": 7.644329581358191
+        "x": 9.378488311078662,
+        "y": 5.814359458394695
       },
       "isLocked": false,
-      "linkedName": "Northstar"
+      "linkedName": "Scorch"
     },
     {
       "anchor": {
@@ -36,8 +36,8 @@
         "y": 6.393448851410923
       },
       "prevControl": {
-        "x": 7.063606641014808,
-        "y": 6.897848210751064
+        "x": 8.210193813099576,
+        "y": 6.415375308131369
       },
       "nextControl": null,
       "isLocked": false,
@@ -51,7 +51,7 @@
       "name": "Intake",
       "waypointRelativePos": 0.65,
       "command": {
-        "type": "sequential",
+        "type": "parallel",
         "data": {
           "commands": [
             {
@@ -65,8 +65,8 @@
       }
     },
     {
-      "name": "Stop shooting",
-      "waypointRelativePos": 0.15,
+      "name": "Disable intake",
+      "waypointRelativePos": 1.4,
       "command": {
         "type": "parallel",
         "data": {
@@ -74,13 +74,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Disable feeder"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "Disable shooter"
+                "name": "Disable intake"
               }
             }
           ]
@@ -88,32 +82,59 @@
       }
     },
     {
-      "name": "Disable intake",
-      "waypointRelativePos": 1.65,
+      "name": "Shoot seq",
+      "waypointRelativePos": 0.0,
       "command": {
         "type": "parallel",
         "data": {
-          "commands": []
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot sequence-feeder"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot sequence-shooter"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Spool",
+      "waypointRelativePos": 1.7,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Spool"
+              }
+            }
+          ]
         }
       }
     }
   ],
   "globalConstraints": {
     "maxVelocity": 4.5,
-    "maxAcceleration": 3.75,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 360.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 11.123322864354702,
+    "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "SecondPick",
-  "previewStartingState": {
-    "rotation": 0.48270900209396905,
-    "velocity": 0
-  },
-  "useDefaultConstraints": true
+  "folder": "Pick chain",
+  "previewStartingState": null,
+  "useDefaultConstraints": false
 }
