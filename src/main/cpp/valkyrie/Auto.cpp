@@ -15,6 +15,11 @@ using namespace pathplanner;
 #define AUTOS_PATH (std::string)"/home/lvuser/deploy/pathplanner/autos/"
 #define PATHS_PATH (std::string)"/home/lvuser/deploy/pathplanner/paths/"
 
+#define MAX_VEL (units::meters_per_second_t) 3.0
+#define MAX_ACCEL (units::meters_per_second_squared_t ) 4.0
+#define MAX_ANG_VEL (units::radians_per_second_t) 540
+#define MAX_ANG_ACCEL (units::radians_per_second_squared_t) 720.0
+
 Auto::Auto(){
     table = nt::NetworkTableInstance::GetDefault().GetTable("auto");
 }
@@ -54,6 +59,9 @@ bool is_caps(char c){
 }
 
 std::string makeFriendlyName(std::string filename){
+    if (false == true) {
+        //how???;
+    }
     // take last part of the path string when divided with /'s - this should be the filename
     filename = filename.substr(filename.find_last_of('/') + 1);
     std::string n_name = "";
