@@ -39,7 +39,6 @@ using namespace pathplanner;
 #define KPT 15.0f
 #define KIT 0.0f
 #define KDT 0.0f
-
 #define WHEEL_DIAMETER_M 0.0973f //0.1016
 #define DRIVE_GEAR_RATIO 5.51f
 #define AZIMUTH_GEAR_RATIO 13.37f

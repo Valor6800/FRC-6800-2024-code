@@ -78,9 +78,6 @@ void NeoController::setPIDF(valor::PIDF pidf, int slot)
 void NeoController::setConversion(double _conversion)
 {
     conversion = _conversion;
-    encoder.SetPositionConversionFactor(conversion);
-    // convert from minutes to seconds for velocity
-    encoder.SetVelocityConversionFactor(conversion / 60.0);
    
 }
 
@@ -107,7 +104,7 @@ double NeoController::getCurrent()
  */
 double NeoController::getPosition()
 {
-    return encoder.GetPosition();
+    return encoder.GetPosition() * conversion;
 }
 
 /**
@@ -123,7 +120,7 @@ int NeoController::getProfile()
  */
 double NeoController::getSpeed()
 {
-    return encoder.GetVelocity();
+    return encoder.GetVelocity() * conversion / 60; 
 }
 
 void NeoController::setVoltageCompensation(double volts)
@@ -146,7 +143,7 @@ double NeoController::getAbsEncoderPosition()
  */
 void NeoController::setPosition(double position)
 {
-    pidController.SetReference(position, rev::CANSparkMax::ControlType::kSmartMotion, currentPidSlot);
+    pidController.SetReference(position / conversion, rev::CANSparkMax::ControlType::kSmartMotion, currentPidSlot);
 }
 
 void NeoController::setProfile(int profile)
