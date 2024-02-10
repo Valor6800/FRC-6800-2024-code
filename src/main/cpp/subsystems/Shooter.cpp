@@ -144,11 +144,11 @@ void Shooter::analyzeDashboard()
             break;
 
         case NOT_SHOOTING:
-            state.flywheelTargetVelocity = units::revolutions_per_minute_t(table->PutNumber("Flywheel Standby RPM", STANDBY_POWER.to<double>()));
+            state.flywheelTargetVelocity = units::revolutions_per_minute_t(table->GetNumber("Flywheel Standby RPM", STANDBY_POWER.to<double>()));
             break;
 
         default:
-            state.flywheelTargetVelocity = units::revolutions_per_minute_t(table->PutNumber("Flywheel Spool RPM", SPOOL_POWER.to<double>()));
+            state.flywheelTargetVelocity = units::revolutions_per_minute_t(table->GetNumber("Flywheel Spool RPM", SPOOL_POWER.to<double>()));
             break;
     }
 }
