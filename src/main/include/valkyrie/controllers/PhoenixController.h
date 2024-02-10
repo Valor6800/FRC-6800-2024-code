@@ -17,6 +17,7 @@ public:
     void init();
 
     void reset();
+    void setNeutralMode(ctre::phoenix6::configs::MotorOutputConfigs& config, valor::NeutralMode mode);
     void setNeutralMode(valor::NeutralMode mode);
 
     double getPosition();

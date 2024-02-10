@@ -76,9 +76,7 @@ void PhoenixController::init(double gearRatio, valor::PIDF pidf)
     configs::TalonFXConfiguration config;
 
     config.MotorOutput.Inverted = inverted;
-    config.MotorOutput.NeutralMode = neutralMode == valor::NeutralMode::Brake ?
-        signals::NeutralModeValue::Brake :
-        signals::NeutralModeValue::Coast;
+    setNeutralMode(config.MotorOutput, neutralMode);
 
     // Current limiting configuration
     config.CurrentLimits.StatorCurrentLimit = STATOR_CURRENT_LIMIT;
@@ -112,7 +110,6 @@ void PhoenixController::setupFollower(int canID, bool followerInverted)
 {
     followerMotor = new hardware::TalonFX(canID);
     followerMotor->SetControl(controls::Follower{motor->GetDeviceID(), followerInverted});
-    setNeutralMode(BaseController::neutralMode);
 }
 
 void PhoenixController::setForwardLimit(double forward)
@@ -268,15 +265,19 @@ double PhoenixController::getAbsEncoderPosition()
     return 0;
 }
 
-void PhoenixController::setNeutralMode(valor::NeutralMode mode)
+void PhoenixController::setNeutralMode(configs::MotorOutputConfigs & config, valor::NeutralMode mode)
 {
     neutralMode = mode;
-    configs::MotorOutputConfigs config{};
     config.NeutralMode = neutralMode == valor::NeutralMode::Brake ?
         signals::NeutralModeValue::Brake :
         signals::NeutralModeValue::Coast;
+}
+
+void PhoenixController::setNeutralMode(valor::NeutralMode mode)
+{
+    configs::MotorOutputConfigs config{};
+    setNeutralMode(config, mode);
     motor->GetConfigurator().Apply(config);
-    
 }
 
 void PhoenixController::setOpenLoopRamp(double time)
