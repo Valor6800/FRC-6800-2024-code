@@ -233,6 +233,21 @@ public:
 
      frc2::FunctionalCommand* getResetOdom();
 
+     double getDriveMaxSpeed();
+     double getAutoMaxSpeed();
+     double getAutoMaxAcceleration();
+     double getRotationMaxSpeed();
+     /**
+      * @brief Returns the current acceleration of the robot (x or y)
+      * @param type Represents X or Y Direction, X is true, Y is false
+     */
+     units::acceleration::meters_per_second_squared_t getAcceleration(bool type);
+     /**
+      * @brief Returns the current acceleration of the robot (x or y) based on the swerve motors
+      * @param type Represents the X or Y Direction, X is true, Y is false
+     */
+     units::velocity::meters_per_second_t getVelocity(bool type);
+     double getRotationMaxAcceleration();
      void setAlignmentAngle(Drivetrain::Alignment align);
      void getSpeakerLockAngleRPS();
      units::radian_t getAngleError();

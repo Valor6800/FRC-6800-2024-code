@@ -39,10 +39,16 @@ public:
 
     void getTargetPivotAngle(bool laser);
     void getArcTargetPivotAngle();
+    /**
+     * @brief Returns the projectile speed in the x-direction or the y-direction
+     * @param type A boolean to represent direction, X is true, Y is false
+    */
+    units::velocity::meters_per_second_t getProjectileSpeed(bool type);
+    void calculateShootingMovingAngle();
     units::radian_t getPivotErrorAngle();
-
-    void calculateRootsT();
-    void bisectionTheorem();
+    double solveCubic(double a, double b, double c, double d);
+    double solveQuartic(double a, double b, double c, double d, double e);
+    double calculateRootsT(double accX, double accY, double velX, double velY, double posX, double posY);
     
     void InitSendable(wpi::SendableBuilder& builder);
 

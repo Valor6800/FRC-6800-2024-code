@@ -73,6 +73,7 @@ using namespace pathplanner;
 #define RED_LEFT_TRAP_ROT_ANGLE 2.16421f
 #define RED_CENTER_TRAP_ROT_ANGLE 0.0f
 #define RED_LOCK_ANGLE 3.14159f
+#define VELOCITY_QUEUE_SIZE 7
 
 Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Drivetrain"),
                         rotMaxSpeed(ROT_SPEED_MUL * 2 * M_PI),
@@ -458,6 +459,47 @@ frc::Pose2d Drivetrain::getPose_m()
 
 frc::Pose2d Drivetrain::getCalculatedPose_m(){
     return calculatedEstimator->GetEstimatedPosition();
+}
+
+units::acceleration::meters_per_second_squared_t Drivetrain::getAcceleration(bool type){
+    double accelerationX[VELOCITY_QUEUE_SIZE];
+    double accelerationY[VELOCITY_QUEUE_SIZE];
+    double totalSpeed = 0;
+    for (valor::Swerve<Drivetrain::SwerveAzimuthMotor, Drivetrain::SwerveDriveMotor>* drive : swerveModules) {
+        totalSpeed +=  (drive->getState().speed).to<double>();
+    }
+    double averageSpeed = totalSpeed / SWERVE_COUNT;
+    double heading = (calculatedEstimator->GetEstimatedPosition().Rotation().Radians()).to<double>();
+    double velocityX = cos(heading) * averageSpeed;
+    double velocityY = sin(heading) * averageSpeed;
+    for(int i = 0; i <= VELOCITY_QUEUE_SIZE; i++){
+        accelerationX[i + 1] = accelerationX[i];
+        accelerationY[i + 1] = accelerationY[i];
+    }
+    accelerationX[0] = velocityX;
+    accelerationY[0] = velocityY;
+    if(type){
+        return units::acceleration::meters_per_second_squared_t(accelerationX[0]);
+    }
+    else{
+        return units::acceleration::meters_per_second_squared_t(accelerationY[0]);
+    }
+}
+
+units::velocity::meters_per_second_t Drivetrain::getVelocity(bool type){
+    double totalSpeed = 0;
+    for (valor::Swerve<Drivetrain::SwerveAzimuthMotor, Drivetrain::SwerveDriveMotor>* drive : swerveModules) {
+        totalSpeed +=  (drive->getState().speed).to<double>();
+    }
+    double averageSpeed = totalSpeed / SWERVE_COUNT;
+    double heading = (calculatedEstimator->GetEstimatedPosition().Rotation().Radians()).to<double>();
+    
+    if(type){
+        return units::velocity::meters_per_second_t(cos(heading) * averageSpeed);
+    }
+    else{
+        return units::velocity::meters_per_second_t(sin(heading) * averageSpeed);
+    }
 }
 
 void Drivetrain::resetGyro(){

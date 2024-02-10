@@ -1,5 +1,4 @@
 #include "subsystems/Shooter.h"
-<<<<<<< HEAD
 #include "Constants.h"
 #include "units/angular_velocity.h"
 #include <frc/DriverStation.h>
@@ -35,17 +34,10 @@
 #define FLYWHEEL_ROTATE_FORWARD_LIMIT 90.0_deg
 #define FLYWHEEL_ROTATE_REVERSE_LIMIT 0.0_deg
 
-<<<<<<< HEAD
 #define FLYWHEEL_DEFAULT_VELOCITY 0.0f
 #define FLYWHEEL_VELOCITY_KP 0.6f
 #define FLYWHEEL_VELOCITY_SPOOLING 200.0f
 #define FLYWHEEL_VELOCITY_SHOOTING 2000.0f
-=======
-#define PIVOT_GEAR_RATIO 238.14f
-#define SHOOTER_ROTATE_FORWARD_LIMIT 90.0_deg
-#define SHOOTER_ROTATE_REVERSE_LIMIT 0.0_deg
-#define TICKS_PER_REVOLUTION 42.0f
->>>>>>> 7f170a4 (Added pivot PID)
 
 #define SPEAKER_Y 5.543042_m
 #define SPEAKER_BLUE_X 0.0_m
@@ -55,8 +47,9 @@
 #define SPEAKER_HEIGHT 2.0431125f
 #define SPEAKER_Z_OFFSET 0.0f
 
-#define SHOOTER_SPEED 7.0f
+#define PROJECTILE_SPEED 7.0f
 #define GRAVITY 9.81f
+#define SHOOTER_Z_OFFSET 0.0f
 
 #define PIVOT_SUBWOOFER_POSITION 0.0f
 #define PIVOT_PODIUM_POSITION 0.00f
@@ -77,7 +70,6 @@ Shooter::Shooter(frc::TimedRobot *_robot, frc::DigitalInput* _beamBreak, Drivetr
 void Shooter::resetState()
 {
     state.flywheelState = FLYWHEEL_STATE::NOT_SHOOTING;
-<<<<<<< HEAD
     state.pivotState = PIVOT_STATE::SUBWOOFER;
     state.leftFlywheelTargetVelocity = units::angular_velocity::revolutions_per_minute_t(0);
     state.rightFlywheelTargetVelocity = units::angular_velocity::revolutions_per_minute_t(0);
@@ -93,7 +85,6 @@ void Shooter::init()
     pivotPID.aFF = PIVOT_ROTATE_K_AFF;
     pivotPID.aFFTarget = PIVOT_ROTATE_K_AFF_POS;
 
-<<<<<<< HEAD
     valor::PIDF flywheelPID;
     flywheelPID.maxVelocity = FLYWHEEL_ROTATE_K_VEL;
     flywheelPID.maxAcceleration = FLYWHEEL_ROTATE_K_ACC;
@@ -108,12 +99,6 @@ void Shooter::init()
     // pivotMotors.setForwardLimit(SHOOTER_ROTATE_FORWARD_LIMIT.to<double>());
     // pivotMotors.setReverseLimit(SHOOTER_ROTATE_REVERSE_LIMIT.to<double>());
     // pivotMotors.setPIDF(pivotPID, 0);
-=======
-    pivotMotor.setConversion(PIVOT_GEAR_RATIO*TICKS_PER_REVOLUTION / 2*M_PI);
-    pivotMotor.setForwardLimit(SHOOTER_ROTATE_FORWARD_LIMIT.to<double>());
-    pivotMotor.setReverseLimit(SHOOTER_ROTATE_REVERSE_LIMIT.to<double>());
-    pivotMotor.setPIDF(pivotPID, 0);
->>>>>>> 7f170a4 (Added pivot PID)
 
     table->PutNumber("Left Flywheel Shoot RPM", LEFT_SHOOT_POWER);
     table->PutNumber("Left Flywheel Spool RPM", LEFT_SPOOL_POWER);
@@ -131,12 +116,8 @@ void Shooter::assessInputs()
     if (driverGamepad == nullptr || operatorGamepad == nullptr ||
         !driverGamepad->IsConnected() || !operatorGamepad->IsConnected())
         return;
-
     //SHOOT LOGIC
     if (driverGamepad->rightTriggerActive() || operatorGamepad->rightTriggerActive()) {
-=======
-    if (driverGamepad->rightTriggerActive()) {
->>>>>>> 7f170a4 (Added pivot PID)
         state.flywheelState = FLYWHEEL_STATE::SHOOTING;
     }
     else if (operatorGamepad->leftTriggerActive()) {
@@ -287,7 +268,7 @@ void Shooter::getTargetPivotAngle(bool laser){
             double changeInX = robotX.to<double>() - SPEAKER_RED_X.to<double>();
             distance = sqrtf(pow(changeInX, 2) + pow(changeInY, 2));
         }
-        double angle = atan2(pow(SHOOTER_SPEED, 2) - sqrt(pow(SHOOTER_SPEED, 4) - (GRAVITY*(GRAVITY*pow(distance, 2) + 2*SPEAKER_HEIGHT*pow(SHOOTER_SPEED, 2)))), GRAVITY*distance);
+        double angle = atan2(pow(PROJECTILE_SPEED, 2) - sqrt(pow(PROJECTILE_SPEED, 4) - (GRAVITY*(GRAVITY*pow(distance, 2) + 2*SPEAKER_HEIGHT*pow(PROJECTILE_SPEED, 2)))), GRAVITY*distance);
         state.targetPivotAngle = units::radian_t(angle);
     }
 }
@@ -305,8 +286,34 @@ void Shooter::getArcTargetPivotAngle(){
         double changeInX = robotX.to<double>() - SPEAKER_RED_X.to<double>();
         distance = sqrtf(pow(changeInX, 2) + pow(changeInY, 2));
     }
-    double angle = atan2(pow(SHOOTER_SPEED, 2) - sqrt(pow(SHOOTER_SPEED, 4) - (GRAVITY*(GRAVITY*pow(distance, 2) + 2*SPEAKER_HEIGHT*pow(SHOOTER_SPEED, 2)))), GRAVITY*distance);
+    double angle = atan2(pow(PROJECTILE_SPEED, 2) - sqrt(pow(PROJECTILE_SPEED, 4) - (GRAVITY*(GRAVITY*pow(distance, 2) + 2*SPEAKER_HEIGHT*pow(PROJECTILE_SPEED, 2)))), GRAVITY*distance);
     state.targetPivotAngle = units::radian_t(angle);
+}
+
+units::velocity::meters_per_second_t Shooter::getProjectileSpeed(bool type){
+    if(type){
+        return units::velocity::meters_per_second_t(PROJECTILE_SPEED*cos(state.pivotAngle.to<double>()));
+    }
+    else{
+        return units::velocity::meters_per_second_t(PROJECTILE_SPEED*sin(state.pivotAngle.to<double>()));
+    }
+}
+
+void Shooter::calculateShootingMovingAngle(){
+    double accX = drivetrain->getAcceleration(true).to<double>();
+    double accY = drivetrain->getAcceleration(false).to<double>();
+    double velX = drivetrain->getVelocity(true).to<double>();
+    double velY = drivetrain->getVelocity(false).to<double>();
+    double posX = drivetrain->getCalculatedPose_m().X().to<double>();
+    double posY = drivetrain->getCalculatedPose_m().Y().to<double>();
+    double posZ = table->GetNumber("Shooter Z Offset", SHOOTER_Z_OFFSET);
+
+    double time = calculateRootsT(accX, accY, velX, velY, posX, posY);
+    double chgX = posX + velX*time + 0.5*accX*time;
+    double chgY = posY + velY*time + 0.5*accY*time;
+    double h = SPEAKER_HEIGHT - posZ;
+    double pivotAngle = atan2(h, sqrt(pow(chgX, 2) + pow(chgY, 2)));
+    state.targetPivotAngle = units::angle::radian_t(pivotAngle);
 }
 
 units::radian_t Shooter::getPivotErrorAngle(){
@@ -314,12 +321,68 @@ units::radian_t Shooter::getPivotErrorAngle(){
 }
 
 
-void Shooter::calculateRootsT(){
-    // add future code for solving roots of the quartic that results from the vector expression
+double Shooter::calculateRootsT(double accX, double accY, double velX, double velY, double posX, double posY){
+    double A = 0.25 * (pow(accX, 2) + pow(accY, 2));
+    double B = (accX * velX) + (accY * velY);
+    double C = pow(velX, 2) + (posX*accX) + pow(velY, 2) + (posY*accY) - pow(PROJECTILE_SPEED, 2);
+    double D = 2 * (posX * velX + posY * velY);
+    double E = pow(posX, 2) + pow(posY, 2);
+
+    return solveQuartic(A, B, C, D, E);
 }
 
-void Shooter::bisectionTheorem(){
-    // neccessary for calculateRootsT where the bisection method is used to estimate these values
+double Shooter::solveCubic(double a, double b, double c, double d){
+    if(a == 0){
+        return -1;
+    }
+    double p = -b/(3*a);
+    double q = pow(p, 3) + (b*c - 3*a*d)/(6*pow(a, 2));
+    double r = c/(3*a);
+
+    double r1 = pow(pow(q, 2) + pow(r - pow(p, 2), 3), 0.5);
+    double q1 = pow(q + r1, 1.0/3.0);
+    double q2 = pow(q - r1, 1.0/3.0);
+    double root = q1 + q2 + p;
+    return root;
+}
+
+double Shooter::solveQuartic(double a1, double b1, double c1, double d1, double e1){
+    if(a1 == 0){
+        return solveCubic(b1, c1, d1, e1);
+    }
+    double a = b1/a1;
+    double b = c1/a1;
+    double c = d1/a1;
+    double d = e1/a1;
+
+    double p = b - (3*pow(a, 2))/8;
+    double q = c - ((a*b)/2) + (pow(a, 3)/8);
+    double r = d - ((a*c)/4) + ((pow(a, 2)*b)/16) - (3*pow(a, 4)/256);
+    double g = solveCubic(1, 2*p, pow(p, 2) - 4*r, -pow(q, 2));
+
+    if(g < 0){
+        return -1.0;
+    }
+
+    double s1 = g - (2*(p + g + (q/sqrt(g))));
+
+    if(s1 < 0){
+        return -1.0;
+    }
+
+    double x1 = (-sqrt(g) + sqrt(s1))/(2) - (a/4);
+    double x2 = (-sqrt(g) - sqrt(s1))/(2) - (a/4);
+    double x3 = (sqrt(g) + sqrt(s1))/(2) - (a/4);
+    double x4 = (sqrt(g) - sqrt(s1))/(2) - (a/4);
+
+    double solutions[] = {x1, x2, x3, x4};
+    double smallest = 900;
+    for(int i = 0; i <= 4; i++){
+        if(solutions[i] < smallest){
+            smallest = solutions[i];
+        }
+    }
+    return smallest;
 }
 
 void Shooter::InitSendable(wpi::SendableBuilder& builder){
