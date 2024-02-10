@@ -16,6 +16,12 @@
 #include "frc/geometry/Rotation3d.h"
 #include "units/angle.h"
 
+#include <pathplanner/lib/auto/NamedCommands.h>
+
+#include <frc2/command/SequentialCommandGroup.h>
+#include <frc2/command/InstantCommand.h>
+#include <frc2/command/WaitCommand.h>
+
 using namespace pathplanner;
 
 #define SPEAKER_Y 5.543042_m
@@ -90,6 +96,15 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
+    NamedCommands::registerCommand("Drive to point", std::move(
+        frc2::SequentialCommandGroup(
+            frc2::InstantCommand(
+                [this] () {
+                    getPathFindToPose((frc::Pose2d(2.89_m, 6.99_m, frc::Rotation2d(19.45_deg))), 2_mps, 0_m);
+                }
+            )
+        )
+    ).ToPtr());
 }
 
 Drivetrain::~Drivetrain()
