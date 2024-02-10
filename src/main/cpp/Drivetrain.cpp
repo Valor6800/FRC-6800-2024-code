@@ -515,6 +515,14 @@ void Drivetrain::drive(units::velocity::meters_per_second_t vx_mps, units::veloc
 void Drivetrain::driveRobotRelative(frc::ChassisSpeeds speeds) {
     auto desiredStates = getModuleStates(speeds);
     setSwerveDesiredState(desiredStates, false);
+    std::vector<double> sStates;
+    for (size_t i = 0; i < swerveModules.size(); i++)
+    {
+        swerveModules[i]->setDesiredState(desiredStates[i], true);
+        sStates.push_back(desiredStates[i].angle.Degrees().to<double>());
+        sStates.push_back(desiredStates[i].speed.to<double>());
+    }
+    table->PutNumberArray("target swerves", sStates);
 }
 
 wpi::array<frc::SwerveModuleState, SWERVE_COUNT> Drivetrain::getModuleStates(units::velocity::meters_per_second_t vx_mps,
@@ -760,6 +768,23 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
                 states.push_back(swerveModules[2]->getState().speed.to<double>());
                 states.push_back(swerveModules[3]->getState().angle.Degrees().to<double>());
                 states.push_back(swerveModules[3]->getState().speed.to<double>());
+                return states;
+            },
+            nullptr
+        );
+        builder.AddDoubleArrayProperty(
+            "swerve azimuths",
+            [this] 
+            { 
+                std::vector<double> states;
+                for (int i = 0; i < 4; i++){
+                    double ang = swerveModules[0]->getState().angle.Degrees().to<double>();
+                    while (ang < 0)
+                        ang += 180;
+                    while (ang > 180)
+                        ang -= 180;
+                    states.push_back(ang);
+                }
                 return states;
             },
             nullptr
