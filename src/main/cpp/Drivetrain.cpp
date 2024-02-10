@@ -28,7 +28,7 @@ using namespace pathplanner;
 // #define KP_LOCK 0.2f
 #define KP_LIMELIGHT 0.7f
 
-#define KPX 30.0f //50
+#define KPX 0.0f // 30
 #define KIX 0.0f //0
 #define KDX 0.0f //.1
 
