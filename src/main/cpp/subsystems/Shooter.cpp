@@ -24,7 +24,7 @@
 
 #define SUBWOOFER_ANG 30.0_deg
 #define PODIUM_ANG 45.0_deg
-#define STARTING_LINE_ANG 60.0_deg
+#define xING_LINE_ANG 60.0_deg
 
 #define LEFT_SHOOT_POWER 66.33f
 #define LEFT_SPOOL_POWER 50.0f
@@ -54,6 +54,13 @@
 #define PIVOT_SUBWOOFER_POSITION 0.0f
 #define PIVOT_PODIUM_POSITION 0.00f
 #define PIVOT_STARTING_LINE_POSITION 0.00f
+
+#define PIVOT_ROTATE_GEAR_RATIO 0.0
+#define PIVOT_ROTATE_FORWARD_LIMIT 0.0
+#define PIVOT_ROTATE_REVERSE_LIMIT 0.0
+
+#define ARBITRARY_LARGE_VALUE 10000000.0f
+#define EPSILON 0.00001f
 
 Shooter::Shooter(frc::TimedRobot *_robot, frc::DigitalInput* _beamBreak, Drivetrain *_drive) :
     valor::BaseSubsystem(_robot, "Shooter"),
@@ -94,10 +101,10 @@ void Shooter::init()
     rightFlywheelMotor.setConversion(1);
     rightFlywheelMotor.setPIDF(flywheelPID, 0);
     
-    // pivotMotors.setConversion(1.0 / SHOOTER_ROTATE_GEAR_RATIO * 360);
-    // pivotMotors.setForwardLimit(SHOOTER_ROTATE_FORWARD_LIMIT.to<double>());
-    // pivotMotors.setReverseLimit(SHOOTER_ROTATE_REVERSE_LIMIT.to<double>());
-    // pivotMotors.setPIDF(pivotPID, 0);
+    pivotMotor.setConversion(1.0 / PIVOT_ROTATE_GEAR_RATIO * 360);
+    pivotMotor.setForwardLimit(PIVOT_ROTATE_FORWARD_LIMIT);
+    pivotMotor.setReverseLimit(PIVOT_ROTATE_REVERSE_LIMIT);
+    pivotMotor.setPIDF(pivotPID, 0);
 
     table->PutNumber("Left Flywheel Shoot RPM", LEFT_SHOOT_POWER);
     table->PutNumber("Left Flywheel Spool RPM", LEFT_SPOOL_POWER);
@@ -115,7 +122,6 @@ void Shooter::assessInputs()
     if (driverGamepad == nullptr || operatorGamepad == nullptr ||
         !driverGamepad->IsConnected() || !operatorGamepad->IsConnected())
         return;
-    //SHOOT LOGIC
     if (driverGamepad->rightTriggerActive() || operatorGamepad->rightTriggerActive()) {
         state.flywheelState = FLYWHEEL_STATE::SHOOTING;
     }
@@ -135,27 +141,31 @@ void Shooter::assessInputs()
     else if (operatorGamepad->GetAButton()) {
         state.pivot = PIVOT_STATE::TRACKING;    
     }
+    else if (operatorGamepad->GetBButton()){
+        state.pivot = PIVOT_STATE::SUBWOOFER;
+    }
 }
 
 void Shooter::analyzeDashboard()
 {
-    state.pivotAngle = 0.0_deg;
+    switch(state.pivot){
+        case PODIUM:
+            state.targetPivotAngle = units::radian_t(PIVOT_PODIUM_POSITION);
+            break;
+        
+        case STARTING_LINE:
+            state.targetPivotAngle = units::radian_t(PIVOT_STARTING_LINE_POSITION);
+            break;
+        
+        case TRACKING:
+            getTargetPivotAngle(true);
+            break;
 
-    //NEED PIVOT MOTOR
-    // if(state.targetPivotAngle == PivotState::SUBWOOFER){
-    //     pivotMotors.setPosition(SUBWOOFER_ANG.to<double>());
-    // }
-    // else if(state.targetPivotAngle == PivotState::PODIUM){
-    //     pivotMotors.setPosition(PODIUM_ANG.to<double>());
-    // }
-    // else if(state.targetPivotAngle == PivotState::STARTING_LINE){
-    //     pivotMotors.setPosition(STARTING_LINE_ANG.to<double>());
-    // }
-    // else if(state.targetPivotAngle == PivotState::TRACKING){
-    //     pivotMotors.setPosition(calculatingPivotingAngle.to<double>());
-    // }
+        default:
+            state.targetPivotAngle = units::radian_t(PIVOT_SUBWOOFER_POSITION);
+            break;
+    }
 
-    //SHOOTER
     switch (state.flywheelState) {
 
         case SHOOTING:
@@ -277,23 +287,26 @@ double Shooter::calculateRootsT(double accX, double accY, double velX, double ve
     return solveQuartic(A, B, C, D, E);
 }
 
-double Shooter::solveQuadratic(double a, double b, double c){
+std::pair<double, double> Shooter::solveQuadratic(double a, double b, double c){
+    std::pair<double, double> sol;
     if(a == 0){
-        return -c/b;
+        return sol = std::pair(0, 0);
     }
 
     double desCrim = pow(b, 2) - 4*a*c;
 
     if(desCrim < 0){
-        return -1;
+        return std::pair(0, 0);
     }
 
     double x1 = (-b + sqrt(desCrim)) / (2*a);
     double x2 = (-b - sqrt(desCrim)) / (2*a);
-    return x1, x2;
+    sol = std::pair(x1, x2);
+    return sol;
 }
 
-double Shooter::solveCubic(double a, double b, double c, double d){
+std::pair<double, double> Shooter::solveCubic(double a, double b, double c, double d){
+    std::pair<double, double> sol;
     if(a == 0){
         return solveQuadratic(b, c, d);
     }
@@ -301,6 +314,10 @@ double Shooter::solveCubic(double a, double b, double c, double d){
     double p = -b/(3*a);
     double q = pow(p, 3) + (b*c - 3*a*d)/(6*pow(a, 2));
     double r = c/(3*a);
+
+    if(pow(q, 2) + pow(r - pow(p, 2) < 0, 3)){
+        return sol = std::pair(0, 0);
+    }
 
     double r1 = pow(pow(q, 2) + pow(r - pow(p, 2), 3), 0.5);
     double r2 = -pow(pow(q, 2) + pow(r - pow(p, 2), 3), 0.5);
@@ -314,12 +331,20 @@ double Shooter::solveCubic(double a, double b, double c, double d){
     double root1 = q1 + q2 + p;
     double root2 = q3 + q4 + p;
 
-    return root1, root2;
+    sol = std::pair(root1, root2);
+    return sol;
 }
 
 double Shooter::solveQuartic(double a1, double b1, double c1, double d1, double e1){
+    std::pair<double, double> gs;
     if(a1 == 0){
-        return solveCubic(b1, c1, d1, e1);
+        gs = solveCubic(b1, c1, d1, e1);
+        if(gs.first < gs.second){
+            return gs.first;
+        }
+        else{
+            return gs.second;
+        }
     }
     
     double a = b1/a1;
@@ -330,7 +355,9 @@ double Shooter::solveQuartic(double a1, double b1, double c1, double d1, double 
     double p = b - (3*pow(a, 2))/8;
     double q = c - ((a*b)/2) + (pow(a, 3)/8);
     double r = d - ((a*c)/4) + ((pow(a, 2)*b)/16) - (3*pow(a, 4)/256);
-    double g1, g2 = solveCubic(1, 2*p, pow(p, 2) - 4*r, -pow(q, 2));
+    gs = solveCubic(1, 2*p, pow(p, 2) - 4*r, -pow(q, 2));
+    double g1 = gs.first;
+    double g2 = gs.second;
 
     if(g1 < 0 && g2 < 0){
         return -1.0;
@@ -354,13 +381,49 @@ double Shooter::solveQuartic(double a1, double b1, double c1, double d1, double 
     double x14 = (sqrt(g2) - sqrt(s2))/(2) - (a/4);
 
     double solutions[] = {x1, x2, x3, x4, x11, x12, x13, x14};
-    double smallest = 900;
+    double smallest = ARBITRARY_LARGE_VALUE;
     for(int i = 0; i <= 4; i++){
         if(solutions[i] < smallest){
             smallest = solutions[i];
         }
     }
     return smallest;
+}
+
+double Shooter::cubicFunction(double a, double b, double c, double d, double x){
+    return a*x*x*x + b*x*x + c*x + d;
+}
+
+double Shooter::deriveCubic(double a, double b, double c, double x){
+    return 3*a*x*x + 2*b*x + c;
+}
+
+double Shooter::quarticFunction(double a, double b, double c, double d, double e, double x){
+    return a*x*x*x*x + b*x*x*x + c*x*x + d*x + e;
+}
+
+double Shooter::deriveQuartic(double a, double b, double c, double d, double x){
+    return cubicFunction(4*a, 3*b, 2*c, d, x);
+}
+
+double Shooter::solveCubicNewtonMethod(double a, double b, double c, double d, double x){
+    double h = cubicFunction(a, b, c, d, x) / deriveCubic(a, b, c, x);
+    while(abs(h) >= EPSILON){
+        h = cubicFunction(a, b, c, d, x) / deriveCubic(a, b, c, x);
+
+        x -= h;
+    }
+    return x;
+}
+
+double Shooter::solveQuarticNewtonMethod(double a, double b, double c, double d, double e, double x){
+    double h = quarticFunction(a, b, c, d, e, x) / deriveQuartic(a, b, c, d, x);
+    while(abs(h) >= EPSILON){
+        h = quarticFunction(a, b, c, d, e, x) / deriveQuartic(a, b, c, d, x);
+
+        x -= h;
+    }
+    return x;
 }
 
 void Shooter::InitSendable(wpi::SendableBuilder& builder){
@@ -392,6 +455,30 @@ void Shooter::InitSendable(wpi::SendableBuilder& builder){
     builder.AddDoubleProperty(
         "Left Flywheel target velocity",
         [this] {return state.rightFlywheelTargetVelocity.to<double>();},
+        nullptr
+    );
+
+    builder.AddDoubleProperty(
+        "Pivot target angle",
+        [this] {return state.targetPivotAngle.to<double>();},
+        nullptr
+    );
+
+    builder.AddDoubleProperty(
+        "Current Pivot angle",
+        [this] {return state.pivotAngle.to<double>();},
+        nullptr
+    );
+
+    builder.AddDoubleProperty(
+        "Pivot target angle",
+        [this] {return state.targetPivotAngle.to<double>();},
+        nullptr
+    );
+
+    builder.AddDoubleProperty(
+        "Current Pivot angle",
+        [this] {return state.pivotAngle.to<double>();},
         nullptr
     );
 }

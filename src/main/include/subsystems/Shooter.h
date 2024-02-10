@@ -52,15 +52,21 @@ public:
      * @brief Returns the error angle between the target pivot angle and the current pivot angle
     */
     units::radian_t getPivotErrorAngle();
+    double cubicFunction(double a, double b, double c, double d, double x);
+    double deriveCubic(double a, double b, double c, double x);
+    double quarticFunction(double a, double b, double c, double d, double e, double x);
+    double deriveQuartic(double a, double b, double c, double d, double x);
     /**
      * @brief Returns the roots of a polynomial in form ax^2 + bx +c
      * @param a The first coefficient in a quadratic
      * @param b The second coefficient in a quadratic
      * @param c The third coefficient in a quadratic
     */
-    double solveQuadratic(double a, double b, double c);
-    double solveCubic(double a, double b, double c, double d);
+    std::pair<double, double> solveQuadratic(double a, double b, double c);
+    std::pair<double, double> solveCubic(double a, double b, double c, double d);
+    double solveCubicNewtonMethod(double a, double b, double c, double d, double start);
     double solveQuartic(double a, double b, double c, double d, double e);
+    double solveQuarticNewtonMethod(double a, double b, double c, double d, double e, double start);
     double calculateRootsT(double accX, double accY, double velX, double velY, double posX, double posY);
     
     void InitSendable(wpi::SendableBuilder& builder);
