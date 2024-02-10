@@ -44,6 +44,11 @@ using namespace pathplanner;
 #define AZIMUTH_GEAR_RATIO 13.37f
 #define ROT_SPEED_MUL 2.0f
 
+#define AUTO_MAX_VEL (units::meters_per_second_t) 3.0
+#define AUTO_MAX_ACCEL (units::meters_per_second_squared_t) 4.0
+#define AUTO_MAX_ANG_VEL (units::radians_per_second_t) 540
+#define AUTO_MAX_ANG_ACCEL (units::radians_per_second_squared_t) 720.0
+
 #define AUTO_VISION_THRESHOLD 4.0f //meters
 
 #define X_TIME 214.85f
@@ -632,6 +637,23 @@ frc2::InstantCommand* Drivetrain::getSetXMode(){
         setXMode();
     });
      return cmd_XMode;
+}
+
+PathConstraints constraints = PathConstraints(
+    AUTO_MAX_VEL,
+    AUTO_MAX_ACCEL,
+    AUTO_MAX_ANG_VEL,
+    AUTO_MAX_ANG_ACCEL
+);
+
+frc2::CommandPtr* getPathFindToPose(frc::Pose2d targetPose, units::meters_per_second_t endVelocity, units::meter_t rotDelay){
+    frc2::CommandPtr pathfindingCommand = AutoBuilder::pathfindToPose(
+        targetPose,
+        constraints,
+        endVelocity,
+        rotDelay
+    );
+    return &pathfindingCommand;
 }
 
 void Drivetrain::InitSendable(wpi::SendableBuilder& builder)

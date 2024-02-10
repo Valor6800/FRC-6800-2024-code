@@ -15,10 +15,6 @@ using namespace pathplanner;
 #define AUTOS_PATH (std::string)"/home/lvuser/deploy/pathplanner/autos/"
 #define PATHS_PATH (std::string)"/home/lvuser/deploy/pathplanner/paths/"
 
-#define MAX_VEL (units::meters_per_second_t) 3.0
-#define MAX_ACCEL (units::meters_per_second_squared_t ) 4.0
-#define MAX_ANG_VEL (units::radians_per_second_t) 540
-#define MAX_ANG_ACCEL (units::radians_per_second_squared_t) 720.0
 
 Auto::Auto(){
     table = nt::NetworkTableInstance::GetDefault().GetTable("auto");
