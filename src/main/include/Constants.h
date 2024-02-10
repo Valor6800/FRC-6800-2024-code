@@ -59,6 +59,7 @@ namespace DIOPorts {
 namespace CANIDs {
     constexpr static int DRIVE_CANS[4] = {2, 4, 6, 8};
     constexpr static int AZIMUTH_CANS[4] = {1, 3, 5, 7};
+    constexpr static int CANCODER_CANS[4] = {20, 21, 22, 23};
     constexpr static int PIGEON_CAN = 61;
     constexpr static int CANDLE = 60;
     constexpr static int INTERNAL_INTAKE = 13;
@@ -104,14 +105,14 @@ namespace Constants {
 
         static std::vector<double> swerveZeros(){ switch (teamNumber){
             case ALPHA_TEAM_NUMBER: return {0.3867, 0.8890, 0.0763, 0.610};
-            case SIDE_SWIPE_TEAM_NUMBER: return {0.3106, 0.4369, 0.4780, 0.7372}; // Temp value; TODO: Change it
-            default: return {0.3106, 0.4369, 0.4780, 0.7372}; // Temp value; TODO: Change it
+            case SIDE_SWIPE_TEAM_NUMBER: return {0.3106, 0.4369, 0.4780, 0.7372};
+            default: return {0.4240722, 0.857666, 0.46378, 0.078125};
         }};
 
         static units::meter_t moduleDiff(){ switch (teamNumber){
-            case ALPHA_TEAM_NUMBER: return 0.2413_m; 
-            case SIDE_SWIPE_TEAM_NUMBER: return 0.2_m; // Temp value; TODO: Change it
-            default: return 0.2_m; // Temp number; TODO: Change it
+            case ALPHA_TEAM_NUMBER: return 0.2413_m;
+            case SIDE_SWIPE_TEAM_NUMBER: return 0.2_m;
+            default: return 0.295_m;
         }};
         static units::meter_t driveBaseRadius(){ switch (teamNumber){
             case ALPHA_TEAM_NUMBER: return 0.36_m; 
@@ -121,13 +122,13 @@ namespace Constants {
 
         static std::vector<bool> swerveDrivesReversals(){ switch (teamNumber){
             case ALPHA_TEAM_NUMBER: return {true, false, false, false};
-            case SIDE_SWIPE_TEAM_NUMBER: return {false, false, false, false}; 
-            default: return {false, false, false, false}; // Temp value; TODO: Change it
+            case SIDE_SWIPE_TEAM_NUMBER: return {false, false, false, false};
+            default: return {true, false, false, false};
         }};
         static std::vector<bool> swerveAzimuthsReversals(){ switch (teamNumber){
             case ALPHA_TEAM_NUMBER: return {true, false, true, true};
             case SIDE_SWIPE_TEAM_NUMBER: return {true, true, true, true};
-            default: return {true, true, true, true}; // Temp value; TODO: Change it
+            default: return {true, false, true, true};
         }};
 
         static frc::Pose3d mintCameraPosition(){ switch (teamNumber) {
