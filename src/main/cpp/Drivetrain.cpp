@@ -38,7 +38,7 @@ using namespace pathplanner;
 #define KDT 0.0f
 #define KFT 0.0f
 
-#define AZIMUTH_K_P 0.00001f
+#define AZIMUTH_K_P 0.0000125f
 #define AZIMUTH_K_I 0.0f
 #define AZIMUTH_K_D 0.0f
 #define AZIMUTH_K_E 0.0027f
@@ -46,11 +46,11 @@ using namespace pathplanner;
 #define AZIMUTH_K_VEL 10.0f
 #define AZIMUTH_K_ACC_MUL 0.05f
 
-#define DRIVE_K_P 0.001f
+#define DRIVE_K_P 0.0001f
 #define DRIVE_K_I 0.0f
 #define DRIVE_K_D 0.0f
-#define DRIVE_K_F 0.000244f
-#define DRIVE_K_E 0.0027f
+#define DRIVE_K_F 0.000168f
+#define DRIVE_K_E 0.1f
 
 #define DRIVE_K_VEL 5.0f
 #define DRIVE_K_ACC_MUL 0.1f
@@ -143,8 +143,8 @@ void Drivetrain::configSwerveModule(int i)
     azimuthControllers[i]->setPIDF(azimuthPID, 0);
 
     valor::PIDF drivePID;
-    drivePID.velocity = DRIVE_K_VEL;
-    drivePID.acceleration = DRIVE_K_ACC_MUL;
+    drivePID.velocity = driveMaxSpeed;
+    drivePID.acceleration = driveMaxSpeed * 4.0;
     drivePID.P = DRIVE_K_P;
     drivePID.I = DRIVE_K_I;
     drivePID.D = DRIVE_K_D;

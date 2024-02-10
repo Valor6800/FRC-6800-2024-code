@@ -19,6 +19,7 @@ void NeoController::init()
 {
     motor->RestoreFactoryDefaults();
     motor->SetInverted(inverted);
+    motor->EnableVoltageCompensation(12);
     setNeutralMode(neutralMode);
     setRange(0,-1,1);
     valor::PIDF motionPIDF;
@@ -61,10 +62,11 @@ void NeoController::setPIDF(valor::PIDF pidf, int slot)
     pidController.SetIZone(0, slot);
 
     double vel = pidf.velocity * 60.0 / conversion;
+    double acc = pidf.acceleration * 60.0 / conversion;
 
     pidController.SetSmartMotionMaxVelocity(vel, slot);
-    pidController.SetSmartMotionMaxAccel(vel / pidf.acceleration, slot);
-    pidController.SetSmartMotionAllowedClosedLoopError(pidf.error, slot);
+    pidController.SetSmartMotionMaxAccel(acc, slot);
+    pidController.SetSmartMotionAllowedClosedLoopError(pidf.error / conversion, slot);
 }
 
 /**
@@ -75,9 +77,6 @@ void NeoController::setPIDF(valor::PIDF pidf, int slot)
 void NeoController::setConversion(double _conversion)
 {
     conversion = _conversion;
-    encoder.SetPositionConversionFactor(conversion);
-    // convert from minutes to seconds for velocity
-    encoder.SetVelocityConversionFactor(conversion / 60.0);
    
 }
 
@@ -104,7 +103,7 @@ double NeoController::getCurrent()
  */
 double NeoController::getPosition()
 {
-    return encoder.GetPosition();
+    return encoder.GetPosition() * conversion;
 }
 
 /**
@@ -120,7 +119,7 @@ int NeoController::getProfile()
  */
 double NeoController::getSpeed()
 {
-    return encoder.GetVelocity();
+    return encoder.GetVelocity() * conversion / 60; 
 }
 
 void NeoController::setEncoderPosition(double position)
@@ -138,7 +137,7 @@ double NeoController::getAbsEncoderPosition()
  */
 void NeoController::setPosition(double position)
 {
-    pidController.SetReference(position, rev::CANSparkMax::ControlType::kSmartMotion, currentPidSlot);
+    pidController.SetReference(position / conversion, rev::CANSparkMax::ControlType::kSmartMotion, currentPidSlot);
 }
 
 void NeoController::setProfile(int profile)
@@ -151,7 +150,7 @@ void NeoController::setProfile(int profile)
  */
 void NeoController::setSpeed(double speed)
 {
-    pidController.SetReference(speed * 60.0, rev::CANSparkMax::ControlType::kVelocity, currentPidSlot);
+    pidController.SetReference(speed / conversion * 60.0, rev::CANSparkMax::ControlType::kVelocity, currentPidSlot, 0.11);
 }
 
 void NeoController::setPower(double power)
