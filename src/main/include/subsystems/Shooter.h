@@ -36,8 +36,15 @@ public:
     void assessInputs();
     void analyzeDashboard();
     void assignOutputs();
-
+    /**
+     * @brief Sets the target angle of the pivot when the robot is still
+     * @param laser If true, disregards gravity, if false, takes gravity into account
+    */
     void getTargetPivotAngle(bool laser);
+    /**
+     * @brief Sets the target angle of the pivot when the robot is still and takes
+     * gravity into account
+    */
     void getArcTargetPivotAngle();
     /**
      * @brief Returns the projectile speed in the x-direction or the y-direction
@@ -52,8 +59,32 @@ public:
      * @brief Returns the error angle between the target pivot angle and the current pivot angle
     */
     units::radian_t getPivotErrorAngle();
+    /**
+     * @brief Defines a cubic function with coefficients and returns the value of f(x)
+     * @param a First coefficient of the function
+     * @param b Second coefficient of the function
+     * @param c Third coefficient of the function
+     * @param d Constant in the function
+     * @param x The variable used in the funciton, the input of the function
+    */
     double cubicFunction(double a, double b, double c, double d, double x);
+    /**
+     * @brief Defines the derivative of a cubic function
+     * @param a The first coefficient of the cubic
+     * @param b The second coefficient of the cubic
+     * @param c The third coeifficient of the cubic
+     * @param x The input of the function
+    */
     double deriveCubic(double a, double b, double c, double x);
+    /**
+     * @brief Defines a quartic function with coefficients and returns the value of f(x)
+     * @param a First coefficient of the function
+     * @param b Second coefficient of the function
+     * @param c Third coefficient of the function
+     * @param d Fourth coefficient in the function
+     * @param e Constant of the funtion
+     * @param x The variable used in the function, the input of the function
+    */
     double quarticFunction(double a, double b, double c, double d, double e, double x);
     double deriveQuartic(double a, double b, double c, double d, double x);
     /**
@@ -101,6 +132,7 @@ public:
 private:
 
     Drivetrain *drivetrain;
+    valor::PIDF flywheelPID;
     valor::PIDF pivotPID;
     frc::DigitalInput* beamBreak;
 };
