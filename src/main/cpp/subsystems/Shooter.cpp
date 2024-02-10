@@ -59,7 +59,6 @@ Shooter::Shooter(frc::TimedRobot *_robot, frc::DigitalInput* _beamBreak, Drivetr
     valor::BaseSubsystem(_robot, "Shooter"),
     pivotMotor(CANIDs::PIVOT, valor::NeutralMode::Brake, false),
     leftFlywheelMotor(CANIDs::LEFT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false),
-    rightFlywheelMotor(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false),
     beamBreak(_beamBreak),
     drivetrain(_drive)
 {
@@ -188,59 +187,6 @@ void Shooter::assignOutputs()
     rightFlywheelMotor.setSpeed(state.rightFlywheelTargetVelocity.to<double>());
 }
 
-units::degree_t Shooter::calculatePivotAngle(){
-    units::degree_t targetPivotAngle = units::degree_t(3);
-    return targetPivotAngle;
-}
-
-void Shooter::getLaserTargetPivotAngle(){
-    units::meter_t robotX = drivetrain->getPose_m().X();
-    units::meter_t robotY = drivetrain->getPose_m().Y();
-    double distance = 5;
-    state.leftShooterPower = table->GetNumber("Left Shooter Power", LEFT_SHOOT_POWER);
-    state.leftSpoolPower = table->GetNumber("Left Shooter Spool", LEFT_SHOOT_SPOOL);
-    state.leftStandbyPower = table->GetNumber("Left Shooter Standby", LEFT_SHOOT_STANDBY);
-
-    state.rightShooterPower = table->GetNumber("Right Shooter Power", RIGHT_SHOOT_POWER);
-    state.rightSpoolPower = table->GetNumber("Right Shooter Spool", RIGHT_SHOOT_SPOOL);
-    state.rightStandbyPower = table->GetNumber("Right Shooter Standby", RIGHT_SHOOT_STANDBY);
-
-    double speakerXOffset = table->GetNumber("Speaker X Offset", SPEAKER_X_OFFSET);
-    double speakerYOffset = table->GetNumber("Speaker Y Offset", SPEAKER_Y_OFFSET);
-    double speakerZOffset = table->GetNumber("Speaker Z Offset", SPEAKER_Z_OFFSET);
-
-    switch (state.pivot){
-        case PIVOT_STATE::PODIUM:
-            state.targetPivotAngle = units::radian_t(table->GetNumber("Pivot Podium Angle", PIVOT_PODIUM_POSITION));
-            break;
-        case PIVOT_STATE::STARTING_LINE:
-            state.targetPivotAngle = units::radian_t(table->GetNumber("Pivot Starting Line Angle", PIVOT_STARTING_LINE_POSITION));
-            break;
-        case PIVOT_STATE::TRACKING:
-            getTargetPivotAngle(true);
-            break;
-        default:
-            state.targetPivotAngle = units::radian_t(table->GetNumber("Pivot Subwoofer Angle", PIVOT_SUBWOOFER_POSITION));
-            break;
-    }
-}
-
-void Shooter::assignOutputs()
-{
-
-    pivotMotor.setPosition(state.targetPivotAngle.to<double>());
-
-    if (state.flywheelState == FLYWHEEL_STATE::SHOOTING) {
-        leftFlywheelMotor.setPower(state.leftShooterPower);
-        rightFlywheelMotor.setPower(state.rightShooterPower);
-    } else if (state.flywheelState == FLYWHEEL_STATE::SPOOLED) {
-        leftFlywheelMotor.setPower(state.leftSpoolPower);
-        rightFlywheelMotor.setPower(state.rightSpoolPower);
-    } else {
-        leftFlywheelMotor.setPower(state.leftStandbyPower);
-        rightFlywheelMotor.setPower(state.rightStandbyPower);
-    }
-}
 
 void Shooter::getTargetPivotAngle(bool laser){
     units::meter_t robotX = drivetrain->getCalculatedPose_m().X();
@@ -276,7 +222,7 @@ void Shooter::getTargetPivotAngle(bool laser){
 void Shooter::getArcTargetPivotAngle(){
     units::meter_t robotX = drivetrain->getPose_m().X();
     units::meter_t robotY = drivetrain->getPose_m().Y();
-    double distance = 5;
+    double distance = sqrt(pow(robotX.to<double>(), 2) + pow(robotY.to<double>(), 2));
     double changeInY = robotY.to<double>() - SPEAKER_Y.to<double>();
     if(frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue){
         double changeInX = robotX.to<double>() - SPEAKER_BLUE_X.to<double>();

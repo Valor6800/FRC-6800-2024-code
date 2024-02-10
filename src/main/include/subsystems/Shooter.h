@@ -88,6 +88,8 @@ public:
         units::angular_velocity::revolutions_per_minute_t leftFlywheelTargetVelocity;
         units::angular_velocity::revolutions_per_minute_t rightFlywheelTargetVelocity;
         units::degree_t pivotAngle;
+        units::radian_t targetPivotAngle;
+        PIVOT_STATE pivotState;
     } state;
 
 private:
