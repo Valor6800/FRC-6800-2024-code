@@ -11,6 +11,8 @@
 #include <wpi/sendable/SendableBuilder.h>
 #include <wpi/sendable/SendableHelper.h>
 
+#include <ctre/phoenix6/CANcoder.hpp>
+
 namespace valor {
 
 /**
@@ -82,6 +84,8 @@ public:
 
     void setAzimuthPosition(frc::Rotation2d angle);
 
+    void setupCANCoder(int deviceId, std::string canbus = "");
+
     void InitSendable(wpi::SendableBuilder& builder) override;
 
 private:
@@ -100,6 +104,8 @@ private:
 
     AzimuthMotor* azimuthMotor;
     DriveMotor* driveMotor;
+
+    ctre::phoenix6::hardware::CANcoder *cancoder;
 
     int wheelIdx;
     double initialMagEncoderValue;
