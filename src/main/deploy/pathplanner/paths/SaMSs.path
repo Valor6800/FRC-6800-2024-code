@@ -1,0 +1,146 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.985716987795153,
+        "y": 6.393448851410923
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.979669771043825,
+        "y": 5.487878320013006
+      },
+      "isLocked": false,
+      "linkedName": "Score amp"
+    },
+    {
+      "anchor": {
+        "x": 8.295473559914134,
+        "y": 4.123053654961478
+      },
+      "prevControl": {
+        "x": 7.499753184689747,
+        "y": 4.79524537419365
+      },
+      "nextControl": {
+        "x": 9.234571618882821,
+        "y": 3.329742388289754
+      },
+      "isLocked": false,
+      "linkedName": "Mid"
+    },
+    {
+      "anchor": {
+        "x": 4.32740663643943,
+        "y": 4.812755883830634
+      },
+      "prevControl": {
+        "x": 6.457347978932068,
+        "y": 4.314818801946632
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Score stage"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.75,
+      "rotationDegrees": -42.780058954846325,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0.65,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Enable intake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Disable intake",
+      "waypointRelativePos": 1.45,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Disable intake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Shoot seq",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot sequence-feeder"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot sequence-shooter"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Spool",
+      "waypointRelativePos": 1.55,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Spool"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.5,
+    "maxAcceleration": 2.5,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -8.45261961068665,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Pick chain",
+  "previewStartingState": null,
+  "useDefaultConstraints": false
+}
