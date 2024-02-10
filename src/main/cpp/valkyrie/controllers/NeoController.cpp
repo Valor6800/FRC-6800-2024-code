@@ -77,7 +77,7 @@ void NeoController::setConversion(double _conversion)
     conversion = _conversion;
     encoder.SetPositionConversionFactor(conversion);
     // convert from minutes to seconds for velocity
-    encoder.SetVelocityConversionFactor(_conversion / 60.0);
+    encoder.SetVelocityConversionFactor(conversion / 60.0);
    
 }
 

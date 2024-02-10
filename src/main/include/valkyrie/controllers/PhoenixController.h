@@ -11,9 +11,13 @@ class PhoenixController : public BaseController<ctre::phoenix6::hardware::TalonF
 {
 public:
     PhoenixController(int _canID, valor::NeutralMode _mode, bool _inverted, std::string _canbus = "");
+    PhoenixController(int _canID, valor::NeutralMode _mode, bool _inverted, double gearRatio, valor::PIDF pidf, std::string _canbus = "");
 
+    void init(double gearRatio, valor::PIDF pidf);
     void init();
+
     void reset();
+    void setNeutralMode(ctre::phoenix6::configs::MotorOutputConfigs& config, valor::NeutralMode mode);
     void setNeutralMode(valor::NeutralMode mode);
 
     double getPosition();
@@ -29,11 +33,14 @@ public:
     void setupFollower(int, bool = false);
     
     void setPIDF(valor::PIDF pidf, int slot);
+    void setPIDF(ctre::phoenix6::configs::TalonFXConfiguration& config, valor::PIDF pidf, int slot);
+
     void setForwardLimit(double forward);
     void setReverseLimit(double reverse);
     void setRange(int slot, double min, double max);
     
     void setConversion(double);
+    void setConversion(ctre::phoenix6::configs::TalonFXConfiguration&, double);
 
     void setMotorInversion(bool);
     bool getMotorInversion();
@@ -54,5 +61,11 @@ public:
 private:
     valor::PIDF pidf;
     int currentProfile;
+
+    ctre::phoenix6::controls::MotionMagicVoltage req_position;
+    ctre::phoenix6::controls::VelocityVoltage req_velocity;
+    ctre::phoenix6::controls::VoltageOut req_voltage;
+
+    ctre::phoenix::StatusCode status;
 };
 }
