@@ -144,8 +144,10 @@ Drivetrain::~Drivetrain()
 
 void Drivetrain::logSysId(frc::sysid::SysIdRoutineLog* log)
 {
+    if (log == nullptr)
+        return ;
     for (size_t i = 0; i < driveControllers.size(); i++) {
-        log->Motor(std::strcat("module ", std::to_string(i).c_str()))
+        log->Motor("module" + std::to_string(i))
             .voltage(driveControllers[i]->getVoltage())
             .position(units::meter_t{driveControllers[i]->getPosition()})
             .velocity(units::meters_per_second_t{driveControllers[i]->getSpeed()});
@@ -304,7 +306,7 @@ frc2::CommandPtr Drivetrain::quaistaticSysid(frc2::sysid::Direction direction) {
 	return frc2::cmd::Sequence(
 		frc2::InstantCommand([this]() { setSysIdVoltage(0_V);  }).ToPtr(),
 		frc2::cmd::Wait(0.5_s),
-		sysid.Dynamic(direction)
+		sysid.Quasistatic(direction)
 	);
 }
 
@@ -312,7 +314,7 @@ frc2::CommandPtr Drivetrain::dynamicSysid(frc2::sysid::Direction direction) {
 	return frc2::cmd::Sequence(
 		frc2::InstantCommand([this]() { setSysIdVoltage(0_V);  }).ToPtr(),
 		frc2::cmd::Wait(0.5_s),
-		sysid.Quasistatic(direction)
+		sysid.Dynamic(direction)
 	);
 }
 
