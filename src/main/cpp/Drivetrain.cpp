@@ -646,7 +646,7 @@ PathConstraints constraints = PathConstraints(
     AUTO_MAX_ANG_ACCEL
 );
 
-frc2::CommandPtr* getPathFindToPose(frc::Pose2d targetPose, units::meters_per_second_t endVelocity, units::meter_t rotDelay){
+frc2::CommandPtr* Drivetrain::getPathFindToPose(frc::Pose2d targetPose, units::meters_per_second_t endVelocity, units::meter_t rotDelay){
     frc2::CommandPtr pathfindingCommand = AutoBuilder::pathfindToPose(
         targetPose,
         constraints,

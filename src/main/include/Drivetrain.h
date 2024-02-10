@@ -290,5 +290,5 @@ private:
      PoseTracker botPoseTracker;
      PoseTracker targetPoseTracker;
      std::vector<frc2::CommandPtr> pathCommands;
-     frc2::CommandPtr getPathFindToPose(frc::Pose2d targetPose, units::meters_per_second_t endVelocity, units::meter_t rotDelay);
+     frc2::CommandPtr* getPathFindToPose(frc::Pose2d targetPose, units::meters_per_second_t endVelocity, units::meter_t rotDelay);
 };
