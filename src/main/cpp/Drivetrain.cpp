@@ -96,6 +96,7 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
+
     NamedCommands::registerCommand("Drive to point", std::move(
         frc2::SequentialCommandGroup(
             frc2::InstantCommand(
@@ -666,6 +667,15 @@ frc2::CommandPtr* Drivetrain::getPathFindToPose(frc::Pose2d targetPose, units::m
         targetPose,
         constraints,
         endVelocity,
+        rotDelay
+    );
+    return &pathfindingCommand;
+}
+
+frc2::CommandPtr* Drivetrain::getFollowPathFind(std::shared_ptr<PathPlannerPath> path, units::meter_t rotDelay){
+    frc2::CommandPtr pathfindingCommand = AutoBuilder::pathfindThenFollowPath(
+        path, 
+        constraints,
         rotDelay
     );
     return &pathfindingCommand;
