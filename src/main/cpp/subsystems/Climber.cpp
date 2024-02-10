@@ -37,7 +37,7 @@ void Climber::assessInputs()
     if (!operatorGamepad) return;
     
     if (operatorGamepad->DPadUp()){
-        state.climbState == AUTO_CLIMB;
+        state.climbState = AUTO_CLIMB;
     } else if (operatorGamepad->rightStickYActive()){
         state.climbState = ACTIVE;
     } else {
@@ -49,6 +49,8 @@ void Climber::analyzeDashboard()
 {
     if(hallE->Get() == true){
         state.zeroState = ZERO;
+    } else{
+        state.zeroState = NOT_ZERO;
     }
     table->PutBoolean("Zero", state.zeroState == ZERO);
 }
