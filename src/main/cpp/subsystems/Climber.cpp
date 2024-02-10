@@ -1,47 +1,73 @@
+#include <iostream>
 #include "subsystems/Climber.h"
+#include "Constants.h"
 
-Climber::Climber(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Climber"), 
-climbMotor(CANIDs::LEFT_CLIMBER, valor::NeutralMode::Brake, false)
+#include "valkyrie/sensors/DebounceSensor.h"
+
+#define MAX_SPEED 0
+
+Climber::Climber(frc::TimedRobot *_robot) : 
+    valor::BaseSubsystem(_robot, "Climber"), 
+    climbMotor(CANIDs::LEFT_CLIMBER, valor::NeutralMode::Brake, false),
+    hallE(new frc::DigitalInput(CANIDs::HALL_EFFECT)),
+    debounce(_robot, "Climber")
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
 }
 
-void Climber::init()
-{
-    target_pose = 0;
-    climbMotor.setEncoderPosition(0);
-    climbMotor.setupFollower(CANIDs::RIGHT_CLIMBER, false);
-    speed_multiplier = 1.00;
-    climbMotor.setForwardLimit(20);
-    climbMotor.setReverseLimit(0);
-
-    table->PutNumber("speed multiplier", speed_multiplier);
-}
-
 void Climber::resetState()
 {
     //set disabled state
+    state.climbState = DISABLED;
+    state.zeroState = NOT_ZERO;
+}
+
+void Climber::init()
+{
+    climbMotor.setupFollower(CANIDs::RIGHT_CLIMBER, false);
+    climbMotor.setEncoderPosition(0);
+    climbMotor.setForwardLimit(20);
+    climbMotor.setReverseLimit(0);
+    resetState();
 }
 
 void Climber::assessInputs()
 {
     if (!operatorGamepad) return;
-    target_pose = operatorGamepad->rightStickY(3) * speed_multiplier;
+    
+    if (operatorGamepad->DPadUp()){
+        state.climbState == AUTO_CLIMB;
+    } else if (operatorGamepad->rightStickYActive()){
+        state.climbState = ACTIVE;
+    } else {
+        state.climbState = DISABLED;
+    }
 }
 
 void Climber::analyzeDashboard()
 {
-    table->PutNumber("target pose", target_pose); 
-    // speed_multiplier = table->GetNumber("speed multiplier", .05);  
+    if(hallE->Get() == true){
+        state.zeroState = ZERO;
+    }
+    table->PutBoolean("Zero", state.zeroState == ZERO);
 }
 
 void Climber::assignOutputs()
 {
-    climbMotor.setPower(target_pose);
+    if (state.zeroState != ZERO){
+        state.elevSpeed = 0;
+    } else if (state.climbState == AUTO_CLIMB){
+        //auto climb sequence
+    } else if (state.climbState == ACTIVE){
+        state.elevSpeed = operatorGamepad->rightStickY() * MAX_SPEED;
+    } else if (state.climbState == DISABLED){
+        state.elevSpeed = 0;
+    }
+    climbMotor.setSpeed(state.elevSpeed);
 }
 
 void Climber::InitSendable(wpi::SendableBuilder& builder)
 {
-
+    
 }
