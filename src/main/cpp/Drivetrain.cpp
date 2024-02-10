@@ -46,15 +46,16 @@ using namespace pathplanner;
 #define AZIMUTH_K_P 0.00001f
 #define AZIMUTH_K_I 0.0f
 #define AZIMUTH_K_D 0.0f
+#define AZIMUTH_K_F 0.000176f
 #define AZIMUTH_K_E 0.0027f
 
-#define AZIMUTH_K_VEL 10.0f
-#define AZIMUTH_K_ACC_MUL 0.05f
+#define AZIMUTH_K_VEL 7.0f
+#define AZIMUTH_K_ACC_MUL 0.1f
 
-#define DRIVE_K_P 0.001f
+#define DRIVE_K_P 0.00001f
 #define DRIVE_K_I 0.0f
 #define DRIVE_K_D 0.0f
-#define DRIVE_K_F 0.000244f
+#define DRIVE_K_F 0.000176f
 #define DRIVE_K_E 0.0027f
 
 #define DRIVE_K_VEL 5.0f

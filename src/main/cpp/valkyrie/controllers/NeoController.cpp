@@ -19,6 +19,7 @@ void NeoController::init()
 {
     motor->RestoreFactoryDefaults();
     motor->SetInverted(inverted);
+    motor->EnableVoltageCompensation(12);
     setNeutralMode(neutralMode);
     setRange(0,-1,1);
     valor::PIDF motionPIDF;
