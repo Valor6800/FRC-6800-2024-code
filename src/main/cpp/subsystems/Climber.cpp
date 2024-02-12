@@ -49,8 +49,6 @@ void Climber::analyzeDashboard()
 {
     if(hallE->Get() == true){
         state.zeroState = ZERO;
-    } else{
-        state.zeroState = NOT_ZERO;
     }
     table->PutBoolean("Zero", state.zeroState == ZERO);
 }
