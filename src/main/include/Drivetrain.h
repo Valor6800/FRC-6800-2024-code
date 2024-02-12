@@ -41,8 +41,15 @@
 #include <frc/TimedRobot.h>
 #include <frc2/command/FunctionalCommand.h>
 
+#include <pathplanner/lib/auto/NamedCommands.h>
+#include <pathplanner/lib/pathfinding/Pathfinding.h>
+#include <pathplanner/lib/auto/AutoBuilder.h>
+#include <pathplanner/lib/path/PathPlannerPath.h>
+
 #include <rev/CANSparkMax.h>
 #include <ctre/phoenix6/Pigeon2.hpp>
+
+using namespace pathplanner;
 
 #define SWERVE_COUNT 4
 
@@ -291,5 +298,5 @@ private:
      PoseTracker targetPoseTracker;
      std::vector<frc2::CommandPtr> pathCommands;
      frc2::CommandPtr* getPathFindToPose(frc::Pose2d targetPose, units::meters_per_second_t endVelocity, units::meter_t rotDelay);
-     frc2::CommandPtr* getFollowPathFind(std::shared_ptr<pathplanner::PathPlannerPath> path, units::meter_t rotDelay);
+     frc2::CommandPtr* getFollowPathFind(std::shared_ptr<PathPlannerPath> path, units::meter_t rotDelay);
 };
