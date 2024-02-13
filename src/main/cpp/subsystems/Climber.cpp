@@ -73,7 +73,22 @@ void Climber::climbCommands(){
         },
         {}
     );
+
+    frc2::FunctionalCommand zeroing(
+        [this]() {
+            state.zeroState = Climber::ZERO_STATE::NOT_ZERO;
+        },
+        [this]() {},
+        [this](bool) {
+            state.climbState = Climber::CLIMB_STATE::DISABLED;
+        },
+        [this]() {
+            return climbMotor.getPosition() <= DOWN_CLIMB_TARGET;
+        },
+        {}
+    );
     autoClimbSequence.AddCommands(upClimb, downClimb);
+    zeroingSequence.AddCommands(zeroing);
 }
 
 void Climber::assessInputs()

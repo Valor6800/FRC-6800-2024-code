@@ -67,4 +67,5 @@ private:
     valor::DebounceSensor debounce;
 
     frc2::SequentialCommandGroup autoClimbSequence;
+    frc2::SequentialCommandGroup zeroingSequence;
 };
