@@ -4,7 +4,13 @@
 
 #include "valkyrie/sensors/DebounceSensor.h"
 
-#define MAX_SPEED 0
+#define MAX_CLIMB_SPEED 0 //placeholder
+
+#define UP_CLIMB_TARGET 0 //placeholder
+#define DOWN_CLIMB_TARGET 0 //placeholder
+
+#define UP_CLIMB_SPEED 0 //placeholder
+#define DOWN_CLIMB_SPEED 0 //placeholder
 
 Climber::Climber(frc::TimedRobot *_robot) : 
     valor::BaseSubsystem(_robot, "Climber"), 
@@ -14,6 +20,11 @@ Climber::Climber(frc::TimedRobot *_robot) :
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
+}
+
+Climber::~Climber()
+{
+
 }
 
 void Climber::resetState()
@@ -27,17 +38,61 @@ void Climber::init()
 {
     climbMotor.setupFollower(CANIDs::RIGHT_CLIMBER, false);
     climbMotor.setEncoderPosition(0);
-    climbMotor.setForwardLimit(20);
+    climbMotor.setForwardLimit(20); //placeholder
     climbMotor.setReverseLimit(0);
+    climbCommands();
+
     resetState();
+}
+
+void Climber::climbCommands(){
+    frc2::FunctionalCommand upClimb(
+        [this]() {
+            state.autoClimbState = Climber::AUTO_CLIMB_STATE::UP_CLIMBER;
+        },
+        [this]() {},
+        [this](bool) {
+            state.autoClimbState = Climber::AUTO_CLIMB_STATE::DISABLED_CLIMBER;
+        },
+        [this](){
+            return climbMotor.getPosition() >= UP_CLIMB_TARGET;
+        },
+        {}
+    );
+
+    frc2::FunctionalCommand downClimb(
+        [this]() {
+            state.autoClimbState = Climber::AUTO_CLIMB_STATE::DOWN_CLIMBER;
+        },
+        [this]() {},
+        [this](bool) {
+            state.autoClimbState = Climber::AUTO_CLIMB_STATE::DISABLED_CLIMBER;
+        },
+        [this](){
+            return climbMotor.getPosition() <= DOWN_CLIMB_TARGET;
+        },
+        {}
+    );
+    autoClimbSequence.AddCommands(upClimb, downClimb);
 }
 
 void Climber::assessInputs()
 {
     if (!operatorGamepad) return;
+
+
+    if(operatorGamepad->rightStickYActive() && autoClimbSequence.IsScheduled()){
+        autoClimbSequence.Cancel();
+    }
+
+    if(!autoClimbSequence.IsScheduled() )
+    {
+        state.autoClimbState = AUTO_CLIMB_STATE::DISABLED_CLIMBER;
+    }
     
     if (operatorGamepad->DPadUp()){
         state.climbState = AUTO_CLIMB;
+        autoClimbSequence.Schedule();
     } else if (operatorGamepad->rightStickYActive()){
         state.climbState = ACTIVE;
     } else {
@@ -56,15 +111,22 @@ void Climber::analyzeDashboard()
 void Climber::assignOutputs()
 {
     if (state.zeroState != ZERO){
-        state.elevSpeed = 0;
+        climbMotor.setSpeed(0);
     } else if (state.climbState == AUTO_CLIMB){
-        //auto climb sequence
+
+        if (state.autoClimbState == UP_CLIMBER){
+            climbMotor.setSpeed(UP_CLIMB_SPEED);
+        } else if (state.autoClimbState == DOWN_CLIMB_SPEED){
+            climbMotor.setSpeed(DOWN_CLIMB_SPEED);
+        } else if (state.autoClimbState == DISABLED_CLIMBER){
+            climbMotor.setSpeed(0);
+        }
+
     } else if (state.climbState == ACTIVE){
-        state.elevSpeed = operatorGamepad->rightStickY() * MAX_SPEED;
+        climbMotor.setSpeed(operatorGamepad->rightStickY() * MAX_CLIMB_SPEED);
     } else if (state.climbState == DISABLED){
-        state.elevSpeed = 0;
+        climbMotor.setSpeed(0);
     }
-    climbMotor.setSpeed(state.elevSpeed);
 }
 
 void Climber::InitSendable(wpi::SendableBuilder& builder)

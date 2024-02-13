@@ -10,16 +10,24 @@
 
 #include <frc/TimedRobot.h>
 
+#include <frc2/command/FunctionalCommand.h>
+#include <frc2/command/SequentialCommandGroup.h>
+#include <frc2/command/ParallelCommandGroup.h>
+
+
 
 class Climber : public valor::BaseSubsystem
 {
 public:
     Climber(frc::TimedRobot *robot);
 
+    ~Climber();
+
     void init() override;
     void resetState() override;
     void assessInputs() override;
     void analyzeDashboard() override;
+    void climbCommands();
     void assignOutputs() override;
     void InitSendable(wpi::SendableBuilder& builder) override;
 
@@ -36,9 +44,17 @@ public:
         ZERO
     };
 
+    enum AUTO_CLIMB_STATE
+    {
+        DISABLED_CLIMBER,
+        UP_CLIMBER,
+        DOWN_CLIMBER
+    };
+
     struct x {
         CLIMB_STATE climbState;
         ZERO_STATE zeroState;
+        AUTO_CLIMB_STATE autoClimbState;
 
         double elevSpeed;
 
@@ -49,4 +65,6 @@ private:
 
     frc::DigitalInput* hallE;
     valor::DebounceSensor debounce;
+
+    frc2::SequentialCommandGroup autoClimbSequence;
 };
