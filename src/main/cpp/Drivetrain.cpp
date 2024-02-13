@@ -114,6 +114,7 @@ void Drivetrain::configSwerveModule(int i)
     azimuthPID.maxVelocity = Constants::azimuthKVel();
     azimuthPID.maxAcceleration = Constants::azimuthKAcc();
     azimuthPID.P = Constants::azimuthKP();
+    azimuthPID.error = 0.0027;
 
     azimuthControllers.push_back(new SwerveAzimuthMotor(CANIDs::AZIMUTH_CANS[i],
                                                       valor::NeutralMode::Brake,

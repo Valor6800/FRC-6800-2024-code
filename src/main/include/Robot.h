@@ -16,7 +16,6 @@
 #include <frc/livewindow/LiveWindow.h>
 
 #include <subsystems/Shooter.h>
-#include "subsystems/Intake.h"
 #include "subsystems/Feeder.h"
 
 #include <fstream>
@@ -48,7 +47,6 @@ class Robot : public frc::TimedRobot {
         frc::DigitalInput beamBreak;  
           
         Shooter shooter;
-        Intake intake;
         Feeder feeder;
 
         std::ofstream outfile;        

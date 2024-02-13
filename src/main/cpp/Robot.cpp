@@ -11,8 +11,7 @@ Robot::Robot() :
     drivetrain(this), 
     valorAuto(), 
     beamBreak(DIOPorts::BEAM_BREAK_PORT), 
-    shooter(this, &beamBreak), 
-    intake(this, &beamBreak),
+    shooter(this, &beamBreak),
     feeder(this)
 {
     frc::TimedRobot();
@@ -21,9 +20,6 @@ Robot::Robot() :
 void Robot::RobotInit() {
     drivetrain.setGamepads(&gamepadOperator, &gamepadDriver);
     drivetrain.resetState();
-
-    intake.setGamepads(&gamepadOperator, &gamepadDriver);
-    intake.resetState();
 
     shooter.setGamepads(&gamepadOperator, &gamepadDriver);
     shooter.resetState();
@@ -66,7 +62,6 @@ void Robot::AutonomousInit() {
     drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Brake);
     drivetrain.pullSwerveModuleZeroReference();
 
-    intake.resetState();
     feeder.resetState();
 
     autoCommand = valorAuto.getCurrentAuto();

@@ -26,7 +26,7 @@ struct PIDF
     /// Max jerk: revolutions per 1s^3
     double maxJerk = 0.0;
     /// Minimum error threshold
-    double error = 0.5;
+    double error = 0.0;
 
     double aFF = 0;
     double aFFTarget = 90;
