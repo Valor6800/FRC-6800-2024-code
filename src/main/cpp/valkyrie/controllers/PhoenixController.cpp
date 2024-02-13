@@ -1,14 +1,11 @@
 #include "valkyrie/controllers/PhoenixController.h"
 
-#define FALCON_TICKS_PER_REV 2048
-
 // Conversion guide: https://v6.docs.ctr-electronics.com/en/latest/docs/migration/migration-guide/closed-loop-guide.html
 
 #define FALCON_PIDF_KP 10.0f
 #define FALCON_PIDF_KI 0.0f
 #define FALCON_PIDF_KD 0.0f
 #define FALCON_PIDF_KS 0.1475f // Static friction - maybe 0.05f?
-#define FALCON_PIDF_KF 1.45f // 12 V / 6380 RPM / 60 sec remove some KS
 
 #define FALCON_PIDF_KV 6.0f // RPS cruise velocity
 #define FALCON_PIDF_KA 130.0f // RPS/S acceleration (6.5/130 = 0.05 seconds to max speed)
@@ -27,11 +24,12 @@ PhoenixController::PhoenixController(int canID,
                                              valor::NeutralMode _mode,
                                              bool _inverted,
                                              std::string canbus) :
-    BaseController(new hardware::TalonFX{canID, canbus}, _inverted, _mode),
+    BaseController(new hardware::TalonFX{canID, canbus}, _inverted, _mode, 6380),
     status(),
     req_position(units::turn_t{0}),
     req_velocity(units::turns_per_second_t{0}),
-    req_voltage(units::volt_t{0})
+    req_voltage(units::volt_t{0}),
+    voltageCompenstation(12.0)
 {
     init();
 }
@@ -42,11 +40,12 @@ PhoenixController::PhoenixController(int canID,
                                              double gearRatio,
                                              valor::PIDF pidf,
                                              std::string canbus) :
-    BaseController(new hardware::TalonFX{canID, canbus}, _inverted, _mode),
+    BaseController(new hardware::TalonFX{canID, canbus}, _inverted, _mode, 6380),
     status(),
     req_position(units::turn_t{0}),
     req_velocity(units::turns_per_second_t{0}),
-    req_voltage(units::volt_t{0})
+    req_voltage(units::volt_t{0}),
+    voltageCompenstation(12.0)
 {
     init(gearRatio, pidf);
 }
@@ -58,10 +57,9 @@ void PhoenixController::init()
     motionPIDF.P = FALCON_PIDF_KP;
     motionPIDF.I = FALCON_PIDF_KI;
     motionPIDF.D = FALCON_PIDF_KD;
-    motionPIDF.F = FALCON_PIDF_KF;
     motionPIDF.error = 0;
-    motionPIDF.velocity = FALCON_PIDF_KV;
-    motionPIDF.acceleration = FALCON_PIDF_KA;
+    motionPIDF.maxVelocity = FALCON_PIDF_KV;
+    motionPIDF.maxAcceleration = FALCON_PIDF_KA;
 
     init(1, motionPIDF);
 }
@@ -99,6 +97,11 @@ void PhoenixController::init(double gearRatio, valor::PIDF pidf)
 void PhoenixController::reset()
 {
     motor->SetPosition(0_tr);
+}
+
+void PhoenixController::setVoltageCompensation(double volts)
+{
+    voltageCompenstation = volts;
 }
 
 void PhoenixController::setEncoderPosition(double position)
@@ -148,7 +151,7 @@ void PhoenixController::setPIDF(configs::TalonFXConfiguration & config, valor::P
     config.Slot0.kP = pidf.P;
     config.Slot0.kI = pidf.I;
     config.Slot0.kD = pidf.D;
-    config.Slot0.kV = pidf.F;
+    config.Slot0.kV = voltageCompenstation / (maxMotorSpeed / 60.0 * conversion);
     config.Slot0.kS = FALCON_PIDF_KS;
 
     // Feedforward gain configuration
@@ -162,8 +165,8 @@ void PhoenixController::setPIDF(configs::TalonFXConfiguration & config, valor::P
     }
 
     // Motion magic configuration
-    config.MotionMagic.MotionMagicCruiseVelocity = pidf.velocity;
-    config.MotionMagic.MotionMagicAcceleration = pidf.acceleration;
+    config.MotionMagic.MotionMagicCruiseVelocity = pidf.maxVelocity;
+    config.MotionMagic.MotionMagicAcceleration = pidf.maxAcceleration;
     // config.MotionMagic.MotionMagicJerk = pidf.jerk;
 }
 

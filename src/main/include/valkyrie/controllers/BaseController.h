@@ -40,7 +40,8 @@ public:
      * 
      * @param _motor The motor that will be controlled. Setup by the implemented class
      */
-    BaseController(T* _motor, bool _inverted, valor::NeutralMode _neutralMode) :
+    BaseController(T* _motor, bool _inverted, valor::NeutralMode _neutralMode, double _maxMotorSpeed) :
+        maxMotorSpeed(_maxMotorSpeed),
         motor(_motor),
         inverted(_inverted),
         neutralMode(_neutralMode),
@@ -64,6 +65,8 @@ public:
             followerMotor = nullptr;
         };
     }
+
+    double getMaxMotorSpeed() { return maxMotorSpeed; }
 
     /**
      * @brief Get a pointer to the Motor object that the BaseController implementation owns
@@ -209,6 +212,8 @@ public:
         setReverseLimit(reverse);
     }
 
+    virtual void setVoltageCompensation(double volts) = 0;
+
     /**
      * @brief Set the forward soft limit for the motor
      * 
@@ -286,6 +291,8 @@ public:
     virtual double getAbsEncoderPosition() = 0;
 
 protected:
+
+    double maxMotorSpeed;
     
     T* motor;
     

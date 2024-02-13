@@ -26,6 +26,7 @@ public:
     int getProfile();
 
     void setEncoderPosition(double position);
+    void setVoltageCompensation(double volts) override;
 
     void setPosition(double);
     void setSpeed(double);

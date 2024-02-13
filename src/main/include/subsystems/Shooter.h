@@ -24,6 +24,7 @@ class Shooter : public valor::BaseSubsystem
 public:
     //valor::NeoController pivotMotors;
     valor::NeoController leftFlywheelMotor;
+    valor::NeoController rightFlywheelMotor;
 
     Shooter(frc::TimedRobot *robot, frc::DigitalInput* beamBreak);
 
@@ -62,11 +63,11 @@ public:
         PIVOT_STATE pivotState;
         FLYWHEEL_STATE flywheelState;
 
-        units::angular_velocity::revolutions_per_minute_t flywheelTargetVelocity;
+        units::angular_velocity::revolutions_per_minute_t leftFlywheelTargetVelocity;
+        units::angular_velocity::revolutions_per_minute_t rightFlywheelTargetVelocity;
         units::degree_t pivotAngle;
     } state;
 
 private:
-    valor::PIDF pivotPID;
     frc::DigitalInput* beamBreak;
 };

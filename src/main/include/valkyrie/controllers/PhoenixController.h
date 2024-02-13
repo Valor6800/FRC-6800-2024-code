@@ -25,6 +25,7 @@ public:
     double getCurrent();
 
     void setEncoderPosition(double position);
+    void setVoltageCompensation(double volts) override;
     
     void setPosition(double);
     void setSpeed(double);
@@ -61,6 +62,7 @@ public:
 private:
     valor::PIDF pidf;
     int currentProfile;
+    double voltageCompenstation;
 
     ctre::phoenix6::controls::MotionMagicVoltage req_position;
     ctre::phoenix6::controls::VelocityVoltage req_velocity;

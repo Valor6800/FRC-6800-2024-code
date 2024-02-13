@@ -131,6 +131,38 @@ namespace Constants {
             default: return {true, false, true, true};
         }};
 
+        static double azimuthKP(){ switch (teamNumber) {
+            case ALPHA_TEAM_NUMBER: return 0.00001;
+            case SIDE_SWIPE_TEAM_NUMBER: return 0.00001;
+            default: return 10.0;
+        }};
+        static double azimuthKVel(){ switch (teamNumber) {
+            case ALPHA_TEAM_NUMBER: return 10.0;
+            case SIDE_SWIPE_TEAM_NUMBER: return 10.0;
+            default: return 6.0;
+        }};
+        static double azimuthKAcc(){ switch (teamNumber) {
+            case ALPHA_TEAM_NUMBER: return 200.0;
+            case SIDE_SWIPE_TEAM_NUMBER: return 200.0;
+            default: return 130.0;
+        }};
+
+        static double driveKP(){ switch (teamNumber) {
+            case ALPHA_TEAM_NUMBER: return 0.001;
+            case SIDE_SWIPE_TEAM_NUMBER: return 0.001;
+            default: return 0.00001;
+        }};
+        static double driveKVel(){ switch (teamNumber) {
+            case ALPHA_TEAM_NUMBER: return 6.0;
+            case SIDE_SWIPE_TEAM_NUMBER: return 6.0;
+            default: return 5.0;
+        }};
+        static double driveKAcc(){ switch (teamNumber) {
+            case ALPHA_TEAM_NUMBER: return 120.0;
+            case SIDE_SWIPE_TEAM_NUMBER: return 120.0;
+            default: return 50.0;
+        }};
+
         static frc::Pose3d mintCameraPosition(){ switch (teamNumber) {
             case ALPHA_TEAM_NUMBER: return frc::Pose3d();
             case SIDE_SWIPE_TEAM_NUMBER: return frc::Pose3d{

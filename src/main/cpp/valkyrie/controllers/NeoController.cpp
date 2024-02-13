@@ -6,7 +6,7 @@ NeoController::NeoController(int canID,
                                 valor::NeutralMode _mode,
                                 bool _inverted,
                                 std::string canbus) :
-    BaseController(new rev::CANSparkMax(canID, rev::CANSparkMax::MotorType::kBrushless), _inverted, _mode),
+    BaseController(new rev::CANSparkMax(canID, rev::CANSparkMax::MotorType::kBrushless), _inverted, _mode, 5676),
     pidController(motor->GetPIDController()),
     encoder(motor->GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor, 42)),
     extEncoder(motor->GetAbsoluteEncoder(rev::SparkAbsoluteEncoder::Type::kDutyCycle)),
@@ -19,7 +19,7 @@ void NeoController::init()
 {
     motor->RestoreFactoryDefaults();
     motor->SetInverted(inverted);
-    motor->EnableVoltageCompensation(12);
+    setVoltageCompensation(12);
     setNeutralMode(neutralMode);
     setRange(0,-1,1);
     valor::PIDF motionPIDF;
@@ -58,13 +58,14 @@ void NeoController::setPIDF(valor::PIDF pidf, int slot)
     pidController.SetP(pidf.P, slot);
     pidController.SetI(pidf.I, slot);
     pidController.SetD(pidf.D, slot);
-    pidController.SetFF(pidf.F, slot);
+    pidController.SetFF(1.0 / maxMotorSpeed, slot);
     pidController.SetIZone(0, slot);
 
-    double vel = pidf.velocity * 60.0 / conversion;
+    double vel = pidf.maxVelocity * 60.0 / conversion;
+    double accel = pidf.maxAcceleration * 60 / conversion;
 
     pidController.SetSmartMotionMaxVelocity(vel, slot);
-    pidController.SetSmartMotionMaxAccel(vel / pidf.acceleration, slot);
+    pidController.SetSmartMotionMaxAccel(accel, slot);
     pidController.SetSmartMotionAllowedClosedLoopError(pidf.error, slot);
 }
 
@@ -122,6 +123,11 @@ int NeoController::getProfile()
 double NeoController::getSpeed()
 {
     return encoder.GetVelocity();
+}
+
+void NeoController::setVoltageCompensation(double volts)
+{
+    motor->EnableVoltageCompensation(12);
 }
 
 void NeoController::setEncoderPosition(double position)
