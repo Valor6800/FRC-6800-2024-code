@@ -246,6 +246,9 @@ public:
      void getSpeakerLockAngleRPS();
      units::radian_t getAngleError();
      double clampAngleRadianRange(units::radian_t angle, double max);
+     std::vector<frc::Pose2d> generatePoses(frc::Pose2d endPose, bool useLimelight);
+     std::shared_ptr<PathPlannerPath> makePath(std::vector<frc::Pose2d> poses, units::meters_per_second_t endMPS, units::degree_t endRot);
+     frc2::CommandPtr makeCommandFromPath(std::shared_ptr<PathPlannerPath> path);
 
      void setXMode();
 
@@ -297,6 +300,6 @@ private:
      PoseTracker botPoseTracker;
      PoseTracker targetPoseTracker;
      std::vector<frc2::CommandPtr> pathCommands;
-     frc2::CommandPtr* getPathFindToPose(frc::Pose2d targetPose, units::meters_per_second_t endVelocity, units::meter_t rotDelay);
-     frc2::CommandPtr* getFollowPathFind(std::shared_ptr<PathPlannerPath> path, units::meter_t rotDelay);
+     frc2::CommandPtr getPathFindToPose(frc::Pose2d targetPose, units::meters_per_second_t endVelocity, units::meter_t rotDelay);
+     frc2::CommandPtr getFollowPathFind(std::shared_ptr<PathPlannerPath> path, units::meter_t rotDelay);
 };

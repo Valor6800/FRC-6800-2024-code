@@ -6,6 +6,10 @@
 #include <pathplanner/lib/util/HolonomicPathFollowerConfig.h>
 #include <pathplanner/lib/util/PIDConstants.h>
 #include <pathplanner/lib/util/ReplanningConfig.h>
+#include <pathplanner/lib/path/PathPlannerTrajectory.h>
+#include <pathplanner/lib/auto/CommandUtil.h>
+#include <pathplanner/lib/auto/NamedCommands.h>
+#include <pathplanner/lib/commands/PathPlannerAuto.h>
 #include <string>
 #include "Constants.h"
 #include "units/length.h"
@@ -97,11 +101,11 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
 
-    NamedCommands::registerCommand("Drive to point", std::move(
+    NamedCommands::registerCommand("Drive To Subwoofer", std::move(
         frc2::SequentialCommandGroup(
             frc2::InstantCommand(
                 [this] () {
-                    getPathFindToPose((frc::Pose2d(2.89_m, 6.99_m, frc::Rotation2d(19.45_deg))), 2_mps, 0_m);
+                    getPathFindToPose((frc::Pose2d(2.00_m, 5.50_m, frc::Rotation2d(0_deg))), 0_mps, 0_m);
                 }
             )
         )
@@ -662,23 +666,45 @@ PathConstraints constraints = PathConstraints(
     AUTO_MAX_ANG_ACCEL
 );
 
-frc2::CommandPtr* Drivetrain::getPathFindToPose(frc::Pose2d targetPose, units::meters_per_second_t endVelocity, units::meter_t rotDelay){
+frc2::CommandPtr Drivetrain::getPathFindToPose(frc::Pose2d targetPose, units::meters_per_second_t endVelocity, units::meter_t rotDelay){
     frc2::CommandPtr pathfindingCommand = AutoBuilder::pathfindToPose(
         targetPose,
         constraints,
         endVelocity,
         rotDelay
     );
-    return &pathfindingCommand;
+    return pathfindingCommand;
 }
 
-frc2::CommandPtr* Drivetrain::getFollowPathFind(std::shared_ptr<PathPlannerPath> path, units::meter_t rotDelay){
+frc2::CommandPtr Drivetrain::getFollowPathFind(std::shared_ptr<PathPlannerPath> path, units::meter_t rotDelay){
     frc2::CommandPtr pathfindingCommand = AutoBuilder::pathfindThenFollowPath(
         path, 
         constraints,
         rotDelay
     );
-    return &pathfindingCommand;
+    return pathfindingCommand;
+}
+
+std::vector<frc::Pose2d> Drivetrain::generatePoses(frc::Pose2d endPose, bool useLimelight){
+    if(!useLimelight){
+        return std::vector<frc::Pose2d> {calculatedEstimator->GetEstimatedPosition(), endPose};
+    }
+}
+
+std::shared_ptr<PathPlannerPath> Drivetrain::makePath(std::vector<frc::Pose2d> poses, units::meters_per_second_t endMPS, units::degree_t endRot){
+    std::vector<frc::Translation2d> bezierPoints = PathPlannerPath::bezierFromPoses(poses);
+
+    auto path = std::make_shared<PathPlannerPath>(
+        bezierPoints,
+        constraints, 
+        GoalEndState(endMPS, endRot)
+    );
+
+    return path;
+}
+
+frc2::CommandPtr makeCommandFromPath(std::shared_ptr<PathPlannerPath> path){
+    return AutoBuilder::followPath(path);
 }
 
 void Drivetrain::InitSendable(wpi::SendableBuilder& builder)

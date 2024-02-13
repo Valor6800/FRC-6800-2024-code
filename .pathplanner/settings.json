@@ -4,6 +4,7 @@
   "holonomicMode": true,
   "pathFolders": [
     "FirstPick",
+    "OTF",
     "Pick chain",
     "PreLoad",
     "SecondPick",
