@@ -12,8 +12,8 @@
 
 Feeder::Feeder(frc::TimedRobot *_robot) :
     valor::BaseSubsystem(_robot, "Feeder"),
-    intakeMotor(CANIDs::INTERNAL_INTAKE, valor::NeutralMode::Coast, true),
-    feederMotor(CANIDs::FEEDER, valor::NeutralMode::Coast, true)
+    intakeMotor(CANIDs::INTERNAL_INTAKE, valor::NeutralMode::Coast, true)
+    // feederMotor(CANIDs::FEEDER, valor::NeutralMode::Coast, true)
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -76,13 +76,13 @@ void Feeder::assignOutputs()
         intakeMotor.setPower(0);
     }
 
-    if(state.feederState == ROLLER_STATE::INTAKE) {
-        feederMotor.setPower(state.feederForwardSpeed);
-    } else if(state.feederState == ROLLER_STATE::OUTTAKE) {
-        feederMotor.setPower(state.feederReverseSpeed);
-    } else {
-        feederMotor.setPower(0);
-    }
+    // if(state.feederState == ROLLER_STATE::INTAKE) {
+    //     feederMotor.setPower(state.feederForwardSpeed);
+    // } else if(state.feederState == ROLLER_STATE::OUTTAKE) {
+    //     feederMotor.setPower(state.feederReverseSpeed);
+    // } else {
+    //     feederMotor.setPower(0);
+    // }
 }
 
 void Feeder::InitSendable(wpi::SendableBuilder& builder)

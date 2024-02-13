@@ -8,10 +8,10 @@
 #include <ctime>
 
 Robot::Robot() : 
-    drivetrain(this), 
-    valorAuto(), 
-    beamBreak(DIOPorts::BEAM_BREAK_PORT), 
-    shooter(this, &beamBreak),
+    drivetrain(this),
+    // valorAuto(), 
+    beamBreak(DIOPorts::BEAM_BREAK_PORT),
+    // shooter(this, &beamBreak)
     feeder(this)
 {
     frc::TimedRobot();
@@ -21,8 +21,8 @@ void Robot::RobotInit() {
     drivetrain.setGamepads(&gamepadOperator, &gamepadDriver);
     drivetrain.resetState();
 
-    shooter.setGamepads(&gamepadOperator, &gamepadDriver);
-    shooter.resetState();
+    // shooter.setGamepads(&gamepadOperator, &gamepadDriver);
+    // shooter.resetState();
 
     feeder.setGamepads(&gamepadOperator, &gamepadDriver);
     feeder.resetState();
@@ -30,7 +30,7 @@ void Robot::RobotInit() {
     frc::LiveWindow::EnableAllTelemetry();
     frc::DataLogManager::Start();
 
-    valorAuto.fillAutoList();
+    // valorAuto.fillAutoList();
 
 }
 /**
@@ -64,8 +64,8 @@ void Robot::AutonomousInit() {
 
     feeder.resetState();
 
-    autoCommand = valorAuto.getCurrentAuto();
-    autoCommand.Schedule();
+    // autoCommand = valorAuto.getCurrentAuto();
+    // autoCommand.Schedule();
 }
 
 void Robot::AutonomousExit() {
@@ -79,7 +79,7 @@ void Robot::TeleopInit() {
     drivetrain.pullSwerveModuleZeroReference();
     drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Coast);
 
-    autoCommand.Cancel();
+    // autoCommand.Cancel();
 }
 
 /**
