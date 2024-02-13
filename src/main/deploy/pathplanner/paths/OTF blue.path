@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 7.0
+        "x": 0.48523866278501937,
+        "y": 7.143666595025498
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0,
-        "y": 7.0
+        "x": 1.4852386627850196,
+        "y": 7.143666595025498
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.136331239852207,
-        "y": 5.386984811059493
+        "x": 2.3599577968386725,
+        "y": 7.143666595025498
       },
       "prevControl": {
-        "x": 3.1363312398522067,
-        "y": 5.386984811059493
+        "x": 1.3599577968386725,
+        "y": 7.143666595025498
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,8 +32,8 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Subwoofer",
-      "waypointRelativePos": 0.0,
+      "name": "POINT",
+      "waypointRelativePos": 1.0,
       "command": {
         "type": "sequential",
         "data": {
@@ -61,7 +61,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "OTF",
+  "folder": "OTF testing",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

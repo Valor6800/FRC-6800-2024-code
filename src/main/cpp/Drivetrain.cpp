@@ -89,6 +89,11 @@ using namespace pathplanner;
 #define RED_CENTER_TRAP_ROT_ANGLE 0.0f
 #define RED_LOCK_ANGLE 3.14159f
 
+#define X_POINT 2.00_m
+#define Y_POINT 5.50_m
+#define ROBOT_ROT 0.0_deg
+#define ROBOT_SPEED 0.0_mps
+
 Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Drivetrain"),
                         rotMaxSpeed(ROT_SPEED_MUL * 2 * M_PI),
                         pigeon(CANIDs::PIGEON_CAN, PIGEON_CAN_BUS),
@@ -105,11 +110,22 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "
         frc2::SequentialCommandGroup(
             frc2::InstantCommand(
                 [this] () {
-                    getPathFindToPose((frc::Pose2d(2.00_m, 5.50_m, frc::Rotation2d(0_deg))), 0_mps, 0_m);
+                    getPathFindToPose((frc::Pose2d(8.28_m, 7.44_m, frc::Rotation2d(0_deg))), 0_mps, 0_m);
                 }
             )
         )
     ).ToPtr());
+
+/*    NamedCommands::registerCommand("Drive To Random Point", std::move(
+        frc2::SequentialCommandGroup(
+            frc2::InstantCommand(
+                [this] () {
+                    makeCommandFromPath(makePath(
+                        generatePoses(frc::Pose2d(units::meter_t(table->GetNumber("X POINT", X_POINT.to<double>())), units::meter_t(table->GetNumber("Y POINT", Y_POINT.to<double>())), frc::Rotation2d(ROBOT_ROT)), false), ROBOT_SPEED, ROBOT_ROT));
+                }
+            )
+        )
+    ).ToPtr()); */
 }
 
 Drivetrain::~Drivetrain()
@@ -230,6 +246,9 @@ void Drivetrain::init()
     table->PutNumber("KP_ROTATION", KP_ROTATE);
     table->PutNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET);
     table->PutNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET);
+
+    table->PutNumber("X POINT", X_POINT.to<double>());
+    table->PutNumber("Y POINT", Y_POINT.to<double>());
 
 
     state.lock = false;

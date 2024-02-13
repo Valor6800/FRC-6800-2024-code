@@ -1,0 +1,25 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.48523866278501937,
+      "y": 7.143666595025498
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "OTF blue"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "OTF testing",
+  "choreoAuto": false
+}
