@@ -125,7 +125,7 @@ void Climber::analyzeDashboard()
 
 void Climber::assignOutputs()
 {
-    if (state.zeroState != ZERO){
+    if (state.zeroState != ZERO){ //not implemented zeroing sequence yet
         climbMotor.setSpeed(0);
     } else if (state.climbState == AUTO_CLIMB){
 
