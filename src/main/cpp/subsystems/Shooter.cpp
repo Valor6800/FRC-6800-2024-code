@@ -207,7 +207,7 @@ void Shooter::getTargetPivotAngle(bool laser){
         if(frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue){
         double changeInX = robotX.to<double>() - SPEAKER_BLUE_X.to<double>();
         distance = sqrtf(pow(changeInX, 2) + pow(changeInY, 2));
-    }
+        }
         else{
             double changeInX = robotX.to<double>() - SPEAKER_RED_X.to<double>();
             distance = sqrtf(pow(changeInX, 2) + pow(changeInY, 2));
