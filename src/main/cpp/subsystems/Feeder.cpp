@@ -38,8 +38,10 @@ void Feeder::init()
 
 void Feeder::assessInputs()
 {
-    if (driverGamepad == nullptr || operatorGamepad == nullptr )
+    if (driverGamepad == nullptr || operatorGamepad == nullptr ||
+        !driverGamepad->IsConnected() || !operatorGamepad->IsConnected())
         return;
+
     if (driverGamepad->rightTriggerActive()) {
         state.intakeState = ROLLER_STATE::INTAKE;
         state.feederState = ROLLER_STATE::INTAKE;

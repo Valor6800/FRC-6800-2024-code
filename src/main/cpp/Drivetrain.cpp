@@ -260,7 +260,8 @@ double Drivetrain::angleWrap(double degrees)
 
 void Drivetrain::assessInputs()
 {
-    if (!driverGamepad || !operatorGamepad) return;
+    if (!driverGamepad || !driverGamepad->IsConnected())
+        return;
 
     if (driverGamepad->GetBackButtonPressed()) {
         resetGyro();
@@ -272,19 +273,16 @@ void Drivetrain::assessInputs()
     state.sourceAlign = driverGamepad->GetYButton();
     state.thetaLock = driverGamepad->GetAButton();
 
-    state.topTape = operatorGamepad->DPadUp();
-    state.bottomTape = operatorGamepad->DPadRight();
-
     state.xSpeed = driverGamepad->leftStickY(2);
     state.ySpeed = driverGamepad->leftStickX(2);
 
     state.rot = driverGamepad->rightStickX(3);
 
-    if(state.isHeadingTrack) getSpeakerLockAngleRPS();
-    else if(state.sourceAlign) setAlignmentAngle(Alignment::SOURCE);
-    else if(state.ampAlign) setAlignmentAngle(Alignment::AMP);
-    else if(state.trapAlign) setAlignmentAngle(Alignment::TRAP);
-    else if(state.thetaLock) setAlignmentAngle(Alignment::LOCK);
+    if (!operatorGamepad || !operatorGamepad->IsConnected())
+        return;
+
+    state.topTape = operatorGamepad->DPadUp();
+    state.bottomTape = operatorGamepad->DPadRight();
 
 }
 
@@ -311,6 +309,12 @@ void Drivetrain::calculateCarpetPose()
 
 void Drivetrain::analyzeDashboard()
 {
+    if(state.isHeadingTrack) getSpeakerLockAngleRPS();
+    else if(state.sourceAlign) setAlignmentAngle(Alignment::SOURCE);
+    else if(state.ampAlign) setAlignmentAngle(Alignment::AMP);
+    else if(state.trapAlign) setAlignmentAngle(Alignment::TRAP);
+    else if(state.thetaLock) setAlignmentAngle(Alignment::LOCK);
+
     if (table->GetBoolean("Load Swerve Mag Encoder",false))
         pullSwerveModuleZeroReference();
 
@@ -331,7 +335,7 @@ void Drivetrain::analyzeDashboard()
         aprilLime->applyVisionMeasurement(calculatedEstimator, visionAcceptanceRadius, doubtX, doubtY);
     }
 
-    if (driverGamepad->GetStartButton()) {
+    if (driverGamepad && driverGamepad->IsConnected() && driverGamepad->GetStartButton()) {
         for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
             if (aprilLime->hasTarget()) {
                 botpose = aprilLime->getSensor().ToPose2d();
