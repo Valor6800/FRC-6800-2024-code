@@ -41,7 +41,8 @@ public:
     enum ZERO_STATE
     {
         NOT_ZERO,
-        ZERO
+        ZERO,
+        ZEROING
     };
 
     enum AUTO_CLIMB_STATE

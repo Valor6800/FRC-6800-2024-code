@@ -76,14 +76,14 @@ void Climber::climbCommands(){
 
     frc2::FunctionalCommand zeroing(
         [this]() {
-            state.zeroState = Climber::ZERO_STATE::NOT_ZERO;
+            state.zeroState = Climber::ZERO_STATE::ZEROING;
         },
         [this]() {},
         [this](bool) {
-            state.climbState = Climber::CLIMB_STATE::DISABLED;
+            state.zeroState = Climber::ZERO_STATE::ZERO;
         },
         [this]() {
-            return climbMotor.getPosition() <= DOWN_CLIMB_TARGET;
+            return climbMotor.getPosition() <= DOWN_CLIMB_TARGET || hallE->Get();
         },
         {}
     );
@@ -103,7 +103,7 @@ void Climber::assessInputs()
         state.autoClimbState = AUTO_CLIMB_STATE::DISABLED_CLIMBER;
     }
     
-    if (state.zeroState == NOT_ZERO){
+    if (state.zeroState == NOT_ZERO && !hallE->Get()){
         zeroingSequence.Schedule();
     } else if (operatorGamepad->DPadUp()){
         state.climbState = AUTO_CLIMB;
@@ -125,7 +125,7 @@ void Climber::analyzeDashboard()
 
 void Climber::assignOutputs()
 {
-    if (state.zeroState == NOT_ZERO){ //not implemented zeroing sequence yet
+    if (state.zeroState == ZEROING){ //not implemented zeroing sequence yet
         climbMotor.setSpeed(ZEROING_SPEED);
     } else if (state.climbState == AUTO_CLIMB){
 
@@ -139,7 +139,7 @@ void Climber::assignOutputs()
 
     } else if (state.climbState == ACTIVE){
         climbMotor.setSpeed(operatorGamepad->rightStickY() * MAX_CLIMB_SPEED);
-    } else if (state.climbState == DISABLED){
+    } else if (state.climbState == DISABLED || state.zeroState == ZERO){
         climbMotor.setSpeed(0);
     }
 }
