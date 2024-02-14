@@ -19,6 +19,7 @@ void NeoController::init()
 {
     motor->RestoreFactoryDefaults();
     motor->SetInverted(inverted);
+    motor->SetControlFramePeriodMs(0);
     setVoltageCompensation(12);
     setNeutralMode(neutralMode);
     setRange(0,-1,1);
@@ -158,7 +159,7 @@ void NeoController::setProfile(int profile)
  */
 void NeoController::setSpeed(double speed)
 {
-    pidController.SetReference(speed * 60.0, rev::CANSparkMax::ControlType::kVelocity, currentPidSlot);
+    pidController.SetReference(speed / conversion * 60.0, rev::CANSparkMax::ControlType::kVelocity, currentPidSlot);
 }
 
 void NeoController::setPower(double power)
@@ -189,6 +190,14 @@ void NeoController::InitSendable(wpi::SendableBuilder& builder)
     builder.AddDoubleProperty(
         "Speed", 
         [this] { return getSpeed(); },
+        nullptr);
+    builder.AddDoubleProperty(
+        "Duty Cycle", 
+        [this] { return motor->GetAppliedOutput(); },
+        nullptr);
+    builder.AddDoubleProperty(
+        "Voltage", 
+        [this] { return motor->GetAppliedOutput() * motor->GetBusVoltage(); },
         nullptr);
     builder.AddBooleanProperty(
         "Inverted", 
