@@ -11,6 +11,7 @@
 
 #define UP_CLIMB_SPEED 0 //placeholder
 #define DOWN_CLIMB_SPEED 0 //placeholder
+#define ZEROING_SPEED 0 //placeholder
 
 Climber::Climber(frc::TimedRobot *_robot) : 
     valor::BaseSubsystem(_robot, "Climber"), 
@@ -59,7 +60,6 @@ void Climber::climbCommands(){
         },
         {}
     );
-
     frc2::FunctionalCommand downClimb(
         [this]() {
             state.autoClimbState = Climber::AUTO_CLIMB_STATE::DOWN_CLIMBER;
@@ -95,17 +95,17 @@ void Climber::assessInputs()
 {
     if (!operatorGamepad) return;
 
-
     if(operatorGamepad->rightStickYActive() && autoClimbSequence.IsScheduled()){
         autoClimbSequence.Cancel();
     }
-
-    if(!autoClimbSequence.IsScheduled() )
+    if(!autoClimbSequence.IsScheduled() || !zeroingSequence.IsScheduled())
     {
         state.autoClimbState = AUTO_CLIMB_STATE::DISABLED_CLIMBER;
     }
     
-    if (operatorGamepad->DPadUp()){
+    if (state.zeroState == NOT_ZERO){
+        zeroingSequence.Schedule();
+    } else if (operatorGamepad->DPadUp()){
         state.climbState = AUTO_CLIMB;
         autoClimbSequence.Schedule();
     } else if (operatorGamepad->rightStickYActive()){
@@ -125,8 +125,8 @@ void Climber::analyzeDashboard()
 
 void Climber::assignOutputs()
 {
-    if (state.zeroState != ZERO){ //not implemented zeroing sequence yet
-        climbMotor.setSpeed(0);
+    if (state.zeroState == NOT_ZERO){ //not implemented zeroing sequence yet
+        climbMotor.setSpeed(ZEROING_SPEED);
     } else if (state.climbState == AUTO_CLIMB){
 
         if (state.autoClimbState == UP_CLIMBER){
