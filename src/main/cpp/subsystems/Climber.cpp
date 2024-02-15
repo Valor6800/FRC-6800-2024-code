@@ -95,12 +95,15 @@ void Climber::assessInputs()
 {
     if (!operatorGamepad) return;
 
-    if(operatorGamepad->rightStickYActive() && autoClimbSequence.IsScheduled()){
+    if (operatorGamepad->rightStickYActive() && autoClimbSequence.IsScheduled()){
         autoClimbSequence.Cancel();
+    }
+    if (operatorGamepad->rightStickYActive() && zeroingSequence.IsScheduled()){
+        zeroingSequence.Cancel();
     }
     if(!autoClimbSequence.IsScheduled() || !zeroingSequence.IsScheduled())
     {
-        state.autoClimbState = AUTO_CLIMB_STATE::DISABLED_CLIMBER;
+        state.climbState = DISABLED;
     }
     
     if (state.zeroState == NOT_ZERO && !hallE->Get()){
