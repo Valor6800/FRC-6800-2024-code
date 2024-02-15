@@ -92,7 +92,11 @@
   ],
   "globalConstraints": {
     "maxVelocity": 3.5,
+<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Af no shoot.path
     "maxAcceleration": 1.5,
+=======
+    "maxAcceleration": 3.0,
+>>>>>>> 41e597b (Adjust auto constants):src/main/deploy/pathplanner/paths/Ac.path
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 5400.0
   },

@@ -1,0 +1,136 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.890018068152122,
+        "y": 5.572019226189894
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.860855699135833,
+        "y": 5.547540336050112
+      },
+      "isLocked": false,
+      "linkedName": "Rex"
+    },
+    {
+      "anchor": {
+        "x": 2.454958740718986,
+        "y": 5.785701182513477
+      },
+      "prevControl": {
+        "x": 1.729222256838611,
+        "y": 5.37476407020233
+      },
+      "nextControl": {
+        "x": 4.285310431678401,
+        "y": 6.822109651845255
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.267168552855624,
+        "y": 5.785701182513477
+      },
+      "prevControl": {
+        "x": 7.305616703826,
+        "y": 5.694368009106388
+      },
+      "nextControl": {
+        "x": 8.74073467460555,
+        "y": 5.8306829448190225
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.1880231778403374,
+        "y": 5.978877172417251
+      },
+      "prevControl": {
+        "x": 5.403924785569485,
+        "y": 6.621534911436433
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.85,
+      "rotationDegrees": -1.2896379635794128,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 0.75,
+      "rotationDegrees": 0,
+      "rotateFast": true
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Shoot",
+      "waypointRelativePos": 0.75,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot sequence-shooter"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot sequence-feeder"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Spool",
+      "waypointRelativePos": 2.75,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Spool"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.5,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 13.005632630451027,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "SecondPick",
+  "previewStartingState": {
+    "rotation": 0.48270900209396905,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

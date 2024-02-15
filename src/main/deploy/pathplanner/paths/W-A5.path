@@ -3,6 +3,7 @@
   "waypoints": [
     {
       "anchor": {
+<<<<<<< HEAD:src/main/deploy/pathplanner/paths/W-A5.path
         "x": 1.96,
         "y": 4.087365499528453
       },
@@ -10,12 +11,22 @@
       "nextControl": {
         "x": 2.0106409562442966,
         "y": 2.0045948386891
+=======
+        "x": 2.199098364342562,
+        "y": 5.976362151219673
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.1930511475912335,
+        "y": 5.0707916198217555
+>>>>>>> 41e597b (Adjust auto constants):src/main/deploy/pathplanner/paths/SaMSs.path
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
+<<<<<<< HEAD:src/main/deploy/pathplanner/paths/W-A5.path
         "x": 8.054676402176879,
         "y": 0.7423047253501917
       },
@@ -26,6 +37,18 @@
       "nextControl": {
         "x": 9.174036668530515,
         "y": 0.710134166434422
+=======
+        "x": 7.946381565795539,
+        "y": 4.4070334622150735
+      },
+      "prevControl": {
+        "x": 7.150661190571152,
+        "y": 5.079225181447246
+      },
+      "nextControl": {
+        "x": 8.885479624764228,
+        "y": 3.61372219554335
+>>>>>>> 41e597b (Adjust auto constants):src/main/deploy/pathplanner/paths/SaMSs.path
       },
       "isLocked": false,
       "linkedName": null
@@ -130,7 +153,11 @@
   ],
   "globalConstraints": {
     "maxVelocity": 3.5,
+<<<<<<< HEAD:src/main/deploy/pathplanner/paths/W-A5.path
     "maxAcceleration": 2.5,
+=======
+    "maxAcceleration": 3.0,
+>>>>>>> 41e597b (Adjust auto constants):src/main/deploy/pathplanner/paths/SaMSs.path
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1600.0
   },
@@ -140,10 +167,15 @@
     "rotateFast": false
   },
   "reversed": false,
+<<<<<<< HEAD:src/main/deploy/pathplanner/paths/W-A5.path
   "folder": "SecondPick",
   "previewStartingState": {
     "rotation": -35.52904499256282,
     "velocity": 0
   },
+=======
+  "folder": "Pick chain",
+  "previewStartingState": null,
+>>>>>>> 41e597b (Adjust auto constants):src/main/deploy/pathplanner/paths/SaMSs.path
   "useDefaultConstraints": true
 }

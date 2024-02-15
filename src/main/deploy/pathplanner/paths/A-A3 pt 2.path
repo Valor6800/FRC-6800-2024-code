@@ -16,12 +16,21 @@
     },
     {
       "anchor": {
+<<<<<<< HEAD:src/main/deploy/pathplanner/paths/A-A3 pt 2.path
         "x": 3.8361632874162743,
         "y": 6.091237518991242
       },
       "prevControl": {
         "x": 3.8915597442855794,
         "y": 2.465086665546597
+=======
+        "x": 7.898763645545231,
+        "y": 7.441263411462009
+      },
+      "prevControl": {
+        "x": 6.926515374320925,
+        "y": 7.326893892736493
+>>>>>>> 41e597b (Adjust auto constants):src/main/deploy/pathplanner/paths/AcN 1-way.path
       },
       "nextControl": null,
       "isLocked": false,
@@ -68,7 +77,11 @@
   ],
   "globalConstraints": {
     "maxVelocity": 3.5,
+<<<<<<< HEAD:src/main/deploy/pathplanner/paths/A-A3 pt 2.path
     "maxAcceleration": 2.5,
+=======
+    "maxAcceleration": 3.0,
+>>>>>>> 41e597b (Adjust auto constants):src/main/deploy/pathplanner/paths/AcN 1-way.path
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1600.0
   },

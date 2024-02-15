@@ -32,8 +32,8 @@ void Robot::RobotInit() {
     shooter.setGamepads(&gamepadOperator, &gamepadDriver);
     shooter.resetState();
 
-    feeder.setGamepads(&gamepadOperator, &gamepadDriver);
-    feeder.resetState();
+    // feeder.setGamepads(&gamepadOperator, &gamepadDriver);
+    // feeder.resetState();
 
     frc::LiveWindow::EnableAllTelemetry();
     frc::DataLogManager::Start();

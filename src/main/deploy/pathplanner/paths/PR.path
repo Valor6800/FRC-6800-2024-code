@@ -1,0 +1,125 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.465008618819321,
+        "y": 4.116334869316152
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.4610061302554502,
+        "y": 3.265579288402946
+      },
+      "isLocked": false,
+      "linkedName": "Powerloader"
+    },
+    {
+      "anchor": {
+        "x": 4.201087713445681,
+        "y": 1.8286983109701171
+      },
+      "prevControl": {
+        "x": 3.408181847964991,
+        "y": 2.082846348349255
+      },
+      "nextControl": {
+        "x": 5.306781221924712,
+        "y": 1.4742932707798293
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.297473307431591,
+        "y": 0.7731697862884914
+      },
+      "prevControl": {
+        "x": 7.211289258733031,
+        "y": 1.062351263446741
+      },
+      "nextControl": {
+        "x": 8.817360066841688,
+        "y": 0.6347571284876675
+      },
+      "isLocked": false,
+      "linkedName": "Ronin"
+    },
+    {
+      "anchor": {
+        "x": 6.054642263791739,
+        "y": 1.226465982859851
+      },
+      "prevControl": {
+        "x": 7.9617775868364244,
+        "y": 1.0920191769620329
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.6,
+      "rotationDegrees": -13.432459152700044,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Enable intake",
+      "waypointRelativePos": 1.45,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Enable intake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Disable feeder",
+      "waypointRelativePos": 0.4,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Disable feeder"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.5,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -30.49800072479895,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "SecondPick",
+  "previewStartingState": {
+    "rotation": -0.13146522027074922,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

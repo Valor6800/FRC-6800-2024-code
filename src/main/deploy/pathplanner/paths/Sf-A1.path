@@ -32,6 +32,7 @@
     },
     {
       "anchor": {
+<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Sf-A1.path
         "x": 8.315037000950738,
         "y": 7.080577081473897
       },
@@ -42,6 +43,18 @@
       "nextControl": {
         "x": 9.314872574889083,
         "y": 7.0987106163575735
+=======
+        "x": 7.9229377268071675,
+        "y": 5.785911811479294
+      },
+      "prevControl": {
+        "x": 6.961385877777543,
+        "y": 5.694578638072206
+      },
+      "nextControl": {
+        "x": 8.396503848557094,
+        "y": 5.83089357378484
+>>>>>>> 41e597b (Adjust auto constants):src/main/deploy/pathplanner/paths/ReS real.path
       },
       "isLocked": false,
       "linkedName": "Northstar"
@@ -151,7 +164,11 @@
   ],
   "globalConstraints": {
     "maxVelocity": 3.5,
+<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Sf-A1.path
     "maxAcceleration": 2.5,
+=======
+    "maxAcceleration": 3.0,
+>>>>>>> 41e597b (Adjust auto constants):src/main/deploy/pathplanner/paths/ReS real.path
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1600.0
   },
