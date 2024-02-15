@@ -8,10 +8,15 @@
 #include <pathplanner/lib/util/ReplanningConfig.h>
 #include <string>
 #include "Constants.h"
+#include "frc2/command/FunctionalCommand.h"
+#include "frc2/command/SequentialCommandGroup.h"
 #include "units/length.h"
 #include "valkyrie/sensors/AprilTagsSensor.h"
 #include "units/length.h"
 #include "valkyrie/sensors/VisionSensor.h"
+#include <frc2/command/InstantCommand.h>
+#include <pathplanner/lib/auto/NamedCommands.h>
+#include <utility>
 #include "frc/geometry/Pose3d.h"
 #include "frc/geometry/Rotation3d.h"
 #include "units/angle.h"
@@ -55,7 +60,7 @@ using namespace pathplanner;
 #define SPEAKER_X_OFFSET 0.15f
 #define SPEAKER_Y_OFFSET 0.00f
 
-#define VISION_ACCEPTANCE 4.0_m // meters
+#define VISION_ACCEPTANCE 3.5_m // meters
 
 #define BLUE_AMP_ROT_ANGLE -90.0_deg
 #define BLUE_SOURCE_ROT_ANGLE -30_deg
@@ -185,9 +190,8 @@ void Drivetrain::init()
     table->PutNumber("Vision Std", 3.0);
 
     table->PutNumber("Vision Acceptance", VISION_ACCEPTANCE.to<double>() );
-    table->PutNumber("DoubtX", 1.0);
-    table->PutNumber("DoubtY", 1.0);
-    table->PutNumber("DoubtRot", 1.0);
+    table->PutNumber("DoubtX", 3.0);
+    table->PutNumber("DoubtY", 3.0);
 
     table->PutNumber("KPLIMELIGHT", KP_LIMELIGHT);
     table->PutNumber("KP_ROTATION", KP_ROTATE);
@@ -199,8 +203,18 @@ void Drivetrain::init()
 
     resetState();
 
+    state.useCalculatedEstimator = true;
     AutoBuilder::configureHolonomic(
-        [this](){ return getPose_m(); }, // Robot pose supplier
+        [this](){ 
+            if (state.useCalculatedEstimator) {
+                return frc::Pose2d(
+                    calculatedEstimator->GetEstimatedPosition().X(),
+                    calculatedEstimator->GetEstimatedPosition().Y(),
+                    estimator->GetEstimatedPosition().Rotation()
+                );
+            }
+            return getPose_m();
+        }, // Robot pose supplier
         [this](frc::Pose2d pose){ resetOdometry(pose); }, // Method to reset odometry (will be called if your auto has a starting pose)
         [this](){ return getRobotRelativeSpeeds(); }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         [this](frc::ChassisSpeeds speeds){ driveRobotRelative(speeds); }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
@@ -224,6 +238,26 @@ void Drivetrain::init()
         },
         this // Reference to this subsystem to set requirements
     );
+
+    pathplanner::NamedCommands::registerCommand("Set Camera Estimator", std::move(
+        frc2::SequentialCommandGroup(
+            frc2::InstantCommand(
+                [this]() {
+                    state.useCalculatedEstimator = true;
+                }
+            )
+        )
+    ).ToPtr());
+
+    pathplanner::NamedCommands::registerCommand("Set Estimator", std::move(
+        frc2::SequentialCommandGroup(
+            frc2::InstantCommand(
+                [this]() {
+                    state.useCalculatedEstimator = false;
+                }
+            )
+        )
+    ).ToPtr());
 }
 
 std::vector<valor::Swerve<Drivetrain::SwerveAzimuthMotor, Drivetrain::SwerveDriveMotor> *> Drivetrain::getSwerveModules()
@@ -317,9 +351,8 @@ void Drivetrain::analyzeDashboard()
 
     frc::Pose2d botpose;
     
-    doubtX = table->GetNumber("DoubtX", 1.0);
-    doubtY = table->GetNumber("DoubtY", 1.0);
-    doubtRot = table->GetNumber("DoubtRot", 1.0);
+    doubtX = table->GetNumber("DoubtX", 3.0);
+    doubtY = table->GetNumber("DoubtY", 3.0);
     visionAcceptanceRadius = (units::meter_t) table->GetNumber("Vision Acceptance", VISION_ACCEPTANCE.to<double>());
 
     for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
@@ -615,6 +648,18 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
         builder.AddDoubleProperty(
             "ySpeed",
             [this] { return state.ySpeed; },
+            nullptr
+        );
+
+        builder.AddDoubleArrayProperty(
+            "Auto Camera Pose",
+            [this] {
+                std::vector<double> autoCameraPose;
+                autoCameraPose.push_back(calculatedEstimator->GetEstimatedPosition().X().to<double>());
+                autoCameraPose.push_back(calculatedEstimator->GetEstimatedPosition().Y().to<double>());
+                autoCameraPose.push_back(estimator->GetEstimatedPosition().Rotation().Degrees().to<double>());
+                return autoCameraPose;
+            },
             nullptr
         );
         builder.AddDoubleProperty(

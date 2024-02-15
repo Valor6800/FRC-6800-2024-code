@@ -168,6 +168,8 @@ public:
           frc::Pose2d prevPose;
 
           units::second_t startTimestamp; // generic
+          
+          bool useCalculatedEstimator; // only during auto
      } state;
      
      
@@ -284,7 +286,7 @@ private:
      
      std::vector<valor::AprilTagsSensor*> aprilTagSensors;
 
-     double doubtX, doubtY, doubtRot;
+     double doubtX, doubtY;
      units::meter_t visionAcceptanceRadius;
 
      PoseTracker botPoseTracker;
