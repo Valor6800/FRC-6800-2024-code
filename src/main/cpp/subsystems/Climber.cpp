@@ -13,7 +13,7 @@
 #define DOWN_CLIMB_SPEED 0 //placeholder
 #define ZEROING_SPEED 0 //placeholder
 
-Climber::Climber(frc::TimedRobot *_robot) : 
+Climber::Climber(frc::TimedRobot *_robot) :
     valor::BaseSubsystem(_robot, "Climber"), 
     climbMotor(CANIDs::LEFT_CLIMBER, valor::NeutralMode::Brake, false),
     hallE(new frc::DigitalInput(CANIDs::HALL_EFFECT)),
@@ -46,7 +46,8 @@ void Climber::init()
     resetState();
 }
 
-void Climber::climbCommands(){
+void Climber::climbCommands()
+{
     frc2::FunctionalCommand upClimb(
         [this]() {
             state.autoClimbState = Climber::AUTO_CLIMB_STATE::UP_CLIMBER;
@@ -105,7 +106,7 @@ void Climber::assessInputs()
     {
         state.climbState = DISABLED;
     }
-    
+
     if (state.zeroState == NOT_ZERO && !hallE->Get()){
         zeroingSequence.Schedule();
     } else if (operatorGamepad->DPadUp()){
