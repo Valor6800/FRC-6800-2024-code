@@ -48,8 +48,7 @@ class Robot : public frc::TimedRobot {
         frc2::CommandPtr autoCommand = frc2::cmd::Sequence();
 
         Drivetrain drivetrain;
-        // valor::Auto valorAuto;
-        frc::AnalogTrigger beamBreak;  
+        valor::Auto valorAuto;
           
         Climber climber;
         Shooter shooter;

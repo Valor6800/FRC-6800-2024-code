@@ -43,22 +43,15 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Shoot sequence-feeder"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Shoot sequence-shooter"
-                }
-              }
-            ]
+            "pathName": "SaSSa"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot sequence-feeder"
           }
         }
       ]

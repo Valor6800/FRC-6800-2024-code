@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.985716987795153,
-        "y": 6.393448851410923
+        "x": 2.199098364342562,
+        "y": 5.976362151219673
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.979669771043825,
-        "y": 5.487878320013006
+        "x": 3.1930511475912335,
+        "y": 5.0707916198217555
       },
       "isLocked": false,
       "linkedName": "Score amp"
     },
     {
       "anchor": {
-        "x": 8.295473559914134,
-        "y": 4.123053654961478
+        "x": 7.946381565795539,
+        "y": 4.4070334622150735
       },
       "prevControl": {
-        "x": 7.499753184689747,
-        "y": 4.79524537419365
+        "x": 7.150661190571152,
+        "y": 5.079225181447246
       },
       "nextControl": {
-        "x": 9.234571618882821,
-        "y": 3.329742388289754
+        "x": 8.885479624764228,
+        "y": 3.61372219554335
       },
       "isLocked": false,
       "linkedName": "Mid"
@@ -129,8 +129,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.5,
-    "maxAcceleration": 2.5,
+    "maxVelocity": 3.5,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 360.0
   },
@@ -142,5 +142,5 @@
   "reversed": false,
   "folder": "Pick chain",
   "previewStartingState": null,
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }
