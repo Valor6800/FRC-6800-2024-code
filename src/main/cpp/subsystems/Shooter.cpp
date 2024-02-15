@@ -4,6 +4,11 @@
 #include "valkyrie/controllers/NeutralMode.h"
 #include "valkyrie/controllers/PIDF.h"
 
+#include "pathplanner/lib/auto/NamedCommands.h"
+#include "frc2/command/InstantCommand.h"
+#include "frc2/command/WaitCommand.h"
+#include "frc2/command/SequentialCommandGroup.h"
+
 #define PIVOT_ROTATE_K_VEL 90.0f
 #define PIVOT_ROTATE_K_ACC 500.0f
 #define PIVOT_ROTATE_K_P 0.0f

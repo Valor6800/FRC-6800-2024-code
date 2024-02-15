@@ -288,6 +288,7 @@ private:
      frc::Pose2d previousPose;
 
      valor::PIDF xPIDF;
+     valor::PIDF yPIDF;
      valor::PIDF thetaPIDF;
 
      bool swerveNoError;
