@@ -27,8 +27,8 @@ void Robot::RobotInit() {
     shooter.setGamepads(&gamepadOperator, &gamepadDriver);
     shooter.resetState();
 
-    feeder.setGamepads(&gamepadOperator, &gamepadDriver);
-    feeder.resetState();
+    // feeder.setGamepads(&gamepadOperator, &gamepadDriver);
+    // feeder.resetState();
 
     climber.setGamepads(&gamepadOperator, &gamepadDriver);
     climber.resetState();

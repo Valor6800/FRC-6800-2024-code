@@ -28,12 +28,12 @@ using namespace pathplanner;
 // #define KP_LOCK 0.2f
 #define KP_LIMELIGHT 0.7f
 
-#define KPX 30.0f //50
+#define KPX 15.0f // 30
 #define KIX 0.0f //0
 #define KDX 0.0f //.1
 
-#define KPT 15.0f //15
-#define KIT 0.0f
+#define KPT 8.0f //15
+#define KIT 5.0f
 #define KDT 0.0f
 
 #define WHEEL_DIAMETER_M 0.0973f //0.1016
@@ -510,7 +510,6 @@ void Drivetrain::driveRobotRelative(frc::ChassisSpeeds speeds) {
     std::vector<double> sStates;
     for (size_t i = 0; i < swerveModules.size(); i++)
     {
-        swerveModules[i]->setDesiredState(desiredStates[i], true);
         sStates.push_back(desiredStates[i].angle.Degrees().to<double>());
         sStates.push_back(desiredStates[i].speed.to<double>());
     }
