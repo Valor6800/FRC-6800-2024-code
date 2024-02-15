@@ -10,10 +10,12 @@
 #define FEEDER_FORWARD_POWER 0.8f
 #define FEEDER_REVERSE_POWER -0.8f
 
-Feeder::Feeder(frc::TimedRobot *_robot) :
+Feeder::Feeder(frc::TimedRobot *_robot, frc::DigitalInput* _beamBreak) :
     valor::BaseSubsystem(_robot, "Feeder"),
     intakeMotor(CANIDs::INTERNAL_INTAKE, valor::NeutralMode::Coast, true),
-    feederMotor(CANIDs::FEEDER, valor::NeutralMode::Coast, true)
+    feederMotor(CANIDs::FEEDER, valor::NeutralMode::Coast, true),
+    beamBreak(_beamBreak),
+    debounceSensor(_robot, "Feeder")
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -28,6 +30,8 @@ void Feeder::resetState()
 void Feeder::init()
 {
     resetState();
+
+    debounceSensor.setGetter([this]() { return beamBreak->Get(); });
 
     table->PutNumber("Intake Forward Power", INTAKE_FORWARD_POWER);
     table->PutNumber("Intake Reverse Power", INTAKE_REVERSE_POWER);
@@ -98,6 +102,12 @@ void Feeder::InitSendable(wpi::SendableBuilder& builder)
     builder.AddDoubleProperty(
         "feederState",
         [this] {return state.feederState;},
+        nullptr
+    );
+
+    builder.AddBooleanProperty(
+        "debounceSensor",
+        [this] {return debounceSensor.getSensor();},
         nullptr
     );
 }

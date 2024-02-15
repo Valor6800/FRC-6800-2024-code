@@ -31,12 +31,11 @@
 #define RIGHT_SPOOL_POWER 50.0f
 #define RIGHT_STANDBY_POWER 0.0f
 
-Shooter::Shooter(frc::TimedRobot *_robot, frc::DigitalInput* _beamBreak) :
+Shooter::Shooter(frc::TimedRobot *_robot) :
     valor::BaseSubsystem(_robot, "Shooter"),
     //pivotMotors(CANIDs::ANGLE_CONTROLLER, valor::NeutralMode::Brake, false),
     leftFlywheelMotor(CANIDs::LEFT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false),
-    rightFlywheelMotor(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false),
-    beamBreak(_beamBreak)
+    rightFlywheelMotor(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false)
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();

@@ -11,7 +11,6 @@
 #include <frc/trajectory/Trajectory.h>
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Rotation2d.h>
-#include <frc/DigitalInput.h>
 #include <frc/trajectory/TrajectoryGenerator.h>
 #include <frc/DigitalOutput.h>
 
@@ -26,7 +25,7 @@ public:
     valor::NeoController leftFlywheelMotor;
     valor::NeoController rightFlywheelMotor;
 
-    Shooter(frc::TimedRobot *robot, frc::DigitalInput* beamBreak);
+    Shooter(frc::TimedRobot *robot);
 
     void resetState();
 
@@ -67,7 +66,4 @@ public:
         units::angular_velocity::revolutions_per_minute_t rightFlywheelTargetVelocity;
         units::degree_t pivotAngle;
     } state;
-
-private:
-    frc::DigitalInput* beamBreak;
 };
