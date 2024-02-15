@@ -15,17 +15,21 @@
 #define PIVOT_REVERSE_LIMIT 0.0f
 #define PIVOT_FORWARD_LIMIT 90.0f
 
-#define FLYWHEEL_ROTATE_K_VEL 4500.0f
-#define FLYWHEEL_ROTATE_K_ACC 4500.0f
-#define FLYWHEEL_ROTATE_K_P 0.0f
+#define FLYWHEEL_ROTATE_K_VEL 75.0f
+#define FLYWHEEL_ROTATE_K_ACC 75.0f
+#define FLYWHEEL_ROTATE_K_P 0.000005f
 
 #define SUBWOOFER_ANG 30.0_deg
 #define PODIUM_ANG 45.0_deg
 #define STARTING_LINE_ANG 60.0_deg
 
-#define SHOOT_POWER 4000.0f
-#define SPOOL_POWER 3000.0f
-#define STANDBY_POWER 0.0f
+#define LEFT_SHOOT_POWER 66.33f
+#define LEFT_SPOOL_POWER 50.0f
+#define LEFT_STANDBY_POWER 0.0f
+
+#define RIGHT_SHOOT_POWER 66.66f
+#define RIGHT_SPOOL_POWER 50.0f
+#define RIGHT_STANDBY_POWER 0.0f
 
 Shooter::Shooter(frc::TimedRobot *_robot, frc::DigitalInput* _beamBreak) :
     valor::BaseSubsystem(_robot, "Shooter"),
@@ -61,7 +65,9 @@ void Shooter::init()
     flywheelPID.maxAcceleration = FLYWHEEL_ROTATE_K_ACC;
     flywheelPID.P = FLYWHEEL_ROTATE_K_P;
     
+    leftFlywheelMotor.setConversion(1);
     leftFlywheelMotor.setPIDF(flywheelPID, 0);
+    rightFlywheelMotor.setConversion(1);
     rightFlywheelMotor.setPIDF(flywheelPID, 0);
     
     // pivotMotors.setConversion(1.0 / SHOOTER_ROTATE_GEAR_RATIO * 360);
@@ -69,13 +75,13 @@ void Shooter::init()
     // pivotMotors.setReverseLimit(SHOOTER_ROTATE_REVERSE_LIMIT.to<double>());
     // pivotMotors.setPIDF(pivotPID, 0);
 
-    table->PutNumber("Left Flywheel Shoot RPM", SHOOT_POWER);
-    table->PutNumber("Left Flywheel Spool RPM", SPOOL_POWER);
-    table->PutNumber("Left Flywheel Standby RPM", STANDBY_POWER);
+    table->PutNumber("Left Flywheel Shoot RPM", LEFT_SHOOT_POWER);
+    table->PutNumber("Left Flywheel Spool RPM", LEFT_SPOOL_POWER);
+    table->PutNumber("Left Flywheel Standby RPM", LEFT_STANDBY_POWER);
 
-    table->PutNumber("Right Flywheel Shoot RPM", SHOOT_POWER);
-    table->PutNumber("Right Flywheel Spool RPM", SPOOL_POWER);
-    table->PutNumber("Right Flywheel Standby RPM", STANDBY_POWER);
+    table->PutNumber("Right Flywheel Shoot RPM", RIGHT_SHOOT_POWER);
+    table->PutNumber("Right Flywheel Spool RPM", RIGHT_SPOOL_POWER);
+    table->PutNumber("Right Flywheel Standby RPM", RIGHT_STANDBY_POWER);
 
     resetState();
 }
@@ -135,23 +141,23 @@ void Shooter::analyzeDashboard()
 
         case SHOOTING:
             state.leftFlywheelTargetVelocity = units::revolutions_per_minute_t(
-                table->GetNumber("Left Flywheel Shoot RPM", SHOOT_POWER));
+                table->GetNumber("Left Flywheel Shoot RPM", LEFT_SHOOT_POWER));
             state.rightFlywheelTargetVelocity = units::revolutions_per_minute_t(
-                table->GetNumber("Right Flywheel Shoot RPM", SHOOT_POWER));
+                table->GetNumber("Right Flywheel Shoot RPM", RIGHT_SHOOT_POWER));
             break;
 
         case NOT_SHOOTING:
             state.leftFlywheelTargetVelocity = units::revolutions_per_minute_t(
-                table->GetNumber("Left Flywheel Standby RPM", STANDBY_POWER));
+                table->GetNumber("Left Flywheel Standby RPM", LEFT_STANDBY_POWER));
             state.rightFlywheelTargetVelocity = units::revolutions_per_minute_t(
-                table->GetNumber("Right Flywheel Standby RPM", STANDBY_POWER));
+                table->GetNumber("Right Flywheel Standby RPM", RIGHT_STANDBY_POWER));
             break;
 
         default:
             state.leftFlywheelTargetVelocity = units::revolutions_per_minute_t(
-                table->GetNumber("Left Flywheel Spool RPM", SPOOL_POWER));
+                table->GetNumber("Left Flywheel Spool RPM", LEFT_SPOOL_POWER));
             state.rightFlywheelTargetVelocity = units::revolutions_per_minute_t(
-                table->GetNumber("Right Flywheel Spool RPM", SPOOL_POWER));
+                table->GetNumber("Right Flywheel Spool RPM", RIGHT_SPOOL_POWER));
             break;
     }
 }
