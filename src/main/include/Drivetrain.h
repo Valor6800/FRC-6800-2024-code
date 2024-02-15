@@ -41,8 +41,12 @@
 #include <frc/TimedRobot.h>
 #include <frc2/command/FunctionalCommand.h>
 
+#include <pathplanner/lib/path/PathPlannerPath.h>
+
 #include <rev/CANSparkMax.h>
 #include <ctre/phoenix6/Pigeon2.hpp>
+
+using namespace pathplanner;
 
 #define SWERVE_COUNT 4
 
@@ -238,6 +242,12 @@ public:
      double teleopStart;
 
      double doubtX, doubtY;
+
+     frc2::CommandPtr getPathFindToPose(frc::Pose2d targetPose, units::meters_per_second_t endVelocity, units::meter_t rotDelay);
+     frc2::CommandPtr getFollowPathFind(std::shared_ptr<PathPlannerPath> path, units::meter_t rotDelay);
+     std::vector<frc::Pose2d> generatePoses(frc::Pose2d endPose, bool useLimelight);
+     std::shared_ptr<PathPlannerPath> makePath(std::vector<frc::Pose2d> poses, units::meters_per_second_t endMPS, units::degree_t endRot);
+     frc2::CommandPtr makeCommandFromPath(std::shared_ptr<PathPlannerPath> path);
 
 private:
      

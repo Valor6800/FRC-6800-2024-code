@@ -6,6 +6,8 @@
 #include <pathplanner/lib/util/HolonomicPathFollowerConfig.h>
 #include <pathplanner/lib/util/PIDConstants.h>
 #include <pathplanner/lib/util/ReplanningConfig.h>
+#include <pathplanner/lib/auto/NamedCommands.h>
+#include <pathplanner/lib/path/PathPlannerPath.h>
 #include <string>
 #include "Constants.h"
 #include "frc2/command/FunctionalCommand.h"
@@ -45,6 +47,11 @@ using namespace pathplanner;
 #define DRIVE_GEAR_RATIO 5.51f
 #define AZIMUTH_GEAR_RATIO 13.37f
 #define ROT_SPEED_MUL 2.0f
+
+#define AUTO_MAX_ACCEL units::meters_per_second_squared_t(0.0)
+#define AUTO_MAX_VEL units::meters_per_second_t(0.0)
+#define AUTO_MAX_ANG_ACCEL units::radians_per_second_squared_t(0.0)
+#define AUTO_MAX_ANG_VEL units::radians_per_second_t(0.00f)
 
 #define AUTO_VISION_THRESHOLD 4.0f //meters
 
@@ -86,6 +93,26 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "
     pathplanner::NamedCommands::registerCommand("Wait for A button", std::move(
         frc2::FunctionalCommand([](){}, [](){}, [](bool _b){}, [this](){ return operatorGamepad->GetAButtonPressed(); }, {this})
     ).ToPtr());
+    NamedCommands::registerCommand("Drive To White Line", std::move(
+        frc2::SequentialCommandGroup(
+            frc2::InstantCommand(
+                [this] () {
+                    getPathFindToPose((frc::Pose2d(8.28_m, 7.44_m, frc::Rotation2d(0_deg))), 0_mps, 0_m);
+                }
+            )
+        )
+    ).ToPtr());
+
+   /*NamedCommands::registerCommand("Drive To Random Point", std::move(
+        frc2::SequentialCommandGroup(
+            frc2::InstantCommand(
+                [this] () {
+                    makeCommandFromPath(makePath(
+                        generatePoses(frc::Pose2d(units::meter_t(table->GetNumber("X POINT", X_POINT.to<double>())), units::meter_t(table->GetNumber("Y POINT", Y_POINT.to<double>())), frc::Rotation2d(ROBOT_ROT)), false), ROBOT_SPEED, ROBOT_ROT));
+                }
+            )
+        )
+    ).ToPtr());*/
 }
 
 Drivetrain::~Drivetrain()
@@ -656,6 +683,54 @@ frc2::InstantCommand* Drivetrain::getSetXMode(){
         setXMode();
     });
      return cmd_XMode;
+}
+
+PathConstraints constraints = PathConstraints(
+    AUTO_MAX_VEL,
+    AUTO_MAX_ACCEL,
+    AUTO_MAX_ANG_VEL,
+    AUTO_MAX_ANG_ACCEL
+);
+
+frc2::CommandPtr Drivetrain::getPathFindToPose(frc::Pose2d targetPose, units::meters_per_second_t endVelocity, units::meter_t rotDelay){
+    frc2::CommandPtr pathfindingCommand = AutoBuilder::pathfindToPose(
+        targetPose,
+        constraints,
+        endVelocity,
+        rotDelay
+    );
+    return pathfindingCommand;
+}
+
+frc2::CommandPtr Drivetrain::getFollowPathFind(std::shared_ptr<PathPlannerPath> path, units::meter_t rotDelay){
+    frc2::CommandPtr pathfindingCommand = AutoBuilder::pathfindThenFollowPath(
+        path, 
+        constraints,
+        rotDelay
+    );
+    return pathfindingCommand;
+}
+
+std::vector<frc::Pose2d> Drivetrain::generatePoses(frc::Pose2d endPose, bool useLimelight){
+    if(!useLimelight){
+        return std::vector<frc::Pose2d> {calculatedEstimator->GetEstimatedPosition(), endPose};
+    }
+}
+
+std::shared_ptr<PathPlannerPath> Drivetrain::makePath(std::vector<frc::Pose2d> poses, units::meters_per_second_t endMPS, units::degree_t endRot){
+    std::vector<frc::Translation2d> bezierPoints = PathPlannerPath::bezierFromPoses(poses);
+
+    auto path = std::make_shared<PathPlannerPath>(
+        bezierPoints,
+        constraints, 
+        GoalEndState(endMPS, endRot)
+    );
+
+    return path;
+}
+
+frc2::CommandPtr Drivetrain::makeCommandFromPath(std::shared_ptr<PathPlannerPath> path){
+    return AutoBuilder::followPath(path);
 }
 
 void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
