@@ -167,6 +167,11 @@ void NeoController::setPower(double power)
     motor->Set(power);
 }
 
+void NeoController::setVoltage(double voltage)
+{
+    pidController.SetReference(voltage, rev::CANSparkMax::ControlType::kVoltage, currentPidSlot);
+}
+
 void NeoController::setNeutralMode(valor::NeutralMode mode){  
     motor->SetIdleMode(mode == valor::NeutralMode::Brake ? rev::CANSparkMax::IdleMode::kBrake : rev::CANSparkMax::IdleMode::kCoast);
     neutralMode = mode;

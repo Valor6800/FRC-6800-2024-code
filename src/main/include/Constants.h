@@ -54,6 +54,7 @@ namespace LimelightConstants {
 namespace DIOPorts {
     constexpr static int MAG_ENCODER_PORTS[4] = {1, 2, 3, 4};
     constexpr static int BEAM_BREAK_PORT = 0;
+    constexpr static int HALL_EFFECT = 1; //rando number
 }
 
 namespace CANIDs {
@@ -71,7 +72,6 @@ namespace CANIDs {
     constexpr static int FEEDER = 12;
     constexpr static int RIGHT_CLIMBER = 24; // rando number
     constexpr static int LEFT_CLIMBER = 25; // rando number
-    constexpr static int AMP = 26;
 }
 
 // Constants that stay the same across bots should not go here

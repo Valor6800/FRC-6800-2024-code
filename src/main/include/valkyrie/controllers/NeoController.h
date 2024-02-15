@@ -31,6 +31,7 @@ public:
     void setPosition(double);
     void setSpeed(double);
     void setPower(double);
+    void setVoltage(double);
     
     void setupFollower(int, bool = false);
     
