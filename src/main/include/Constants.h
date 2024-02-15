@@ -148,8 +148,8 @@ namespace Constants {
         }};
 
         static double driveKP(){ switch (teamNumber) {
-            case ALPHA_TEAM_NUMBER: return 0.001;
-            case SIDE_SWIPE_TEAM_NUMBER: return 0.001;
+            case ALPHA_TEAM_NUMBER: return 0.00001;
+            case SIDE_SWIPE_TEAM_NUMBER: return 0.00001;
             default: return 0.00001;
         }};
         static double driveKVel(){ switch (teamNumber) {
