@@ -129,7 +129,7 @@ void Climber::analyzeDashboard()
 
 void Climber::assignOutputs()
 {
-    if (state.zeroState == ZEROING){ //not implemented zeroing sequence yet
+    if (state.zeroState == ZEROING){
         climbMotor.setSpeed(ZEROING_SPEED);
     } else if (state.climbState == AUTO_CLIMB){
 
@@ -150,5 +150,11 @@ void Climber::assignOutputs()
 
 void Climber::InitSendable(wpi::SendableBuilder& builder)
 {
-    
+    builder.SetSmartDashboardType("Shooter");
+    builder.AddBooleanProperty(
+        "Is Zero",
+        [this] {return state.zeroState == ZERO;},
+        nullptr
+    );
+
 }
