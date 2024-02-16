@@ -208,10 +208,15 @@ void Drivetrain::init()
 
     resetState();
 
-    state.useCalculatedEstimator = true;
+    state.useCalculatedEstimator = false;
     AutoBuilder::configureHolonomic(
         [this](){ 
             if (state.useCalculatedEstimator) {
+                estimator->ResetPosition(getPigeon(), getModuleStates(), {
+                    calculatedEstimator->GetEstimatedPosition().X(),
+                    calculatedEstimator->GetEstimatedPosition().Y(),
+                    estimator->GetEstimatedPosition().Rotation()
+                });
                 return frc::Pose2d(
                     calculatedEstimator->GetEstimatedPosition().X(),
                     calculatedEstimator->GetEstimatedPosition().Y(),
@@ -680,7 +685,7 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
                 std::vector<double> autoCameraPose;
                 autoCameraPose.push_back(calculatedEstimator->GetEstimatedPosition().X().to<double>());
                 autoCameraPose.push_back(calculatedEstimator->GetEstimatedPosition().Y().to<double>());
-                autoCameraPose.push_back(estimator->GetEstimatedPosition().Rotation().Degrees().to<double>());
+                autoCameraPose.push_back(estimator->GetEstimatedPosition().Rotation().Radians().to<double>());
                 return autoCameraPose;
             },
             nullptr
