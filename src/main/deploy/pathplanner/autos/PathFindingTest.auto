@@ -1,0 +1,25 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.6699236223008809,
+      "y": 2.318745636064738
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Drive To Random Point"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "OTF Test",
+  "choreoAuto": false
+}

@@ -97,22 +97,22 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "
         frc2::SequentialCommandGroup(
             frc2::InstantCommand(
                 [this] () {
-                    getPathFindToPose((frc::Pose2d(8.28_m, 7.44_m, frc::Rotation2d(0_deg))), 0_mps, 0_m);
+                    getPathFindToPose((frc::Pose2d(2.32_m, 3.65_m, frc::Rotation2d(0_deg))), 0_mps, 0_m);
                 }
             )
         )
     ).ToPtr());
 
-   /*NamedCommands::registerCommand("Drive To Random Point", std::move(
+   NamedCommands::registerCommand("Drive To Random Point", std::move(
         frc2::SequentialCommandGroup(
             frc2::InstantCommand(
                 [this] () {
                     makeCommandFromPath(makePath(
-                        generatePoses(frc::Pose2d(units::meter_t(table->GetNumber("X POINT", X_POINT.to<double>())), units::meter_t(table->GetNumber("Y POINT", Y_POINT.to<double>())), frc::Rotation2d(ROBOT_ROT)), false), ROBOT_SPEED, ROBOT_ROT));
+                        generatePoses(frc::Pose2d(units::meter_t(2.32), units::meter_t(3.65), frc::Rotation2d(0_deg)), false), 0_mps, 0_deg));
                 }
             )
         )
-    ).ToPtr());*/
+    ).ToPtr());
 }
 
 Drivetrain::~Drivetrain()
@@ -731,6 +731,10 @@ std::shared_ptr<PathPlannerPath> Drivetrain::makePath(std::vector<frc::Pose2d> p
 
 frc2::CommandPtr Drivetrain::makeCommandFromPath(std::shared_ptr<PathPlannerPath> path){
     return AutoBuilder::followPath(path);
+}
+
+void Drivetrain::makeAuto(){
+    
 }
 
 void Drivetrain::InitSendable(wpi::SendableBuilder& builder)

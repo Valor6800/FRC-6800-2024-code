@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 10.635845522760945,
-        "y": 7.4949353893001645
+        "x": 0.7050561319382253,
+        "y": 2.5529623669803687
       },
       "prevControl": null,
       "nextControl": {
-        "x": 10.635845522760945,
-        "y": 6.708912275662874
+        "x": 1.2050561319382251,
+        "y": 2.5529623669803687
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 10.635845522760945,
-        "y": 6.487803446362955
+        "x": 2.3211515752560734,
+        "y": 2.5529623669803687
       },
       "prevControl": {
-        "x": 10.635845522760945,
-        "y": 6.992593482768724
+        "x": 1.8163615388503045,
+        "y": 2.5529623669803687
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,25 +30,7 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [
-    {
-      "name": "White Line",
-      "waypointRelativePos": 1.0,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Drive To White Line"
-              }
-            }
-          ]
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,

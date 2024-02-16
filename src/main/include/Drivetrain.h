@@ -248,6 +248,7 @@ public:
      std::vector<frc::Pose2d> generatePoses(frc::Pose2d endPose, bool useLimelight);
      std::shared_ptr<PathPlannerPath> makePath(std::vector<frc::Pose2d> poses, units::meters_per_second_t endMPS, units::degree_t endRot);
      frc2::CommandPtr makeCommandFromPath(std::shared_ptr<PathPlannerPath> path);
+     void makeAuto();
 
 private:
      

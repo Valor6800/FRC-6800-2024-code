@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 10.635845522760945,
-      "y": 7.4949353893001645
+      "x": 0.7050561319382253,
+      "y": 2.5529623669803687
     },
     "rotation": 0
   },
@@ -14,7 +14,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "OtfTest1"
+            "pathName": "OtfTest1Part1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Drive To Random Point"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "OtfTestPart2"
           }
         }
       ]
