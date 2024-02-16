@@ -8,24 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8745188405044506,
-        "y": 6.093032342972497
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 1.8745188405044506,
-        "y": 5.023402182072025
-      },
-      "prevControl": {
-        "x": 2.0652833420783936,
-        "y": 5.370050846321945
-      },
-      "nextControl": {
-        "x": 1.2785091280803713,
-        "y": 3.940360164363595
+        "x": 2.1082983696007007,
+        "y": 5.098569356916718
       },
       "isLocked": false,
       "linkedName": null
@@ -46,13 +30,48 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.5,
+      "waypointRelativePos": 0.25,
       "rotationDegrees": -176.75597532413002,
       "rotateFast": false
     }
   ],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Set Camera Estimator",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Set Camera Estimator"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Set Drive Estimator",
+      "waypointRelativePos": 0.35,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Set Estimator"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.5,
     "maxAcceleration": 3.0,
