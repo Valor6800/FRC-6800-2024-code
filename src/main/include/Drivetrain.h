@@ -248,8 +248,10 @@ public:
      std::vector<frc::Pose2d> generatePoses(frc::Pose2d endPose, bool useLimelight);
      std::shared_ptr<PathPlannerPath> makePath(std::vector<frc::Pose2d> poses, units::meters_per_second_t endMPS, units::degree_t endRot);
      frc2::CommandPtr makeCommandFromPath(std::shared_ptr<PathPlannerPath> path);
-     void makeAuto();
-
+     std::vector<frc2::CommandPtr> makeAuto(std::string autoName);
+     bool comparePose2D(frc::Pose2d onePose, frc::Pose2d twoPose);
+     frc::Pose2d getEndPoseFromPath(std::shared_ptr<PathPlannerPath> path);
+     frc::Pose2d getOTFEndPose(bool limelight, units::meter_t, units::meter_t, units::degree_t);
 private:
      
      double driveMaxSpeed;

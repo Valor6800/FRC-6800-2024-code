@@ -8,6 +8,7 @@
 #include <pathplanner/lib/util/ReplanningConfig.h>
 #include <pathplanner/lib/auto/NamedCommands.h>
 #include <pathplanner/lib/path/PathPlannerPath.h>
+#include <pathplanner/lib/commands/PathPlannerAuto.h>
 #include <string>
 #include "Constants.h"
 #include "frc2/command/FunctionalCommand.h"
@@ -733,8 +734,48 @@ frc2::CommandPtr Drivetrain::makeCommandFromPath(std::shared_ptr<PathPlannerPath
     return AutoBuilder::followPath(path);
 }
 
-void Drivetrain::makeAuto(){
-    
+std::vector<frc2::CommandPtr> Drivetrain::makeAuto(std::string autoName){
+    std::vector<std::shared_ptr<PathPlannerPath>> paths = PathPlannerAuto::getPathGroupFromAutoFile(autoName);
+    std::vector<std::shared_ptr<PathPlannerPath>> newPaths = paths;
+    for(int i = 0; i < paths.size() - 1; i++){
+        if(comparePose2D(getEndPoseFromPath(paths[i]), paths[i+1].get()->getStartingDifferentialPose())){
+            // put path gen code
+            frc::Pose2d targetedOTFEndPose = getOTFEndPose(false, units::meter_t(5), units::meter_t(7), units::degree_t(0));
+            std::vector<frc::Pose2d> poses = {getEndPoseFromPath(paths[i]), targetedOTFEndPose, getEndPoseFromPath(paths[i+1])};
+            std::shared_ptr<PathPlannerPath> newTraj = makePath(poses, 0_mps, 0_deg);
+            // stitch together the paths to form a new autonomous
+            newPaths.erase(newPaths.begin() + i);
+            newPaths.insert(newPaths.begin() + i, newTraj);
+        }
+    }
+    std::vector<frc2::CommandPtr> commands;
+    for(int i = 0; i < newPaths.size(); i++){
+        commands.insert(commands.begin() + i,AutoBuilder::followPathWithEvents(newPaths[i]));
+    }
+    return commands;
+}
+
+bool Drivetrain::comparePose2D(frc::Pose2d onePose, frc::Pose2d twoPose){
+    if(onePose.X() == twoPose.X() && onePose.Y() == twoPose.Y()){
+        return true;
+    }
+    return false;
+}
+
+frc::Pose2d Drivetrain::getEndPoseFromPath(std::shared_ptr<PathPlannerPath> path){
+    auto X = path.get()->getAllPathPoints().back().position.X();
+    auto Y = path.get()->getAllPathPoints().back().position.Y();
+    auto theta = path.get()->getGoalEndState().getRotation();
+    frc::Pose2d endPose = frc::Pose2d{X, Y, theta};
+    return endPose;
+}
+
+frc::Pose2d Drivetrain::getOTFEndPose(bool limelight, units::meter_t X, units::meter_t Y, units::degree_t rot){
+    frc::Pose2d pose = {X, Y, rot};
+    if(limelight){
+        return pose; // will be the pose of the object
+    }
+    return pose;
 }
 
 void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
