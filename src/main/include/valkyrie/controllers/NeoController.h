@@ -8,6 +8,7 @@
 #include <rev/CANEncoder.h>
 #include <rev/SparkAbsoluteEncoder.h>
 #include <string>
+#include <rev/CANSparkLowLevel.h> 
 
 namespace valor {
 
