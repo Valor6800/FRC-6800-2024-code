@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3794906104911369,
-        "y": 5.572019226189894
+        "x": 1.179824435929254,
+        "y": 6.791464237044505
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6546407316222074,
-        "y": 5.606754831733822
+        "x": 1.6038460608460572,
+        "y": 6.899007489891427
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.890018068152122,
-        "y": 5.572019226189894
+        "x": 2.894328082030563,
+        "y": 6.986896992070727
       },
       "prevControl": {
-        "x": 2.6602089047327135,
-        "y": 5.572540310750693
+        "x": 2.0656635226754254,
+        "y": 6.999186151981968
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Rex"
+      "linkedName": "Acrid"
     }
   ],
   "rotationTargets": [],
@@ -33,7 +33,7 @@
   "eventMarkers": [
     {
       "name": "Shoot",
-      "waypointRelativePos": 0.0,
+      "waypointRelativePos": 0,
       "command": {
         "type": "sequential",
         "data": {
@@ -47,7 +47,7 @@
             {
               "type": "wait",
               "data": {
-                "waitTime": 0.35
+                "waitTime": 0.5
               }
             },
             {
@@ -62,7 +62,7 @@
     },
     {
       "name": "Disable feeder",
-      "waypointRelativePos": 0.65,
+      "waypointRelativePos": 0.55,
       "command": {
         "type": "parallel",
         "data": {
@@ -79,7 +79,7 @@
     },
     {
       "name": "Enable intake",
-      "waypointRelativePos": 0.5,
+      "waypointRelativePos": 0.35,
       "command": {
         "type": "parallel",
         "data": {
@@ -88,6 +88,29 @@
               "type": "named",
               "data": {
                 "name": "Enable intake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Reenable feeder, disable intake",
+      "waypointRelativePos": 0.95,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Enable feeder"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Disable intake"
               }
             }
           ]
@@ -103,13 +126,13 @@
   },
   "goalEndState": {
     "velocity": 1.0,
-    "rotation": 0.0,
+    "rotation": 25.560000000000002,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "FirstPick",
   "previewStartingState": {
-    "rotation": 0.0,
+    "rotation": 50.43176005928248,
     "velocity": 0
   },
   "useDefaultConstraints": true

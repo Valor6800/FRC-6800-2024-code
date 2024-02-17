@@ -29,7 +29,7 @@ using namespace pathplanner;
 #define KP_LIMELIGHT 0.7f
 
 #define KPX 15.0f // 30
-#define KIX 0.0f //0
+#define KIX 5.0f //0
 #define KDX 0.0f //.1
 
 #define KPT 8.0f //15
