@@ -3,6 +3,7 @@
 #include "units/angular_velocity.h"
 #include "valkyrie/controllers/NeutralMode.h"
 #include "valkyrie/controllers/PIDF.h"
+#include <frc/DriverStation.h>
 
 #define PIVOT_ROTATE_K_VEL 81.36f
 #define PIVOT_ROTATE_K_ACC 8136.0f
@@ -28,7 +29,23 @@
 #define LEFT_SHOOT_POWER 60.0f
 #define RIGHT_SHOOT_POWER 30.0f
 
-Shooter::Shooter(frc::TimedRobot *_robot) :
+#define PIVOT_SUBWOOFER_POSITION 0.0f
+#define PIVOT_PODIUM_POSITION 0.00f
+#define PIVOT_STARTING_LINE_POSITION 0.00f
+
+#define SPEAKER_Y 5.543042_m
+#define SPEAKER_BLUE_X 0.0_m
+#define SPEAKER_RED_X 16.4846_m
+#define SPEAKER_X_OFFSET 0.15f
+#define SPEAKER_Y_OFFSET 0.00f
+#define SPEAKER_HEIGHT 2.0431125f
+#define SPEAKER_Z_OFFSET 0.0f
+
+#define PROJECTILE_SPEED 40.0f
+#define GRAVITY 9.81f
+#define SHOOTER_Z_OFFSET 0.0f
+
+Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive) :
     valor::BaseSubsystem(_robot, "Shooter"),
     pivotMotors(nullptr),
     leftFlywheelMotor(CANIDs::LEFT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, true),
@@ -88,7 +105,6 @@ void Shooter::assessInputs()
         !driverGamepad->IsConnected() || !operatorGamepad->IsConnected())
         return;
 
-    //SHOOT LOGIC
     if (driverGamepad->rightTriggerActive() || operatorGamepad->rightTriggerActive()) {
         state.flywheelState = FLYWHEEL_STATE::SPOOLED;
     } else if (operatorGamepad->GetStartButtonPressed()) {
@@ -139,18 +155,37 @@ void Shooter::assignOutputs()
     }
 }
 
-units::degree_t Shooter::calculatePivotAngle(){
-    units::degree_t targetPivotAngle = units::degree_t(3);
-    return targetPivotAngle;
+void Shooter::getTargetPivotAngle(bool laser){
+    units::meter_t robotX = drivetrain->getCalculatedPose_m().X();
+    units::meter_t robotY = drivetrain->getCalculatedPose_m().Y();
+    double distance = 0.0;
+    double changeInY = robotY.to<double>() - SPEAKER_Y.to<double>();
+    if(laser){
+        if(frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue){
+        double changeInX = robotX.to<double>() - SPEAKER_BLUE_X.to<double>();
+        distance = sqrtf(pow(changeInX, 2) + pow(changeInY, 2));
+        }
+        else{
+            double changeInX = robotX.to<double>() - SPEAKER_RED_X.to<double>();
+            distance = sqrtf(pow(changeInX, 2) + pow(changeInY, 2));
+        }
+        double angle = atan2(SPEAKER_HEIGHT + table->GetNumber("Speaker Z Offset", SPEAKER_Z_OFFSET), state.distanceFromSpeaker.to<double>());
+        state.targetPivotAngle = units::radian_t(angle);
+    }
+    else{
+        if(frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue){
+        double changeInX = robotX.to<double>() - SPEAKER_BLUE_X.to<double>();
+        distance = sqrtf(pow(changeInX, 2) + pow(changeInY, 2));
+    }
+        else{
+            double changeInX = robotX.to<double>() - SPEAKER_RED_X.to<double>();
+            distance = sqrtf(pow(changeInX, 2) + pow(changeInY, 2));
+        }
+        double angle = atan2(pow(PROJECTILE_SPEED, 2) - sqrt(pow(PROJECTILE_SPEED, 4) - (GRAVITY*(GRAVITY*pow(state.distanceFromSpeaker.to<double>(), 2) + 2*SPEAKER_HEIGHT*pow(PROJECTILE_SPEED, 2)))), GRAVITY*state.distanceFromSpeaker.to<double>());
+        state.targetPivotAngle = units::radian_t(angle);
+    }
 }
 
-void Shooter::calculateRootsT(){
-    // add future code for solving roots of the quartic that results from the vector expression
-}
-
-void Shooter::bisectionTheorem(){
-    // neccessary for calculateRootsT where the bisection method is used to estimate these values
-}
 
 void Shooter::InitSendable(wpi::SendableBuilder& builder){
 
@@ -164,13 +199,13 @@ void Shooter::InitSendable(wpi::SendableBuilder& builder){
 
     builder.AddIntegerProperty(
         "pivot state",
-        [this] {return state.pivotState;},
+        [this] {return state.pivot;},
         nullptr
     );
 
     builder.AddIntegerProperty(
         "pivot target angle",
-        [this] {return state.pivotAngle.to<double>();},
+        [this] {return state.targetPivotAngle.to<double>();},
         nullptr
     );
     

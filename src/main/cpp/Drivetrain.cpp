@@ -460,6 +460,10 @@ frc::Pose2d Drivetrain::getPose_m()
     return estimator->GetEstimatedPosition();
 }
 
+frc::Pose2d Drivetrain::getCalculatedPose_m(){
+    return calculatedEstimator->GetEstimatedPosition();
+}
+
 void Drivetrain::resetGyro(){
     frc::Pose2d initialPose = getPose_m();
     frc::Pose2d desiredPose = frc::Pose2d(initialPose.X(), initialPose.Y(), frc::Rotation2d(0_deg));

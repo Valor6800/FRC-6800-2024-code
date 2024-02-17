@@ -18,12 +18,13 @@
 #include <frc2/command/FunctionalCommand.h>
 #include <unordered_map>
 #include "valkyrie/Gamepad.h"
+#include "Drivetrain.h"
 
 class Shooter : public valor::BaseSubsystem
 {
 public:
 
-    Shooter(frc::TimedRobot *robot);
+    Shooter(frc::TimedRobot *robot, Drivetrain *drivetrain);
 
     void resetState();
 
@@ -33,10 +34,11 @@ public:
     void analyzeDashboard();
     void assignOutputs();
 
-    units::degree_t calculatePivotAngle();
-
-    void calculateRootsT();
-    void bisectionTheorem();
+    /**
+     * @brief Sets the target angle of the pivot when the robot is still
+     * @param laser If true, disregards gravity, if false, takes gravity into account
+    */
+    void getTargetPivotAngle(bool laser);
     
     void InitSendable(wpi::SendableBuilder& builder);
 
@@ -58,7 +60,7 @@ public:
 
     struct x
     {
-        PIVOT_STATE pivotState;
+        PIVOT_STATE pivot;
         FLYWHEEL_STATE flywheelState;
         units::degree_t pivotAngle;
         units::degree_t calculatingPivotingAngle;
