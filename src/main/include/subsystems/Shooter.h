@@ -52,53 +52,9 @@ public:
     */
     units::velocity::meters_per_second_t getProjectileSpeed(bool type);
     /**
-     * @brief Sets the target angle of the pivot when the robot is moving
-    */
-    void calculateShootingMovingAngle();
-    /**
      * @brief Returns the error angle between the target pivot angle and the current pivot angle
     */
     units::radian_t getPivotErrorAngle();
-    /**
-     * @brief Defines a cubic function with coefficients and returns the value of f(x)
-     * @param a First coefficient of the function
-     * @param b Second coefficient of the function
-     * @param c Third coefficient of the function
-     * @param d Constant in the function
-     * @param x The variable used in the funciton, the input of the function
-    */
-    double cubicFunction(double a, double b, double c, double d, double x);
-    /**
-     * @brief Defines the derivative of a cubic function
-     * @param a The first coefficient of the cubic
-     * @param b The second coefficient of the cubic
-     * @param c The third coeifficient of the cubic
-     * @param x The input of the function
-    */
-    double deriveCubic(double a, double b, double c, double x);
-    /**
-     * @brief Defines a quartic function with coefficients and returns the value of f(x)
-     * @param a First coefficient of the function
-     * @param b Second coefficient of the function
-     * @param c Third coefficient of the function
-     * @param d Fourth coefficient in the function
-     * @param e Constant of the funtion
-     * @param x The variable used in the function, the input of the function
-    */
-    double quarticFunction(double a, double b, double c, double d, double e, double x);
-    double deriveQuartic(double a, double b, double c, double d, double x);
-    /**
-     * @brief Returns the roots of a polynomial in form ax^2 + bx +c
-     * @param a The first coefficient in a quadratic
-     * @param b The second coefficient in a quadratic
-     * @param c The third coefficient in a quadratic
-    */
-    std::pair<double, double> solveQuadratic(double a, double b, double c);
-    std::pair<double, double> solveCubic(double a, double b, double c, double d);
-    double solveCubicNewtonMethod(double a, double b, double c, double d, double start);
-    double solveQuartic(double a, double b, double c, double d, double e);
-    double solveQuarticNewtonMethod(double a, double b, double c, double d, double e, double start);
-    double calculateRootsT(double accX, double accY, double velX, double velY, double posX, double posY);
     
     void InitSendable(wpi::SendableBuilder& builder);
 
