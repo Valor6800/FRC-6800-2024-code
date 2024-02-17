@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.331517437997316,
-        "y": 4.583348248930572
+        "x": 1.3794906104911369,
+        "y": 5.572019226189894
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.984861181433601,
-        "y": 4.330718921038202
+        "x": 1.6546407316222074,
+        "y": 5.606754831733822
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.465008618819321,
-        "y": 4.116334869316152
+        "x": 2.890018068152122,
+        "y": 5.572019226189894
       },
       "prevControl": {
-        "x": 2.1354587450410882,
-        "y": 4.271581569217604
+        "x": 2.6602089047327135,
+        "y": 5.572540310750693
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Powerloader"
+      "linkedName": "Rex"
     }
   ],
   "rotationTargets": [],
@@ -62,7 +62,7 @@
     },
     {
       "name": "Disable feeder",
-      "waypointRelativePos": 0.75,
+      "waypointRelativePos": 0.65,
       "command": {
         "type": "parallel",
         "data": {
@@ -79,7 +79,7 @@
     },
     {
       "name": "Enable intake",
-      "waypointRelativePos": 0.45,
+      "waypointRelativePos": 0.5,
       "command": {
         "type": "parallel",
         "data": {
@@ -96,20 +96,20 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
-    "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0
+    "maxVelocity": 3.5,
+    "maxAcceleration": 2.5,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 360.0
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 0.16686900041079036,
+    "velocity": 1.0,
+    "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "FirstPick",
   "previewStartingState": {
-    "rotation": -35.888989888069474,
+    "rotation": 0.0,
     "velocity": 0
   },
   "useDefaultConstraints": false
