@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.9694390388491428,
+      "y": 4.28862101242721
+    },
+    "rotation": -55.63301496767572
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Wf"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "W-A5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot sequence-feeder"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
