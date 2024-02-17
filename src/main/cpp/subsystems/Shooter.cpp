@@ -48,7 +48,7 @@
 #define SPEAKER_HEIGHT 2.0431125f
 #define SPEAKER_Z_OFFSET 0.0f
 
-#define PROJECTILE_SPEED 7.0f
+#define PROJECTILE_SPEED 40.0f
 #define GRAVITY 9.81f
 #define SHOOTER_Z_OFFSET 0.0f
 
@@ -80,6 +80,7 @@ void Shooter::resetState()
     state.pivotState = PIVOT_STATE::SUBWOOFER;
     state.leftFlywheelTargetVelocity = units::angular_velocity::revolutions_per_minute_t(0);
     state.rightFlywheelTargetVelocity = units::angular_velocity::revolutions_per_minute_t(0);
+    state.targetPivotAngle = 0_rad;
 }
 
 void Shooter::init()
@@ -163,7 +164,7 @@ void Shooter::analyzeDashboard()
             break;
 
         default:
-            getTargetPivotAngle(true); 
+            getTargetPivotAngle(false); 
             break;
     }
 
@@ -201,11 +202,11 @@ void Shooter::analyzeDashboard()
 
 void Shooter::assignOutputs()
 {
-    leftFlywheelMotor.setSpeed(state.leftFlywheelTargetVelocity.to<double>());
-    rightFlywheelMotor.setSpeed(state.rightFlywheelTargetVelocity.to<double>());
+    // leftFlywheelMotor.setSpeed(state.flywheelTargetVelocity.to<double>());
+    pivotMotor.setPosition(state.targetPivotAngle.to<double>());
 }
 
-
+// both gravity and laser work
 void Shooter::getTargetPivotAngle(bool laser){
     units::meter_t robotX = drivetrain->getCalculatedPose_m().X();
     units::meter_t robotY = drivetrain->getCalculatedPose_m().Y();
@@ -220,7 +221,7 @@ void Shooter::getTargetPivotAngle(bool laser){
             double changeInX = robotX.to<double>() - SPEAKER_RED_X.to<double>();
             distance = sqrtf(pow(changeInX, 2) + pow(changeInY, 2));
         }
-        double angle = atan2(SPEAKER_HEIGHT + table->GetNumber("Speaker Z Offset", SPEAKER_Z_OFFSET), distance);
+        double angle = atan2(SPEAKER_HEIGHT + table->GetNumber("Speaker Z Offset", SPEAKER_Z_OFFSET), state.distanceFromSpeaker.to<double>());
         state.targetPivotAngle = units::radian_t(angle);
     }
     else{
@@ -232,7 +233,7 @@ void Shooter::getTargetPivotAngle(bool laser){
             double changeInX = robotX.to<double>() - SPEAKER_RED_X.to<double>();
             distance = sqrtf(pow(changeInX, 2) + pow(changeInY, 2));
         }
-        double angle = atan2(pow(PROJECTILE_SPEED, 2) - sqrt(pow(PROJECTILE_SPEED, 4) - (GRAVITY*(GRAVITY*pow(distance, 2) + 2*SPEAKER_HEIGHT*pow(PROJECTILE_SPEED, 2)))), GRAVITY*distance);
+        double angle = atan2(pow(PROJECTILE_SPEED, 2) - sqrt(pow(PROJECTILE_SPEED, 4) - (GRAVITY*(GRAVITY*pow(state.distanceFromSpeaker.to<double>(), 2) + 2*SPEAKER_HEIGHT*pow(PROJECTILE_SPEED, 2)))), GRAVITY*state.distanceFromSpeaker.to<double>());
         state.targetPivotAngle = units::radian_t(angle);
     }
 }
