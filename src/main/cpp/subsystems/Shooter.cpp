@@ -1,5 +1,6 @@
 #include "subsystems/Shooter.h"
 #include "Constants.h"
+#include "units/angle.h"
 #include "units/angular_velocity.h"
 #include <frc/DriverStation.h>
 #include <iostream>
@@ -162,7 +163,7 @@ void Shooter::analyzeDashboard()
             break;
 
         default:
-            state.targetPivotAngle = units::radian_t(PIVOT_SUBWOOFER_POSITION);
+            getTargetPivotAngle(true); 
             break;
     }
 
@@ -189,6 +190,13 @@ void Shooter::analyzeDashboard()
                 table->GetNumber("Right Flywheel Spool RPM", RIGHT_SPOOL_POWER));
             break;
     }
+
+    double changeInY = drivetrain->getCalculatedPose_m().Y().to<double>() - SPEAKER_Y.to<double>();
+
+    if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {
+        double changeInX = drivetrain->getCalculatedPose_m().X().to<double>() - SPEAKER_RED_X.to<double>();
+        state.distanceFromSpeaker = units::meter_t{sqrtf(pow(changeInX, 2) + pow(changeInY, 2))};
+    }
 }
 
 void Shooter::assignOutputs()
@@ -201,7 +209,7 @@ void Shooter::assignOutputs()
 void Shooter::getTargetPivotAngle(bool laser){
     units::meter_t robotX = drivetrain->getCalculatedPose_m().X();
     units::meter_t robotY = drivetrain->getCalculatedPose_m().Y();
-    double distance = sqrt(pow(robotX.to<double>(), 2) + pow(robotY.to<double>(), 2));
+    double distance = 0.0;
     double changeInY = robotY.to<double>() - SPEAKER_Y.to<double>();
     if(laser){
         if(frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue){
@@ -472,7 +480,7 @@ void Shooter::InitSendable(wpi::SendableBuilder& builder){
 
     builder.AddDoubleProperty(
         "Pivot target angle",
-        [this] {return state.targetPivotAngle.to<double>();},
+        [this] {return state.targetPivotAngle.convert<units::degree>().to<double>();},
         nullptr
     );
 
@@ -481,4 +489,6 @@ void Shooter::InitSendable(wpi::SendableBuilder& builder){
         [this] {return state.pivotAngle.to<double>();},
         nullptr
     );
+
+    builder.AddDoubleProperty("Distance", [this]{return state.distanceFromSpeaker.to<double>();}, nullptr);
 }

@@ -127,6 +127,7 @@ public:
         units::degree_t pivotAngle;
         units::radian_t targetPivotAngle;
         PIVOT_STATE pivotState;
+        units::meter_t distanceFromSpeaker;
     } state;
 
 private:
