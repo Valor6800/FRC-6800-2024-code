@@ -42,11 +42,6 @@ public:
     */
     void getTargetPivotAngle(bool laser);
     /**
-     * @brief Sets the target angle of the pivot when the robot is still and takes
-     * gravity into account
-    */
-    void getArcTargetPivotAngle();
-    /**
      * @brief Returns the projectile speed in the x-direction or the y-direction
      * @param type A boolean to represent direction, X is true, Y is false
     */

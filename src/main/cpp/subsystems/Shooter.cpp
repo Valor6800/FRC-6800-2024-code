@@ -247,23 +247,6 @@ void Shooter::getTargetPivotAngle(bool laser){
     }
 }
 
-void Shooter::getArcTargetPivotAngle(){
-    units::meter_t robotX = drivetrain->getPose_m().X();
-    units::meter_t robotY = drivetrain->getPose_m().Y();
-    double distance = sqrt(pow(robotX.to<double>(), 2) + pow(robotY.to<double>(), 2));
-    double changeInY = robotY.to<double>() - SPEAKER_Y.to<double>();
-    if(frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue){
-        double changeInX = robotX.to<double>() - SPEAKER_BLUE_X.to<double>();
-        distance = sqrtf(pow(changeInX, 2) + pow(changeInY, 2));
-    }
-    else{
-        double changeInX = robotX.to<double>() - SPEAKER_RED_X.to<double>();
-        distance = sqrtf(pow(changeInX, 2) + pow(changeInY, 2));
-    }
-    double angle = atan2(pow(PROJECTILE_SPEED, 2) - sqrt(pow(PROJECTILE_SPEED, 4) - (GRAVITY*(GRAVITY*pow(distance, 2) + 2*SPEAKER_HEIGHT*pow(PROJECTILE_SPEED, 2)))), GRAVITY*distance);
-    state.targetPivotAngle = units::radian_t(angle);
-}
-
 units::velocity::meters_per_second_t Shooter::getProjectileSpeed(bool type){
     if(type){
         return units::velocity::meters_per_second_t(PROJECTILE_SPEED*cos(state.pivotAngle.to<double>()));
