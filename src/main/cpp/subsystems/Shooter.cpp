@@ -31,6 +31,10 @@
 #define LEFT_SPOOL_POWER 50.0f
 #define LEFT_STANDBY_POWER 0.0f
 
+#define RIGHT_SHOOT_POWER 66.33f
+#define RIGHT_SPOOL_POWER 50.0f
+#define RIGHT_STANDBY_POWER 0.0f
+
 #define FLYWHEEL_ROTATE_GEAR_RATIO 1.0f
 #define FLYWHEEL_ROTATE_FORWARD_LIMIT 90.0_deg
 #define FLYWHEEL_ROTATE_REVERSE_LIMIT 0.0_deg
@@ -67,6 +71,7 @@ Shooter::Shooter(frc::TimedRobot *_robot, frc::DigitalInput* _beamBreak, Drivetr
     valor::BaseSubsystem(_robot, "Shooter"),
     pivotMotor(CANIDs::PIVOT, valor::NeutralMode::Brake, false),
     leftFlywheelMotor(CANIDs::LEFT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false),
+    rightFlywheelMotor(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false),
     beamBreak(_beamBreak),
     drivetrain(_drive)
 {
