@@ -71,6 +71,7 @@ namespace CANIDs {
     constexpr static int FEEDER = 12;
     constexpr static int RIGHT_CLIMBER = 24; // rando number
     constexpr static int LEFT_CLIMBER = 25; // rando number
+    constexpr static int AMP = 26;
 }
 
 // Constants that stay the same across bots should not go here

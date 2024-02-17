@@ -3,6 +3,7 @@
 #include "units/angular_velocity.h"
 #include "valkyrie/BaseSubsystem.h"
 #include "valkyrie/controllers/NeoController.h"
+#include "valkyrie/controllers/PhoenixController.h"
 #include "Constants.h"
 #include <vector>
 #include "valkyrie/controllers/PIDF.h"
@@ -21,9 +22,6 @@
 class Shooter : public valor::BaseSubsystem
 {
 public:
-    //valor::NeoController pivotMotors;
-    valor::NeoController leftFlywheelMotor;
-    valor::NeoController rightFlywheelMotor;
 
     Shooter(frc::TimedRobot *robot);
 
@@ -65,5 +63,11 @@ public:
         units::angular_velocity::revolutions_per_minute_t leftFlywheelTargetVelocity;
         units::angular_velocity::revolutions_per_minute_t rightFlywheelTargetVelocity;
         units::degree_t pivotAngle;
+        units::degree_t calculatingPivotingAngle;
     } state;
+
+private:
+    valor::PhoenixController pivotMotors;
+    valor::NeoController leftFlywheelMotor;
+    valor::NeoController rightFlywheelMotor;
 };

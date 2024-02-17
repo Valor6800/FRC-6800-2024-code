@@ -11,7 +11,7 @@
 #define PIVOT_ROTATE_K_AFF 0.0f
 #define PIVOT_ROTATE_K_AFF_POS 0.0f
 
-#define PIVOT_GEAR_RATIO 1.0f
+#define PIVOT_GEAR_RATIO 288.0f
 #define PIVOT_REVERSE_LIMIT 0.0f
 #define PIVOT_FORWARD_LIMIT 90.0f
 
@@ -33,7 +33,7 @@
 
 Shooter::Shooter(frc::TimedRobot *_robot) :
     valor::BaseSubsystem(_robot, "Shooter"),
-    //pivotMotors(CANIDs::ANGLE_CONTROLLER, valor::NeutralMode::Brake, false),
+    pivotMotors(CANIDs::PIVOT, valor::NeutralMode::Brake, false),
     leftFlywheelMotor(CANIDs::LEFT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false),
     rightFlywheelMotor(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false)
 {
@@ -47,6 +47,7 @@ void Shooter::resetState()
     state.pivotState = PIVOT_STATE::SUBWOOFER;
     state.leftFlywheelTargetVelocity = units::angular_velocity::revolutions_per_minute_t(0);
     state.rightFlywheelTargetVelocity = units::angular_velocity::revolutions_per_minute_t(0);
+    state.calculatingPivotingAngle = units::degree_t{0};
 }
 
 void Shooter::init()
@@ -69,10 +70,10 @@ void Shooter::init()
     rightFlywheelMotor.setConversion(1);
     rightFlywheelMotor.setPIDF(flywheelPID, 0);
     
-    // pivotMotors.setConversion(1.0 / SHOOTER_ROTATE_GEAR_RATIO * 360);
-    // pivotMotors.setForwardLimit(SHOOTER_ROTATE_FORWARD_LIMIT.to<double>());
-    // pivotMotors.setReverseLimit(SHOOTER_ROTATE_REVERSE_LIMIT.to<double>());
-    // pivotMotors.setPIDF(pivotPID, 0);
+    pivotMotors.setConversion(1.0 / PIVOT_GEAR_RATIO * 360);
+    pivotMotors.setForwardLimit(PIVOT_FORWARD_LIMIT);
+    pivotMotors.setReverseLimit(PIVOT_REVERSE_LIMIT);
+    pivotMotors.setPIDF(pivotPID, 0);
 
     table->PutNumber("Left Flywheel Shoot RPM", LEFT_SHOOT_POWER);
     table->PutNumber("Left Flywheel Spool RPM", LEFT_SPOOL_POWER);
@@ -103,17 +104,18 @@ void Shooter::assessInputs()
     } 
 
     //PIVOT LOGIC
-    // if (driverGamepad->GetAButton()) {
-    //     state.pivot = PivotState::SUBWOOFER;
-    // }
-   /* else if (operatorGamepad->GetRightBumperPressed()) {
-        state.pivot = PivotState::PODIUM;
+    if (driverGamepad->GetAButton()) {
+        state.pivotState = PIVOT_STATE::SUBWOOFER;
+    }
+    else if (operatorGamepad->GetRightBumperPressed()) {
+        state.pivotState = PIVOT_STATE::PODIUM;
     }
     else if (operatorGamepad->GetLeftBumperPressed()) { 
-        state.pivot = PivotState::STARTING_LINE;
+        state.pivotState = PIVOT_STATE::STARTING_LINE;
     }
     else if (operatorGamepad->leftTriggerActive()) {
-        state.pivot = PivotState::TRACKING;*/
+        state.pivotState = PIVOT_STATE::TRACKING;
+    }
     
 }
 
@@ -122,18 +124,18 @@ void Shooter::analyzeDashboard()
     state.pivotAngle = 0.0_deg;
 
     //NEED PIVOT MOTOR
-    // if(state.pivot == PivotState::SUBWOOFER){
-    //     pivotMotors.setPosition(SUBWOOFER_ANG.to<double>());
-    // }
-    // else if(state.pivot == PivotState::PODIUM){
-    //     pivotMotors.setPosition(PODIUM_ANG.to<double>());
-    // }
-    // else if(state.pivot == PivotState::STARTING_LINE){
-    //     pivotMotors.setPosition(STARTING_LINE_ANG.to<double>());
-    // }
-    // else if(state.pivot == PivotState::TRACKING){
-    //     pivotMotors.setPosition(calculatingPivotingAngle.to<double>());
-    // }
+    if(state.pivotState == PIVOT_STATE::SUBWOOFER){
+        pivotMotors.setPosition(SUBWOOFER_ANG.to<double>());
+    }
+    else if(state.pivotState == PIVOT_STATE::PODIUM){
+        pivotMotors.setPosition(PODIUM_ANG.to<double>());
+    }
+    else if(state.pivotState == PIVOT_STATE::STARTING_LINE){
+        pivotMotors.setPosition(STARTING_LINE_ANG.to<double>());
+    }
+    else if(state.pivotState == PIVOT_STATE::TRACKING){
+        pivotMotors.setPosition(state.calculatingPivotingAngle.to<double>());
+    }
 
     //SHOOTER
     switch (state.flywheelState) {
