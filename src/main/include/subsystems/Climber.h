@@ -25,7 +25,6 @@ public:
     void resetState() override;
     void assessInputs() override;
     void analyzeDashboard() override;
-    void climbCommands();
     void assignOutputs() override;
     void setClimbPID();
     void InitSendable(wpi::SendableBuilder& builder) override;
@@ -55,6 +54,4 @@ private:
 
     frc::DigitalInput* hallE;
     valor::DebounceSensor debounce;
-
-    frc2::SequentialCommandGroup zeroingSequence;
 };

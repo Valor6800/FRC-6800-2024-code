@@ -43,39 +43,17 @@ void Climber::init()
     climbMotor.setReverseLimit(0);
     climbMotor.setVoltageCompensation(10);
     setClimbPID();
-    climbCommands();
 
     resetState();
-}
-
-void Climber::climbCommands()
-{
-    frc2::FunctionalCommand zeroing(
-        [this]() {
-            state.zeroState = Climber::ZERO_STATE::ZEROING;
-        },
-        [this]() {},
-        [this](bool) {
-            state.zeroState = Climber::ZERO_STATE::ZERO;
-        },
-        [this]() {
-            return climbMotor.getPosition() <= ZERO_TARGET || hallE->Get();
-        },
-        {}
-    );
-    zeroingSequence.AddCommands(zeroing);
 }
 
 void Climber::assessInputs()
 {
     if (!operatorGamepad) return;
-    if(!zeroingSequence.IsScheduled())
-    {
-        state.climbState = DISABLED;
-    }
+
 
     if (state.zeroState == NOT_ZERO && !hallE->Get()){
-        zeroingSequence.Schedule();
+        state.zeroState = ZERO_STATE::ZEROING;
     } else if (operatorGamepad->DPadUp()){
         state.climbState = UP;
     } else if (operatorGamepad->DPadRight()){
@@ -124,9 +102,15 @@ void Climber::setClimbPID()
 void Climber::InitSendable(wpi::SendableBuilder& builder)
 {
     builder.SetSmartDashboardType("Subsystem");
-    builder.AddBooleanProperty(
-        "Is Zero",
-        [this] {return state.zeroState == ZERO;},
+
+    builder.AddIntegerProperty(
+        "Zero state",
+        [this] {return state.zeroState;},
+        nullptr
+    );
+    builder.AddIntegerProperty(
+        "Climb state",
+        [this] {return state.climbState;},
         nullptr
     );
     builder.AddDoubleProperty(
