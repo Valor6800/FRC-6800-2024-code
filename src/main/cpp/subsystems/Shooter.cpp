@@ -164,7 +164,7 @@ void Shooter::analyzeDashboard()
             break;
 
         default:
-            getTargetPivotAngle(false); 
+            getTargetPivotAngle(true); 
             break;
     }
 
@@ -196,6 +196,10 @@ void Shooter::analyzeDashboard()
 
     if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {
         double changeInX = drivetrain->getCalculatedPose_m().X().to<double>() - SPEAKER_RED_X.to<double>();
+        state.distanceFromSpeaker = units::meter_t{sqrtf(pow(changeInX, 2) + pow(changeInY, 2))};
+    }
+    else{
+        double changeInX = drivetrain->getCalculatedPose_m().X().to<double>() - SPEAKER_BLUE_X.to<double>();
         state.distanceFromSpeaker = units::meter_t{sqrtf(pow(changeInX, 2) + pow(changeInY, 2))};
     }
 }
