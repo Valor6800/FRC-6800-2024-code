@@ -31,6 +31,7 @@ public:
 
     enum CLIMB_STATE
     {
+        MANUAL,
         DISABLED,
         UP,
         DOWN,
@@ -47,6 +48,8 @@ public:
     struct x {
         CLIMB_STATE climbState;
         ZERO_STATE zeroState;
+
+        double manualClimber;
     }state;
 
 private:

@@ -10,9 +10,8 @@
 Robot::Robot() : 
     drivetrain(this),
     // valorAuto(), 
-    beamBreak(DIOPorts::BEAM_BREAK_PORT),
     shooter(this),
-    feeder(this, &beamBreak),
+    feeder(this),
     climber(this)
 {
     frc::TimedRobot();
@@ -67,6 +66,7 @@ void Robot::AutonomousInit() {
     drivetrain.pullSwerveModuleZeroReference();
 
     feeder.resetState();
+    shooter.resetState();
 
     // autoCommand = valorAuto.getCurrentAuto();
     // autoCommand.Schedule();
@@ -82,6 +82,9 @@ void Robot::AutonomousPeriodic() {
 void Robot::TeleopInit() {
     drivetrain.pullSwerveModuleZeroReference();
     drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Coast);
+
+    shooter.resetState();
+    feeder.resetState();
 
     // autoCommand.Cancel();
 }

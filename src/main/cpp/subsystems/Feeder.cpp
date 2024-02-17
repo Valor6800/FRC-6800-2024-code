@@ -4,21 +4,21 @@
 #include "valkyrie/controllers/NeutralMode.h"
 #include "Constants.h"
 
-#define INTAKE_FORWARD_POWER 0.8f
-#define INTAKE_REVERSE_POWER -0.8f
+#define INTAKE_FORWARD_POWER 0.5f
+#define INTAKE_REVERSE_POWER -0.5f
 
-#define FEEDER_FORWARD_POWER 0.8f
-#define FEEDER_REVERSE_POWER -0.8f
+#define FEEDER_FORWARD_POWER 0.5f
+#define FEEDER_REVERSE_POWER -0.5f
 
-#define AMP_FORWARD_POWER 0.8f
-#define AMP_REVERSE_POWER -0.8f
+#define AMP_FORWARD_POWER 0.5f
+#define AMP_REVERSE_POWER -0.5f
 
-Feeder::Feeder(frc::TimedRobot *_robot, frc::DigitalInput* _beamBreak) :
+Feeder::Feeder(frc::TimedRobot *_robot) :
     valor::BaseSubsystem(_robot, "Feeder"),
     intakeMotor(CANIDs::INTERNAL_INTAKE, valor::NeutralMode::Coast, true),
     feederMotor(CANIDs::FEEDER, valor::NeutralMode::Coast, true),
     ampMotor(CANIDs::AMP, valor::NeutralMode::Coast, true),
-    beamBreak(_beamBreak),
+    beamBreak(DIOPorts::BEAM_BREAK_PORT),
     debounceSensor(_robot, "Feeder")
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
@@ -36,7 +36,7 @@ void Feeder::init()
 {
     resetState();
 
-    debounceSensor.setGetter([this]() { return beamBreak->Get(); });
+    debounceSensor.setGetter([this]() { return beamBreak.Get(); });
 
     table->PutNumber("Intake Forward Power", INTAKE_FORWARD_POWER);
     table->PutNumber("Intake Reverse Power", INTAKE_REVERSE_POWER);
@@ -62,7 +62,7 @@ void Feeder::assessInputs()
         state.intakeState = ROLLER_STATE::INTAKE;
         state.feederState = ROLLER_STATE::STAGNANT;
         state.ampState = ROLLER_STATE::INTAKE;
-    } else if(operatorGamepad->DPadDown()) {
+    } else if(operatorGamepad->GetLeftBumper()) {
         state.intakeState = ROLLER_STATE::OUTTAKE;
         state.feederState = ROLLER_STATE::OUTTAKE;
         state.ampState = ROLLER_STATE::OUTTAKE;
@@ -136,7 +136,7 @@ void Feeder::InitSendable(wpi::SendableBuilder& builder)
 
     builder.AddBooleanProperty(
         "debounceSensor",
-        [this] {return debounceSensor.getSensor();},
+        [this] {return beamBreak.Get();},
         nullptr
     );
 }

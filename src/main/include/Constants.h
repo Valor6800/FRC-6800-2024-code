@@ -54,25 +54,23 @@ namespace LimelightConstants {
 namespace DIOPorts {
     constexpr static int MAG_ENCODER_PORTS[4] = {1, 2, 3, 4};
     constexpr static int BEAM_BREAK_PORT = 0;
-    constexpr static int HALL_EFFECT = 1; //rando number
+    constexpr static int HALL_EFFECT = 2; //rando number
 }
 
 namespace CANIDs {
     constexpr static int DRIVE_CANS[4] = {2, 4, 6, 8};
     constexpr static int AZIMUTH_CANS[4] = {1, 3, 5, 7};
     constexpr static int CANCODER_CANS[4] = {20, 21, 22, 23};
+    constexpr static int SHOOTER_CANCODER = 24;
     constexpr static int PIGEON_CAN = 61;
-    constexpr static int CANDLE = 60;
     constexpr static int INTERNAL_INTAKE = 13;
-    constexpr static int EXTERNAL_INTAKE = 9;
-    constexpr static int EXTERNAL_DEPLOYMENT = 19; // rando number
-    constexpr static int PIVOT = 20; // rando number
-    constexpr static int RIGHT_SHOOTER_WHEEL_CONTROLLER = 10;
-    constexpr static int LEFT_SHOOTER_WHEEL_CONTROLLER = 11;
-    constexpr static int FEEDER = 12;
-    constexpr static int RIGHT_CLIMBER = 24; // rando number
-    constexpr static int LEFT_CLIMBER = 25; // rando number
-    constexpr static int AMP = 21; // rando number
+    constexpr static int PIVOT = 30;
+    constexpr static int RIGHT_SHOOTER_WHEEL_CONTROLLER = 12;
+    constexpr static int LEFT_SHOOTER_WHEEL_CONTROLLER = 11; // Relative to shooter being forward
+    constexpr static int FEEDER = 14;
+    constexpr static int RIGHT_CLIMBER = 15;
+    constexpr static int LEFT_CLIMBER = 16;
+    constexpr static int AMP = 10;
 }
 
 // Constants that stay the same across bots should not go here
@@ -89,6 +87,11 @@ namespace Constants {
         //     nt::NetworkTableInstance::GetDefault().GetTable("constants maybe")
         // }
 
+        static double shooterPivotOffset(){ switch (teamNumber) {
+            case ALPHA_TEAM_NUMBER: return 0;
+            case SIDE_SWIPE_TEAM_NUMBER: return 0;
+            default: return 51.9;
+        }};
         static units::degree_t pigeonMountPitch(){ switch (teamNumber){ 
             case ALPHA_TEAM_NUMBER: return 0_deg; 
             case SIDE_SWIPE_TEAM_NUMBER: return 0_deg;  
@@ -146,7 +149,7 @@ namespace Constants {
         static double azimuthKAcc(){ switch (teamNumber) {
             case ALPHA_TEAM_NUMBER: return 200.0;
             case SIDE_SWIPE_TEAM_NUMBER: return 200.0;
-            default: return 130.0;
+            default: return 250.0;
         }};
 
         static double driveKP(){ switch (teamNumber) {

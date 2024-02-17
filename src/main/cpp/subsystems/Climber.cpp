@@ -16,7 +16,7 @@
 
 Climber::Climber(frc::TimedRobot *_robot) :
     valor::BaseSubsystem(_robot, "Climber"), 
-    climbMotor(CANIDs::LEFT_CLIMBER, valor::NeutralMode::Brake, false),
+    climbMotor(CANIDs::LEFT_CLIMBER, valor::NeutralMode::Coast, false),
     hallE(new frc::DigitalInput(DIOPorts::HALL_EFFECT)),
     debounce(_robot, "Climber")
 {
@@ -45,21 +45,22 @@ void Climber::init()
     setClimbPID();
 
     resetState();
+
+    table->PutBoolean("Manual Climber", false);
 }
 
 void Climber::assessInputs()
 {
-    if (!operatorGamepad) return;
+    if (!operatorGamepad || !operatorGamepad->IsConnected()) return;
 
+    state.manualClimber = operatorGamepad->leftStickX(2);
 
     if (state.zeroState == NOT_ZERO && !hallE->Get()){
         state.zeroState = ZERO_STATE::ZEROING;
     } else if (operatorGamepad->DPadUp()){
         state.climbState = UP;
-    } else if (operatorGamepad->DPadRight()){
+    } else if (operatorGamepad->DPadDown()){
         state.climbState = DOWN;
-    } else if (operatorGamepad->rightStickYActive()){
-        state.climbState = ACTIVE;
     } else {
         state.climbState = DISABLED;
     }
@@ -71,23 +72,26 @@ void Climber::analyzeDashboard()
         state.zeroState = ZERO;
     }
     table->PutBoolean("Zero", state.zeroState == ZERO);
+    if (table->GetBoolean("Manual Climber", false)) {
+        state.climbState = CLIMB_STATE::MANUAL;
+    }
 }
 
 void Climber::assignOutputs()
 {
-    if (state.zeroState == ZEROING){
-        climbMotor.setSpeed(ZERO_SPEED);
-    } else if (state.climbState == UP){
-        climbMotor.setPosition(UP_POSE);
-    } else if (state.climbState == DOWN){
-        climbMotor.setPosition(DOWN_POSE);
-    } else if (state.climbState == ACTIVE){
-        climbMotor.setSpeed(operatorGamepad->rightStickY() * MAX_CLIMB_SPEED);
-    } else if (state.climbState == DISABLED || state.zeroState == ZERO){
+    // if (state.climbState) {
+    //     climbMotor.setPower(state.manualClimber);
+    // } else if (state.zeroState == ZEROING){
+    //     climbMotor.setSpeed(ZERO_SPEED);
+    // } else if (state.climbState == UP){
+    //     climbMotor.setPosition(UP_POSE);
+    // } else if (state.climbState == DOWN){
+    //     climbMotor.setPosition(DOWN_POSE);
+    // } else if (state.climbState == ACTIVE){
+    //     climbMotor.setSpeed(operatorGamepad->rightStickY() * MAX_CLIMB_SPEED);
+    // } else {
         climbMotor.setSpeed(0);
-    } else{
-        climbMotor.setSpeed(0);
-    }
+    // }
 }
 
 void Climber::setClimbPID()

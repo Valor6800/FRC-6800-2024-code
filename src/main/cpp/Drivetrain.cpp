@@ -122,6 +122,8 @@ void Drivetrain::configSwerveModule(int i)
                                                       1.0 / AZIMUTH_GEAR_RATIO,
                                                       azimuthPID,
                                                       PIGEON_CAN_BUS));
+    
+    azimuthControllers[i]->setupCANCoder(CANIDs::CANCODER_CANS[i], 1.0, false, PIGEON_CAN_BUS);
 
     valor::PIDF drivePID;
     drivePID.maxVelocity = Constants::driveKVel();
@@ -141,7 +143,6 @@ void Drivetrain::configSwerveModule(int i)
 
     swerveModules.push_back(new valor::Swerve<SwerveAzimuthMotor, SwerveDriveMotor>(azimuthControllers[i], driveControllers[i], motorLocations[i]));
     swerveModules[i]->setMaxSpeed(driveMaxSpeed);
-    swerveModules[i]->setupCANCoder(CANIDs::CANCODER_CANS[i], PIGEON_CAN_BUS);
 
 }
 

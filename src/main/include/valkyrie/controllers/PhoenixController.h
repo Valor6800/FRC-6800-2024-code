@@ -4,6 +4,7 @@
 
 #include <ctre/phoenix6/TalonFX.hpp>
 #include <string>
+#include <ctre/phoenix6/CANcoder.hpp>
 
 namespace valor {
 
@@ -48,6 +49,8 @@ public:
 
     void setProfile(int slot);
     double getAbsEncoderPosition();
+    void setupCANCoder(int deviceId, double conversion, bool clockwise, std::string canbus = "") override;
+    double getCANCoder() override;
 
     /**
      * @brief Prevent the motor from traveling backwards
@@ -63,11 +66,13 @@ private:
     valor::PIDF pidf;
     int currentProfile;
     double voltageCompenstation;
+    double cancoderConversion;
 
     ctre::phoenix6::controls::MotionMagicVoltage req_position;
     ctre::phoenix6::controls::VelocityVoltage req_velocity;
     ctre::phoenix6::controls::VoltageOut req_voltage;
 
     ctre::phoenix::StatusCode status;
+    ctre::phoenix6::hardware::CANcoder *cancoder;
 };
 }

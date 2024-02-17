@@ -49,6 +49,7 @@ public:
 
     enum PIVOT_STATE
     {
+        DISABLED,
         SUBWOOFER,
         PODIUM,
         STARTING_LINE,
@@ -67,7 +68,8 @@ public:
     } state;
 
 private:
-    valor::PhoenixController pivotMotors;
+    valor::PhoenixController* pivotMotors;
+
     valor::NeoController leftFlywheelMotor;
     valor::NeoController rightFlywheelMotor;
 };

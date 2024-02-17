@@ -4,37 +4,39 @@
 #include "valkyrie/controllers/NeutralMode.h"
 #include "valkyrie/controllers/PIDF.h"
 
-#define PIVOT_ROTATE_K_VEL 90.0f
-#define PIVOT_ROTATE_K_ACC 500.0f
+#define PIVOT_ROTATE_K_VEL 10.0f
+#define PIVOT_ROTATE_K_ACC 10.0f
 #define PIVOT_ROTATE_K_P 0.0f
 #define PIVOT_ROTATE_K_ERROR 0.0f
 #define PIVOT_ROTATE_K_AFF 0.0f
 #define PIVOT_ROTATE_K_AFF_POS 0.0f
 
-#define PIVOT_GEAR_RATIO 288.0f
-#define PIVOT_REVERSE_LIMIT 0.0f
-#define PIVOT_FORWARD_LIMIT 90.0f
+#define PIVOT_MIN_ANGLE 28.4f
+
+#define PIVOT_GEAR_RATIO 470.4f
+#define PIVOT_REVERSE_LIMIT 35.0f
+#define PIVOT_FORWARD_LIMIT 66.0f
 
 #define FLYWHEEL_ROTATE_K_VEL 75.0f
 #define FLYWHEEL_ROTATE_K_ACC 75.0f
-#define FLYWHEEL_ROTATE_K_P 0.000005f
+#define FLYWHEEL_ROTATE_K_P 0.00005f
 
 #define SUBWOOFER_ANG 30.0_deg
 #define PODIUM_ANG 45.0_deg
 #define STARTING_LINE_ANG 60.0_deg
 
-#define LEFT_SHOOT_POWER 66.33f
-#define LEFT_SPOOL_POWER 50.0f
+#define LEFT_SHOOT_POWER 50.0f
+#define LEFT_SPOOL_POWER 30.0f
 #define LEFT_STANDBY_POWER 0.0f
 
-#define RIGHT_SHOOT_POWER 66.66f
-#define RIGHT_SPOOL_POWER 50.0f
+#define RIGHT_SHOOT_POWER 40.0f
+#define RIGHT_SPOOL_POWER 30.0f
 #define RIGHT_STANDBY_POWER 0.0f
 
 Shooter::Shooter(frc::TimedRobot *_robot) :
     valor::BaseSubsystem(_robot, "Shooter"),
-    pivotMotors(CANIDs::PIVOT, valor::NeutralMode::Brake, false),
-    leftFlywheelMotor(CANIDs::LEFT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false),
+    pivotMotors(nullptr),
+    leftFlywheelMotor(CANIDs::LEFT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, true),
     rightFlywheelMotor(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false)
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
@@ -44,10 +46,12 @@ Shooter::Shooter(frc::TimedRobot *_robot) :
 void Shooter::resetState()
 {
     state.flywheelState = FLYWHEEL_STATE::NOT_SHOOTING;
-    state.pivotState = PIVOT_STATE::SUBWOOFER;
+    state.pivotState = PIVOT_STATE::DISABLED;
     state.leftFlywheelTargetVelocity = units::angular_velocity::revolutions_per_minute_t(0);
     state.rightFlywheelTargetVelocity = units::angular_velocity::revolutions_per_minute_t(0);
     state.calculatingPivotingAngle = units::degree_t{0};
+
+    pivotMotors->setEncoderPosition(pivotMotors->getCANCoder() - Constants::shooterPivotOffset() + PIVOT_MIN_ANGLE);
 }
 
 void Shooter::init()
@@ -69,11 +73,18 @@ void Shooter::init()
     leftFlywheelMotor.setPIDF(flywheelPID, 0);
     rightFlywheelMotor.setConversion(1);
     rightFlywheelMotor.setPIDF(flywheelPID, 0);
-    
-    pivotMotors.setConversion(1.0 / PIVOT_GEAR_RATIO * 360);
-    pivotMotors.setForwardLimit(PIVOT_FORWARD_LIMIT);
-    pivotMotors.setReverseLimit(PIVOT_REVERSE_LIMIT);
-    pivotMotors.setPIDF(pivotPID, 0);
+
+    pivotMotors = new valor::PhoenixController(
+        CANIDs::PIVOT,
+        valor::NeutralMode::Coast,
+        false,
+        1.0 / PIVOT_GEAR_RATIO * 360,
+        pivotPID,
+        "baseCAN"
+    );
+    pivotMotors->setupCANCoder(CANIDs::SHOOTER_CANCODER, 0.5 * 360, true, "baseCAN");
+    pivotMotors->setForwardLimit(PIVOT_FORWARD_LIMIT);
+    pivotMotors->setReverseLimit(PIVOT_REVERSE_LIMIT);
 
     table->PutNumber("Left Flywheel Shoot RPM", LEFT_SHOOT_POWER);
     table->PutNumber("Left Flywheel Spool RPM", LEFT_SPOOL_POWER);
@@ -96,47 +107,27 @@ void Shooter::assessInputs()
     if (driverGamepad->rightTriggerActive() || operatorGamepad->rightTriggerActive()) {
         state.flywheelState = FLYWHEEL_STATE::SHOOTING;
     }
-    else if (operatorGamepad->leftTriggerActive()) {
-        state.flywheelState = FLYWHEEL_STATE::NOT_SHOOTING;
-    }
     else {
         state.flywheelState = FLYWHEEL_STATE::SPOOLED;
     } 
 
     //PIVOT LOGIC
-    if (driverGamepad->GetAButton()) {
+    if (driverGamepad->GetAButton() || operatorGamepad->GetAButton()) {
         state.pivotState = PIVOT_STATE::SUBWOOFER;
-    }
-    else if (operatorGamepad->GetRightBumperPressed()) {
+    } else if (operatorGamepad->GetBButton()) {
         state.pivotState = PIVOT_STATE::PODIUM;
-    }
-    else if (operatorGamepad->GetLeftBumperPressed()) { 
+    } else if (operatorGamepad->GetYButton()) { 
         state.pivotState = PIVOT_STATE::STARTING_LINE;
-    }
-    else if (operatorGamepad->leftTriggerActive()) {
+    } else if (driverGamepad->leftTriggerActive() || operatorGamepad->leftTriggerActive()) {
         state.pivotState = PIVOT_STATE::TRACKING;
+    } else {
+        state.pivotState = PIVOT_STATE::DISABLED;
     }
     
 }
 
 void Shooter::analyzeDashboard()
 {
-    state.pivotAngle = 0.0_deg;
-
-    //NEED PIVOT MOTOR
-    if(state.pivotState == PIVOT_STATE::SUBWOOFER){
-        pivotMotors.setPosition(SUBWOOFER_ANG.to<double>());
-    }
-    else if(state.pivotState == PIVOT_STATE::PODIUM){
-        pivotMotors.setPosition(PODIUM_ANG.to<double>());
-    }
-    else if(state.pivotState == PIVOT_STATE::STARTING_LINE){
-        pivotMotors.setPosition(STARTING_LINE_ANG.to<double>());
-    }
-    else if(state.pivotState == PIVOT_STATE::TRACKING){
-        pivotMotors.setPosition(state.calculatingPivotingAngle.to<double>());
-    }
-
     //SHOOTER
     switch (state.flywheelState) {
 
@@ -167,6 +158,18 @@ void Shooter::assignOutputs()
 {
     leftFlywheelMotor.setSpeed(state.leftFlywheelTargetVelocity.to<double>());
     rightFlywheelMotor.setSpeed(state.rightFlywheelTargetVelocity.to<double>());
+
+    // if(state.pivotState == PIVOT_STATE::SUBWOOFER){
+    //     pivotMotors->setPosition(SUBWOOFER_ANG.to<double>());
+    // } else if(state.pivotState == PIVOT_STATE::PODIUM){
+    //     pivotMotors->setPosition(PODIUM_ANG.to<double>());
+    // } else if(state.pivotState == PIVOT_STATE::STARTING_LINE){
+    //     pivotMotors->setPosition(STARTING_LINE_ANG.to<double>());
+    // } else if(state.pivotState == PIVOT_STATE::TRACKING) {
+    //     pivotMotors->setPosition(state.calculatingPivotingAngle.to<double>());
+    // } else if (state.pivotState == PIVOT_STATE::DISABLED) {
+        pivotMotors->setPower(0);
+    // }
 }
 
 units::degree_t Shooter::calculatePivotAngle(){

@@ -51,6 +51,8 @@ public:
     void setOpenLoopRamp(double time);
 
     double getAbsEncoderPosition() override;
+    void setupCANCoder(int deviceId, double conversion, bool clockwise, std::string canbus = "") override;
+    double getCANCoder() override;
     
     void InitSendable(wpi::SendableBuilder& builder) override;
     

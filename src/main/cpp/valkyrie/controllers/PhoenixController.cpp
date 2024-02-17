@@ -29,7 +29,9 @@ PhoenixController::PhoenixController(int canID,
     req_position(units::turn_t{0}),
     req_velocity(units::turns_per_second_t{0}),
     req_voltage(units::volt_t{0}),
-    voltageCompenstation(12.0)
+    voltageCompenstation(12.0),
+    cancoder(nullptr),
+    cancoderConversion(1)
 {
     init();
 }
@@ -92,6 +94,22 @@ void PhoenixController::init(double gearRatio, valor::PIDF pidf)
     status = motor->GetConfigurator().Apply(config, units::second_t{5});
 
     wpi::SendableRegistry::AddLW(this, "PhoenixController", "ID " + std::to_string(motor->GetDeviceID()));
+}
+
+void PhoenixController::setupCANCoder(int deviceId, double conversion, bool clockwise, std::string canbus)
+{
+    cancoderConversion = conversion;
+    cancoder = new ctre::phoenix6::hardware::CANcoder(deviceId, canbus);
+    ctre::phoenix6::configs::MagnetSensorConfigs config;
+    config.AbsoluteSensorRange = ctre::phoenix6::signals::AbsoluteSensorRangeValue::Unsigned_0To1;
+    config.SensorDirection = clockwise ? signals::SensorDirectionValue::Clockwise_Positive :
+                                         signals::SensorDirectionValue::CounterClockwise_Positive;
+    cancoder->GetConfigurator().Apply(config);
+}
+
+double PhoenixController::getCANCoder()
+{
+    return cancoder ? cancoder->GetAbsolutePosition().GetValueAsDouble() * cancoderConversion : 0;
 }
 
 void PhoenixController::reset()
@@ -313,6 +331,10 @@ void PhoenixController::InitSendable(wpi::SendableBuilder& builder)
     builder.AddDoubleProperty(
         "Out Volt", 
         [this] { return motor->GetMotorVoltage().GetValueAsDouble(); },
+        nullptr);
+    builder.AddDoubleProperty(
+        "CANCoder", 
+        [this] { return getCANCoder(); },
         nullptr);
 
     builder.AddIntegerProperty(

@@ -70,6 +70,15 @@ void NeoController::setPIDF(valor::PIDF pidf, int slot)
     pidController.SetSmartMotionAllowedClosedLoopError(pidf.error, slot);
 }
 
+void NeoController::setupCANCoder(int deviceId, double conversion, bool clockwise, std::string canbus)
+{
+}
+
+double NeoController::getCANCoder()
+{
+    return 0;
+}
+
 /**
  * Set the conversion rate.
  * Converts between your desired units and rotations of the neo motor shaft (includes gear ratio)
