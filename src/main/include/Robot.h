@@ -45,6 +45,7 @@ class Robot : public frc::TimedRobot {
         valor::Gamepad gamepadDriver{OIConstants::GAMEPAD_BASE_LOCATION};
 
         frc2::CommandPtr autoCommand = frc2::cmd::Sequence();
+        std::vector<frc2::CommandPtr> otfCommands;
 
         Drivetrain drivetrain;
         valor::Auto valorAuto;

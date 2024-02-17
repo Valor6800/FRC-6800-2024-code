@@ -74,8 +74,10 @@ void Robot::AutonomousInit() {
     feeder.resetState();
     shooter.resetState();
 
-    autoCommand = valorAuto.getCurrentAuto();
-    autoCommand.Schedule();
+    // autoCommand = valorAuto.getCurrentAuto();
+    // autoCommand.Schedule();
+
+    valorAuto.scheduleCommands(valorAuto.makeOTFAuto(valorAuto.getAutoName()));
 }
 
 void Robot::AutonomousExit() {

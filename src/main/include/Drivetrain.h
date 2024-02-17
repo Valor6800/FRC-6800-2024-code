@@ -239,6 +239,7 @@ public:
      frc2::InstantCommand* getSetXMode();
 
      void setDriveMotorNeutralMode(valor::NeutralMode mode);
+
      double teleopStart;
 
      double doubtX, doubtY;
@@ -252,6 +253,7 @@ public:
      bool comparePose2D(frc::Pose2d onePose, frc::Pose2d twoPose);
      frc::Pose2d getEndPoseFromPath(std::shared_ptr<PathPlannerPath> path);
      frc::Pose2d getOTFEndPose(bool limelight, units::meter_t, units::meter_t, units::degree_t);
+
 private:
      
      double driveMaxSpeed;
