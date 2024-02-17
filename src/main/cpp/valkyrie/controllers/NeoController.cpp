@@ -150,6 +150,11 @@ double NeoController::getSpeed()
     return encoder.GetVelocity();
 }
 
+double NeoController::getVoltage()
+{
+    return motor->GetAppliedOutput() * motor->GetBusVoltage();
+}
+
 void NeoController::setVoltageCompensation(double volts)
 {
     motor->EnableVoltageCompensation(volts);
@@ -226,7 +231,7 @@ void NeoController::InitSendable(wpi::SendableBuilder& builder)
         nullptr);
     builder.AddDoubleProperty(
         "Voltage", 
-        [this] { return motor->GetAppliedOutput() * motor->GetBusVoltage(); },
+        [this] { return getVoltage(); },
         nullptr);
     builder.AddBooleanProperty(
         "Inverted", 

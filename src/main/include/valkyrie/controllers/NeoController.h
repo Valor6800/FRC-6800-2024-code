@@ -23,6 +23,7 @@ public:
     double getCurrent();
     double getPosition();
     double getSpeed();
+    double getVoltage();
 
     int getProfile();
 
