@@ -66,14 +66,14 @@ using namespace pathplanner;
 #define BLUE_LEFT_TRAP_ROT_ANGLE 0.00f
 #define BLUE_CENTER_TRAP_ROT_ANGLE 0.0f
 #define BLUE_AMP_ROT_ANGLE -1.5708f
-#define BLUE_LOCK_ANGLE 0.0f
+#define BLUE_LOCK_ANGLE 3.14159f
 
 #define RED_AMP_ROT_ANGLE -1.5708f
 #define RED_SOURCE_ROT_ANGLE -2.0245f
 #define RED_RIGHT_TRAP_ROT_ANGLE -2.07694f
 #define RED_LEFT_TRAP_ROT_ANGLE 2.16421f
 #define RED_CENTER_TRAP_ROT_ANGLE 0.0f
-#define RED_LOCK_ANGLE 3.14159f
+#define RED_LOCK_ANGLE 0.0f
 
 Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Drivetrain"),
                         rotMaxSpeed(ROT_SPEED_MUL * 2 * M_PI),

@@ -4,20 +4,16 @@
 #include "valkyrie/controllers/NeutralMode.h"
 #include "Constants.h"
 
-#define INTAKE_FORWARD_POWER 0.5f
-#define INTAKE_REVERSE_POWER -0.5f
+#define INTAKE_FORWARD_POWER 0.75f
+#define INTAKE_REVERSE_POWER -0.75f
 
 #define FEEDER_FORWARD_POWER 0.5f
 #define FEEDER_REVERSE_POWER -0.5f
-
-#define AMP_FORWARD_POWER 0.5f
-#define AMP_REVERSE_POWER -0.5f
 
 Feeder::Feeder(frc::TimedRobot *_robot) :
     valor::BaseSubsystem(_robot, "Feeder"),
     intakeMotor(CANIDs::INTERNAL_INTAKE, valor::NeutralMode::Coast, true),
     feederMotor(CANIDs::FEEDER, valor::NeutralMode::Coast, true),
-    ampMotor(CANIDs::AMP, valor::NeutralMode::Coast, true),
     beamBreak(DIOPorts::BEAM_BREAK_PORT),
     debounceSensor(_robot, "Feeder")
 {
@@ -29,7 +25,6 @@ void Feeder::resetState()
 {
     state.intakeState = STAGNANT;
     state.feederState = STAGNANT;
-    state.ampState = STAGNANT;
 }
 
 void Feeder::init()
@@ -37,15 +32,13 @@ void Feeder::init()
     resetState();
 
     debounceSensor.setGetter([this]() { return beamBreak.Get(); });
+    intakeMotor.setMaxCurrent(60);
 
     table->PutNumber("Intake Forward Power", INTAKE_FORWARD_POWER);
     table->PutNumber("Intake Reverse Power", INTAKE_REVERSE_POWER);
 
     table->PutNumber("Feeder Forward Power", FEEDER_FORWARD_POWER);
     table->PutNumber("Feeder Reverse Power", FEEDER_REVERSE_POWER);
-
-    table->PutNumber("Amp Forward Power", AMP_FORWARD_POWER);
-    table->PutNumber("Amp Reverse Power", AMP_REVERSE_POWER);
 }
 
 void Feeder::assessInputs()
@@ -57,19 +50,15 @@ void Feeder::assessInputs()
     if (driverGamepad->rightTriggerActive()) {
         state.intakeState = ROLLER_STATE::INTAKE;
         state.feederState = ROLLER_STATE::INTAKE;
-        state.ampState = ROLLER_STATE::INTAKE;
     } else if (driverGamepad->GetRightBumper() || driverGamepad->GetLeftBumper()) {
         state.intakeState = ROLLER_STATE::INTAKE;
         state.feederState = ROLLER_STATE::STAGNANT;
-        state.ampState = ROLLER_STATE::INTAKE;
     } else if(operatorGamepad->GetLeftBumper()) {
         state.intakeState = ROLLER_STATE::OUTTAKE;
         state.feederState = ROLLER_STATE::OUTTAKE;
-        state.ampState = ROLLER_STATE::OUTTAKE;
     } else {
         state.intakeState = ROLLER_STATE::STAGNANT;
         state.feederState = ROLLER_STATE::STAGNANT;
-        state.ampState = ROLLER_STATE::STAGNANT;
     }
 }
 
@@ -80,9 +69,6 @@ void Feeder::analyzeDashboard()
 
     state.feederForwardSpeed = table->GetNumber("Feeder Forward Power", FEEDER_FORWARD_POWER);
     state.feederReverseSpeed = table->GetNumber("Feeder Reverse Power", FEEDER_REVERSE_POWER);
-
-    state.ampForwardSpeed = table->GetNumber("Amp Forward Power", AMP_FORWARD_POWER);
-    state.ampReverseSpeed = table->GetNumber("Amp Reverse Power", AMP_REVERSE_POWER);
 }
 
 void Feeder::assignOutputs()
@@ -102,14 +88,6 @@ void Feeder::assignOutputs()
     } else {
         feederMotor.setPower(0);
     }
-
-    if(state.ampState == ROLLER_STATE::INTAKE) {
-        ampMotor.setPower(state.ampForwardSpeed);
-    } else if(state.ampState == ROLLER_STATE::OUTTAKE) {
-        ampMotor.setPower(state.ampReverseSpeed);
-    } else {
-        ampMotor.setPower(0);
-    }
 }
 
 void Feeder::InitSendable(wpi::SendableBuilder& builder)
@@ -125,12 +103,6 @@ void Feeder::InitSendable(wpi::SendableBuilder& builder)
     builder.AddDoubleProperty(
         "feederState",
         [this] {return state.feederState;},
-        nullptr
-    );
-
-    builder.AddDoubleProperty(
-        "ampState",
-        [this] {return state.ampState;},
         nullptr
     );
 

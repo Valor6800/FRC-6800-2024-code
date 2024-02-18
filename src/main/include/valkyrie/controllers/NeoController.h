@@ -27,6 +27,7 @@ public:
 
     void setEncoderPosition(double position);
     void setVoltageCompensation(double volts) override;
+    void setMaxCurrent(double amps);
 
     void setPosition(double);
     void setSpeed(double);

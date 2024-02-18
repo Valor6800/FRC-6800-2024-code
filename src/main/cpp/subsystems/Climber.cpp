@@ -16,7 +16,7 @@
 
 Climber::Climber(frc::TimedRobot *_robot) :
     valor::BaseSubsystem(_robot, "Climber"), 
-    climbMotor(CANIDs::LEFT_CLIMBER, valor::NeutralMode::Coast, false),
+    climbMotor(CANIDs::LEFT_CLIMBER, valor::NeutralMode::Brake, false),
     hallE(new frc::DigitalInput(DIOPorts::HALL_EFFECT)),
     debounce(_robot, "Climber")
 {
@@ -37,10 +37,10 @@ void Climber::resetState()
 
 void Climber::init()
 {
-    climbMotor.setupFollower(CANIDs::RIGHT_CLIMBER, false);
+    climbMotor.setupFollower(CANIDs::RIGHT_CLIMBER, true);
     climbMotor.setEncoderPosition(0);
-    climbMotor.setForwardLimit(20); //placeholder
-    climbMotor.setReverseLimit(0);
+    climbMotor.setForwardLimit(48); //placeholder
+    // climbMotor.setReverseLimit(0);
     climbMotor.setVoltageCompensation(10);
     setClimbPID();
 
@@ -62,6 +62,7 @@ void Climber::assessInputs()
     } else if (operatorGamepad->DPadDown()){
         state.climbState = DOWN;
     } else {
+
         state.climbState = DISABLED;
     }
 }
@@ -72,15 +73,15 @@ void Climber::analyzeDashboard()
         state.zeroState = ZERO;
     }
     table->PutBoolean("Zero", state.zeroState == ZERO);
-    if (table->GetBoolean("Manual Climber", false)) {
-        state.climbState = CLIMB_STATE::MANUAL;
-    }
+    // if (table->GetBoolean("Manual Climber", false)) {
+    //     state.climbState = CLIMB_STATE::MANUAL;
+    // }
 }
 
 void Climber::assignOutputs()
 {
-    // if (state.climbState) {
-    //     climbMotor.setPower(state.manualClimber);
+    // if (state.climbState == CLIMB_STATE::MANUAL) {
+        climbMotor.setPower(state.manualClimber);
     // } else if (state.zeroState == ZEROING){
     //     climbMotor.setSpeed(ZERO_SPEED);
     // } else if (state.climbState == UP){
@@ -90,7 +91,7 @@ void Climber::assignOutputs()
     // } else if (state.climbState == ACTIVE){
     //     climbMotor.setSpeed(operatorGamepad->rightStickY() * MAX_CLIMB_SPEED);
     // } else {
-        climbMotor.setSpeed(0);
+    //     climbMotor.setSpeed(0);
     // }
 }
 

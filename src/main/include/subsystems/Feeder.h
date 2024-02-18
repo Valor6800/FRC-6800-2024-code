@@ -32,14 +32,11 @@ public:
     {
         ROLLER_STATE feederState;
         ROLLER_STATE intakeState;
-        ROLLER_STATE ampState;
 
         double intakeForwardSpeed;
         double intakeReverseSpeed;
         double feederForwardSpeed;
         double feederReverseSpeed;
-        double ampForwardSpeed;
-        double ampReverseSpeed;
 
     } state;
 
@@ -47,7 +44,6 @@ private:
 
     valor::NeoController feederMotor;
     valor::NeoController intakeMotor;
-    valor::NeoController ampMotor;
     frc::DigitalInput beamBreak;
     valor::DebounceSensor debounceSensor;
 };

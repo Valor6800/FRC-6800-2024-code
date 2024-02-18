@@ -30,6 +30,11 @@ void NeoController::init()
     wpi::SendableRegistry::AddLW(this, "NeoController", "ID " + std::to_string(motor->GetDeviceId()));
 }
 
+void NeoController::setMaxCurrent(double current)
+{
+    motor->SetSmartCurrentLimit(current);
+}
+
 void NeoController::reset()
 {
     encoder.SetPosition(0);

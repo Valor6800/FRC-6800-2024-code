@@ -106,9 +106,10 @@ void Shooter::assessInputs()
     //SHOOT LOGIC
     if (driverGamepad->rightTriggerActive() || operatorGamepad->rightTriggerActive()) {
         state.flywheelState = FLYWHEEL_STATE::SHOOTING;
-    }
-    else {
+    } else if (operatorGamepad->GetStartButtonPressed()) {
         state.flywheelState = FLYWHEEL_STATE::SPOOLED;
+    } else if (operatorGamepad->GetBackButtonPressed()) {
+        state.flywheelState = FLYWHEEL_STATE::NOT_SHOOTING;
     } 
 
     //PIVOT LOGIC
