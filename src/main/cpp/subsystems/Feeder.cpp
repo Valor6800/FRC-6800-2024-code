@@ -33,6 +33,10 @@ void Feeder::init()
 
     debounceSensor.setGetter([this]() { return beamBreak.Get(); });
     intakeMotor.setMaxCurrent(60);
+    intakeMotor.setVoltageCompensation(10);
+
+    feederMotor.setVoltageCompensation(10);
+
 
     table->PutNumber("Intake Forward Power", INTAKE_FORWARD_POWER);
     table->PutNumber("Intake Reverse Power", INTAKE_REVERSE_POWER);
