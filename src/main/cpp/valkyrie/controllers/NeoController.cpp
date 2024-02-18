@@ -142,7 +142,7 @@ double NeoController::getSpeed()
 
 void NeoController::setVoltageCompensation(double volts)
 {
-    motor->EnableVoltageCompensation(12);
+    motor->EnableVoltageCompensation(volts);
 }
 
 void NeoController::setEncoderPosition(double position)
