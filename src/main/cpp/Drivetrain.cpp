@@ -139,6 +139,7 @@ void Drivetrain::configSwerveModule(int i)
     double conversion = 1.0 / DRIVE_GEAR_RATIO * M_PI * WHEEL_DIAMETER_M;
     driveControllers[i]->setConversion(conversion);
     driveControllers[i]->setPIDF(drivePID, 0);
+    driveControllers[i]->setMaxCurrent(40);
 
     driveMaxSpeed = driveControllers[i]->getMaxMotorSpeed() / 60.0 * conversion;
 

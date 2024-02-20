@@ -15,7 +15,7 @@
 
 #define PIVOT_GEAR_RATIO 470.4f
 #define PIVOT_REVERSE_LIMIT 68.00f
-#define PIVOT_FORWARD_LIMIT 30.0f
+#define PIVOT_FORWARD_LIMIT 29.0f
 
 #define FLYWHEEL_ROTATE_K_VEL 75.0f
 #define FLYWHEEL_ROTATE_K_ACC 75.0f
@@ -119,8 +119,8 @@ void Shooter::analyzeDashboard()
 void Shooter::assignOutputs()
 {
     if (state.flywheelState == NOT_SHOOTING) {
-        leftFlywheelMotor.setPower(0);
-        rightFlywheelMotor.setPower(0);
+        leftFlywheelMotor.setPower(0.0);
+        rightFlywheelMotor.setPower(0.0);
     } else {
         leftFlywheelMotor.setSpeed(LEFT_SHOOT_POWER);
         rightFlywheelMotor.setSpeed(RIGHT_SHOOT_POWER);

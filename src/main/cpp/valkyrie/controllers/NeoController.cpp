@@ -20,7 +20,7 @@ void NeoController::init()
     motor->RestoreFactoryDefaults();
     motor->SetInverted(inverted);
     motor->SetControlFramePeriodMs(0);
-    motor->SetSmartCurrentLimit(40);
+    setMaxCurrent(60);
     setVoltageCompensation(12);
     setNeutralMode(neutralMode);
     setRange(0,-1,1);
