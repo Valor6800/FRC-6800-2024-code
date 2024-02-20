@@ -2,10 +2,17 @@
 
 #include "valkyrie/BaseSubsystem.h"
 #include "Constants.h"
+#include <vector>
 #include "valkyrie/controllers/NeoController.h"
+#include "valkyrie/sensors/CurrentSensor.h"
 #include <frc/DigitalInput.h>
 #include "valkyrie/sensors/DebounceSensor.h"
 
+#include <networktables/NetworkTable.h>
+#include <networktables/NetworkTableEntry.h>
+#include<networktables/NetworkTableInstance.h>
+
+#include "frc/DigitalInput.h"
 class Feeder : public valor::BaseSubsystem
 {
 public:
@@ -25,7 +32,8 @@ public:
     {
         INTAKE,
         STAGNANT,
-        OUTTAKE
+        OUTTAKE,
+        SPIKED
     };
 
     struct x
@@ -44,6 +52,10 @@ private:
 
     valor::NeoController feederMotor;
     valor::NeoController intakeMotor;
+
+    valor::CurrentSensor currentSensor;
     frc::DigitalInput* beamBreak;
     valor::DebounceSensor debounceSensor;
+
+    bool intakeTest;
 };

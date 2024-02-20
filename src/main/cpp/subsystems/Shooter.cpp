@@ -31,11 +31,12 @@
 #define RIGHT_SPOOL_POWER 50.0f
 #define RIGHT_STANDBY_POWER 0.0f
 
-Shooter::Shooter(frc::TimedRobot *_robot) :
+Shooter::Shooter(frc::TimedRobot *_robot, frc::DigitalInput* _breamBreak) :
     valor::BaseSubsystem(_robot, "Shooter"),
     //pivotMotors(CANIDs::ANGLE_CONTROLLER, valor::NeutralMode::Brake, false),
     leftFlywheelMotor(CANIDs::LEFT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false),
-    rightFlywheelMotor(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false)
+    rightFlywheelMotor(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false),
+    beamBreak(_breamBreak)
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -82,6 +83,13 @@ void Shooter::init()
     table->PutNumber("Right Flywheel Spool RPM", RIGHT_SPOOL_POWER);
     table->PutNumber("Right Flywheel Standby RPM", RIGHT_STANDBY_POWER);
 
+    spooledTest=false;
+    trackingTest=false;
+
+
+    table->PutBoolean("SpooledTest", false);
+    table->PutBoolean("TrackingTest", false);
+
     resetState();
 }
 
@@ -93,12 +101,15 @@ void Shooter::assessInputs()
 
     //SHOOT LOGIC
     if (driverGamepad->rightTriggerActive() || operatorGamepad->rightTriggerActive()) {
+        spooledTest=false;
         state.flywheelState = FLYWHEEL_STATE::SHOOTING;
     }
     else if (operatorGamepad->leftTriggerActive()) {
+        spooledTest=false;
         state.flywheelState = FLYWHEEL_STATE::NOT_SHOOTING;
     }
     else {
+        spooledTest=true;
         state.flywheelState = FLYWHEEL_STATE::SPOOLED;
     } 
 
@@ -165,6 +176,10 @@ void Shooter::assignOutputs()
 {
     leftFlywheelMotor.setSpeed(state.leftFlywheelTargetVelocity.to<double>());
     rightFlywheelMotor.setSpeed(state.rightFlywheelTargetVelocity.to<double>());
+    table->PutBoolean("SpooledTest", spooledTest);
+    table->PutBoolean("TrackingTest", trackingTest);
+
+
 }
 
 units::degree_t Shooter::calculatePivotAngle(){

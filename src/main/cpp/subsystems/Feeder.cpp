@@ -3,6 +3,7 @@
 #include <math.h>
 #include "valkyrie/controllers/NeutralMode.h"
 #include "Constants.h"
+#include "valkyrie/sensors/DebounceSensor.h"
 
 #define INTAKE_FORWARD_POWER 0.8f
 #define INTAKE_REVERSE_POWER -0.8f
@@ -14,8 +15,12 @@ Feeder::Feeder(frc::TimedRobot *_robot, frc::DigitalInput* _beamBreak) :
     valor::BaseSubsystem(_robot, "Feeder"),
     intakeMotor(CANIDs::INTERNAL_INTAKE, valor::NeutralMode::Coast, true),
     feederMotor(CANIDs::FEEDER, valor::NeutralMode::Coast, true),
+
+    currentSensor(_robot, subsystemName),
+
     beamBreak(_beamBreak),
     debounceSensor(_robot, "Feeder")
+
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -38,7 +43,15 @@ void Feeder::init()
 
     table->PutNumber("Feeder Forward Power", FEEDER_FORWARD_POWER);
     table->PutNumber("Feeder Reverse Power", FEEDER_REVERSE_POWER);
+
+
+    currentSensor.setGetter([this]() {return intakeMotor.getCurrent(); });
+    currentSensor.setGetter([this]() {return feederMotor.getCurrent(); });
+
+    currentSensor.setSpikeCallback([this]() {return feederMotor.getCurrent(); });
 }
+
+
 
 void Feeder::assessInputs()
 {
@@ -73,20 +86,34 @@ void Feeder::analyzeDashboard()
 void Feeder::assignOutputs()
 {
     if(state.intakeState == ROLLER_STATE::INTAKE) {
+        intakeTest= true;
         intakeMotor.setPower(state.intakeForwardSpeed);
     } else if(state.intakeState == ROLLER_STATE::OUTTAKE) {
+        intakeTest=false;
         intakeMotor.setPower(state.intakeReverseSpeed);
+
     } else {
+        intakeTest=false;
         intakeMotor.setPower(0);
     }
 
     if(state.feederState == ROLLER_STATE::INTAKE) {
+        intakeTest=true;
         feederMotor.setPower(state.feederForwardSpeed);
     } else if(state.feederState == ROLLER_STATE::OUTTAKE) {
+        intakeTest=false;
         feederMotor.setPower(state.feederReverseSpeed);
     } else {
+        intakeTest=false;
         feederMotor.setPower(0);
     }
+    table->PutBoolean("IntakeTest", intakeTest);
+
+    if(state.intakeState==ROLLER_STATE::SPIKED){
+        table->PutBoolean("SpikeTest", true);
+    }
+
+    
 }
 
 void Feeder::InitSendable(wpi::SendableBuilder& builder)
