@@ -97,15 +97,22 @@ void PhoenixController::init(double gearRatio, valor::PIDF pidf)
     wpi::SendableRegistry::AddLW(this, "PhoenixController", "ID " + std::to_string(motor->GetDeviceID()));
 }
 
-void PhoenixController::setupCANCoder(int deviceId, double conversion, bool clockwise, std::string canbus)
+void PhoenixController::setupCANCoder(int deviceId, double offset, double _conversion, bool clockwise, std::string canbus)
 {
-    cancoderConversion = conversion;
+    cancoderConversion = _conversion;
     cancoder = new ctre::phoenix6::hardware::CANcoder(deviceId, canbus);
     ctre::phoenix6::configs::MagnetSensorConfigs config;
     config.AbsoluteSensorRange = ctre::phoenix6::signals::AbsoluteSensorRangeValue::Unsigned_0To1;
     config.SensorDirection = clockwise ? signals::SensorDirectionValue::Clockwise_Positive :
                                          signals::SensorDirectionValue::CounterClockwise_Positive;
     cancoder->GetConfigurator().Apply(config);
+
+    ctre::phoenix6::configs::FeedbackConfigs fx_cfg{};
+    fx_cfg.FeedbackRemoteSensorID = cancoder->GetDeviceID();
+    fx_cfg.FeedbackSensorSource = signals::FeedbackSensorSourceValue::FusedCANcoder;
+    fx_cfg.SensorToMechanismRatio = cancoderConversion;
+    fx_cfg.RotorToSensorRatio = conversion;
+    motor->GetConfigurator().Apply(fx_cfg);
 }
 
 double PhoenixController::getCANCoder()

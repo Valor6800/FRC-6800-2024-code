@@ -11,8 +11,8 @@
 #define PIVOT_ROTATE_K_AFF 0.0f
 #define PIVOT_ROTATE_K_AFF_POS 0.0f
 
-#define PIVOT_MIN_ANGLE 28.4f
-
+#define PIVOT_CANCODER_GEAR_RATIO 2.0f
+#define PIVOT_MAGNET_OFFSET 28.4f
 #define PIVOT_GEAR_RATIO 470.4f
 #define PIVOT_REVERSE_LIMIT 68.00f
 #define PIVOT_FORWARD_LIMIT 29.0f
@@ -43,8 +43,6 @@ void Shooter::resetState()
     state.flywheelState = FLYWHEEL_STATE::NOT_SHOOTING;
     state.pivotState = PIVOT_STATE::DISABLED;
     state.calculatingPivotingAngle = units::degree_t{0};
-
-    pivotMotors->setEncoderPosition(pivotMotors->getCANCoder() - Constants::shooterPivotOffset() + PIVOT_MIN_ANGLE);
 }
 
 void Shooter::init()
@@ -76,7 +74,7 @@ void Shooter::init()
         10.0,
         "baseCAN"
     );
-    pivotMotors->setupCANCoder(CANIDs::SHOOTER_CANCODER, 0.5 * 360, true, "baseCAN");
+    pivotMotors->setupCANCoder(CANIDs::SHOOTER_CANCODER, PIVOT_MAGNET_OFFSET, 1.0 / PIVOT_CANCODER_GEAR_RATIO, true, "baseCAN");
     pivotMotors->setRange(0, PIVOT_FORWARD_LIMIT, PIVOT_REVERSE_LIMIT);
 
     resetState();

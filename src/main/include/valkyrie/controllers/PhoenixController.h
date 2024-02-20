@@ -49,7 +49,7 @@ public:
 
     void setProfile(int slot);
     double getAbsEncoderPosition();
-    void setupCANCoder(int deviceId, double conversion, bool clockwise, std::string canbus = "") override;
+    void setupCANCoder(int deviceId, double offset, double conversion, bool clockwise, std::string canbus = "") override;
     double getCANCoder() override;
 
     /**

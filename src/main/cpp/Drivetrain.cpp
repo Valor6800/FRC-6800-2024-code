@@ -124,7 +124,7 @@ void Drivetrain::configSwerveModule(int i)
                                                       12.0,
                                                       PIGEON_CAN_BUS));
     
-    azimuthControllers[i]->setupCANCoder(CANIDs::CANCODER_CANS[i], 1.0, false, PIGEON_CAN_BUS);
+    azimuthControllers[i]->setupCANCoder(CANIDs::CANCODER_CANS[i], 0, 1.0, false, PIGEON_CAN_BUS);
 
     valor::PIDF drivePID;
     drivePID.maxVelocity = Constants::driveKVel();

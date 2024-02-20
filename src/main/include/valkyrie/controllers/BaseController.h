@@ -290,7 +290,7 @@ public:
 
     virtual double getAbsEncoderPosition() = 0;
 
-    virtual void setupCANCoder(int deviceId, double conversion, bool clockwise = false, std::string canbus = "") = 0;
+    virtual void setupCANCoder(int deviceId, double offset, double conversion, bool clockwise = false, std::string canbus = "") = 0;
     virtual double getCANCoder() = 0;
 
 protected:
