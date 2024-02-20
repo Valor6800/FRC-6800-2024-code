@@ -41,13 +41,14 @@ PhoenixController::PhoenixController(int canID,
                                              bool _inverted,
                                              double gearRatio,
                                              valor::PIDF pidf,
+                                             double voltageComp,
                                              std::string canbus) :
     BaseController(new hardware::TalonFX{canID, canbus}, _inverted, _mode, 6380),
     status(),
     req_position(units::turn_t{0}),
     req_velocity(units::turns_per_second_t{0}),
     req_voltage(units::volt_t{0}),
-    voltageCompenstation(12.0)
+    voltageCompenstation(voltageComp)
 {
     init(gearRatio, pidf);
 }
@@ -144,8 +145,8 @@ void PhoenixController::setForwardLimit(double forward)
 void PhoenixController::setReverseLimit(double reverse)
 {
     configs::SoftwareLimitSwitchConfigs config{};
-    config.ForwardSoftLimitEnable = true;
-    config.ForwardSoftLimitThreshold = reverse;
+    config.ReverseSoftLimitEnable = true;
+    config.ReverseSoftLimitThreshold = reverse;
     motor->GetConfigurator().Apply(config);
 }
 
@@ -244,7 +245,12 @@ double PhoenixController::getSpeed()
 
 void PhoenixController::setRange(int slot, double min, double max)
 {
-    
+    configs::SoftwareLimitSwitchConfigs config{};
+    config.ForwardSoftLimitEnable = true;
+    config.ForwardSoftLimitThreshold = max;
+    config.ReverseSoftLimitEnable = true;
+    config.ReverseSoftLimitThreshold = min;
+    motor->GetConfigurator().Apply(config);
 }
 
 /**
@@ -335,6 +341,14 @@ void PhoenixController::InitSendable(wpi::SendableBuilder& builder)
     builder.AddDoubleProperty(
         "CANCoder", 
         [this] { return getCANCoder(); },
+        nullptr);
+    builder.AddDoubleProperty(
+        "reqPosition", 
+        [this] { return req_position.Position.to<double>(); },
+        nullptr);
+    builder.AddDoubleProperty(
+        "reqSpeed", 
+        [this] { return req_velocity.Velocity.to<double>(); },
         nullptr);
 
     builder.AddIntegerProperty(

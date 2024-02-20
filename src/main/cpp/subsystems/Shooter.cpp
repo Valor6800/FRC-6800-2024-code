@@ -4,9 +4,9 @@
 #include "valkyrie/controllers/NeutralMode.h"
 #include "valkyrie/controllers/PIDF.h"
 
-#define PIVOT_ROTATE_K_VEL 10.0f
-#define PIVOT_ROTATE_K_ACC 10.0f
-#define PIVOT_ROTATE_K_P 0.0f
+#define PIVOT_ROTATE_K_VEL 81.36f
+#define PIVOT_ROTATE_K_ACC 8136.0f
+#define PIVOT_ROTATE_K_P 10.0f
 #define PIVOT_ROTATE_K_ERROR 0.0f
 #define PIVOT_ROTATE_K_AFF 0.0f
 #define PIVOT_ROTATE_K_AFF_POS 0.0f
@@ -14,22 +14,22 @@
 #define PIVOT_MIN_ANGLE 28.4f
 
 #define PIVOT_GEAR_RATIO 470.4f
-#define PIVOT_REVERSE_LIMIT 35.0f
-#define PIVOT_FORWARD_LIMIT 66.0f
+#define PIVOT_REVERSE_LIMIT 68.00f
+#define PIVOT_FORWARD_LIMIT 30.0f
 
 #define FLYWHEEL_ROTATE_K_VEL 75.0f
 #define FLYWHEEL_ROTATE_K_ACC 75.0f
 #define FLYWHEEL_ROTATE_K_P 0.00005f
 
-#define SUBWOOFER_ANG 30.0_deg
-#define PODIUM_ANG 45.0_deg
-#define STARTING_LINE_ANG 60.0_deg
+#define SUBWOOFER_ANG 59.5_deg
+#define PODIUM_ANG 39.0_deg
+#define WING_ANG 29.0_deg
 
-#define LEFT_SHOOT_POWER 50.0f
-#define LEFT_SPOOL_POWER 30.0f
+#define LEFT_SHOOT_POWER 60.0f
+#define LEFT_SPOOL_POWER 60.0f
 #define LEFT_STANDBY_POWER 0.0f
 
-#define RIGHT_SHOOT_POWER 40.0f
+#define RIGHT_SHOOT_POWER 30.0f
 #define RIGHT_SPOOL_POWER 30.0f
 #define RIGHT_STANDBY_POWER 0.0f
 
@@ -45,6 +45,7 @@ Shooter::Shooter(frc::TimedRobot *_robot) :
 
 void Shooter::resetState()
 {
+    state.manualPivotAngle = 0;
     state.flywheelState = FLYWHEEL_STATE::NOT_SHOOTING;
     state.pivotState = PIVOT_STATE::DISABLED;
     state.leftFlywheelTargetVelocity = units::angular_velocity::revolutions_per_minute_t(0);
@@ -76,15 +77,17 @@ void Shooter::init()
 
     pivotMotors = new valor::PhoenixController(
         CANIDs::PIVOT,
-        valor::NeutralMode::Coast,
+        valor::NeutralMode::Brake,
         false,
         1.0 / PIVOT_GEAR_RATIO * 360,
         pivotPID,
+        10.0,
         "baseCAN"
     );
     pivotMotors->setupCANCoder(CANIDs::SHOOTER_CANCODER, 0.5 * 360, true, "baseCAN");
-    pivotMotors->setForwardLimit(PIVOT_FORWARD_LIMIT);
-    pivotMotors->setReverseLimit(PIVOT_REVERSE_LIMIT);
+    pivotMotors->setRange(0, PIVOT_FORWARD_LIMIT, PIVOT_REVERSE_LIMIT);
+
+    table->PutNumber("Pivot Test Angle", 50);
 
     table->PutNumber("Left Flywheel Shoot RPM", LEFT_SHOOT_POWER);
     table->PutNumber("Left Flywheel Spool RPM", LEFT_SPOOL_POWER);
@@ -105,7 +108,7 @@ void Shooter::assessInputs()
 
     //SHOOT LOGIC
     if (driverGamepad->rightTriggerActive() || operatorGamepad->rightTriggerActive()) {
-        state.flywheelState = FLYWHEEL_STATE::SHOOTING;
+        state.flywheelState = FLYWHEEL_STATE::SPOOLED;
     } else if (operatorGamepad->GetStartButtonPressed()) {
         state.flywheelState = FLYWHEEL_STATE::SPOOLED;
     } else if (operatorGamepad->GetBackButtonPressed()) {
@@ -113,12 +116,15 @@ void Shooter::assessInputs()
     } 
 
     //PIVOT LOGIC
-    if (driverGamepad->GetAButton() || operatorGamepad->GetAButton()) {
+    state.manualPivotAngle = operatorGamepad->rightStickY(2);
+    if (operatorGamepad->GetAButton()) {// || driverGamepad->GetAButton()) {
         state.pivotState = PIVOT_STATE::SUBWOOFER;
     } else if (operatorGamepad->GetBButton()) {
         state.pivotState = PIVOT_STATE::PODIUM;
     } else if (operatorGamepad->GetYButton()) { 
-        state.pivotState = PIVOT_STATE::STARTING_LINE;
+        state.pivotState = PIVOT_STATE::WING;
+    } else if (operatorGamepad->GetXButton()) { 
+        state.pivotState = PIVOT_STATE::TESTING;
     } else if (driverGamepad->leftTriggerActive() || operatorGamepad->leftTriggerActive()) {
         state.pivotState = PIVOT_STATE::TRACKING;
     } else {
@@ -129,6 +135,8 @@ void Shooter::assessInputs()
 
 void Shooter::analyzeDashboard()
 {
+    state.testingAngle = table->GetNumber("Pivot Test Angle", 50);
+
     //SHOOTER
     switch (state.flywheelState) {
 
@@ -160,17 +168,20 @@ void Shooter::assignOutputs()
     leftFlywheelMotor.setSpeed(state.leftFlywheelTargetVelocity.to<double>());
     rightFlywheelMotor.setSpeed(state.rightFlywheelTargetVelocity.to<double>());
 
-    // if(state.pivotState == PIVOT_STATE::SUBWOOFER){
-    //     pivotMotors->setPosition(SUBWOOFER_ANG.to<double>());
-    // } else if(state.pivotState == PIVOT_STATE::PODIUM){
-    //     pivotMotors->setPosition(PODIUM_ANG.to<double>());
-    // } else if(state.pivotState == PIVOT_STATE::STARTING_LINE){
-    //     pivotMotors->setPosition(STARTING_LINE_ANG.to<double>());
+    if(state.pivotState == PIVOT_STATE::SUBWOOFER){
+        pivotMotors->setPosition(SUBWOOFER_ANG.to<double>());
+    } else if(state.pivotState == PIVOT_STATE::PODIUM){
+        pivotMotors->setPosition(PODIUM_ANG.to<double>());
+    } else if(state.pivotState == PIVOT_STATE::WING){
+        pivotMotors->setPosition(WING_ANG.to<double>());
+    } else if(state.pivotState == PIVOT_STATE::TESTING){
+        pivotMotors->setPosition(state.testingAngle);
     // } else if(state.pivotState == PIVOT_STATE::TRACKING) {
     //     pivotMotors->setPosition(state.calculatingPivotingAngle.to<double>());
     // } else if (state.pivotState == PIVOT_STATE::DISABLED) {
-        pivotMotors->setPower(0);
-    // }
+    } else {
+        pivotMotors->setPower(state.manualPivotAngle);
+    }
 }
 
 units::degree_t Shooter::calculatePivotAngle(){
@@ -215,6 +226,16 @@ void Shooter::InitSendable(wpi::SendableBuilder& builder){
     builder.AddDoubleProperty(
         "Left Flywheel target velocity",
         [this] {return state.rightFlywheelTargetVelocity.to<double>();},
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "Manual input",
+        [this] {return state.manualPivotAngle;},
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "Testing angle",
+        [this] {return state.testingAngle;},
         nullptr
     );
 }

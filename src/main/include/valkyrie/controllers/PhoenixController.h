@@ -12,7 +12,7 @@ class PhoenixController : public BaseController<ctre::phoenix6::hardware::TalonF
 {
 public:
     PhoenixController(int _canID, valor::NeutralMode _mode, bool _inverted, std::string _canbus = "");
-    PhoenixController(int _canID, valor::NeutralMode _mode, bool _inverted, double gearRatio, valor::PIDF pidf, std::string _canbus = "");
+    PhoenixController(int _canID, valor::NeutralMode _mode, bool _inverted, double gearRatio, valor::PIDF pidf, double voltageComp, std::string _canbus = "");
 
     void init(double gearRatio, valor::PIDF pidf);
     void init();

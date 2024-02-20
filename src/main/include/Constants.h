@@ -144,12 +144,12 @@ namespace Constants {
         static double azimuthKVel(){ switch (teamNumber) {
             case ALPHA_TEAM_NUMBER: return 6.983;
             case SIDE_SWIPE_TEAM_NUMBER: return 6.983;
-            default: return 6.0;
+            default: return 7.9;
         }};
         static double azimuthKAcc(){ switch (teamNumber) {
             case ALPHA_TEAM_NUMBER: return 200.0;
             case SIDE_SWIPE_TEAM_NUMBER: return 200.0;
-            default: return 250.0;
+            default: return 1000.0;
         }};
 
         static double driveKP(){ switch (teamNumber) {

@@ -52,8 +52,9 @@ public:
         DISABLED,
         SUBWOOFER,
         PODIUM,
-        STARTING_LINE,
-        TRACKING
+        WING,
+        TRACKING,
+        TESTING
     };
 
     struct x
@@ -65,6 +66,9 @@ public:
         units::angular_velocity::revolutions_per_minute_t rightFlywheelTargetVelocity;
         units::degree_t pivotAngle;
         units::degree_t calculatingPivotingAngle;
+
+        double manualPivotAngle;
+        double testingAngle;
     } state;
 
 private:

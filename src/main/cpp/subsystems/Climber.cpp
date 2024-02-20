@@ -53,7 +53,7 @@ void Climber::assessInputs()
 {
     if (!operatorGamepad || !operatorGamepad->IsConnected()) return;
 
-    state.manualClimber = operatorGamepad->leftStickX(2);
+    state.manualClimber = operatorGamepad->leftStickY(2);
 
     if (state.zeroState == NOT_ZERO && !hallE->Get()){
         state.zeroState = ZERO_STATE::ZEROING;

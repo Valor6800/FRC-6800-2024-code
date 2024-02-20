@@ -121,6 +121,7 @@ void Drivetrain::configSwerveModule(int i)
                                                       Constants::swerveAzimuthsReversals()[i],
                                                       1.0 / AZIMUTH_GEAR_RATIO,
                                                       azimuthPID,
+                                                      12.0,
                                                       PIGEON_CAN_BUS));
     
     azimuthControllers[i]->setupCANCoder(CANIDs::CANCODER_CANS[i], 1.0, false, PIGEON_CAN_BUS);

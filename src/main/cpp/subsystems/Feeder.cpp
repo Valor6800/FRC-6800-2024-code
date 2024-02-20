@@ -4,8 +4,8 @@
 #include "valkyrie/controllers/NeutralMode.h"
 #include "Constants.h"
 
-#define INTAKE_FORWARD_POWER 0.75f
-#define INTAKE_REVERSE_POWER -0.75f
+#define INTAKE_FORWARD_POWER 1.0f
+#define INTAKE_REVERSE_POWER -1.0f
 
 #define FEEDER_FORWARD_POWER 0.5f
 #define FEEDER_REVERSE_POWER -0.5f
