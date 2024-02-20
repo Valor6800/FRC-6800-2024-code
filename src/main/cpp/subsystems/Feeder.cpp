@@ -1,8 +1,12 @@
 #include "subsystems/Feeder.h"
 #include <iostream>
 #include <math.h>
+#include <frc/AnalogOutput.h>
+#include <frc/AnalogTrigger.h>
+#include "frc/AnalogTriggerType.h"
 #include "valkyrie/controllers/NeutralMode.h"
 #include "Constants.h"
+#include "frc/AnalogTriggerOutput.h"
 
 #define INTAKE_FORWARD_POWER 1.0f
 #define INTAKE_REVERSE_POWER -1.0f
@@ -10,11 +14,11 @@
 #define FEEDER_FORWARD_POWER 0.5f
 #define FEEDER_REVERSE_POWER -0.5f
 
-Feeder::Feeder(frc::TimedRobot *_robot) :
+Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _beamBreak) :
     valor::BaseSubsystem(_robot, "Feeder"),
     intakeMotor(CANIDs::INTERNAL_INTAKE, valor::NeutralMode::Coast, true),
     feederMotor(CANIDs::FEEDER, valor::NeutralMode::Coast, true),
-    beamBreak(DIOPorts::BEAM_BREAK_PORT),
+    beamBreak(_beamBreak),
     debounceSensor(_robot, "Feeder")
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
@@ -31,18 +35,19 @@ void Feeder::init()
 {
     resetState();
 
-    debounceSensor.setGetter([this]() { return beamBreak.Get(); });
+    debounceSensor.setGetter([this]() { return beamBreak->GetInWindow(); });
     intakeMotor.setMaxCurrent(60);
     intakeMotor.setVoltageCompensation(10);
 
     feederMotor.setVoltageCompensation(10);
-
 
     table->PutNumber("Intake Forward Power", INTAKE_FORWARD_POWER);
     table->PutNumber("Intake Reverse Power", INTAKE_REVERSE_POWER);
 
     table->PutNumber("Feeder Forward Power", FEEDER_FORWARD_POWER);
     table->PutNumber("Feeder Reverse Power", FEEDER_REVERSE_POWER);
+
+    table->PutBoolean("Beam Trip", false);
 }
 
 void Feeder::assessInputs()
@@ -64,6 +69,7 @@ void Feeder::assessInputs()
         state.intakeState = ROLLER_STATE::STAGNANT;
         state.feederState = ROLLER_STATE::STAGNANT;
     }
+
 }
 
 void Feeder::analyzeDashboard()
@@ -73,6 +79,7 @@ void Feeder::analyzeDashboard()
 
     state.feederForwardSpeed = table->GetNumber("Feeder Forward Power", FEEDER_FORWARD_POWER);
     state.feederReverseSpeed = table->GetNumber("Feeder Reverse Power", FEEDER_REVERSE_POWER);
+    table->PutBoolean("Beam Trip", beamBreak->GetInWindow());
 }
 
 void Feeder::assignOutputs()
@@ -112,7 +119,9 @@ void Feeder::InitSendable(wpi::SendableBuilder& builder)
 
     builder.AddBooleanProperty(
         "debounceSensor",
-        [this] {return beamBreak.Get();},
+        [this] {return debounceSensor.getSensor();},
         nullptr
     );
+
+    builder.AddDoubleProperty("Banner Raw", [this]{return state.beamTrip;}, nullptr);
 }

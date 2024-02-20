@@ -57,6 +57,10 @@ namespace DIOPorts {
     constexpr static int HALL_EFFECT = 2; //rando number
 }
 
+namespace AnalogPorts {
+    constexpr static int BEAM_BREAK_PORT = 0;
+}
+
 namespace CANIDs {
     constexpr static int DRIVE_CANS[4] = {2, 4, 6, 8};
     constexpr static int AZIMUTH_CANS[4] = {1, 3, 5, 7};

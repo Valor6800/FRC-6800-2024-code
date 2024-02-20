@@ -1,4 +1,5 @@
 #include "Robot.h"
+#include "frc/AnalogTriggerType.h"
 
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/CommandScheduler.h>
@@ -10,11 +11,13 @@
 Robot::Robot() : 
     drivetrain(this),
     // valorAuto(), 
+    beamBreak(AnalogPorts::BEAM_BREAK_PORT), 
     shooter(this),
-    feeder(this),
+    feeder(this, &beamBreak),
     climber(this)
 {
     frc::TimedRobot();
+    beamBreak.SetLimitsVoltage(4, 14);
 }
 
 void Robot::RobotInit() {

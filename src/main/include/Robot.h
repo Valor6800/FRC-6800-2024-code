@@ -5,6 +5,8 @@
 #include <frc2/command/Commands.h>
 
 #include "Constants.h"
+#include "frc/AnalogTrigger.h"
+#include "frc/AnalogTriggerOutput.h"
 #include "valkyrie/Gamepad.h"
 
 #include "Drivetrain.h"
@@ -45,6 +47,7 @@ class Robot : public frc::TimedRobot {
 
         Drivetrain drivetrain;
         // valor::Auto valorAuto;
+        frc::AnalogTrigger beamBreak;  
           
         Shooter shooter;
         Feeder feeder;

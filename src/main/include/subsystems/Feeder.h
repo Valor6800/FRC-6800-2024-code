@@ -1,5 +1,6 @@
 #pragma once
 
+#include "frc/AnalogTriggerOutput.h"
 #include "valkyrie/BaseSubsystem.h"
 #include "Constants.h"
 #include "valkyrie/controllers/NeoController.h"
@@ -10,7 +11,7 @@ class Feeder : public valor::BaseSubsystem
 {
 public:
 
-    Feeder(frc::TimedRobot *robot);
+    Feeder(frc::TimedRobot *robot, frc::AnalogTrigger* beamBreak);
 
     void resetState();
     void init();
@@ -37,6 +38,8 @@ public:
         double intakeReverseSpeed;
         double feederForwardSpeed;
         double feederReverseSpeed;
+        
+        bool beamTrip;
 
     } state;
 
@@ -44,6 +47,6 @@ private:
 
     valor::NeoController feederMotor;
     valor::NeoController intakeMotor;
-    frc::DigitalInput beamBreak;
+    frc::AnalogTrigger* beamBreak;
     valor::DebounceSensor debounceSensor;
 };
