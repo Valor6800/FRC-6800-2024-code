@@ -184,8 +184,6 @@ public:
       */
      void resetDriveEncoders();
 
-     void pullSwerveModuleZeroReference();
-
 
      frc::Rotation2d getPigeon();
      units::degree_t getGlobalPitch();

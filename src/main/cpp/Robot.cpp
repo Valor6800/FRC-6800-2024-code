@@ -66,7 +66,6 @@ void Robot::AutonomousInit() {
     drivetrain.resetState();
     drivetrain.state.matchStart = frc::Timer::GetFPGATimestamp().to<double>();
     drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Brake);
-    drivetrain.pullSwerveModuleZeroReference();
 
     feeder.resetState();
     shooter.resetState();
@@ -83,7 +82,6 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
-    drivetrain.pullSwerveModuleZeroReference();
     drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Coast);
 
     shooter.resetState();

@@ -124,7 +124,7 @@ void Drivetrain::configSwerveModule(int i)
                                                       12.0,
                                                       PIGEON_CAN_BUS));
     
-    azimuthControllers[i]->setupCANCoder(CANIDs::CANCODER_CANS[i], 0, 1.0, false, PIGEON_CAN_BUS);
+    azimuthControllers[i]->setupCANCoder(CANIDs::CANCODER_CANS[i], Constants::swerveZeros()[i], 1.0, false, PIGEON_CAN_BUS);
 
     valor::PIDF drivePID;
     drivePID.maxVelocity = Constants::driveKVel();
@@ -151,7 +151,6 @@ void Drivetrain::configSwerveModule(int i)
 void Drivetrain::resetState()
 {
     resetDriveEncoders();
-    pullSwerveModuleZeroReference();
     resetOdometry(frc::Pose2d{0_m, 0_m, 0_rad});
 }
 
@@ -198,7 +197,6 @@ void Drivetrain::init()
     thetaPIDF.D = KDT;
 
     table->PutNumber("Vision Std", 3.0);
-    table->PutBoolean("Load Swerve Mag Encoder", false);
 
     table->PutNumber("Vision Acceptance", VISION_ACCEPTANCE.to<double>() );
     table->PutNumber("DoubtX", 1.0);
@@ -319,9 +317,6 @@ void Drivetrain::analyzeDashboard()
     else if(state.trapAlign) setAlignmentAngle(Alignment::TRAP);
     else if(state.thetaLock) setAlignmentAngle(Alignment::LOCK);
 
-    if (table->GetBoolean("Load Swerve Mag Encoder",false))
-        pullSwerveModuleZeroReference();
-
     estimator->UpdateWithTime(frc::Timer::GetFPGATimestamp(),
         getPigeon(),
         getModuleStates()
@@ -441,13 +436,6 @@ void Drivetrain::setAlignmentAngle(Alignment align){
 
 double Drivetrain::clampAngleRadianRange(units::radian_t angle, double max){
     return ((angle)/(max)).to<double>();
-}
-
-void Drivetrain::pullSwerveModuleZeroReference(){
-    swerveNoError = true;
-    for (size_t i = 0; i < swerveModules.size(); i++) {
-        swerveNoError &= swerveModules[i]->loadAndSetAzimuthZeroReference(Constants::swerveZeros());
-    }
 }
 
 frc::SwerveDriveKinematics<SWERVE_COUNT>* Drivetrain::getKinematics()

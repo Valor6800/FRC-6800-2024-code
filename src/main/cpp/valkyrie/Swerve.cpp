@@ -89,8 +89,6 @@ bool Swerve<AzimuthMotor, DriveMotor>::loadAndSetAzimuthZeroReference(std::vecto
     //   if the mag encoders aren't working.
     //   Protects against issues as seen in: https://www.youtube.com/watch?v=MGxpWNcv-VM
     double currPos = getMagEncoderCount();
-    double cancoderPos = azimuthMotor->getCANCoder();
-    if (cancoderPos != 0) currPos = cancoderPos;
     if (currPos == 0) {
         return false;
     }
