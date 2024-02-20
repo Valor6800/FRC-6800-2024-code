@@ -53,22 +53,15 @@ public:
         SUBWOOFER,
         PODIUM,
         WING,
-        TRACKING,
-        TESTING
+        TRACKING
     };
 
     struct x
     {
         PIVOT_STATE pivotState;
         FLYWHEEL_STATE flywheelState;
-
-        units::angular_velocity::revolutions_per_minute_t leftFlywheelTargetVelocity;
-        units::angular_velocity::revolutions_per_minute_t rightFlywheelTargetVelocity;
         units::degree_t pivotAngle;
         units::degree_t calculatingPivotingAngle;
-
-        double manualPivotAngle;
-        double testingAngle;
     } state;
 
 private:

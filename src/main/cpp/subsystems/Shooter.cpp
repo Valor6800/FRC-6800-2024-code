@@ -26,12 +26,7 @@
 #define WING_ANG 29.0_deg
 
 #define LEFT_SHOOT_POWER 60.0f
-#define LEFT_SPOOL_POWER 60.0f
-#define LEFT_STANDBY_POWER 0.0f
-
 #define RIGHT_SHOOT_POWER 30.0f
-#define RIGHT_SPOOL_POWER 30.0f
-#define RIGHT_STANDBY_POWER 0.0f
 
 Shooter::Shooter(frc::TimedRobot *_robot) :
     valor::BaseSubsystem(_robot, "Shooter"),
@@ -45,11 +40,8 @@ Shooter::Shooter(frc::TimedRobot *_robot) :
 
 void Shooter::resetState()
 {
-    state.manualPivotAngle = 0;
     state.flywheelState = FLYWHEEL_STATE::NOT_SHOOTING;
     state.pivotState = PIVOT_STATE::DISABLED;
-    state.leftFlywheelTargetVelocity = units::angular_velocity::revolutions_per_minute_t(0);
-    state.rightFlywheelTargetVelocity = units::angular_velocity::revolutions_per_minute_t(0);
     state.calculatingPivotingAngle = units::degree_t{0};
 
     pivotMotors->setEncoderPosition(pivotMotors->getCANCoder() - Constants::shooterPivotOffset() + PIVOT_MIN_ANGLE);
@@ -87,16 +79,6 @@ void Shooter::init()
     pivotMotors->setupCANCoder(CANIDs::SHOOTER_CANCODER, 0.5 * 360, true, "baseCAN");
     pivotMotors->setRange(0, PIVOT_FORWARD_LIMIT, PIVOT_REVERSE_LIMIT);
 
-    table->PutNumber("Pivot Test Angle", 50);
-
-    table->PutNumber("Left Flywheel Shoot RPM", LEFT_SHOOT_POWER);
-    table->PutNumber("Left Flywheel Spool RPM", LEFT_SPOOL_POWER);
-    table->PutNumber("Left Flywheel Standby RPM", LEFT_STANDBY_POWER);
-
-    table->PutNumber("Right Flywheel Shoot RPM", RIGHT_SHOOT_POWER);
-    table->PutNumber("Right Flywheel Spool RPM", RIGHT_SPOOL_POWER);
-    table->PutNumber("Right Flywheel Standby RPM", RIGHT_STANDBY_POWER);
-
     resetState();
 }
 
@@ -116,15 +98,12 @@ void Shooter::assessInputs()
     } 
 
     //PIVOT LOGIC
-    state.manualPivotAngle = operatorGamepad->rightStickY(2);
     if (operatorGamepad->GetAButton()) {// || driverGamepad->GetAButton()) {
         state.pivotState = PIVOT_STATE::SUBWOOFER;
     } else if (operatorGamepad->GetBButton()) {
         state.pivotState = PIVOT_STATE::PODIUM;
     } else if (operatorGamepad->GetYButton()) { 
         state.pivotState = PIVOT_STATE::WING;
-    } else if (operatorGamepad->GetXButton()) { 
-        state.pivotState = PIVOT_STATE::TESTING;
     } else if (driverGamepad->leftTriggerActive() || operatorGamepad->leftTriggerActive()) {
         state.pivotState = PIVOT_STATE::TRACKING;
     } else {
@@ -135,38 +114,17 @@ void Shooter::assessInputs()
 
 void Shooter::analyzeDashboard()
 {
-    state.testingAngle = table->GetNumber("Pivot Test Angle", 50);
-
-    //SHOOTER
-    switch (state.flywheelState) {
-
-        case SHOOTING:
-            state.leftFlywheelTargetVelocity = units::revolutions_per_minute_t(
-                table->GetNumber("Left Flywheel Shoot RPM", LEFT_SHOOT_POWER));
-            state.rightFlywheelTargetVelocity = units::revolutions_per_minute_t(
-                table->GetNumber("Right Flywheel Shoot RPM", RIGHT_SHOOT_POWER));
-            break;
-
-        case NOT_SHOOTING:
-            state.leftFlywheelTargetVelocity = units::revolutions_per_minute_t(
-                table->GetNumber("Left Flywheel Standby RPM", LEFT_STANDBY_POWER));
-            state.rightFlywheelTargetVelocity = units::revolutions_per_minute_t(
-                table->GetNumber("Right Flywheel Standby RPM", RIGHT_STANDBY_POWER));
-            break;
-
-        default:
-            state.leftFlywheelTargetVelocity = units::revolutions_per_minute_t(
-                table->GetNumber("Left Flywheel Spool RPM", LEFT_SPOOL_POWER));
-            state.rightFlywheelTargetVelocity = units::revolutions_per_minute_t(
-                table->GetNumber("Right Flywheel Spool RPM", RIGHT_SPOOL_POWER));
-            break;
-    }
 }
 
 void Shooter::assignOutputs()
 {
-    leftFlywheelMotor.setSpeed(state.leftFlywheelTargetVelocity.to<double>());
-    rightFlywheelMotor.setSpeed(state.rightFlywheelTargetVelocity.to<double>());
+    if (state.flywheelState == NOT_SHOOTING) {
+        leftFlywheelMotor.setPower(0);
+        rightFlywheelMotor.setPower(0);
+    } else {
+        leftFlywheelMotor.setSpeed(LEFT_SHOOT_POWER);
+        rightFlywheelMotor.setSpeed(RIGHT_SHOOT_POWER);
+    }
 
     if(state.pivotState == PIVOT_STATE::SUBWOOFER){
         pivotMotors->setPosition(SUBWOOFER_ANG.to<double>());
@@ -174,13 +132,10 @@ void Shooter::assignOutputs()
         pivotMotors->setPosition(PODIUM_ANG.to<double>());
     } else if(state.pivotState == PIVOT_STATE::WING){
         pivotMotors->setPosition(WING_ANG.to<double>());
-    } else if(state.pivotState == PIVOT_STATE::TESTING){
-        pivotMotors->setPosition(state.testingAngle);
     // } else if(state.pivotState == PIVOT_STATE::TRACKING) {
     //     pivotMotors->setPosition(state.calculatingPivotingAngle.to<double>());
-    // } else if (state.pivotState == PIVOT_STATE::DISABLED) {
     } else {
-        pivotMotors->setPower(state.manualPivotAngle);
+        pivotMotors->setPosition(SUBWOOFER_ANG.to<double>());
     }
 }
 
@@ -218,24 +173,5 @@ void Shooter::InitSendable(wpi::SendableBuilder& builder){
         [this] {return state.pivotAngle.to<double>();},
         nullptr
     );
-    builder.AddDoubleProperty(
-        "Left Flywheel target velocity",
-        [this] {return state.leftFlywheelTargetVelocity.to<double>();},
-        nullptr
-    );
-    builder.AddDoubleProperty(
-        "Left Flywheel target velocity",
-        [this] {return state.rightFlywheelTargetVelocity.to<double>();},
-        nullptr
-    );
-    builder.AddDoubleProperty(
-        "Manual input",
-        [this] {return state.manualPivotAngle;},
-        nullptr
-    );
-    builder.AddDoubleProperty(
-        "Testing angle",
-        [this] {return state.testingAngle;},
-        nullptr
-    );
+    
 }
