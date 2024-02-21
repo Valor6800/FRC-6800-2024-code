@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.7036484258877085,
-        "y": 6.948424107279349
+        "x": 4.704057418025178,
+        "y": 6.986896992070727
       },
       "isLocked": false,
       "linkedName": "Acrid"
@@ -112,7 +112,7 @@
   "reversed": false,
   "folder": "SecondPick",
   "previewStartingState": {
-    "rotation": 180.0,
+    "rotation": -154.0,
     "velocity": 0
   },
   "useDefaultConstraints": true
