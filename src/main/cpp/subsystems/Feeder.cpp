@@ -110,21 +110,21 @@ void Feeder::analyzeDashboard()
 
 void Feeder::assignOutputs()
 {
-    if(state.intakeState == ROLLER_STATE::INTAKE) {
-        intakeMotor.setPower(state.intakeForwardSpeed);
-    } else if(state.intakeState == ROLLER_STATE::OUTTAKE) {
-        intakeMotor.setPower(state.intakeReverseSpeed);
-    } else {
-        intakeMotor.setPower(0);
-    }
+    // if(state.intakeState == ROLLER_STATE::INTAKE) {
+    //     intakeMotor.setPower(state.intakeForwardSpeed);
+    // } else if(state.intakeState == ROLLER_STATE::OUTTAKE) {
+    //     intakeMotor.setPower(state.intakeReverseSpeed);
+    // } else {
+    //     intakeMotor.setPower(0);
+    // }
 
-    if(state.feederState == ROLLER_STATE::INTAKE) {
-        feederMotor.setPower(state.feederForwardSpeed);
-    } else if(state.feederState == ROLLER_STATE::OUTTAKE) {
-        feederMotor.setPower(state.feederReverseSpeed);
-    } else {
-        feederMotor.setPower(0);
-    }
+    // if(state.feederState == ROLLER_STATE::INTAKE) {
+    //     feederMotor.setPower(state.feederForwardSpeed);
+    // } else if(state.feederState == ROLLER_STATE::OUTTAKE) {
+    //     feederMotor.setPower(state.feederReverseSpeed);
+    // } else {
+    //     feederMotor.setPower(0);
+    // }
 }
 
 void Feeder::InitSendable(wpi::SendableBuilder& builder)

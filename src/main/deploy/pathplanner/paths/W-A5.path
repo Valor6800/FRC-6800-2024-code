@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 7.850021133636018,
-        "y": 0.7890587884763733
+        "x": 7.793587416894805,
+        "y": 0.78
       },
       "prevControl": {
-        "x": 7.8001558660378425,
-        "y": 0.7927269061629286
+        "x": 6.344751317317343,
+        "y": 0.8216397370013717
       },
       "nextControl": {
-        "x": 7.899886401234194,
-        "y": 0.7853906707898181
+        "x": 8.912947683248442,
+        "y": 0.7478294410842303
       },
       "isLocked": false,
       "linkedName": null
@@ -36,55 +36,26 @@
         "y": 3.783113350225544
       },
       "prevControl": {
-        "x": 3.1996379133093913,
-        "y": 2.3806696095741735
+        "x": 3.597588404454072,
+        "y": 2.329922874899053
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "Score wall"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.5,
-      "rotationDegrees": 0.0,
-      "rotateFast": false
-    },
-    {
-      "waypointRelativePos": 1.5,
-      "rotationDegrees": 0,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0.8,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Intake"
-              }
-            }
-          ]
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.5,
-    "maxAcceleration": 2.5,
-    "maxAngularVelocity": 720.0,
-    "maxAngularAcceleration": 360.0
+    "maxVelocity": 3.0,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 360.0,
+    "maxAngularAcceleration": 1600.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -36.6939493308386,
+    "rotation": -36.69,
     "rotateFast": false
   },
   "reversed": false,

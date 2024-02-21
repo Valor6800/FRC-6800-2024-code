@@ -5,12 +5,18 @@
       "x": 1.3794906104911369,
       "y": 5.572019226189894
     },
-    "rotation": 0
+    "rotation": -179.27737413046523
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "kick-s"
+          }
+        },
         {
           "type": "path",
           "data": {
@@ -40,6 +46,12 @@
           "type": "path",
           "data": {
             "pathName": "Sf-A1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "kick-shoot a down"
           }
         },
         {

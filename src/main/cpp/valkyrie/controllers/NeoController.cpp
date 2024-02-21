@@ -207,4 +207,9 @@ void NeoController::InitSendable(wpi::SendableBuilder& builder)
         "duty cycle",
         [this] { return motor->GetAppliedOutput(); },
         nullptr);
+    builder.AddStringProperty(
+        "NeutralMode",
+        [this] { return motor->GetIdleMode() == rev::CANSparkMax::IdleMode::kBrake ? "Brake" : "Coast";},
+        nullptr
+    );
 }

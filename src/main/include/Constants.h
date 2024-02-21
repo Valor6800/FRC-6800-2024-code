@@ -132,7 +132,7 @@ namespace Constants {
         }};
 
         static double azimuthKP(){ switch (teamNumber) {
-            case ALPHA_TEAM_NUMBER: return 0.0001;
+            case ALPHA_TEAM_NUMBER: return 0.00025;
             case SIDE_SWIPE_TEAM_NUMBER: return 0.0001;
             default: return 10.0;
         }};

@@ -12,7 +12,7 @@
         "y": 6.899007489891427
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Start amp"
     },
     {
       "anchor": {
@@ -121,18 +121,18 @@
   "globalConstraints": {
     "maxVelocity": 3.5,
     "maxAcceleration": 3.0,
-    "maxAngularVelocity": 720.0,
-    "maxAngularAcceleration": 360.0
+    "maxAngularVelocity": 360.0,
+    "maxAngularAcceleration": 1600.0
   },
   "goalEndState": {
     "velocity": 1.0,
-    "rotation": 25.560000000000002,
+    "rotation": -154.44,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "FirstPick",
   "previewStartingState": {
-    "rotation": 50.43176005928248,
+    "rotation": -129.57,
     "velocity": 0
   },
   "useDefaultConstraints": true
