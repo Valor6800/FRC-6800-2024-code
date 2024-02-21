@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.88,
-      "y": 7.21
+      "x": 2.2900959760152695,
+      "y": 1.0774109479408873
     },
-    "rotation": 180.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -14,12 +14,12 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Example3 Path"
+            "pathName": "Move n rotate small"
           }
         }
       ]
     }
   },
-  "folder": "VisionTest",
+  "folder": "Testing",
   "choreoAuto": false
 }

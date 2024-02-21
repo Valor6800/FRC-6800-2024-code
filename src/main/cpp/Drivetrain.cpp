@@ -27,18 +27,21 @@ using namespace pathplanner;
 #define SPEAKER_BLUE_X 0.0_m
 #define SPEAKER_RED_X 16.4846_m
 
+#define DOUBTX 3.0f
+#define DOUBTY 3.0f
+
 #define TXRANGE  30.0f
 #define KPIGEON 2.0f
 #define KLIMELIGHT -29.8f
 // #define KP_LOCK 0.2f
 #define KP_LIMELIGHT 0.7f
 
-#define KPX 15.0f // 30
-#define KIX 5.0f //0
-#define KDX 0.0f //.1
+#define KPX 5.5f // 30
+#define KIX 0.0f //0
+#define KDX 0.1f //.1
 
-#define KPT 8.0f //15
-#define KIT 5.0f
+#define KPT 4.0f //15
+#define KIT 0.0f
 #define KDT 0.0f
 
 #define WHEEL_DIAMETER_M 0.0973f //0.1016
@@ -190,8 +193,8 @@ void Drivetrain::init()
     table->PutNumber("Vision Std", 3.0);
 
     table->PutNumber("Vision Acceptance", VISION_ACCEPTANCE.to<double>() );
-    table->PutNumber("DoubtX", 3.0);
-    table->PutNumber("DoubtY", 3.0);
+    table->PutNumber("DoubtX", DOUBTX);
+    table->PutNumber("DoubtY", DOUBTY);
 
     table->PutNumber("KPLIMELIGHT", KP_LIMELIGHT);
     table->PutNumber("KP_ROTATION", KP_ROTATE);
@@ -200,28 +203,25 @@ void Drivetrain::init()
 
 
     state.lock = false;
+    state.autoControlled = false;
 
     resetState();
 
-    state.useCalculatedEstimator = false;
+    state.useCalculatedEstimator = true;
     AutoBuilder::configureHolonomic(
         [this](){ 
             if (state.useCalculatedEstimator) {
-                estimator->ResetPosition(getPigeon(), getModuleStates(), {
-                    calculatedEstimator->GetEstimatedPosition().X(),
-                    calculatedEstimator->GetEstimatedPosition().Y(),
-                    estimator->GetEstimatedPosition().Rotation()
-                });
-                return frc::Pose2d(
-                    calculatedEstimator->GetEstimatedPosition().X(),
-                    calculatedEstimator->GetEstimatedPosition().Y(),
-                    estimator->GetEstimatedPosition().Rotation()
-                );
+                // estimator->ResetPosition(getPigeon(), getModuleStates(), {
+                //     calculatedEstimator->GetEstimatedPosition().X(),
+                //     calculatedEstimator->GetEstimatedPosition().Y(),
+                //     estimator->GetEstimatedPosition().Rotation()
+                // });
+                return calculatedEstimator->GetEstimatedPosition();
             }
             return getPose_m();
         }, // Robot pose supplier
         [this](frc::Pose2d pose){ resetOdometry(pose); }, // Method to reset odometry (will be called if your auto has a starting pose)
-        [this](){ return getRobotRelativeSpeeds(); }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+        [this](){ state.autoControlled = true; return getRobotRelativeSpeeds(); }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         [this](frc::ChassisSpeeds speeds){ driveRobotRelative(speeds); }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
             PIDConstants(xPIDF.P, xPIDF.I, xPIDF.D), // Translation PID constants
@@ -287,6 +287,9 @@ double Drivetrain::angleWrap(double degrees)
 
 void Drivetrain::assessInputs()
 {
+        // assesInputs will only run during teleop - therefore, auto is off
+    state.autoControlled = false;
+    
     if (!driverGamepad || !driverGamepad->IsConnected())
         return;
 
@@ -310,7 +313,6 @@ void Drivetrain::assessInputs()
 
     state.topTape = operatorGamepad->DPadUp();
     state.bottomTape = operatorGamepad->DPadRight();
-
 }
 
 void Drivetrain::calculateCarpetPose()
@@ -339,7 +341,7 @@ void Drivetrain::calculateCarpetPose()
     );
     previousPose = calculatedEstimator->GetEstimatedPosition();
 }
-
+//1.313793103448276*
 void Drivetrain::analyzeDashboard()
 {
     if(state.isHeadingTrack) getSpeakerLockAngleRPS();
@@ -356,8 +358,8 @@ void Drivetrain::analyzeDashboard()
 
     frc::Pose2d botpose;
     
-    doubtX = table->GetNumber("DoubtX", 3.0);
-    doubtY = table->GetNumber("DoubtY", 3.0);
+    doubtX = table->GetNumber("DoubtX", DOUBTX);
+    doubtY = table->GetNumber("DoubtY", DOUBTY);
     visionAcceptanceRadius = (units::meter_t) table->GetNumber("Vision Acceptance", VISION_ACCEPTANCE.to<double>());
 
     for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
@@ -414,8 +416,13 @@ void Drivetrain::assignOutputs()
         drive(state.xSpeedMPS, state.ySpeedMPS, state.angleRPS, true);
     } 
     else {
-        setDriveMotorNeutralMode(valor::NeutralMode::Coast);
-        drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
+        if (state.autoControlled)
+            setDriveMotorNeutralMode(valor::NeutralMode::Brake);
+        else{
+            setDriveMotorNeutralMode(valor::NeutralMode::Coast);
+            drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
+        }
+            
     }
 }
 
