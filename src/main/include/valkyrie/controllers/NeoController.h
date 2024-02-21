@@ -3,7 +3,6 @@
 #include "valkyrie/controllers/BaseController.h"
 
 #include <iostream>
-
 #include <rev/CANSparkMax.h>
 #include <rev/CANEncoder.h>
 #include <rev/SparkAbsoluteEncoder.h>
@@ -22,6 +21,8 @@ public:
     double getCurrent();
     double getPosition();
     double getSpeed();
+    double getVoltage();
+
 
     int getProfile();
 

@@ -4,6 +4,7 @@
 #include <frc2/command/Command.h>
 #include <frc2/command/Commands.h>
 
+
 #include "Constants.h"
 #include "valkyrie/Gamepad.h"
 
@@ -17,6 +18,8 @@
 
 #include <subsystems/Shooter.h>
 #include "subsystems/Feeder.h"
+#include "subsystems/Leds.h"
+
 
 #include <fstream>
 #include "frc/DigitalInput.h"
@@ -50,6 +53,8 @@ class Robot : public frc::TimedRobot {
           
         Shooter shooter;
         Feeder feeder;
+        Leds leds;
+
 
         std::ofstream outfile;        
 };

@@ -126,6 +126,12 @@ double NeoController::getSpeed()
     return encoder.GetVelocity();
 }
 
+double NeoController::getVoltage()
+{
+    return motor->GetAppliedOutput() * motor->GetBusVoltage();
+}
+
+
 void NeoController::setVoltageCompensation(double volts)
 {
     motor->EnableVoltageCompensation(12);

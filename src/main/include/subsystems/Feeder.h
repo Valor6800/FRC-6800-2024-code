@@ -50,8 +50,8 @@ public:
 
 private:
 
-    valor::NeoController feederMotor;
     valor::NeoController intakeMotor;
+    valor::NeoController feederMotor;
 
     valor::CurrentSensor currentSensor;
     frc::DigitalInput* beamBreak;
