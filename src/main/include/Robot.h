@@ -17,6 +17,11 @@
 
 #include <subsystems/Shooter.h>
 #include "subsystems/Feeder.h"
+#include "subsystems/Leds.h"
+
+#include <networktables/NetworkTable.h>
+#include <networktables/NetworkTableEntry.h>
+#include<networktables/NetworkTableInstance.h>
 
 #include <fstream>
 #include "frc/DigitalInput.h"
@@ -48,6 +53,7 @@ class Robot : public frc::TimedRobot {
           
         Shooter shooter;
         Feeder feeder;
+        Leds leds;
 
         std::ofstream outfile;        
 };

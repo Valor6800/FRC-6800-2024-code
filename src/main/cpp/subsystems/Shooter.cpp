@@ -82,6 +82,13 @@ void Shooter::init()
     table->PutNumber("Right Flywheel Spool RPM", RIGHT_SPOOL_POWER);
     table->PutNumber("Right Flywheel Standby RPM", RIGHT_STANDBY_POWER);
 
+    //no tracking yet
+    table->PutBoolean("SpooledTest", false);
+    table->PutBoolean("TrackingTest", false);
+
+    SpooledTest = false;
+    TrackingTest = false;
+
     resetState();
 }
 
@@ -93,12 +100,15 @@ void Shooter::assessInputs()
 
     //SHOOT LOGIC
     if (driverGamepad->rightTriggerActive() || operatorGamepad->rightTriggerActive()) {
+        SpooledTest = false;
         state.flywheelState = FLYWHEEL_STATE::SHOOTING;
     }
     else if (operatorGamepad->leftTriggerActive()) {
+        SpooledTest = false;
         state.flywheelState = FLYWHEEL_STATE::NOT_SHOOTING;
     }
     else {
+        SpooledTest = true;
         state.flywheelState = FLYWHEEL_STATE::SPOOLED;
     } 
 
@@ -165,6 +175,9 @@ void Shooter::assignOutputs()
 {
     leftFlywheelMotor.setSpeed(state.leftFlywheelTargetVelocity.to<double>());
     rightFlywheelMotor.setSpeed(state.rightFlywheelTargetVelocity.to<double>());
+
+    table->PutBoolean("SpooledTest", SpooledTest);
+    table->PutBoolean("TrackingTest", TrackingTest);
 }
 
 units::degree_t Shooter::calculatePivotAngle(){

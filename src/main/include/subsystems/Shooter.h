@@ -11,8 +11,13 @@
 #include <frc/trajectory/Trajectory.h>
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Rotation2d.h>
+#include <frc/DigitalInput.h>
 #include <frc/trajectory/TrajectoryGenerator.h>
 #include <frc/DigitalOutput.h>
+
+#include <networktables/NetworkTable.h>
+#include <networktables/NetworkTableEntry.h>
+#include<networktables/NetworkTableInstance.h>
 
 #include <frc2/command/FunctionalCommand.h>
 #include <unordered_map>
@@ -66,4 +71,11 @@ public:
         units::angular_velocity::revolutions_per_minute_t rightFlywheelTargetVelocity;
         units::degree_t pivotAngle;
     } state;
+
+private:
+    valor::PIDF pivotPID;
+
+    bool SpooledTest;
+    bool TrackingTest;
+
 };

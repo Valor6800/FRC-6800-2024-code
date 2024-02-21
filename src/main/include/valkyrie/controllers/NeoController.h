@@ -41,6 +41,8 @@ public:
 
     void setConversion(double);
 
+    double getVoltage();
+
     void setMotorInversion(bool);
     bool getMotorInversion();
 
