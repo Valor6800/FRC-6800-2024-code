@@ -2,15 +2,21 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3794906104911369,
-      "y": 5.572019226189894
+      "x": 1.34,
+      "y": 5.56
     },
-    "rotation": 0
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "kick-s"
+          }
+        },
         {
           "type": "path",
           "data": {
@@ -40,6 +46,12 @@
           "type": "path",
           "data": {
             "pathName": "Sf-A1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "kick-shoot a right"
           }
         },
         {

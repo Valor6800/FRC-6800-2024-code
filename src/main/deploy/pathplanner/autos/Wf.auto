@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.88,
-      "y": 7.21
+      "x": 0.9694390388491428,
+      "y": 4.28862101242721
     },
-    "rotation": 180.0
+    "rotation": 129.30682102739527
   },
   "command": {
     "type": "sequential",
@@ -14,12 +14,12 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Example3 Path"
+            "pathName": "Wf"
           }
         }
       ]
     }
   },
-  "folder": "VisionTest",
+  "folder": "Testing",
   "choreoAuto": false
 }

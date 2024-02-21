@@ -3,38 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.8745188405044506,
-        "y": 6.9447244827450705
+        "x": 3.92,
+        "y": 6.35
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.1082983696007007,
-        "y": 5.098569356916718
+        "x": 3.968296291314453,
+        "y": 6.3629409522551255
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Score amp"
     },
     {
       "anchor": {
-        "x": 1.051835680159587,
-        "y": 3.872988463337733
+        "x": 3.92,
+        "y": 6.35
       },
       "prevControl": {
-        "x": 1.549823285812395,
-        "y": 4.136629323682284
+        "x": 3.871703708685547,
+        "y": 6.337059047744874
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.25,
-      "rotationDegrees": -176.75597532413002,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -44,15 +38,15 @@
     "maxAngularAcceleration": 1600.0
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 118.55053149254078,
+    "velocity": 1.0,
+    "rotation": -165.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "VisionTest",
+  "folder": null,
   "previewStartingState": {
-    "rotation": -149.65119182995258,
+    "rotation": -165.0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
