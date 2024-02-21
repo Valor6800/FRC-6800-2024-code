@@ -45,7 +45,7 @@
 #define GRAVITY 9.81f
 #define SHOOTER_Z_OFFSET 0.0f
 
-Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive) :
+Shooter::Shooter(frc::TimedRobot *_robot) :
     valor::BaseSubsystem(_robot, "Shooter"),
     pivotMotors(nullptr),
     leftFlywheelMotor(CANIDs::LEFT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, true),
@@ -155,7 +155,7 @@ void Shooter::assignOutputs()
     }
 }
 
-void Shooter::getTargetPivotAngle(bool laser){
+/* void Shooter::getTargetPivotAngle(bool laser){
     units::meter_t robotX = drivetrain->getCalculatedPose_m().X();
     units::meter_t robotY = drivetrain->getCalculatedPose_m().Y();
     double distance = 0.0;
@@ -184,7 +184,7 @@ void Shooter::getTargetPivotAngle(bool laser){
         double angle = atan2(pow(PROJECTILE_SPEED, 2) - sqrt(pow(PROJECTILE_SPEED, 4) - (GRAVITY*(GRAVITY*pow(state.distanceFromSpeaker.to<double>(), 2) + 2*SPEAKER_HEIGHT*pow(PROJECTILE_SPEED, 2)))), GRAVITY*state.distanceFromSpeaker.to<double>());
         state.targetPivotAngle = units::radian_t(angle);
     }
-}
+}*/
 
 
 void Shooter::InitSendable(wpi::SendableBuilder& builder){
@@ -199,13 +199,13 @@ void Shooter::InitSendable(wpi::SendableBuilder& builder){
 
     builder.AddIntegerProperty(
         "pivot state",
-        [this] {return state.pivot;},
+        [this] {return state.pivotState;},
         nullptr
     );
 
     builder.AddIntegerProperty(
         "pivot target angle",
-        [this] {return state.targetPivotAngle.to<double>();},
+        [this] {return state.calculatingPivotingAngle.to<double>();},
         nullptr
     );
     

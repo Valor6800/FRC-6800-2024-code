@@ -24,7 +24,7 @@ class Shooter : public valor::BaseSubsystem
 {
 public:
 
-    Shooter(frc::TimedRobot *robot, Drivetrain *drivetrain);
+    Shooter(frc::TimedRobot *robot);
 
     void resetState();
 
@@ -60,7 +60,7 @@ public:
 
     struct x
     {
-        PIVOT_STATE pivot;
+        PIVOT_STATE pivotState;
         FLYWHEEL_STATE flywheelState;
         units::degree_t pivotAngle;
         units::degree_t calculatingPivotingAngle;
