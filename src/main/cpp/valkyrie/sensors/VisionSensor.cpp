@@ -14,6 +14,10 @@ VisionSensor::VisionSensor(frc::TimedRobot* robot, const char *name, frc::Pose3d
     setCameraPose(cameraPose);
 }
 
+bool VisionSensor::inExistence() {
+    return limeTable->GetInstance().IsConnected(); // test
+}
+
 void VisionSensor::setCameraPose(frc::Pose3d camPose){
     if (limeTable == nullptr) return;
     double x = camPose.X().to<double>();
