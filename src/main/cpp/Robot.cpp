@@ -11,7 +11,7 @@ Robot::Robot() :
     drivetrain(this), 
     valorAuto(), 
     beamBreak(DIOPorts::BEAM_BREAK_PORT), 
-    shooter(this, &beamBreak),
+    shooter(this),
     feeder(this, &beamBreak),
     leds(this, &feeder)
 {

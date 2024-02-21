@@ -31,7 +31,7 @@ public:
     valor::NeoController leftFlywheelMotor;
     valor::NeoController rightFlywheelMotor;
 
-    Shooter(frc::TimedRobot *robot, frc::DigitalInput* beamBreak);
+    Shooter(frc::TimedRobot *robot);
 
     void resetState();
 
