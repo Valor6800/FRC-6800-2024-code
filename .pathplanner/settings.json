@@ -4,11 +4,12 @@
   "holonomicMode": true,
   "pathFolders": [
     "FirstPick",
-    "VisionTest",
+    "Testing",
     "Pick chain",
     "PreLoad",
     "SecondPick",
-    "Specials"
+    "Specials",
+    "VisionTest"
   ],
   "autoFolders": [
     "Comp",
