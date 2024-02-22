@@ -6,13 +6,13 @@
 
 #define PIVOT_ROTATE_K_VEL 81.36f
 #define PIVOT_ROTATE_K_ACC 8136.0f
-#define PIVOT_ROTATE_K_P 10.0f
+#define PIVOT_ROTATE_K_P 1.0f
 #define PIVOT_ROTATE_K_ERROR 0.0f
 #define PIVOT_ROTATE_K_AFF 0.0f
 #define PIVOT_ROTATE_K_AFF_POS 0.0f
 
 #define PIVOT_CANCODER_GEAR_RATIO 2.0f
-#define PIVOT_MAGNET_OFFSET 28.4f
+#define PIVOT_MAGNET_OFFSET 0.5168f
 #define PIVOT_GEAR_RATIO 470.4f
 #define PIVOT_REVERSE_LIMIT 68.00f
 #define PIVOT_FORWARD_LIMIT 29.0f
@@ -69,12 +69,12 @@ void Shooter::init()
         CANIDs::PIVOT,
         valor::NeutralMode::Brake,
         false,
-        1.0 / PIVOT_GEAR_RATIO * 360,
+        1.0 / PIVOT_GEAR_RATIO * PIVOT_CANCODER_GEAR_RATIO,
         pivotPID,
         10.0,
         "baseCAN"
     );
-    pivotMotors->setupCANCoder(CANIDs::SHOOTER_CANCODER, PIVOT_MAGNET_OFFSET, 1.0 / PIVOT_CANCODER_GEAR_RATIO, true, "baseCAN");
+    pivotMotors->setupCANCoder(CANIDs::SHOOTER_CANCODER, PIVOT_MAGNET_OFFSET, PIVOT_CANCODER_GEAR_RATIO / 360.0, true, "baseCAN");
     pivotMotors->setRange(0, PIVOT_FORWARD_LIMIT, PIVOT_REVERSE_LIMIT);
 
     resetState();
@@ -163,12 +163,6 @@ void Shooter::InitSendable(wpi::SendableBuilder& builder){
     builder.AddIntegerProperty(
         "pivot state",
         [this] {return state.pivotState;},
-        nullptr
-    );
-
-    builder.AddIntegerProperty(
-        "pivot target angle",
-        [this] {return state.pivotAngle.to<double>();},
         nullptr
     );
     

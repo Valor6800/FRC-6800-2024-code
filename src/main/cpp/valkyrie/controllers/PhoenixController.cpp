@@ -97,14 +97,15 @@ void PhoenixController::init(double gearRatio, valor::PIDF pidf)
     wpi::SendableRegistry::AddLW(this, "PhoenixController", "ID " + std::to_string(motor->GetDeviceID()));
 }
 
-void PhoenixController::setupCANCoder(int deviceId, double offset, double _conversion, bool clockwise, std::string canbus)
+void PhoenixController::setupCANCoder(int deviceId, double offset, double _cancoderConversion, bool clockwise, std::string canbus)
 {
-    cancoderConversion = _conversion;
+    cancoderConversion = _cancoderConversion;
     cancoder = new ctre::phoenix6::hardware::CANcoder(deviceId, canbus);
     ctre::phoenix6::configs::MagnetSensorConfigs config;
     config.AbsoluteSensorRange = ctre::phoenix6::signals::AbsoluteSensorRangeValue::Unsigned_0To1;
     config.SensorDirection = clockwise ? signals::SensorDirectionValue::Clockwise_Positive :
                                          signals::SensorDirectionValue::CounterClockwise_Positive;
+    config.MagnetOffset = -offset;
     cancoder->GetConfigurator().Apply(config);
 
     ctre::phoenix6::configs::FeedbackConfigs fx_cfg{};
@@ -117,7 +118,7 @@ void PhoenixController::setupCANCoder(int deviceId, double offset, double _conve
 
 double PhoenixController::getCANCoder()
 {
-    return cancoder ? cancoder->GetAbsolutePosition().GetValueAsDouble() * cancoderConversion : 0;
+    return cancoder ? cancoder->GetAbsolutePosition().GetValueAsDouble() : 0;
 }
 
 void PhoenixController::reset()
