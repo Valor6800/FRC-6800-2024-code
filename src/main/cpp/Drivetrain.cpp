@@ -866,5 +866,15 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
             [this] {return targetPoseTracker.getAverageAcceleration().to<double>();},
             nullptr
         );
+        builder.AddDoubleProperty(
+            "angular velocity current",
+            [this] {return botPoseTracker.getAverageAngularVelocity().to<double>();},
+            nullptr
+        );
+        builder.AddDoubleProperty(
+            "angular velocity target",
+            [this] {return targetPoseTracker.getAverageAngularVelocity().to<double>();},
+            nullptr
+        );
     }
 
