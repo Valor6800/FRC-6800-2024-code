@@ -205,6 +205,12 @@ void NeoController::InitSendable(wpi::SendableBuilder& builder)
         "Voltage", 
         [this] { return motor->GetAppliedOutput() * motor->GetBusVoltage(); },
         nullptr);
+    builder.AddDoubleProperty(
+        "Current",
+        [this] {return motor->GetOutputCurrent(); },
+        nullptr);
+
+
     builder.AddBooleanProperty(
         "Inverted", 
         [this] { return inverted; },
