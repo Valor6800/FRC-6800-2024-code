@@ -45,6 +45,8 @@ public:
 
 private:
 
+    bool isBeamBreakTriggered();
+
     valor::NeoController feederMotor;
     valor::NeoController intakeMotor;
     frc::AnalogTrigger* beamBreak;

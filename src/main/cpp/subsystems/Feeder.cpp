@@ -61,7 +61,7 @@ void Feeder::assessInputs()
         state.feederState = ROLLER_STATE::INTAKE;
     } else if (driverGamepad->GetRightBumper() || driverGamepad->GetLeftBumper()) {
         state.intakeState = ROLLER_STATE::INTAKE;
-        state.feederState = ROLLER_STATE::STAGNANT;
+        state.feederState = isBeamBreakTriggered() ? ROLLER_STATE::STAGNANT : ROLLER_STATE::INTAKE;
     } else if(operatorGamepad->GetLeftBumper()) {
         state.intakeState = ROLLER_STATE::OUTTAKE;
         state.feederState = ROLLER_STATE::OUTTAKE;
@@ -79,7 +79,6 @@ void Feeder::analyzeDashboard()
 
     state.feederForwardSpeed = table->GetNumber("Feeder Forward Power", FEEDER_FORWARD_POWER);
     state.feederReverseSpeed = table->GetNumber("Feeder Reverse Power", FEEDER_REVERSE_POWER);
-    table->PutBoolean("Beam Trip", beamBreak->GetInWindow());
 }
 
 void Feeder::assignOutputs()
@@ -99,6 +98,11 @@ void Feeder::assignOutputs()
     } else {
         feederMotor.setPower(0);
     }
+}
+
+bool Feeder::isBeamBreakTriggered()
+{
+    return !beamBreak->GetInWindow();
 }
 
 void Feeder::InitSendable(wpi::SendableBuilder& builder)
@@ -123,5 +127,9 @@ void Feeder::InitSendable(wpi::SendableBuilder& builder)
         nullptr
     );
 
-    builder.AddDoubleProperty("Banner Raw", [this]{return state.beamTrip;}, nullptr);
+    builder.AddBooleanProperty(
+        "Banner Raw",
+        [this]{return isBeamBreakTriggered();},
+        nullptr
+    );
 }

@@ -58,7 +58,7 @@ namespace DIOPorts {
 }
 
 namespace AnalogPorts {
-    constexpr static int BEAM_BREAK_PORT = 0;
+    constexpr static int BEAM_BREAK_PORT = 3;
 }
 
 namespace CANIDs {
