@@ -17,7 +17,7 @@
 Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _beamBreak) :
     valor::BaseSubsystem(_robot, "Feeder"),
     intakeMotor(CANIDs::INTERNAL_INTAKE, valor::NeutralMode::Coast, true),
-    feederMotor(CANIDs::FEEDER, valor::NeutralMode::Coast, true),
+    feederMotor(CANIDs::FEEDER, valor::NeutralMode::Brake, true),
     beamBreak(_beamBreak),
     debounceSensor(_robot, "Feeder")
 {
