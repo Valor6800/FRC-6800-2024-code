@@ -47,6 +47,8 @@ void Shooter::resetState()
 
 void Shooter::init()
 {
+    state.pitMode = false;
+
     valor::PIDF pivotPID;
     pivotPID.maxVelocity = PIVOT_ROTATE_K_VEL;
     pivotPID.maxAcceleration = PIVOT_ROTATE_K_ACC;
@@ -76,6 +78,8 @@ void Shooter::init()
     );
     pivotMotors->setupCANCoder(CANIDs::SHOOTER_CANCODER, PIVOT_MAGNET_OFFSET, PIVOT_CANCODER_GEAR_RATIO / 360.0, true, "baseCAN");
     pivotMotors->setRange(0, PIVOT_FORWARD_LIMIT, PIVOT_REVERSE_LIMIT);
+
+    table->PutBoolean("Pit Mode", false);
 
     resetState();
 }
@@ -112,6 +116,14 @@ void Shooter::assessInputs()
 
 void Shooter::analyzeDashboard()
 {
+    bool lastPitMode = state.pitMode;
+    state.pitMode = table->GetBoolean("Pit Mode", false);
+
+    if (state.pitMode && !lastPitMode) {
+        pivotMotors->setNeutralMode(valor::NeutralMode::Coast);
+    } else if (lastPitMode && !state.pitMode) {
+        pivotMotors->setNeutralMode(valor::NeutralMode::Brake);
+    }
 }
 
 void Shooter::assignOutputs()
@@ -132,6 +144,8 @@ void Shooter::assignOutputs()
         pivotMotors->setPosition(WING_ANG.to<double>());
     // } else if(state.pivotState == PIVOT_STATE::TRACKING) {
     //     pivotMotors->setPosition(state.calculatingPivotingAngle.to<double>());
+    } else if (state.pitMode) {
+        pivotMotors->setPower(0);
     } else {
         pivotMotors->setPosition(SUBWOOFER_ANG.to<double>());
     }
