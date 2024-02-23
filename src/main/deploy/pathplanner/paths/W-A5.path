@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.519226555958899,
-        "y": 4.1161010433276655
+        "x": 2.465008618819321,
+        "y": 4.116334869316152
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.5698675122031958,
-        "y": 2.033330382488312
+        "x": 2.515649575063618,
+        "y": 2.033564208476798
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Powerloader"
     },
     {
       "anchor": {
@@ -44,19 +44,25 @@
       "linkedName": "Score wall"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.05,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 2.0,
-    "maxAngularVelocity": 360.0,
+    "maxVelocity": 3.5,
+    "maxAcceleration": 5.0,
+    "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1600.0
   },
   "goalEndState": {
     "velocity": 0,
     "rotation": -36.69,
-    "rotateFast": false
+    "rotateFast": true
   },
   "reversed": false,
   "folder": "SecondPick",
@@ -64,5 +70,5 @@
     "rotation": 0.0,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }
