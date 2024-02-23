@@ -1,0 +1,85 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 2.0,
+      "y": 7.0
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Swerves translation test"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Wait for A button"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Swerves rotation test"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Wait for A button"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PIT sequence - intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Wait for A button"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PIT sequence - shooter fly"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Wait for A button"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PIT sequence - feed"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Wait for A button"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PIT sequence - shooter pivot"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
