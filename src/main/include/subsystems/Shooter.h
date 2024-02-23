@@ -20,12 +20,13 @@
 #include "valkyrie/Gamepad.h"
 
 #include "subsystems/Climber.h"
+#include "Drivetrain.h"
 
 class Shooter : public valor::BaseSubsystem
 {
 public:
 
-    Shooter(frc::TimedRobot *robot, Climber *_climber);
+    Shooter(frc::TimedRobot *robot, Climber *_climber, Drivetrain *drivetrain);
 
     void resetState();
 
@@ -35,7 +36,7 @@ public:
     void analyzeDashboard();
     void assignOutputs();
 
-    units::degree_t calculatePivotAngle();
+    void calculatePivotAngle();
 
     void calculateRootsT();
     void bisectionTheorem();
@@ -55,7 +56,8 @@ public:
         SUBWOOFER,
         PODIUM,
         WING,
-        TRACKING
+        TRACKING,
+        MANUAL
     };
 
     struct x
@@ -70,7 +72,7 @@ public:
 
 private:
     Climber *climber;
-
+    Drivetrain *drivetrain;
     valor::PhoenixController* pivotMotors;
 
     valor::NeoController leftFlywheelMotor;

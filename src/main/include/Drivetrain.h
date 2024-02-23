@@ -154,6 +154,8 @@ public:
 
           double matchStart;
 
+          units::meter_t distanceFromSpeaker;
+
           frc::Pose2d visionPose;
           frc::Pose2d prevVisionPose;
 

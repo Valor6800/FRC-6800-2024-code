@@ -343,6 +343,13 @@ void Drivetrain::analyzeDashboard()
             }
         }
     }
+
+    if(frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue){
+        state.distanceFromSpeaker = units::meter_t(sqrtf(powf((calculatedEstimator->GetEstimatedPosition().X() - SPEAKER_BLUE_X).to<double>(), 2) + powf((calculatedEstimator->GetEstimatedPosition().Y() - SPEAKER_Y).to<double>(), 2)));
+    }
+    else{
+        state.distanceFromSpeaker = units::meter_t(sqrtf(powf((calculatedEstimator->GetEstimatedPosition().X() - SPEAKER_RED_X).to<double>(), 2) + powf((calculatedEstimator->GetEstimatedPosition().Y() - SPEAKER_Y).to<double>(), 2)));
+    }
 }
 
 void Drivetrain::assignOutputs()
@@ -757,6 +764,12 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
         builder.AddDoubleProperty(
             "errorAngleRPS",
             [this] {return (state.angleRPS).to<double>();},
+            nullptr
+        );
+
+        builder.AddDoubleProperty(
+            "distanceFromSpeaker",
+            [this] {return (state.distanceFromSpeaker).to<double>();},
             nullptr
         );
     }

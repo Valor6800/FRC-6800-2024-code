@@ -11,9 +11,9 @@
 Robot::Robot() : 
     drivetrain(this),
     // valorAuto(), 
-    beamBreak(AnalogPorts::BEAM_BREAK_PORT), 
+    beamBreak(AnalogPorts::BEAM_BREAK_PORT),
     climber(this),
-    shooter(this, &climber),
+    shooter(this, &climber,  &drivetrain),
     feeder(this, &beamBreak)
 {
     frc::TimedRobot();

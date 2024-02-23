@@ -28,12 +28,13 @@
 #define LEFT_SHOOT_POWER 60.0f
 #define RIGHT_SHOOT_POWER 30.0f
 
-Shooter::Shooter(frc::TimedRobot *_robot, Climber *_climber) :
+Shooter::Shooter(frc::TimedRobot *_robot, Climber *_climber, Drivetrain *_drive) :
     valor::BaseSubsystem(_robot, "Shooter"),
     climber(_climber),
     pivotMotors(nullptr),
     leftFlywheelMotor(CANIDs::LEFT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, true),
-    rightFlywheelMotor(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false)
+    rightFlywheelMotor(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false),
+    drivetrain(_drive)
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -110,6 +111,8 @@ void Shooter::assessInputs()
     } else if (operatorGamepad->GetYButton()) {// || climber->climbMotor.getPosition() > 1.0) { 
         state.pivotState = PIVOT_STATE::WING;
     } else if (operatorGamepad->GetXButton()) {
+        state.pivotState = PIVOT_STATE::MANUAL;
+    } else if (driverGamepad->leftTriggerActive()) {
         state.pivotState = PIVOT_STATE::TRACKING;
     } else {
         state.pivotState = PIVOT_STATE::DISABLED;
@@ -129,6 +132,7 @@ void Shooter::analyzeDashboard()
     } else if (lastPitMode && !state.pitMode) {
         pivotMotors->setNeutralMode(valor::NeutralMode::Brake);
     }
+    calculatePivotAngle();
 }
 
 void Shooter::assignOutputs()
@@ -148,6 +152,8 @@ void Shooter::assignOutputs()
     } else if(state.pivotState == PIVOT_STATE::WING){
         pivotMotors->setPosition(WING_ANG.to<double>());
     } else if(state.pivotState == PIVOT_STATE::TRACKING) {
+        pivotMotors->setPosition(state.calculatingPivotingAngle.to<double>());
+    } else if(state.pivotState == PIVOT_STATE::MANUAL) {
         pivotMotors->setPosition(state.setpoint);
     } else if (state.pitMode) {
         pivotMotors->setPower(0);
@@ -156,9 +162,11 @@ void Shooter::assignOutputs()
     }
 }
 
-units::degree_t Shooter::calculatePivotAngle(){
-    units::degree_t targetPivotAngle = units::degree_t(3);
-    return targetPivotAngle;
+void Shooter::calculatePivotAngle(){
+    double distance = drivetrain->state.distanceFromSpeaker.to<double>();
+
+    double bestPivot = 91.7 + (-32.5 * distance) + (5.9 * pow(distance, 2)) + (-0.398 * pow(distance, 3)); // subject to change
+    state.calculatingPivotingAngle = units::degree_t(bestPivot);
 }
 
 void Shooter::calculateRootsT(){
