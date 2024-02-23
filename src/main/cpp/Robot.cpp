@@ -10,8 +10,8 @@
 
 Robot::Robot() : 
     drivetrain(this),
-    // valorAuto(), 
-    beamBreak(AnalogPorts::BEAM_BREAK_PORT),
+    valorAuto(), 
+    beamBreak(AnalogPorts::BEAM_BREAK_PORT), 
     climber(this),
     shooter(this, &climber,  &drivetrain),
     feeder(this, &beamBreak)
@@ -36,7 +36,7 @@ void Robot::RobotInit() {
     frc::LiveWindow::EnableAllTelemetry();
     frc::DataLogManager::Start();
 
-    // valorAuto.fillAutoList();
+    valorAuto.fillAutoList();
 
 }
 /**
@@ -70,8 +70,8 @@ void Robot::AutonomousInit() {
     feeder.resetState();
     shooter.resetState();
 
-    // autoCommand = valorAuto.getCurrentAuto();
-    // autoCommand.Schedule();
+    autoCommand = valorAuto.getCurrentAuto();
+    autoCommand.Schedule();
 }
 
 void Robot::AutonomousExit() {
@@ -87,7 +87,7 @@ void Robot::TeleopInit() {
     shooter.resetState();
     feeder.resetState();
 
-    // autoCommand.Cancel();
+    autoCommand.Cancel();
 }
 
 /**
