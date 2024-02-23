@@ -49,7 +49,7 @@ class Robot : public frc::TimedRobot {
         // valor::Auto valorAuto;
         frc::AnalogTrigger beamBreak;  
           
+        Climber climber;
         Shooter shooter;
         Feeder feeder;
-        Climber climber;
 };

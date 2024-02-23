@@ -18,8 +18,7 @@ Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _beamBreak) :
     valor::BaseSubsystem(_robot, "Feeder"),
     intakeMotor(CANIDs::INTERNAL_INTAKE, valor::NeutralMode::Coast, true),
     feederMotor(CANIDs::FEEDER, valor::NeutralMode::Brake, true),
-    beamBreak(_beamBreak),
-    debounceSensor(_robot, "Feeder")
+    beamBreak(_beamBreak)
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -35,7 +34,6 @@ void Feeder::init()
 {
     resetState();
 
-    debounceSensor.setGetter([this]() { return beamBreak->GetInWindow(); });
     intakeMotor.setMaxCurrent(60);
     intakeMotor.setVoltageCompensation(10);
 
@@ -59,7 +57,7 @@ void Feeder::assessInputs()
     if (driverGamepad->rightTriggerActive()) {
         state.intakeState = ROLLER_STATE::INTAKE;
         state.feederState = ROLLER_STATE::INTAKE;
-    } else if (driverGamepad->GetRightBumper() || driverGamepad->GetLeftBumper()) {
+    } else if (driverGamepad->GetRightBumper()) {
         state.intakeState = ROLLER_STATE::INTAKE;
         state.feederState = isBeamBreakTriggered() ? ROLLER_STATE::STAGNANT : ROLLER_STATE::INTAKE;
     } else if(operatorGamepad->GetLeftBumper()) {
@@ -118,12 +116,6 @@ void Feeder::InitSendable(wpi::SendableBuilder& builder)
     builder.AddDoubleProperty(
         "feederState",
         [this] {return state.feederState;},
-        nullptr
-    );
-
-    builder.AddBooleanProperty(
-        "debounceSensor",
-        [this] {return debounceSensor.getSensor();},
         nullptr
     );
 

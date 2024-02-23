@@ -52,8 +52,8 @@ public:
         double manualClimber;
     }state;
 
-private:
     valor::NeoController climbMotor;
+private:
 
     frc::DigitalInput* hallE;
     valor::DebounceSensor debounce;

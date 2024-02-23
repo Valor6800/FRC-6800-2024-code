@@ -5,7 +5,6 @@
 #include "Constants.h"
 #include "valkyrie/controllers/NeoController.h"
 #include <frc/DigitalInput.h>
-#include "valkyrie/sensors/DebounceSensor.h"
 
 class Feeder : public valor::BaseSubsystem
 {
@@ -50,5 +49,4 @@ private:
     valor::NeoController feederMotor;
     valor::NeoController intakeMotor;
     frc::AnalogTrigger* beamBreak;
-    valor::DebounceSensor debounceSensor;
 };

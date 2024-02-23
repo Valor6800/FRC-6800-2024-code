@@ -28,8 +28,9 @@
 #define LEFT_SHOOT_POWER 60.0f
 #define RIGHT_SHOOT_POWER 30.0f
 
-Shooter::Shooter(frc::TimedRobot *_robot) :
+Shooter::Shooter(frc::TimedRobot *_robot, Climber *_climber) :
     valor::BaseSubsystem(_robot, "Shooter"),
+    climber(_climber),
     pivotMotors(nullptr),
     leftFlywheelMotor(CANIDs::LEFT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, true),
     rightFlywheelMotor(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false)
@@ -102,9 +103,9 @@ void Shooter::assessInputs()
     //PIVOT LOGIC
     if (operatorGamepad->GetAButton()) {// || driverGamepad->GetAButton()) {
         state.pivotState = PIVOT_STATE::SUBWOOFER;
-    } else if (operatorGamepad->GetBButton()) {
+    } else if (operatorGamepad->GetBButton() || driverGamepad->GetRightBumper()) {
         state.pivotState = PIVOT_STATE::PODIUM;
-    } else if (operatorGamepad->GetYButton()) { 
+    } else if (operatorGamepad->GetYButton() || climber->climbMotor.getPosition() > 1.0) { 
         state.pivotState = PIVOT_STATE::WING;
     } else if (driverGamepad->leftTriggerActive() || operatorGamepad->leftTriggerActive()) {
         state.pivotState = PIVOT_STATE::TRACKING;
