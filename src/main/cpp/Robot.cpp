@@ -12,7 +12,7 @@ Robot::Robot() :
     drivetrain(this),
     // valorAuto(), 
     beamBreak(AnalogPorts::BEAM_BREAK_PORT), 
-    shooter(this),
+    shooter(this, &drivetrain),
     feeder(this, &beamBreak),
     climber(this)
 {

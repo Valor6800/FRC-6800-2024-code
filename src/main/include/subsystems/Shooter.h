@@ -19,11 +19,13 @@
 #include <unordered_map>
 #include "valkyrie/Gamepad.h"
 
+#include "Drivetrain.h"
+
 class Shooter : public valor::BaseSubsystem
 {
 public:
 
-    Shooter(frc::TimedRobot *robot);
+    Shooter(frc::TimedRobot *robot, Drivetrain *drivetrain);
 
     void resetState();
 
@@ -33,7 +35,7 @@ public:
     void analyzeDashboard();
     void assignOutputs();
 
-    units::degree_t calculatePivotAngle();
+    void calculatePivotAngle();
 
     void calculateRootsT();
     void bisectionTheorem();
@@ -66,6 +68,7 @@ public:
     } state;
 
 private:
+    Drivetrain *drivetrain;
     valor::PhoenixController* pivotMotors;
 
     valor::NeoController leftFlywheelMotor;

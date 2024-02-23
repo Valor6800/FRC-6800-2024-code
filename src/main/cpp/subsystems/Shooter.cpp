@@ -28,11 +28,12 @@
 #define LEFT_SHOOT_POWER 60.0f
 #define RIGHT_SHOOT_POWER 30.0f
 
-Shooter::Shooter(frc::TimedRobot *_robot) :
+Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive) :
     valor::BaseSubsystem(_robot, "Shooter"),
     pivotMotors(nullptr),
     leftFlywheelMotor(CANIDs::LEFT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, true),
-    rightFlywheelMotor(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false)
+    rightFlywheelMotor(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false),
+    drivetrain(_drive)
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -124,6 +125,7 @@ void Shooter::analyzeDashboard()
     } else if (lastPitMode && !state.pitMode) {
         pivotMotors->setNeutralMode(valor::NeutralMode::Brake);
     }
+    calculatePivotAngle();
 }
 
 void Shooter::assignOutputs()
@@ -142,8 +144,8 @@ void Shooter::assignOutputs()
         pivotMotors->setPosition(PODIUM_ANG.to<double>());
     } else if(state.pivotState == PIVOT_STATE::WING){
         pivotMotors->setPosition(WING_ANG.to<double>());
-    // } else if(state.pivotState == PIVOT_STATE::TRACKING) {
-    //     pivotMotors->setPosition(state.calculatingPivotingAngle.to<double>());
+    } else if(state.pivotState == PIVOT_STATE::TRACKING) {
+        pivotMotors->setPosition(state.calculatingPivotingAngle.to<double>());
     } else if (state.pitMode) {
         pivotMotors->setPower(0);
     } else {
@@ -151,9 +153,11 @@ void Shooter::assignOutputs()
     }
 }
 
-units::degree_t Shooter::calculatePivotAngle(){
-    units::degree_t targetPivotAngle = units::degree_t(3);
-    return targetPivotAngle;
+void Shooter::calculatePivotAngle(){
+    double distance = drivetrain->state.distanceFromSpeaker.to<double>();
+
+    // double bestPivot = pow(distance, 2);
+    // state.calculatingPivotingAngle = units::degree_t(bestPivot);
 }
 
 void Shooter::calculateRootsT(){
