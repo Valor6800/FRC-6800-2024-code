@@ -99,17 +99,17 @@ namespace Constants {
         static units::degree_t pigeonMountPitch(){ switch (teamNumber){ 
             case ALPHA_TEAM_NUMBER: return 0_deg; 
             case SIDE_SWIPE_TEAM_NUMBER: return 0_deg;  
-            default: return 0_deg; // Temp value; TODO: Change it
+            default: return 0.037622284_deg;
         }};
         static units::degree_t pigeonMountRoll(){ switch (teamNumber){ 
             case ALPHA_TEAM_NUMBER: return -0.395508_deg;
             case SIDE_SWIPE_TEAM_NUMBER: return 0_deg; // Temp value; TODO: Change it  
-            default: return 0_deg; // Temp value; TODO: Change it 
+            default: return -0.784180343_deg;
         }};
         static units::degree_t pigeonMountYaw(){ switch (teamNumber){ 
             case ALPHA_TEAM_NUMBER: return -1.477661_deg; 
             case SIDE_SWIPE_TEAM_NUMBER: return 0_deg; // Temp value; TODO: Change it  
-            default: return 0_deg; // Temp value; TODO: Change it 
+            default: return -90.230049133_deg; // Temp value; TODO: Change it 
         }};
 
         static std::vector<double> swerveZeros(){ switch (teamNumber){
