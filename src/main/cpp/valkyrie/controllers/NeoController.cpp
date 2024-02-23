@@ -44,8 +44,8 @@ void NeoController::reset()
 void NeoController::setupFollower(int canID, bool followerInverted)
 {
     followerMotor = new rev::CANSparkMax(canID, rev::CANSparkMax::MotorType::kBrushless);
+    followerMotor->RestoreFactoryDefaults();
     followerMotor->Follow(*motor, followerInverted);
-    setNeutralMode(BaseController::neutralMode);
 }
 
 void NeoController::setForwardLimit(double forward)
