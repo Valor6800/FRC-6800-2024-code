@@ -56,7 +56,20 @@ void Feeder::init()
 
 
 
+    currentSensor.setGetter([this]() {return intakeMotor.getCurrent(); });
+    currentSensor.setGetter([this]() {return feederMotor.getCurrent(); });
+
+    currentSensor.setSpikeCallback([this]() {return feederMotor.getCurrent(); });
+
+
+
     table->PutBoolean("Beam Trip", false);
+    table->PutBoolean("IntakeTest", false);
+
+    IntakeTest = false;
+
+
+
     table->PutBoolean("IntakeTest", false);
 
     IntakeTest = false;
@@ -101,12 +114,18 @@ void Feeder::assignOutputs()
     if(state.intakeState == ROLLER_STATE::INTAKE) {
         IntakeTest = true;
 
+        IntakeTest = true;
+
         intakeMotor.setPower(state.intakeForwardSpeed);
     } else if(state.intakeState == ROLLER_STATE::OUTTAKE) {
         IntakeTest = false;
 
+        IntakeTest = false;
+
         intakeMotor.setPower(state.intakeReverseSpeed);
     } else {
+        IntakeTest = false;
+
         IntakeTest = false;
 
         intakeMotor.setPower(0);
@@ -123,8 +142,14 @@ void Feeder::assignOutputs()
     } else {
         IntakeTest = false;
 
+        IntakeTest = false;
+
         feederMotor.setPower(0);
     }
+    
+    table->PutBoolean("IntakeTest", IntakeTest);
+    table->PutBoolean("Beam Trip", isBeamBreakTriggered());
+
     
     table->PutBoolean("IntakeTest", IntakeTest);
     table->PutBoolean("Beam Trip", isBeamBreakTriggered());
