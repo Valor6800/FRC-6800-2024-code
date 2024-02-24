@@ -48,6 +48,8 @@ void Feeder::init()
     table->PutNumber("Feeder Forward Power", FEEDER_FORWARD_POWER);
     table->PutNumber("Feeder Reverse Power", FEEDER_REVERSE_POWER);
 
+
+
     currentSensor.setGetter([this]() {return intakeMotor.getCurrent(); });
     currentSensor.setGetter([this]() {return feederMotor.getCurrent(); });
 

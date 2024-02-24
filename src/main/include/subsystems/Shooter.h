@@ -43,6 +43,13 @@ public:
 
     void calculatePivotAngle();
 
+
+    bool getSpooledState();
+    bool getTrackingState();
+    bool getPitModeState();
+
+    void calculatePivotAngle();
+
     void calculateRootsT();
     void bisectionTheorem();
 

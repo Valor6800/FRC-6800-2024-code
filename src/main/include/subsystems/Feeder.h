@@ -33,6 +33,7 @@ public:
     bool isIntake();
     bool isBeamBreakTriggered();
 
+
     void InitSendable(wpi::SendableBuilder& builder);
 
     enum ROLLER_STATE
