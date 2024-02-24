@@ -3,7 +3,8 @@
 #define LED_LENGTH 62
 
 
-Leds::Leds(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Leds")
+Leds::Leds(frc::TimedRobot *_robot, Feeder *_feeder, Shooter *_shooter) : 
+valor::BaseSubsystem(_robot, "Leds"), feeder(_feeder), shooter(_shooter) // new Shooter(robot, "shooter")
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
