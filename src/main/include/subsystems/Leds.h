@@ -3,9 +3,7 @@
 #include <array>
 
 #include <frc/shuffleboard/ShuffleboardTab.h>
-
 #include <frc/PWM.h>
-
 #include <frc/smartdashboard/SendableChooser.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
@@ -15,7 +13,6 @@
 #include "subsystems/Shooter.h"
 #include "subsystems/Climber.h"
 #include "Constants.h"
-
 
 #include <networktables/NetworkTable.h>
 #include <networktables/NetworkTableEntry.h>
