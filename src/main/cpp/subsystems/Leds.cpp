@@ -67,7 +67,10 @@ void Leds::analyzeDashboard() {
 
     m_animationSelected = m_chooser.GetSelected();
 
-    //chooser for animations
+    
+    spikedBool = feeder->state.intakeState == Feeder::ROLLER_STATE::SPIKED;
+
+    //chooser for animations after spike
     if (spikedBool){
         currState = JAMMED;
         LEDState::JAMMED;
@@ -125,8 +128,6 @@ void Leds::analyzeDashboard() {
         //default state during teleop
         currState = DEFAULT_STATE;
     }
-
-    //table->PutBoolean("LED_State",currState);
 }
 
 void Leds::assignOutputs() 

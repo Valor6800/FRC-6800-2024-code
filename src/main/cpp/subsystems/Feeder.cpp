@@ -52,11 +52,9 @@ void Feeder::init()
 
     currentSensor.setGetter([this]() {return intakeMotor.getCurrent(); });
     currentSensor.setGetter([this]() {return feederMotor.getCurrent(); });
-    //currentSensor.setSpikeCallback([this]() {return feederMotor.getCurrent(); });
-
+    currentSensor.setSpikeCallback([this]() { state.intakeState = SPIKED;});
 
     intakeTest = false;
-
 }
 
 void Feeder::assessInputs()
