@@ -14,6 +14,7 @@
 #include "subsystems/Feeder.h"
 #include "subsystems/Shooter.h"
 #include "subsystems/Climber.h"
+#include "Constants.h"
 
 
 #include <networktables/NetworkTable.h>
@@ -52,6 +53,7 @@ public:
 
 private:
 
+    //this chooser is for testing
     frc::SendableChooser<std::string> m_chooser;
     const std::string kDefaultAnimation = "DefaultAnimation";
     const std::string kanimone = "One";
@@ -60,17 +62,9 @@ private:
     std::string m_animationSelected;
 
 
-    frc::PWM blinkin{9};
-
-    //Used Network Tables for other subsystems
-    std::shared_ptr<nt::NetworkTable> nt_shooter = nt::NetworkTableInstance::GetDefault().GetTable("Shooter");
-    std::shared_ptr<nt::NetworkTable> nt_feeder = nt::NetworkTableInstance::GetDefault().GetTable("Feeder");
-    std::shared_ptr<nt::NetworkTable> nt_robot = nt::NetworkTableInstance::GetDefault().GetTable("Robot");
-
-
+    frc::PWM blinkin{DIOPorts::BLINKIN};
     
-    double curr_state;
-    double prev_state;
+    LEDState curr_state;
 
     //-----------STATES BOOLENAS----------------
     bool spooledBool = false;

@@ -48,19 +48,14 @@ void Feeder::init()
     table->PutNumber("Feeder Forward Power", FEEDER_FORWARD_POWER);
     table->PutNumber("Feeder Reverse Power", FEEDER_REVERSE_POWER);
 
+
+
     currentSensor.setGetter([this]() {return intakeMotor.getCurrent(); });
     currentSensor.setGetter([this]() {return feederMotor.getCurrent(); });
 
     currentSensor.setSpikeCallback([this]() {return feederMotor.getCurrent(); });
 
-
-
-    table->PutBoolean("Beam Trip", false);
-    table->PutBoolean("IntakeTest", false);
-
     IntakeTest = false;
-
-
 
 }
 
@@ -113,7 +108,6 @@ void Feeder::assignOutputs()
         intakeMotor.setPower(state.intakeReverseSpeed);
     } else {
         IntakeTest = false;
-
         intakeMotor.setPower(0);
     }
     
@@ -126,18 +120,21 @@ void Feeder::assignOutputs()
         feederMotor.setPower(state.feederReverseSpeed);
     } else {
         IntakeTest = false;
-
         feederMotor.setPower(0);
     }
-    
-    table->PutBoolean("IntakeTest", IntakeTest);
-    table->PutBoolean("Beam Trip", isBeamBreakTriggered());
 
+    isBeamBreakTriggered();
+    isIntake();
 }
 
 bool Feeder::isBeamBreakTriggered()
 {
     return !beamBreak->GetInWindow();
+}
+
+bool Feeder::isIntake()
+{
+    return IntakeTest;
 }
 
 void Feeder::InitSendable(wpi::SendableBuilder& builder)

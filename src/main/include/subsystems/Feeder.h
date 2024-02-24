@@ -27,6 +27,9 @@ public:
     void analyzeDashboard();
     void assignOutputs();
 
+    bool isIntake();
+    bool isBeamBreakTriggered();
+
     void InitSendable(wpi::SendableBuilder& builder);
 
     enum ROLLER_STATE
@@ -56,8 +59,6 @@ private:
     units::microsecond_t LED_OFF = 1815.0_us;
     units::microsecond_t LED_ON = 1865.0_us;
     frc::PWM blinkin{DIOPorts::BLINKIN};
-
-    bool isBeamBreakTriggered();
 
     valor::NeoController feederMotor;
     valor::NeoController intakeMotor;
