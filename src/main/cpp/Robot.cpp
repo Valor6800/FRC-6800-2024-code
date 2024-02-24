@@ -23,7 +23,6 @@ Robot::Robot() :
 
 void Robot::RobotInit() {
 
-
     drivetrain.setGamepads(&gamepadOperator, &gamepadDriver);
     drivetrain.resetState();
 
@@ -66,7 +65,6 @@ void Robot::DisabledPeriodic() { }
  * RobotContainer} class.
  */
 void Robot::AutonomousInit() {
-    nt_robot->PutBoolean("AutoIsOn", true);
     drivetrain.resetState();
     drivetrain.state.matchStart = frc::Timer::GetFPGATimestamp().to<double>();
     drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Brake);
@@ -79,7 +77,6 @@ void Robot::AutonomousInit() {
 }
 
 void Robot::AutonomousExit() {
-    nt_robot->PutBoolean("AutoIsOn", false);
 
     drivetrain.state.xPose = true;
 }
@@ -88,7 +85,6 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
-    nt_robot->PutBoolean("AutoIsOn", false);
 
     drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Coast);
 

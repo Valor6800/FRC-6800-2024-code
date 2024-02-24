@@ -38,6 +38,10 @@ public:
     void analyzeDashboard();
     void assignOutputs();
 
+    bool getSpooledState();
+    bool getTrackingState();
+    bool getPitModeState();
+
     units::degree_t calculatePivotAngle();
 
     void calculateRootsT();

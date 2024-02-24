@@ -28,6 +28,9 @@ public:
     void analyzeDashboard();
     void assignOutputs();
 
+    bool isIntake();
+    bool isBeamBreakTriggered();
+
     void InitSendable(wpi::SendableBuilder& builder);
 
     enum ROLLER_STATE
@@ -54,18 +57,12 @@ public:
 
 private:
 
-    bool isBeamBreakTriggered();
-
     valor::NeoController feederMotor;
     valor::NeoController intakeMotor;
     frc::AnalogTrigger* beamBreak;
     valor::DebounceSensor debounceSensor;
     valor::CurrentSensor currentSensor;
 
-
-
-
-    bool BeamBreakTriggered;
     bool IntakeTest;
 
 };

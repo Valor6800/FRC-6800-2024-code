@@ -33,15 +33,14 @@ void Leds::resetState() {
 
 void Leds::init() {
 
-    trackingBool = nt_shooter->GetBoolean("TrackingTest", false);
-    spooledBool = nt_shooter->GetBoolean("SpooledTest", false);
-    PITModeBool = nt_shooter->GetBoolean("Pit Mode", false);
-    //IntakingBool = nt_intake->GetBoolean("TrackingTest", false);
-    //DeployedBool = nt_intake->GetBoolean("SpooledTest", false);
-    autoIsONBool = nt_robot->GetBoolean("AutoIsOn", false);
+    autoIsONBool = robot->IsAutonomousEnabled();
 
-    intakingBool = nt_feeder->GetBoolean("IntakeTest", false);
-    note_DBool = nt_feeder->GetBoolean("Beam Trip", false);
+    intakingBool = feeder->isIntake();
+    note_DBool = feeder->isBeamBreakTriggered();
+
+    trackingBool = shooter->getTrackingState();
+    spooledBool = shooter->getSpooledState();
+    PITModeBool = shooter->getPitModeState();
 
     table->PutNumber("LED_State", DEFAULT_STATE);
 
@@ -59,60 +58,69 @@ void Leds::assessInputs() {
 }
 
 void Leds::analyzeDashboard() {
-    trackingBool = nt_shooter->GetBoolean("TrackingTest", false);
-    spooledBool = nt_shooter->GetBoolean("SpooledTest", false);
+    autoIsONBool = robot->IsAutonomousEnabled();
 
-    autoIsONBool = nt_robot->GetBoolean("AutoIsOn", false);
+    intakingBool = feeder->isIntake();
+    note_DBool = feeder->isBeamBreakTriggered();
 
-    intakingBool = nt_feeder->GetBoolean("IntakeTest", false);
-    note_DBool = nt_feeder->GetBoolean("Beam Trip", false);
-    spikedBool = nt_feeder->GetBoolean("SpikedTest", false);
-
-
+    trackingBool = shooter->getTrackingState();
+    spooledBool = shooter->getSpooledState();
+    PITModeBool = shooter->getPitModeState();
 
     m_animationSelected = m_chooser.GetSelected();
 
-    
+    //chooser for animations
     if (spikedBool){
         curr_state = JAMMED;
+        LEDState::JAMMED;
     }
     else if(m_animationSelected == kanimone)
     {
         curr_state = NOTE_DETECTED;
+        LEDState::NOTE_DETECTED;
     }
     else if(m_animationSelected == kanimtwo)
     {
         curr_state = SPOOLED;
+        LEDState::SPOOLED;
     }
     else if (m_animationSelected == kanimthree)
     {
         curr_state = PIT_MODE;
+        LEDState::PIT_MODE;
     }
-    //actual logic code
+    //actual logic code during the game
     else if(spooledBool)
     {
         curr_state = SPOOLED;
+        LEDState::SPOOLED;
     }
     else if(trackingBool)
     {
         curr_state = TRACKING;
+        LEDState::TRACKING;
     }
     else if(intakingBool)
     {
         curr_state = INTAKING;
+        LEDState::INTAKING;
     }
     else if(deployedBool)
     {
         curr_state = DEPLOYED;
+        LEDState::DEPLOYED;
     }
     else if(autoIsONBool){
         curr_state = AUTO_IS_ON;
+        LEDState::AUTO_IS_ON;
     }
     else if (PITModeBool){
         curr_state = PIT_MODE;
+        LEDState::PIT_MODE;
     }
     else if (note_DBool){
         curr_state = NOTE_DETECTED;
+        LEDState::NOTE_DETECTED;
     }
     else
     {
@@ -120,12 +128,12 @@ void Leds::analyzeDashboard() {
         curr_state = DEFAULT_STATE;
     }
 
-    table->PutBoolean("LED_State",curr_state);
+    //table->PutBoolean("LED_State",curr_state);
 }
 
 void Leds::assignOutputs() 
 {
-     switch(Leds::LEDState()) {
+     switch(curr_state) {
         case JAMMED:
             blinkin.SetPulseTime(JammedPulse);
             break;
