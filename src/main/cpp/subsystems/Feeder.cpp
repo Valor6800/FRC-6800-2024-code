@@ -18,6 +18,8 @@ Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _beamBreak) :
     valor::BaseSubsystem(_robot, "Feeder"),
     intakeMotor(CANIDs::INTERNAL_INTAKE, valor::NeutralMode::Coast, true),
     feederMotor(CANIDs::FEEDER, valor::NeutralMode::Brake, true),
+    currentSensor(_robot, subsystemName),
+
     beamBreak(_beamBreak),
     debounceSensor(_robot, "Feeder")
 {
@@ -47,7 +49,20 @@ void Feeder::init()
     table->PutNumber("Feeder Forward Power", FEEDER_FORWARD_POWER);
     table->PutNumber("Feeder Reverse Power", FEEDER_REVERSE_POWER);
 
+    currentSensor.setGetter([this]() {return intakeMotor.getCurrent(); });
+    currentSensor.setGetter([this]() {return feederMotor.getCurrent(); });
+
+    currentSensor.setSpikeCallback([this]() {return feederMotor.getCurrent(); });
+
+
+
     table->PutBoolean("Beam Trip", false);
+    table->PutBoolean("IntakeTest", false);
+
+    IntakeTest = false;
+
+
+
 }
 
 void Feeder::assessInputs()
@@ -84,20 +99,34 @@ void Feeder::analyzeDashboard()
 void Feeder::assignOutputs()
 {
     if(state.intakeState == ROLLER_STATE::INTAKE) {
+        IntakeTest = true;
+
         intakeMotor.setPower(state.intakeForwardSpeed);
     } else if(state.intakeState == ROLLER_STATE::OUTTAKE) {
+        IntakeTest = false;
+
         intakeMotor.setPower(state.intakeReverseSpeed);
     } else {
+        IntakeTest = false;
+
         intakeMotor.setPower(0);
     }
 
     if(state.feederState == ROLLER_STATE::INTAKE) {
+        IntakeTest = true;
         feederMotor.setPower(state.feederForwardSpeed);
     } else if(state.feederState == ROLLER_STATE::OUTTAKE) {
+        IntakeTest = false;
         feederMotor.setPower(state.feederReverseSpeed);
     } else {
+        IntakeTest = false;
+
         feederMotor.setPower(0);
     }
+    
+    table->PutBoolean("IntakeTest", IntakeTest);
+    table->PutBoolean("Beam Trip", isBeamBreakTriggered());
+
 }
 
 bool Feeder::isBeamBreakTriggered()

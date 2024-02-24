@@ -20,6 +20,8 @@
 #include <subsystems/Shooter.h>
 #include "subsystems/Feeder.h"
 #include "subsystems/Climber.h"
+#include "subsystems/Leds.h"
+
 
 #include <fstream>
 #include "frc/DigitalInput.h"
@@ -40,6 +42,7 @@ class Robot : public frc::TimedRobot {
         void AutonomousExit() override;
         
     private:
+        std::shared_ptr<nt::NetworkTable> nt_robot = nt::NetworkTableInstance::GetDefault().GetTable("Robot");
         valor::Gamepad gamepadOperator{OIConstants::GAMEPAD_OPERATOR_LOCATION};
         valor::Gamepad gamepadDriver{OIConstants::GAMEPAD_BASE_LOCATION};
 
@@ -52,4 +55,6 @@ class Robot : public frc::TimedRobot {
         Shooter shooter;
         Feeder feeder;
         Climber climber;
+        Leds leds;
+
 };
