@@ -111,8 +111,12 @@ void Feeder::assignOutputs()
     if(state.intakeState == ROLLER_STATE::INTAKE || state.intakeState == ROLLER_STATE::SHOOT) {
         intakeMotor.setPower(state.intakeForwardSpeed);
     } else if(state.intakeState == ROLLER_STATE::OUTTAKE) {
+        IntakeTest = false;
+
         intakeMotor.setPower(state.intakeReverseSpeed);
     } else {
+        IntakeTest = false;
+
         intakeMotor.setPower(0);
     }
     
@@ -121,8 +125,11 @@ void Feeder::assignOutputs()
     } else if(state.feederState == ROLLER_STATE::INTAKE) {
         feederMotor.setPower(state.beamTrip ? 0 : state.feederForwardSpeed);
     } else if(state.feederState == ROLLER_STATE::OUTTAKE) {
+        IntakeTest = false;
         feederMotor.setPower(state.feederReverseSpeed);
     } else {
+        IntakeTest = false;
+
         feederMotor.setPower(0);
     }
 

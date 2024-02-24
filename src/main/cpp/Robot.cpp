@@ -66,6 +66,7 @@ void Robot::DisabledPeriodic() { }
  * RobotContainer} class.
  */
 void Robot::AutonomousInit() {
+    nt_robot->PutBoolean("AutoIsOn", true);
     drivetrain.resetState();
     drivetrain.state.matchStart = frc::Timer::GetFPGATimestamp().to<double>();
     drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Brake);
