@@ -20,10 +20,6 @@
 
 
 
-#include <networktables/NetworkTable.h>
-#include <networktables/NetworkTableEntry.h>
-#include<networktables/NetworkTableInstance.h>
-
 
 class Feeder : public valor::BaseSubsystem
 {
