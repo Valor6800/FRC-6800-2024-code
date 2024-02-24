@@ -114,10 +114,8 @@ void Feeder::assignOutputs()
 
     if(state.feederState == ROLLER_STATE::INTAKE) {
         IntakeTest = true;
-        IntakeTest = true;
         feederMotor.setPower(state.feederForwardSpeed);
     } else if(state.feederState == ROLLER_STATE::OUTTAKE) {
-        IntakeTest = false;
         IntakeTest = false;
         feederMotor.setPower(state.feederReverseSpeed);
     } else {
