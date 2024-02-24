@@ -21,6 +21,8 @@
 #include "subsystems/Feeder.h"
 #include "subsystems/Climber.h"
 
+#include "subsystems/Leds.h"
+
 
 #include <fstream>
 #include "frc/DigitalInput.h"

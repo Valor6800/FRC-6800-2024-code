@@ -16,6 +16,14 @@
 #include <networktables/NetworkTableEntry.h>
 #include<networktables/NetworkTableInstance.h>
 
+#include "valkyrie/sensors/CurrentSensor.h"
+
+
+
+#include <networktables/NetworkTable.h>
+#include <networktables/NetworkTableEntry.h>
+#include<networktables/NetworkTableInstance.h>
+
 
 class Feeder : public valor::BaseSubsystem
 {
@@ -41,6 +49,8 @@ public:
         SHOOT,
         INTAKE,
         STAGNANT,
+        OUTTAKE,
+        SPIKED
         OUTTAKE,
         SPIKED
     };
