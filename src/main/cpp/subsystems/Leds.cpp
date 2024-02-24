@@ -14,6 +14,19 @@
 #define PITModePulse 1695.0_us // Sparkle, Color 2 on Color 1
 
 
+#define pulseTEST 1715.0_us 
+#define InitialPulse 1415.0_us // Breath, Red
+#define JammedPulse 1405.0_us // Heartbeat, Grey
+#define SpooledPulse 1815.0_us // Solid, Orange
+#define TrackingPulse 1865.0_us // Solid, Lime
+#define IntakingPulse 1875.0_us // Solid, Dark Green
+#define DeplayedPulse 1635.0_us // Two-color pattern: Heartbeat Fast
+#define Note_DetectedPulse 1605.0_us // Two-color pattern: Chasing Light
+#define Note_NOTDetectedPulse 1555.0_us // Default state during teleop LEDs: One color, Breath Fast
+#define AutoIsONPulse 1755.0_us // Twinkles (Color 1 and Color 2)
+#define PITModePulse 1695.0_us // Sparkle, Color 2 on Color 1
+
+
 
 
 Leds::Leds(frc::TimedRobot *_robot, Feeder *_feeder, Shooter *_shooter) : 
