@@ -47,8 +47,6 @@ public:
         STAGNANT,
         OUTTAKE,
         SPIKED
-        OUTTAKE,
-        SPIKED
     };
 
     struct x

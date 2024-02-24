@@ -20,8 +20,6 @@ Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _beamBreak) :
     feederMotor(CANIDs::FEEDER, valor::NeutralMode::Brake, true),
     currentSensor(_robot, subsystemName),
 
-    currentSensor(_robot, subsystemName),
-
     beamBreak(_beamBreak),
     debounceSensor(_robot, "Feeder")
 {
