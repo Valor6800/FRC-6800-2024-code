@@ -24,6 +24,7 @@ Robot::Robot() :
 
 void Robot::RobotInit() {
 
+
     drivetrain.setGamepads(&gamepadOperator, &gamepadDriver);
     drivetrain.resetState();
 
