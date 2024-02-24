@@ -14,14 +14,6 @@
 #include <networktables/NetworkTableEntry.h>
 #include<networktables/NetworkTableInstance.h>
 
-#include "valkyrie/sensors/CurrentSensor.h"
-
-
-
-#include <networktables/NetworkTable.h>
-#include <networktables/NetworkTableEntry.h>
-#include<networktables/NetworkTableInstance.h>
-
 
 class Feeder : public valor::BaseSubsystem
 {
@@ -47,8 +39,6 @@ public:
         STAGNANT,
         OUTTAKE,
         SPIKED
-        OUTTAKE,
-        SPIKED
     };
 
     struct x
@@ -71,6 +61,14 @@ private:
     valor::NeoController intakeMotor;
     frc::AnalogTrigger* beamBreak;
     valor::DebounceSensor debounceSensor;
+    valor::CurrentSensor currentSensor;
+
+
+
+
+    bool BeamBreakTriggered;
+    bool IntakeTest;
+
     valor::CurrentSensor currentSensor;
 
     bool IntakeTest;
