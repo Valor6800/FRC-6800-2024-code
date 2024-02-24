@@ -10,8 +10,6 @@
 #include "valkyrie/sensors/CurrentSensor.h"
 #include "frc/PWM.h"
 
-
-
 #include <networktables/NetworkTable.h>
 #include <networktables/NetworkTableEntry.h>
 #include<networktables/NetworkTableInstance.h>
