@@ -55,5 +55,4 @@ class Robot : public frc::TimedRobot {
         Shooter shooter;
         Feeder feeder;
         Leds leds;
-
 };
