@@ -67,16 +67,24 @@ private:
 
     units::microsecond_t pulseTEST = 1715.0_us;
 
-    units::microsecond_t InitialPulse = 1415.0_us;
-    units::microsecond_t JammedPulse = 1405.0_us;
-    units::microsecond_t SpooledPulse = 1815.0_us;
-    units::microsecond_t TrackingPulse = 1865.0_us;
-    units::microsecond_t IntakingPulse = 1875.0_us;
-    units::microsecond_t DeplayedPulse = 1635.0_us;
-    units::microsecond_t Note_DetectedPulse = 1605.0_us;
-    units::microsecond_t Note_NOTDetectedPulse = 1555.0_us; //default state during teleop
-    units::microsecond_t AutoIsONPulse = 1755.0_us;
-    units::microsecond_t PITModePulse = 1695.0_us;
+//breathing = slow range of brightness
+//heartbeat - rapid brightness change
+//Twinkle: random appearing and dissapearing pattern on LED string
+//sparkle: as name suggests, on solid colour
+//Solid - as name suggests
+//Colour one: red
+//Colour two: green
+
+    units::microsecond_t InitialPulse = 1415.0_us; //Breath, Red
+    units::microsecond_t JammedPulse = 1405.0_us; //Heartbeat, grey
+    units::microsecond_t SpooledPulse = 1815.0_us; //Solid, orange
+    units::microsecond_t TrackingPulse = 1865.0_us; //Solid, Lime
+    units::microsecond_t IntakingPulse = 1875.0_us; //Solid, Dark green
+    units::microsecond_t DeplayedPulse = 1635.0_us;//Two colour pattern: heartbeat fast
+    units::microsecond_t Note_DetectedPulse = 1605.0_us; //Two colour pattern: chasing light
+    units::microsecond_t Note_NOTDetectedPulse = 1555.0_us; //default state during teleop LEDS: one colour, breath fast
+    units::microsecond_t AutoIsONPulse = 1755.0_us; //twinkles (colour 1 and colour 2 )
+    units::microsecond_t PITModePulse = 1695.0_us; //sparkle, colour two on colour one
 
     double curr_state;
     double prev_state;
