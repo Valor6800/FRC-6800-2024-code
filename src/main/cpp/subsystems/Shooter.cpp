@@ -85,7 +85,7 @@ void Shooter::init()
 
     table->PutBoolean("Pit Mode", false);
 
-    //no tracking yet
+    //tracking not yet implemented
     table->PutBoolean("SpooledTest", false);
     table->PutBoolean("TrackingTest", false);
     table->PutBoolean("Pit Mode", false);
@@ -93,6 +93,7 @@ void Shooter::init()
     SpooledTest = false;
     TrackingTest = false;
     PitModeTest = false;
+
 
     resetState();
 }
@@ -108,10 +109,10 @@ void Shooter::assessInputs()
         driverGamepad->leftTriggerActive()) {
         state.flywheelState = FLYWHEEL_STATE::SPOOLED;
     } else if (operatorGamepad->GetStartButtonPressed()) {
-        SpooledTest = true;
+            SpooledTest = true;
         state.flywheelState = FLYWHEEL_STATE::SPOOLED;
     } else if (operatorGamepad->GetBackButtonPressed()) {
-        SpooledTest = false;
+                SpooledTest = false;
         state.flywheelState = FLYWHEEL_STATE::NOT_SHOOTING;
     } 
 
@@ -169,15 +170,17 @@ void Shooter::assignOutputs()
         pivotMotors->setPosition(state.setpoint);
     } else if (state.pitMode) {
         PitModeTest = true;
+
         pivotMotors->setPower(0);
     } else {
         PitModeTest = false;
+        PitModeTest = false;
         pivotMotors->setPosition(SUBWOOFER_ANG.to<double>());
     }
-
     table->PutBoolean("SpooledTest", SpooledTest);
     table->PutBoolean("TrackingTest", TrackingTest);
     table->PutBoolean("Pit Mode", PitModeTest);
+
 }
 
 void Shooter::calculatePivotAngle(){
