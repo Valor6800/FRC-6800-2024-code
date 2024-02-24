@@ -15,7 +15,7 @@ Robot::Robot() :
     climber(this),
     shooter(this, &climber,  &drivetrain),
     feeder(this, &beamBreak),
-    leds(this)
+    leds(this, &feeder, &shooter)
 
 {
     frc::TimedRobot();

@@ -116,14 +116,8 @@ void Feeder::assignOutputs()
 
         intakeMotor.setPower(0);
     }
-<<<<<<< HEAD
     
     if (state.feederState == ROLLER_STATE::SHOOT) {
-=======
-
-    if(state.feederState == ROLLER_STATE::INTAKE) {
-        IntakeTest = true;
->>>>>>> ae161de (LEDS)
         feederMotor.setPower(state.feederForwardSpeed);
     } else if(state.feederState == ROLLER_STATE::INTAKE) {
         feederMotor.setPower(state.beamTrip ? 0 : state.feederForwardSpeed);
