@@ -63,10 +63,6 @@ private:
     valor::DebounceSensor debounceSensor;
     valor::CurrentSensor currentSensor;
 
-
-
-
-    bool BeamBreakTriggered;
     bool IntakeTest;
 
     valor::CurrentSensor currentSensor;
