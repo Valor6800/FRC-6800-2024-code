@@ -34,28 +34,16 @@ public:
     Shooter(frc::TimedRobot *robot, Climber *_climber, Drivetrain *drivetrain);
 
     void resetState();
-
     void init();
-
     void assessInputs();
     void analyzeDashboard();
     void assignOutputs();
-
-    void calculatePivotAngle();
-
-
     bool getSpooledState();
     bool getTrackingState();
     bool getPitModeState();
-
     void calculatePivotAngle();
-
     void calculateRootsT();
     void bisectionTheorem();
-
-    bool getSpooledState();
-    bool getTrackingState();
-    bool getPitModeState();
     
     void InitSendable(wpi::SendableBuilder& builder);
 
