@@ -200,7 +200,16 @@ namespace Constants {
         static frc::Pose3d vanillaCameraPosition(){ switch (teamNumber) {
             case ALPHA_TEAM_NUMBER: return frc::Pose3d();
             case SIDE_SWIPE_TEAM_NUMBER: return frc::Pose3d(); // Temp value; TODO: Change it
-            default: return frc::Pose3d();
+            default: return frc::Pose3d(
+                0.31115_m, //x
+                0.3175_m, //y
+                0.6604_m, //z
+                frc::Rotation3d(
+                    0_deg,
+                    14.3_deg,
+                    0_deg
+                )
+            );
         }};
 
         static frc::Pose3d chocolateCameraPosition(){ switch (teamNumber) {
