@@ -1,6 +1,5 @@
 #include "subsystems/Leds.h"
 
-#define LED_LENGTH 62
 #define pulseTEST 1715.0_us 
 #define InitialPulse 1415.0_us // Breath, Red
 #define JammedPulse 1405.0_us // Heartbeat, Grey
