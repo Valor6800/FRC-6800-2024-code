@@ -59,7 +59,6 @@ private:
     const std::string kanimthree = "Three";
     std::string m_animationSelected;
 
-    static constexpr int kLength = 62;
 
     frc::PWM blinkin{9};
 
@@ -69,41 +68,21 @@ private:
     std::shared_ptr<nt::NetworkTable> nt_robot = nt::NetworkTableInstance::GetDefault().GetTable("Robot");
 
 
-    units::microsecond_t pulseTEST = 1715.0_us;
-
-//breathing = slow range of brightness
-//heartbeat - rapid brightness change
-//Twinkle: random appearing and dissapearing pattern on LED string
-//sparkle: as name suggests, on solid colour
-//Solid - as name suggests
-//Colour one: red
-//Colour two: green
-
-    units::microsecond_t InitialPulse = 1415.0_us; //Breath, Red
-    units::microsecond_t JammedPulse = 1405.0_us; //Heartbeat, grey
-    units::microsecond_t SpooledPulse = 1815.0_us; //Solid, orange
-    units::microsecond_t TrackingPulse = 1865.0_us; //Solid, Lime
-    units::microsecond_t IntakingPulse = 1875.0_us; //Solid, Dark green
-    units::microsecond_t DeplayedPulse = 1635.0_us;//Two colour pattern: heartbeat fast
-    units::microsecond_t Note_DetectedPulse = 1605.0_us; //Two colour pattern: chasing light
-    units::microsecond_t Note_NOTDetectedPulse = 1555.0_us; //default state during teleop LEDS: one colour, breath fast
-    units::microsecond_t AutoIsONPulse = 1755.0_us; //twinkles (colour 1 and colour 2 )
-    units::microsecond_t PITModePulse = 1695.0_us; //sparkle, colour two on colour one
-
+    
     double curr_state;
     double prev_state;
 
     //-----------STATES BOOLENAS----------------
-    bool SpooledBool = false;
-    bool SpikedBool = false;
-    bool IntakingBool = false;
-    bool DeployedBool = false;
-    bool Note_DBool = false;
-    bool Note_NOTetectedBool = false;
-    bool AutoIsONBool = false;
+    bool spooledBool = false;
+    bool spikedBool = false;
+    bool intakingBool = false;
+    bool deployedBool = false;
+    bool note_DBool = false;
+    bool note_NOTetectedBool = false;
+    bool autoIsONBool = false;
     bool PITModeBool = false;
-    bool TrackingBool = false;
-    bool JammedBool = false;
+    bool trackingBool = false;
+    bool jammedBool = false;
 
     Feeder* feeder;
     Shooter* shooter;
