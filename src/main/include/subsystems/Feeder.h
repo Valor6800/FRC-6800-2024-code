@@ -7,6 +7,11 @@
 #include <frc/DigitalInput.h>
 #include <frc/PWM.h>
 
+#include <networktables/NetworkTable.h>
+#include <networktables/NetworkTableEntry.h>
+#include<networktables/NetworkTableInstance.h>
+
+
 class Feeder : public valor::BaseSubsystem
 {
 public:
@@ -54,4 +59,7 @@ private:
     valor::NeoController feederMotor;
     valor::NeoController intakeMotor;
     frc::AnalogTrigger* beamBreak;
+
+    bool BeamBreakTriggered;
+    bool IntakeTest;
 };
