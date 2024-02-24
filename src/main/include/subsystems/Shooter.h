@@ -87,9 +87,9 @@ private:
     valor::NeoController leftFlywheelMotor;
     valor::NeoController rightFlywheelMotor;
 
-    bool SpooledTest;
-    bool TrackingTest;
-    bool PitModeTest = false;
+    bool spooledTest;
+    bool trackingTest;
+    bool pitModeTest = false;
 
 };
 

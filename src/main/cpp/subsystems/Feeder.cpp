@@ -63,10 +63,10 @@ void Feeder::init()
 
     currentSensor.setGetter([this]() {return intakeMotor.getCurrent(); });
     currentSensor.setGetter([this]() {return feederMotor.getCurrent(); });
+    //currentSensor.setSpikeCallback([this]() {return feederMotor.getCurrent(); });
 
-    currentSensor.setSpikeCallback([this]() {return feederMotor.getCurrent(); });
 
-    IntakeTest = false;
+    intakeTest = false;
 
 }
 
@@ -114,11 +114,8 @@ void Feeder::assignOutputs()
     if(state.intakeState == ROLLER_STATE::INTAKE || state.intakeState == ROLLER_STATE::SHOOT) {
         intakeMotor.setPower(state.intakeForwardSpeed);
     } else if(state.intakeState == ROLLER_STATE::OUTTAKE) {
-        IntakeTest = false;
-
         intakeMotor.setPower(state.intakeReverseSpeed);
     } else {
-        IntakeTest = false;
         intakeMotor.setPower(0);
     }
     
@@ -127,11 +124,27 @@ void Feeder::assignOutputs()
     } else if(state.feederState == ROLLER_STATE::INTAKE) {
         feederMotor.setPower(state.beamTrip ? 0 : state.feederForwardSpeed);
     } else if(state.feederState == ROLLER_STATE::OUTTAKE) {
-        IntakeTest = false;
         feederMotor.setPower(state.feederReverseSpeed);
     } else {
-        IntakeTest = false;
         feederMotor.setPower(0);
+    }
+
+    switch(state.intakeState) {
+        case ROLLER_STATE::INTAKE:
+            intakeTest = true;
+        case ROLLER_STATE::OUTTAKE:
+            intakeTest = false;
+        default:
+            intakeTest = false;
+    }
+
+    switch(state.feederState) {
+        case ROLLER_STATE::INTAKE:
+            intakeTest = true;
+        case ROLLER_STATE::OUTTAKE:
+            intakeTest = false;
+        default:
+            intakeTest = false;
     }
 
     isBeamBreakTriggered();
@@ -145,7 +158,7 @@ bool Feeder::isBeamBreakTriggered()
 
 bool Feeder::isIntake()
 {
-    return IntakeTest;
+    return intakeTest;
 }
 
 void Feeder::InitSendable(wpi::SendableBuilder& builder)

@@ -70,6 +70,6 @@ private:
     valor::CurrentSensor currentSensor;
 
     bool BeamBreakTriggered;
-    bool IntakeTest;
+    bool intakeTest;
 
 };

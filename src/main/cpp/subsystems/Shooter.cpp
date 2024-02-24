@@ -83,9 +83,10 @@ void Shooter::init()
 
     table->PutNumber("Setpoint", 50);
 
-    SpooledTest = false;
-    TrackingTest = false;
-    PitModeTest = false;
+    //LED States
+    spooledTest = false;
+    trackingTest = false;
+    pitModeTest = false;
 
     resetState();
 }
@@ -101,10 +102,10 @@ void Shooter::assessInputs()
         driverGamepad->leftTriggerActive()) {
         state.flywheelState = FLYWHEEL_STATE::SPOOLED;
     } else if (operatorGamepad->GetStartButtonPressed()) {
-        SpooledTest = true;
+        spooledTest = true;
         state.flywheelState = FLYWHEEL_STATE::SPOOLED;
     } else if (operatorGamepad->GetBackButtonPressed()) {
-        SpooledTest = false;
+        spooledTest = false;
         state.flywheelState = FLYWHEEL_STATE::NOT_SHOOTING;
     } 
 
@@ -133,10 +134,10 @@ void Shooter::analyzeDashboard()
     state.setpoint = table->GetNumber("Setpoint", 50);
 
     if (state.pitMode && !lastPitMode) {
-        PitModeTest = true;
+        pitModeTest = true;
         pivotMotors->setNeutralMode(valor::NeutralMode::Coast);
     } else if (lastPitMode && !state.pitMode) {
-        PitModeTest = false;
+        pitModeTest = false;
         pivotMotors->setNeutralMode(valor::NeutralMode::Brake);
     }
     calculatePivotAngle();
@@ -163,11 +164,11 @@ void Shooter::assignOutputs()
     } else if(state.pivotState == PIVOT_STATE::MANUAL) {
         pivotMotors->setPosition(state.setpoint);
     } else if (state.pitMode) {
-        PitModeTest = true;
+        pitModeTest = true;
 
         pivotMotors->setPower(0);
     } else {
-        PitModeTest = false;
+        pitModeTest = false;
         pivotMotors->setPosition(SUBWOOFER_ANG.to<double>());
     }
 
@@ -192,15 +193,15 @@ void Shooter::bisectionTheorem(){
 }
 
 bool Shooter::getSpooledState(){
-    return SpooledTest;
+    return spooledTest;
 }
 
 bool Shooter::getTrackingState(){
-    return TrackingTest;
+    return trackingTest;
 }
 
 bool Shooter::getPitModeState(){
-    return PitModeTest;
+    return pitModeTest;
 }
 
 void Shooter::InitSendable(wpi::SendableBuilder& builder){
