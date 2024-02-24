@@ -57,14 +57,8 @@ void Feeder::init()
 
     currentSensor.setGetter([this]() {return intakeMotor.getCurrent(); });
     currentSensor.setGetter([this]() {return feederMotor.getCurrent(); });
-    //currentSensor.setSpikeCallback([this]() {return feederMotor.getCurrent(); });
+    currentSensor.setSpikeCallback([this]() { state.intakeState = SPIKED;});
 
-
-
-
-    table->PutBoolean("Beam Trip", false);
-    table->PutBoolean("IntakeTest", false);
-    intakeTest = false;
 
     intakeTest = false;
 }
