@@ -42,6 +42,10 @@ class Robot : public frc::TimedRobot {
         void AutonomousExit() override;
         
     private:
+<<<<<<< HEAD
+=======
+        std::shared_ptr<nt::NetworkTable> nt_robot = nt::NetworkTableInstance::GetDefault().GetTable("Robot");
+>>>>>>> af1c80c (rebasing for merge)
         valor::Gamepad gamepadOperator{OIConstants::GAMEPAD_OPERATOR_LOCATION};
         valor::Gamepad gamepadDriver{OIConstants::GAMEPAD_BASE_LOCATION};
 
