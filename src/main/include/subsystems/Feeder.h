@@ -8,8 +8,6 @@
 #include "valkyrie/sensors/DebounceSensor.h"
 #include "valkyrie/sensors/CurrentSensor.h"
 
-
-
 #include <networktables/NetworkTable.h>
 #include <networktables/NetworkTableEntry.h>
 #include<networktables/NetworkTableInstance.h>
