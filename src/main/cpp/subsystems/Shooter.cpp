@@ -81,25 +81,10 @@ void Shooter::init()
 
     table->PutBoolean("Pit Mode", false);
 
-    //tracking not yet implemented
-    table->PutBoolean("SpooledTest", false);
-    table->PutBoolean("TrackingTest", false);
-    table->PutBoolean("Pit Mode", false);
-
+    //LED States
     SpooledTest = false;
     TrackingTest = false;
     PitModeTest = false;
-
-
-    //tracking not yet implemented
-    table->PutBoolean("SpooledTest", false);
-    table->PutBoolean("TrackingTest", false);
-    table->PutBoolean("Pit Mode", false);
-
-    SpooledTest = false;
-    TrackingTest = false;
-    PitModeTest = false;
-
 
     resetState();
 }
@@ -112,16 +97,13 @@ void Shooter::assessInputs()
 
     //SHOOT LOGIC
     if (driverGamepad->rightTriggerActive() || operatorGamepad->rightTriggerActive()) {
-            SpooledTest = true;
-            SpooledTest = true;
+        SpooledTest = true;
         state.flywheelState = FLYWHEEL_STATE::SPOOLED;
     } else if (operatorGamepad->GetStartButtonPressed()) {
-            SpooledTest = true;
-            SpooledTest = true;
+        SpooledTest = true;
         state.flywheelState = FLYWHEEL_STATE::SPOOLED;
     } else if (operatorGamepad->GetBackButtonPressed()) {
-                SpooledTest = false;
-                SpooledTest = false;
+        SpooledTest = false;
         state.flywheelState = FLYWHEEL_STATE::NOT_SHOOTING;
     } 
 
@@ -146,8 +128,10 @@ void Shooter::analyzeDashboard()
     state.pitMode = table->GetBoolean("Pit Mode", false);
 
     if (state.pitMode && !lastPitMode) {
+        PitModeTest = true;
         pivotMotors->setNeutralMode(valor::NeutralMode::Coast);
     } else if (lastPitMode && !state.pitMode) {
+        PitModeTest = false;
         pivotMotors->setNeutralMode(valor::NeutralMode::Brake);
     }
 }
@@ -173,22 +157,15 @@ void Shooter::assignOutputs()
     } else if (state.pitMode) {
         PitModeTest = true;
 
-        PitModeTest = true;
-
         pivotMotors->setPower(0);
     } else {
         PitModeTest = false;
-        PitModeTest = false;
         pivotMotors->setPosition(SUBWOOFER_ANG.to<double>());
     }
-    table->PutBoolean("SpooledTest", SpooledTest);
-    table->PutBoolean("TrackingTest", TrackingTest);
-    table->PutBoolean("Pit Mode", PitModeTest);
 
-    table->PutBoolean("SpooledTest", SpooledTest);
-    table->PutBoolean("TrackingTest", TrackingTest);
-    table->PutBoolean("Pit Mode", PitModeTest);
-
+    getSpooledState();
+    getTrackingState();
+    getPitModeState();
 }
 
 units::degree_t Shooter::calculatePivotAngle(){
@@ -202,6 +179,18 @@ void Shooter::calculateRootsT(){
 
 void Shooter::bisectionTheorem(){
     // neccessary for calculateRootsT where the bisection method is used to estimate these values
+}
+
+bool Shooter::getSpooledState(){
+    return SpooledTest;
+}
+
+bool Shooter::getTrackingState(){
+    return TrackingTest;
+}
+
+bool Shooter::getPitModeState(){
+    return PitModeTest;
 }
 
 void Shooter::InitSendable(wpi::SendableBuilder& builder){
