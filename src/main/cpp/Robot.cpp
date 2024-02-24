@@ -16,12 +16,15 @@ Robot::Robot() :
     feeder(this, &beamBreak),
     climber(this),
     leds(this)
+
 {
     frc::TimedRobot();
     beamBreak.SetLimitsVoltage(4, 14);
 }
 
 void Robot::RobotInit() {
+
+
     drivetrain.setGamepads(&gamepadOperator, &gamepadDriver);
     drivetrain.resetState();
 
@@ -65,7 +68,6 @@ void Robot::DisabledPeriodic() { }
  */
 void Robot::AutonomousInit() {
     nt_robot->PutBoolean("AutoIsOn", true);
-
     drivetrain.resetState();
     drivetrain.state.matchStart = frc::Timer::GetFPGATimestamp().to<double>();
     drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Brake);
@@ -79,6 +81,7 @@ void Robot::AutonomousInit() {
 
 void Robot::AutonomousExit() {
     nt_robot->PutBoolean("AutoIsOn", false);
+
     drivetrain.state.xPose = true;
 }
 
@@ -87,6 +90,7 @@ void Robot::AutonomousPeriodic() {
 
 void Robot::TeleopInit() {
     nt_robot->PutBoolean("AutoIsOn", false);
+
     drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Coast);
 
     shooter.resetState();

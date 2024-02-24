@@ -6,6 +6,9 @@
 #include "valkyrie/controllers/NeoController.h"
 #include <frc/DigitalInput.h>
 #include "valkyrie/sensors/DebounceSensor.h"
+#include "valkyrie/sensors/CurrentSensor.h"
+
+
 
 #include <networktables/NetworkTable.h>
 #include <networktables/NetworkTableEntry.h>
@@ -31,7 +34,8 @@ public:
     {
         INTAKE,
         STAGNANT,
-        OUTTAKE
+        OUTTAKE,
+        SPIKED
     };
 
     struct x
@@ -56,7 +60,12 @@ private:
     valor::NeoController intakeMotor;
     frc::AnalogTrigger* beamBreak;
     valor::DebounceSensor debounceSensor;
+    valor::CurrentSensor currentSensor;
+
+
+
 
     bool BeamBreakTriggered;
     bool IntakeTest;
+
 };

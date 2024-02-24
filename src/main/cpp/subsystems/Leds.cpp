@@ -58,6 +58,9 @@ void Leds::analyzeDashboard() {
 
     IntakingBool = nt_feeder->GetBoolean("IntakeTest", false);
     Note_DBool = nt_feeder->GetBoolean("Beam Trip", false);
+    SpikedBool = nt_feeder->GetBoolean("SpikedTest", false);
+
+
 
     m_animationSelected = m_chooser.GetSelected();
 
@@ -173,3 +176,4 @@ void Leds::InitSendable(wpi::SendableBuilder& builder) {
         nullptr
     );
 }
+

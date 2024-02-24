@@ -19,6 +19,7 @@
 #include <networktables/NetworkTableEntry.h>
 #include<networktables/NetworkTableInstance.h>
 
+
 #include <frc2/command/FunctionalCommand.h>
 #include <unordered_map>
 #include "valkyrie/Gamepad.h"
@@ -78,4 +79,6 @@ private:
     bool SpooledTest;
     bool TrackingTest;
     bool PitModeTest = false;
+
 };
+
