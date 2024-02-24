@@ -43,7 +43,6 @@ class Robot : public frc::TimedRobot {
         
     private:
         std::shared_ptr<nt::NetworkTable> nt_robot = nt::NetworkTableInstance::GetDefault().GetTable("Robot");
-        std::shared_ptr<nt::NetworkTable> nt_robot = nt::NetworkTableInstance::GetDefault().GetTable("Robot");
         valor::Gamepad gamepadOperator{OIConstants::GAMEPAD_OPERATOR_LOCATION};
         valor::Gamepad gamepadDriver{OIConstants::GAMEPAD_BASE_LOCATION};
 
