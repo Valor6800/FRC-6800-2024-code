@@ -29,7 +29,6 @@ Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _beamBreak) :
 
 void Feeder::resetState()
 {
-    blinkin.SetPulseTime(LED_OFF);
     state.intakeState = STAGNANT;
     state.feederState = STAGNANT;
 }
@@ -80,9 +79,7 @@ void Feeder::assessInputs()
 }
 
 void Feeder::analyzeDashboard()
-{
-    blinkin.SetPulseTime(isBeamBreakTriggered() ? LED_ON : LED_OFF);
-    
+{    
     state.intakeForwardSpeed = table->GetNumber("Intake Forward Power", INTAKE_FORWARD_POWER);
     state.intakeReverseSpeed = table->GetNumber("Intake Reverse Power", INTAKE_REVERSE_POWER);
 
@@ -119,8 +116,6 @@ void Feeder::assignOutputs()
     switch(state.intakeState) {
         case ROLLER_STATE::INTAKE:
             intakeTest = true;
-        case ROLLER_STATE::OUTTAKE:
-            intakeTest = false;
         default:
             intakeTest = false;
     }
@@ -128,8 +123,6 @@ void Feeder::assignOutputs()
     switch(state.feederState) {
         case ROLLER_STATE::INTAKE:
             intakeTest = true;
-        case ROLLER_STATE::OUTTAKE:
-            intakeTest = false;
         default:
             intakeTest = false;
     }

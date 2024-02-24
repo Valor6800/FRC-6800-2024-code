@@ -102,12 +102,17 @@ void Shooter::assessInputs()
         driverGamepad->leftTriggerActive()) {
         state.flywheelState = FLYWHEEL_STATE::SPOOLED;
     } else if (operatorGamepad->GetStartButtonPressed()) {
-        spooledTest = true;
         state.flywheelState = FLYWHEEL_STATE::SPOOLED;
     } else if (operatorGamepad->GetBackButtonPressed()) {
-        spooledTest = false;
         state.flywheelState = FLYWHEEL_STATE::NOT_SHOOTING;
     } 
+
+    switch(state.flywheelState) {
+    case FLYWHEEL_STATE::SPOOLED:
+        spooledTest = true;
+    default:
+        spooledTest = false;
+    }
 
     //PIVOT LOGIC
     if (operatorGamepad->GetAButton()) {// || driverGamepad->GetAButton()) {
@@ -122,6 +127,13 @@ void Shooter::assessInputs()
         state.pivotState = PIVOT_STATE::TRACKING;
     } else {
         state.pivotState = PIVOT_STATE::DISABLED;
+    }
+
+    switch(state.pivotState) {
+    case PIVOT_STATE::TRACKING:
+        trackingTest = true;
+    default:
+        trackingTest = false;
     }
     
 }

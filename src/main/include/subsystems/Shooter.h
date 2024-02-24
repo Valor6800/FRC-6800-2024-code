@@ -89,7 +89,7 @@ private:
 
     bool spooledTest;
     bool trackingTest;
-    bool pitModeTest = false;
+    bool pitModeTest;
 
 };
 

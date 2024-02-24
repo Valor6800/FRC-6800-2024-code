@@ -10,8 +10,6 @@
 #include "valkyrie/sensors/CurrentSensor.h"
 #include "frc/PWM.h"
 
-
-
 #include <networktables/NetworkTable.h>
 #include <networktables/NetworkTableEntry.h>
 #include<networktables/NetworkTableInstance.h>
@@ -59,10 +57,6 @@ public:
     } state;
 
 private:
-    units::microsecond_t LED_OFF = 1815.0_us;
-    units::microsecond_t LED_ON = 1865.0_us;
-    frc::PWM blinkin{DIOPorts::BLINKIN};
-
     valor::NeoController feederMotor;
     valor::NeoController intakeMotor;
     frc::AnalogTrigger* beamBreak;
