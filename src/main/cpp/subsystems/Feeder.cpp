@@ -48,6 +48,9 @@ void Feeder::init()
     table->PutNumber("Feeder Reverse Power", FEEDER_REVERSE_POWER);
 
     table->PutBoolean("Beam Trip", false);
+    table->PutBoolean("IntakeTest", false);
+
+    IntakeTest = false;
 }
 
 void Feeder::assessInputs()
@@ -84,20 +87,29 @@ void Feeder::analyzeDashboard()
 void Feeder::assignOutputs()
 {
     if(state.intakeState == ROLLER_STATE::INTAKE) {
+        IntakeTest = true;
         intakeMotor.setPower(state.intakeForwardSpeed);
     } else if(state.intakeState == ROLLER_STATE::OUTTAKE) {
+        IntakeTest = false;
         intakeMotor.setPower(state.intakeReverseSpeed);
     } else {
+        IntakeTest = false;
         intakeMotor.setPower(0);
     }
 
     if(state.feederState == ROLLER_STATE::INTAKE) {
+        IntakeTest = true;
         feederMotor.setPower(state.feederForwardSpeed);
     } else if(state.feederState == ROLLER_STATE::OUTTAKE) {
+        IntakeTest = false;
         feederMotor.setPower(state.feederReverseSpeed);
     } else {
+        IntakeTest = false;
         feederMotor.setPower(0);
     }
+
+    table->PutBoolean("IntakeTest", IntakeTest);
+    table->PutBoolean("Beam Trip", isBeamBreakTriggered());
 }
 
 bool Feeder::isBeamBreakTriggered()

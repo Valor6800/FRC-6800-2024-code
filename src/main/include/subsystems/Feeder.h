@@ -7,6 +7,11 @@
 #include <frc/DigitalInput.h>
 #include "valkyrie/sensors/DebounceSensor.h"
 
+#include <networktables/NetworkTable.h>
+#include <networktables/NetworkTableEntry.h>
+#include<networktables/NetworkTableInstance.h>
+
+
 class Feeder : public valor::BaseSubsystem
 {
 public:
@@ -51,4 +56,7 @@ private:
     valor::NeoController intakeMotor;
     frc::AnalogTrigger* beamBreak;
     valor::DebounceSensor debounceSensor;
+
+    bool BeamBreakTriggered;
+    bool IntakeTest;
 };

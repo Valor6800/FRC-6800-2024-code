@@ -15,6 +15,10 @@
 #include <frc/trajectory/TrajectoryGenerator.h>
 #include <frc/DigitalOutput.h>
 
+#include <networktables/NetworkTable.h>
+#include <networktables/NetworkTableEntry.h>
+#include<networktables/NetworkTableInstance.h>
+
 #include <frc2/command/FunctionalCommand.h>
 #include <unordered_map>
 #include "valkyrie/Gamepad.h"
@@ -70,4 +74,8 @@ private:
 
     valor::NeoController leftFlywheelMotor;
     valor::NeoController rightFlywheelMotor;
+
+    bool SpooledTest;
+    bool TrackingTest;
+    bool PitModeTest = false;
 };
