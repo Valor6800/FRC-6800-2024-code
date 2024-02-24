@@ -59,7 +59,7 @@ private:
     std::string m_animationSelected;
 
 
-    frc::PWM blinkin{DIOPorts::LED_PORT_ID};
+    frc::PWM blinkin{DIOPorts::BLINKIN};
     
     LEDState currState;
 

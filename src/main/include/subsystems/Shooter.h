@@ -49,10 +49,6 @@ public:
 
     void calculateRootsT();
     void bisectionTheorem();
-
-    bool getSpooledState();
-    bool getTrackingState();
-    bool getPitModeState();
     
     void InitSendable(wpi::SendableBuilder& builder);
 
