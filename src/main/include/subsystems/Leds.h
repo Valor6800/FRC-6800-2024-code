@@ -11,6 +11,9 @@
 
 #include "valkyrie/sensors/CurrentSensor.h"
 #include "valkyrie/BaseSubsystem.h"
+#include "subsystems/Shooter.h"
+#include "subsystems/Climber.h"
+#include "subsystems/Feeder.h"
 
 #include <networktables/NetworkTable.h>
 #include <networktables/NetworkTableEntry.h>
@@ -19,7 +22,7 @@
 class Leds : public valor::BaseSubsystem
 {
 public:
-    Leds(frc::TimedRobot *robot);
+    Leds(frc::TimedRobot *robot, Shooter *_shooter, Feeder *_feeder, Climber *_climber);
 
     ~Leds();
 
@@ -101,4 +104,7 @@ private:
     bool TrackingBool = false;
     bool JammedBool = false;
 
+    Shooter* shooter;
+    Climber* climber;
+    Feeder* feeder;
 };

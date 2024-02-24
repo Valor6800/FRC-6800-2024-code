@@ -3,7 +3,8 @@
 #define LED_LENGTH 62
 
 
-Leds::Leds(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Leds")
+Leds::Leds(frc::TimedRobot *_robot, Shooter *_shooter, Feeder *_feeder, Climber *_climber) : 
+valor::BaseSubsystem(_robot, "Leds"), shooter(_shooter), feeder(_feeder), climber(_climber) // new Shooter(robot, "shooter")
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -46,10 +47,6 @@ void Leds::assessInputs() {
 
 void Leds::analyzeDashboard() {
     //add logic when code added for it
-    //Note_DBool = table->GetBoolean("Note_D", false);    
-    //PITModeBool = table->GetBoolean("PIT_MODE", false);
-    // DeployedBool = nt_intake->GetBoolean("DeplayedTest", false);
-    // SpikedBool = nt_intake->GetBoolean("SpikedTest", false);
 
     TrackingBool = nt_shooter->GetBoolean("TrackingTest", false);
     SpooledBool = nt_shooter->GetBoolean("SpooledTest", false);
@@ -64,8 +61,7 @@ void Leds::analyzeDashboard() {
 
     m_animationSelected = m_chooser.GetSelected();
 
-    //selected states(Pulases are picked at random, to test) 
-    //intake->state.intakeState == Intake::INTAKE_STATE::SPIKED
+    
     if (SpikedBool){
         curr_state = JAMMED;
     }
