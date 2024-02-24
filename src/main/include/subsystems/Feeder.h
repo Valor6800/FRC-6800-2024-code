@@ -6,6 +6,7 @@
 #include "valkyrie/controllers/NeoController.h"
 #include <frc/DigitalInput.h>
 #include "valkyrie/sensors/DebounceSensor.h"
+
 #include "valkyrie/sensors/CurrentSensor.h"
 #include "frc/PWM.h"
 
