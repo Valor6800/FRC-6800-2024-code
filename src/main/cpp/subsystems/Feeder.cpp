@@ -50,17 +50,12 @@ void Feeder::init()
     table->PutNumber("Feeder Reverse Power", FEEDER_REVERSE_POWER);
 
 
-
-
-
-
-
     currentSensor.setGetter([this]() {return intakeMotor.getCurrent(); });
     currentSensor.setGetter([this]() {return feederMotor.getCurrent(); });
+    //currentSensor.setSpikeCallback([this]() {return feederMotor.getCurrent(); });
 
-    currentSensor.setSpikeCallback([this]() {return feederMotor.getCurrent(); });
 
-    IntakeTest = false;
+    intakeTest = false;
 
 }
 
@@ -98,27 +93,37 @@ void Feeder::analyzeDashboard()
 void Feeder::assignOutputs()
 {
     if(state.intakeState == ROLLER_STATE::INTAKE) {
-        IntakeTest = true;
-
         intakeMotor.setPower(state.intakeForwardSpeed);
     } else if(state.intakeState == ROLLER_STATE::OUTTAKE) {
-        IntakeTest = false;
-
         intakeMotor.setPower(state.intakeReverseSpeed);
     } else {
-        IntakeTest = false;
         intakeMotor.setPower(0);
     }
 
     if(state.feederState == ROLLER_STATE::INTAKE) {
-        IntakeTest = true;
         feederMotor.setPower(state.feederForwardSpeed);
     } else if(state.feederState == ROLLER_STATE::OUTTAKE) {
-        IntakeTest = false;
         feederMotor.setPower(state.feederReverseSpeed);
     } else {
-        IntakeTest = false;
         feederMotor.setPower(0);
+    }
+
+    switch(state.intakeState) {
+        case ROLLER_STATE::INTAKE:
+            intakeTest = true;
+        case ROLLER_STATE::OUTTAKE:
+            intakeTest = false;
+        default:
+            intakeTest = false;
+    }
+
+    switch(state.feederState) {
+        case ROLLER_STATE::INTAKE:
+            intakeTest = true;
+        case ROLLER_STATE::OUTTAKE:
+            intakeTest = false;
+        default:
+            intakeTest = false;
     }
 
     isBeamBreakTriggered();
@@ -132,7 +137,7 @@ bool Feeder::isBeamBreakTriggered()
 
 bool Feeder::isIntake()
 {
-    return IntakeTest;
+    return intakeTest;
 }
 
 void Feeder::InitSendable(wpi::SendableBuilder& builder)

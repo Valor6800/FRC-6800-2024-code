@@ -62,6 +62,6 @@ private:
     valor::DebounceSensor debounceSensor;
     valor::CurrentSensor currentSensor;
 
-    bool IntakeTest;
+    bool intakeTest;
 
 };
