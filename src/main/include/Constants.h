@@ -127,7 +127,7 @@ namespace Constants {
         static units::meter_t driveBaseRadius(){ switch (teamNumber){
             case ALPHA_TEAM_NUMBER: return 0.36_m; 
             case SIDE_SWIPE_TEAM_NUMBER: return 0.3_m; // Temp value; TODO: Change it
-            default: return 0.3_m; // Temp number; TODO: Change it
+            default: return 0.4175_m;
         }};
 
         static std::vector<bool> swerveDrivesReversals(){ switch (teamNumber){
