@@ -174,7 +174,6 @@ void Shooter::assignOutputs()
         pivotMotors->setPower(0);
     } else {
         PitModeTest = false;
-        PitModeTest = false;
         pivotMotors->setPosition(SUBWOOFER_ANG.to<double>());
     }
     table->PutBoolean("SpooledTest", SpooledTest);
