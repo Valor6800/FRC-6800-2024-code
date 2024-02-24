@@ -5,6 +5,7 @@
 #include "Constants.h"
 #include "valkyrie/controllers/NeoController.h"
 #include <frc/DigitalInput.h>
+#include <frc/PWM.h>
 
 class Feeder : public valor::BaseSubsystem
 {
@@ -23,6 +24,7 @@ public:
 
     enum ROLLER_STATE
     {
+        SHOOT,
         INTAKE,
         STAGNANT,
         OUTTAKE
@@ -43,6 +45,9 @@ public:
     } state;
 
 private:
+    units::microsecond_t LED_OFF = 1815.0_us;
+    units::microsecond_t LED_ON = 1865.0_us;
+    frc::PWM blinkin{DIOPorts::BLINKIN};
 
     bool isBeamBreakTriggered();
 

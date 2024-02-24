@@ -61,6 +61,7 @@ public:
     struct x
     {
         bool pitMode;
+        double setpoint;
         PIVOT_STATE pivotState;
         FLYWHEEL_STATE flywheelState;
         units::degree_t pivotAngle;

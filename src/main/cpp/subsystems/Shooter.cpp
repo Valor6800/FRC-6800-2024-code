@@ -6,7 +6,7 @@
 
 #define PIVOT_ROTATE_K_VEL 81.36f
 #define PIVOT_ROTATE_K_ACC 8136.0f
-#define PIVOT_ROTATE_K_P 1.0f
+#define PIVOT_ROTATE_K_P 3.0f
 #define PIVOT_ROTATE_K_ERROR 0.0f
 #define PIVOT_ROTATE_K_AFF 0.0f
 #define PIVOT_ROTATE_K_AFF_POS 0.0f
@@ -14,8 +14,8 @@
 #define PIVOT_CANCODER_GEAR_RATIO 2.0f
 #define PIVOT_MAGNET_OFFSET 0.5168f
 #define PIVOT_GEAR_RATIO 470.4f
-#define PIVOT_REVERSE_LIMIT 68.00f
-#define PIVOT_FORWARD_LIMIT 29.0f
+#define PIVOT_REVERSE_LIMIT 80.00f
+#define PIVOT_FORWARD_LIMIT 20.0f
 
 #define FLYWHEEL_ROTATE_K_VEL 75.0f
 #define FLYWHEEL_ROTATE_K_ACC 75.0f
@@ -80,6 +80,8 @@ void Shooter::init()
     pivotMotors->setupCANCoder(CANIDs::SHOOTER_CANCODER, PIVOT_MAGNET_OFFSET, PIVOT_CANCODER_GEAR_RATIO / 360.0, true, "baseCAN");
     pivotMotors->setRange(0, PIVOT_FORWARD_LIMIT, PIVOT_REVERSE_LIMIT);
 
+    table->PutNumber("Setpoint", 50);
+
     table->PutBoolean("Pit Mode", false);
 
     resetState();
@@ -105,9 +107,9 @@ void Shooter::assessInputs()
         state.pivotState = PIVOT_STATE::SUBWOOFER;
     } else if (operatorGamepad->GetBButton() || driverGamepad->GetRightBumper()) {
         state.pivotState = PIVOT_STATE::PODIUM;
-    } else if (operatorGamepad->GetYButton() || climber->climbMotor.getPosition() > 1.0) { 
+    } else if (operatorGamepad->GetYButton()) {// || climber->climbMotor.getPosition() > 1.0) { 
         state.pivotState = PIVOT_STATE::WING;
-    } else if (driverGamepad->leftTriggerActive() || operatorGamepad->leftTriggerActive()) {
+    } else if (operatorGamepad->GetXButton()) {
         state.pivotState = PIVOT_STATE::TRACKING;
     } else {
         state.pivotState = PIVOT_STATE::DISABLED;
@@ -119,6 +121,8 @@ void Shooter::analyzeDashboard()
 {
     bool lastPitMode = state.pitMode;
     state.pitMode = table->GetBoolean("Pit Mode", false);
+
+    state.setpoint = table->GetNumber("Setpoint", 50);
 
     if (state.pitMode && !lastPitMode) {
         pivotMotors->setNeutralMode(valor::NeutralMode::Coast);
@@ -143,8 +147,8 @@ void Shooter::assignOutputs()
         pivotMotors->setPosition(PODIUM_ANG.to<double>());
     } else if(state.pivotState == PIVOT_STATE::WING){
         pivotMotors->setPosition(WING_ANG.to<double>());
-    // } else if(state.pivotState == PIVOT_STATE::TRACKING) {
-    //     pivotMotors->setPosition(state.calculatingPivotingAngle.to<double>());
+    } else if(state.pivotState == PIVOT_STATE::TRACKING) {
+        pivotMotors->setPosition(state.setpoint);
     } else if (state.pitMode) {
         pivotMotors->setPower(0);
     } else {

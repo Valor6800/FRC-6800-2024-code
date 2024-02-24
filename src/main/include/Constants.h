@@ -55,6 +55,7 @@ namespace DIOPorts {
     constexpr static int MAG_ENCODER_PORTS[4] = {1, 2, 3, 4};
     constexpr static int BEAM_BREAK_PORT = 0;
     constexpr static int HALL_EFFECT = 2; //rando number
+    constexpr static int BLINKIN = 0;
 }
 
 namespace AnalogPorts {
