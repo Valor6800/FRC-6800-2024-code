@@ -1,6 +1,19 @@
 #include "subsystems/Leds.h"
 
 #define LED_LENGTH 62
+#define pulseTEST 1715.0_us 
+#define InitialPulse 1415.0_us // Breath, Red
+#define JammedPulse 1405.0_us // Heartbeat, Grey
+#define SpooledPulse 1815.0_us // Solid, Orange
+#define TrackingPulse 1865.0_us // Solid, Lime
+#define IntakingPulse 1875.0_us // Solid, Dark Green
+#define DeplayedPulse 1635.0_us // Two-color pattern: Heartbeat Fast
+#define Note_DetectedPulse 1605.0_us // Two-color pattern: Chasing Light
+#define Note_NOTDetectedPulse 1555.0_us // Default state during teleop LEDs: One color, Breath Fast
+#define AutoIsONPulse 1755.0_us // Twinkles (Color 1 and Color 2)
+#define PITModePulse 1695.0_us // Sparkle, Color 2 on Color 1
+
+
 
 
 Leds::Leds(frc::TimedRobot *_robot, Feeder *_feeder, Shooter *_shooter) : 
@@ -20,15 +33,15 @@ void Leds::resetState() {
 
 void Leds::init() {
 
-    TrackingBool = nt_shooter->GetBoolean("TrackingTest", false);
-    SpooledBool = nt_shooter->GetBoolean("SpooledTest", false);
+    trackingBool = nt_shooter->GetBoolean("TrackingTest", false);
+    spooledBool = nt_shooter->GetBoolean("SpooledTest", false);
     PITModeBool = nt_shooter->GetBoolean("Pit Mode", false);
     //IntakingBool = nt_intake->GetBoolean("TrackingTest", false);
     //DeployedBool = nt_intake->GetBoolean("SpooledTest", false);
-    AutoIsONBool = nt_robot->GetBoolean("AutoIsOn", false);
+    autoIsONBool = nt_robot->GetBoolean("AutoIsOn", false);
 
-    IntakingBool = nt_feeder->GetBoolean("IntakeTest", false);
-    Note_DBool = nt_feeder->GetBoolean("Beam Trip", false);
+    intakingBool = nt_feeder->GetBoolean("IntakeTest", false);
+    note_DBool = nt_feeder->GetBoolean("Beam Trip", false);
 
     table->PutNumber("LED_State", DEFAULT_STATE);
 
@@ -46,28 +59,21 @@ void Leds::assessInputs() {
 }
 
 void Leds::analyzeDashboard() {
-    //add logic when code added for it
-    //Note_DBool = table->GetBoolean("Note_D", false);    
-    //PITModeBool = table->GetBoolean("PIT_MODE", false);
-    // DeployedBool = nt_intake->GetBoolean("DeplayedTest", false);
-    // SpikedBool = nt_intake->GetBoolean("SpikedTest", false);
+    trackingBool = nt_shooter->GetBoolean("TrackingTest", false);
+    spooledBool = nt_shooter->GetBoolean("SpooledTest", false);
 
-    TrackingBool = nt_shooter->GetBoolean("TrackingTest", false);
-    SpooledBool = nt_shooter->GetBoolean("SpooledTest", false);
+    autoIsONBool = nt_robot->GetBoolean("AutoIsOn", false);
 
-    AutoIsONBool = nt_robot->GetBoolean("AutoIsOn", false);
-
-    IntakingBool = nt_feeder->GetBoolean("IntakeTest", false);
-    Note_DBool = nt_feeder->GetBoolean("Beam Trip", false);
-    SpikedBool = nt_feeder->GetBoolean("SpikedTest", false);
+    intakingBool = nt_feeder->GetBoolean("IntakeTest", false);
+    note_DBool = nt_feeder->GetBoolean("Beam Trip", false);
+    spikedBool = nt_feeder->GetBoolean("SpikedTest", false);
 
 
 
     m_animationSelected = m_chooser.GetSelected();
 
-    //selected states(Pulases are picked at random, to test) 
-    //intake->state.intakeState == Intake::INTAKE_STATE::SPIKED
-    if (SpikedBool){
+    
+    if (spikedBool){
         curr_state = JAMMED;
     }
     else if(m_animationSelected == kanimone)
@@ -83,29 +89,29 @@ void Leds::analyzeDashboard() {
         curr_state = PIT_MODE;
     }
     //actual logic code
-    else if(SpooledBool)
+    else if(spooledBool)
     {
         curr_state = SPOOLED;
     }
-    else if(TrackingBool)
+    else if(trackingBool)
     {
         curr_state = TRACKING;
     }
-    else if(IntakingBool)
+    else if(intakingBool)
     {
         curr_state = INTAKING;
     }
-    else if(DeployedBool)
+    else if(deployedBool)
     {
         curr_state = DEPLOYED;
     }
-    else if(AutoIsONBool){
+    else if(autoIsONBool){
         curr_state = AUTO_IS_ON;
     }
     else if (PITModeBool){
         curr_state = PIT_MODE;
     }
-    else if (Note_DBool){
+    else if (note_DBool){
         curr_state = NOTE_DETECTED;
     }
     else
@@ -119,41 +125,35 @@ void Leds::analyzeDashboard() {
 
 void Leds::assignOutputs() 
 {
-    if(curr_state == JAMMED){
-        blinkin.SetPulseTime(JammedPulse);
-    }
-    else if(curr_state == SPOOLED)
-    {
-        blinkin.SetPulseTime(SpooledPulse);
-    }
-    else if(curr_state == TRACKING)
-    {
-        blinkin.SetPulseTime(TrackingPulse);
-    }
-    else if(curr_state == INTAKING)
-    {
-        blinkin.SetPulseTime(IntakingPulse);
-    }
-    else if(curr_state == DEPLOYED)
-    {
-        blinkin.SetPulseTime(DeplayedPulse);
-    }
-    else if(curr_state == AUTO_IS_ON)
-    {
-        blinkin.SetPulseTime(AutoIsONPulse);
-    }
-    else if(curr_state == PIT_MODE)
-    {
-        blinkin.SetPulseTime(PITModePulse);
-    }
-    else if(curr_state == NOTE_DETECTED)
-    {
-        blinkin.SetPulseTime(Note_DetectedPulse);
-    }
-    else
-    {
-        //default state during teleop
-        blinkin.SetPulseTime(Note_NOTDetectedPulse);
+     switch(Leds::LEDState()) {
+        case JAMMED:
+            blinkin.SetPulseTime(JammedPulse);
+            break;
+        case SPOOLED:
+            blinkin.SetPulseTime(SpooledPulse);
+            break;
+        case TRACKING:
+            blinkin.SetPulseTime(TrackingPulse);
+            break;
+        case INTAKING:
+            blinkin.SetPulseTime(IntakingPulse);
+            break;
+        case DEPLOYED:
+            blinkin.SetPulseTime(DeplayedPulse);
+            break;
+        case AUTO_IS_ON:
+            blinkin.SetPulseTime(AutoIsONPulse);
+            break;
+        case PIT_MODE:
+            blinkin.SetPulseTime(PITModePulse);
+            break;
+        case NOTE_DETECTED:
+            blinkin.SetPulseTime(Note_DetectedPulse);
+            break;
+        default:
+            //default state during teleop
+            blinkin.SetPulseTime(Note_NOTDetectedPulse);
+            break;
     }
 }
 
