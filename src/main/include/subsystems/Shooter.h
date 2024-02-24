@@ -41,14 +41,14 @@ public:
     void analyzeDashboard();
     void assignOutputs();
 
-    bool getSpooledState();
-    bool getTrackingState();
-    bool getPitModeState();
-
     void calculatePivotAngle();
 
     void calculateRootsT();
     void bisectionTheorem();
+
+    bool getSpooledState();
+    bool getTrackingState();
+    bool getPitModeState();
     
     void InitSendable(wpi::SendableBuilder& builder);
 
