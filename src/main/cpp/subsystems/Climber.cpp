@@ -40,7 +40,7 @@ void Climber::init()
     climbMotor.setupFollower(CANIDs::RIGHT_CLIMBER, true);
     climbMotor.setEncoderPosition(0);
     climbMotor.setForwardLimit(48); //placeholder
-    climbMotor.setReverseLimit(0);
+    // climbMotor.setReverseLimit(0);
     climbMotor.setVoltageCompensation(12);
     setClimbPID();
 

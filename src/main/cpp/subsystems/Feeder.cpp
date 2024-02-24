@@ -73,7 +73,6 @@ void Feeder::assessInputs()
 
 void Feeder::analyzeDashboard()
 {
-    blinkin.SetPulseTime(isBeamBreakTriggered() ? LED_ON : LED_OFF);
     
     state.intakeForwardSpeed = table->GetNumber("Intake Forward Power", INTAKE_FORWARD_POWER);
     state.intakeReverseSpeed = table->GetNumber("Intake Reverse Power", INTAKE_REVERSE_POWER);
@@ -86,6 +85,7 @@ void Feeder::analyzeDashboard()
     } else {
         state.beamTrip |= isBeamBreakTriggered();
     }
+    blinkin.SetPulseTime(state.beamTrip ? LED_ON : LED_OFF);
 }
 
 void Feeder::assignOutputs()

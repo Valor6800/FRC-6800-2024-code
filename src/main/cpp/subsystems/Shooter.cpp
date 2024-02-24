@@ -21,10 +21,12 @@
 #define FLYWHEEL_ROTATE_K_ACC 75.0f
 #define FLYWHEEL_ROTATE_K_P 0.00005f
 
+#define AMP_ANG 57.0f
 #define SUBWOOFER_ANG 59.5_deg
 #define PODIUM_ANG 39.0_deg
 #define WING_ANG 29.0_deg
 
+#define AMP_POWER 10.0f
 #define LEFT_SHOOT_POWER 60.0f
 #define RIGHT_SHOOT_POWER 30.0f
 
@@ -81,7 +83,8 @@ void Shooter::init()
     pivotMotors->setupCANCoder(CANIDs::SHOOTER_CANCODER, PIVOT_MAGNET_OFFSET, PIVOT_CANCODER_GEAR_RATIO / 360.0, true, "baseCAN");
     pivotMotors->setRange(0, PIVOT_FORWARD_LIMIT, PIVOT_REVERSE_LIMIT);
 
-    table->PutNumber("Setpoint", 50);
+    table->PutNumber("Pivot Setpoint", AMP_ANG);
+    table->PutNumber("Speed Setpoint", AMP_POWER);
 
     table->PutBoolean("Pit Mode", false);
 
@@ -126,7 +129,8 @@ void Shooter::analyzeDashboard()
     bool lastPitMode = state.pitMode;
     state.pitMode = table->GetBoolean("Pit Mode", false);
 
-    state.setpoint = table->GetNumber("Setpoint", 50);
+    state.setpoint = table->GetNumber("Pivot Setpoint", AMP_ANG);
+    state.speedSetpoint = table->GetNumber("Speed Setpoint", AMP_POWER);
 
     if (state.pitMode && !lastPitMode) {
         pivotMotors->setNeutralMode(valor::NeutralMode::Coast);
@@ -141,6 +145,9 @@ void Shooter::assignOutputs()
     if (state.flywheelState == NOT_SHOOTING) {
         leftFlywheelMotor.setPower(0.0);
         rightFlywheelMotor.setPower(0.0);
+    } else if (state.pivotState == PIVOT_STATE::MANUAL) {
+        leftFlywheelMotor.setSpeed(state.speedSetpoint);
+        rightFlywheelMotor.setSpeed(state.speedSetpoint);
     } else {
         leftFlywheelMotor.setSpeed(LEFT_SHOOT_POWER);
         rightFlywheelMotor.setSpeed(RIGHT_SHOOT_POWER);
@@ -191,6 +198,12 @@ void Shooter::InitSendable(wpi::SendableBuilder& builder){
     builder.AddIntegerProperty(
         "pivot state",
         [this] {return state.pivotState;},
+        nullptr
+    );
+
+    builder.AddDoubleProperty(
+        "pivot setpoint",
+        [this] {return state.calculatingPivotingAngle.to<double>();},
         nullptr
     );
     
