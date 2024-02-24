@@ -14,7 +14,8 @@ Robot::Robot() :
     beamBreak(AnalogPorts::BEAM_BREAK_PORT), 
     shooter(this),
     feeder(this, &beamBreak),
-    climber(this)
+    climber(this),
+    leds(this, &feeder, &shooter)
 
 {
     frc::TimedRobot();
