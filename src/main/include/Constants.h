@@ -187,12 +187,12 @@ namespace Constants {
             }; // Temp value; TODO: Change it
             default: return frc::Pose3d{
                 0.18415_m, //x
-                .32385_m, //y
+                -0.32385_m, //y
                 0.67945_m, //z
                 frc::Rotation3d{
                     0_deg, 
                     12.3_deg,
-                    15_deg
+                    45_deg
                 }
             };
         }};
