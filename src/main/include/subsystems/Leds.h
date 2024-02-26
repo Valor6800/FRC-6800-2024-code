@@ -61,7 +61,7 @@ private:
 
     frc::PWM blinkin{DIOPorts::BLINKIN};
     
-    LEDState currState;
+    LEDState state;
 
     //-----------STATES BOOLENAS----------------
     bool spooledBool = false;

@@ -136,9 +136,6 @@ void Feeder::assignOutputs()
         default:
             intakeTest = false;
     }
-
-    isBeamBreakTriggered();
-    isIntake();
 }
 
 bool Feeder::isBeamBreakTriggered()
