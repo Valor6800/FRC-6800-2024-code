@@ -19,6 +19,7 @@ Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _beamBreak) :
     intakeMotor(CANIDs::INTERNAL_INTAKE, valor::NeutralMode::Coast, true),
     feederMotor(CANIDs::FEEDER, valor::NeutralMode::Brake, true),
     currentSensor(_robot, subsystemName),
+
     beamBreak(_beamBreak),
     debounceSensor(_robot, "Feeder")
 {
@@ -106,8 +107,6 @@ void Feeder::assignOutputs()
     } else if(state.intakeState == ROLLER_STATE::OUTTAKE) {
         intakeMotor.setPower(state.intakeReverseSpeed);
     } else {
-        IntakeTest = false;
-
         intakeMotor.setPower(0);
     }
     
@@ -118,8 +117,6 @@ void Feeder::assignOutputs()
     } else if(state.feederState == ROLLER_STATE::OUTTAKE) {
         feederMotor.setPower(state.feederReverseSpeed);
     } else {
-        IntakeTest = false;
-
         feederMotor.setPower(0);
     }
 
