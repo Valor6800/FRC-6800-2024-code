@@ -25,7 +25,7 @@ Leds::~Leds() {
 }
 
 void Leds::resetState() {
-    currState = DEFAULT_STATE;
+    state = DEFAULT_STATE;
     blinkin.SetPulseTime(InitialPulse);
 }
 
@@ -71,68 +71,69 @@ void Leds::analyzeDashboard() {
     spikedBool = feeder->state.intakeState == Feeder::ROLLER_STATE::SPIKED;
 
     //chooser for animations after spike
-    if (spikedBool){
-        currState = JAMMED;
+    //spikedBool
+    if (feeder->state.feederState == Feeder::ROLLER_STATE::SPIKED){
+        state = JAMMED;
         LEDState::JAMMED;
     }
     else if(m_animationSelected == kanimone)
     {
-        currState = NOTE_DETECTED;
+        state = NOTE_DETECTED;
         LEDState::NOTE_DETECTED;
     }
     else if(m_animationSelected == kanimtwo)
     {
-        currState = SPOOLED;
+        state = SPOOLED;
         LEDState::SPOOLED;
     }
     else if (m_animationSelected == kanimthree)
     {
-        currState = PIT_MODE;
+        state = PIT_MODE;
         LEDState::PIT_MODE;
     }
     //actual logic code during the game
     else if(spooledBool)
     {
-        currState = SPOOLED;
+        state = SPOOLED;
         LEDState::SPOOLED;
     }
     else if(trackingBool)
     {
-        currState = TRACKING;
+        state = TRACKING;
         LEDState::TRACKING;
     }
     else if(intakingBool)
     {
-        currState = INTAKING;
+        state = INTAKING;
         LEDState::INTAKING;
     }
     else if(deployedBool)
     {
-        currState = DEPLOYED;
+        state = DEPLOYED;
         LEDState::DEPLOYED;
     }
     else if(autoIsONBool){
-        currState = AUTO_IS_ON;
+        state = AUTO_IS_ON;
         LEDState::AUTO_IS_ON;
     }
     else if (PITModeBool){
-        currState = PIT_MODE;
+        state = PIT_MODE;
         LEDState::PIT_MODE;
     }
     else if (note_DBool){
-        currState = NOTE_DETECTED;
+        state = NOTE_DETECTED;
         LEDState::NOTE_DETECTED;
     }
     else
     {
         //default state during teleop
-        currState = DEFAULT_STATE;
+        state = DEFAULT_STATE;
     }
 }
 
 void Leds::assignOutputs() 
 {
-     switch(currState) {
+     switch(state) {
         case JAMMED:
             blinkin.SetPulseTime(JammedPulse);
             break;
@@ -180,7 +181,7 @@ void Leds::InitSendable(wpi::SendableBuilder& builder) {
     );
     builder.AddDoubleProperty(
         "LED_State",
-        [this]{return currState;},
+        [this]{return state;},
         nullptr
     );
 }

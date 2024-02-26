@@ -183,10 +183,6 @@ void Shooter::assignOutputs()
         pitModeTest = false;
         pivotMotors->setPosition(SUBWOOFER_ANG.to<double>());
     }
-
-    getSpooledState();
-    getTrackingState();
-    getPitModeState();
 }
 
 void Shooter::calculatePivotAngle(){
