@@ -44,9 +44,13 @@ void AprilTagsSensor::applyVisionMeasurement(frc::SwerveDrivePoseEstimator<4> *e
     units::millisecond_t totalLatency = getTotalLatency();
 
     estimator->AddVisionMeasurement(
-        currState.ToPose2d(),  
+        frc::Pose2d(
+            currState.X(),
+            currState.Y(),
+            estimator->GetEstimatedPosition().Rotation()
+        ),  
         frc::Timer::GetFPGATimestamp() - totalLatency,
-        {doubtX, doubtY, doubtRot}
+        {doubtX, doubtY, 99999999.9}
     );
 }
 
