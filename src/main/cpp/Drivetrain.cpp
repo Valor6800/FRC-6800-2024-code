@@ -61,19 +61,9 @@ using namespace pathplanner;
 
 #define VISION_ACCEPTANCE 4.0_m // meters
 
-#define BLUE_SOURCE_ROT_ANGLE -0.5236f 
-#define BLUE_RIGHT_TRAP_ROT_ANGLE 0.7854f
-#define BLUE_LEFT_TRAP_ROT_ANGLE 0.00f
-#define BLUE_CENTER_TRAP_ROT_ANGLE 0.0f
-#define BLUE_AMP_ROT_ANGLE -1.5708f
-#define BLUE_LOCK_ANGLE 0.0f
-
-#define RED_AMP_ROT_ANGLE -1.5708f
-#define RED_SOURCE_ROT_ANGLE -2.0245f
-#define RED_RIGHT_TRAP_ROT_ANGLE -2.07694f
-#define RED_LEFT_TRAP_ROT_ANGLE 2.16421f
-#define RED_CENTER_TRAP_ROT_ANGLE 0.0f
-#define RED_LOCK_ANGLE 3.14159f
+#define BLUE_AMP_ROT_ANGLE -90.0_deg
+#define BLUE_SOURCE_ROT_ANGLE -30_deg
+#define BLUE_LOCK_ANGLE 0_deg
 
 Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Drivetrain"),
                         rotMaxSpeed(ROT_SPEED_MUL * 2 * M_PI),
@@ -373,19 +363,17 @@ void Drivetrain::getSpeakerLockAngleRPS(){
     units::radian_t targetRotAngle;
     units::meter_t roboXPos = calculatedEstimator->GetEstimatedPosition().X();
     units::meter_t roboYPos = calculatedEstimator->GetEstimatedPosition().Y();
-    if(frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue){
-        targetRotAngle = units::radian_t(atan2(
-            (roboYPos.to<double>() - (SPEAKER_Y.to<double>() +  table->GetNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET))),
-            (roboXPos.to<double>() - (SPEAKER_BLUE_X.to<double>() +  table->GetNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET)))
-        ));
-    }
-    else{
-        targetRotAngle = units::radian_t(atan2(
-            (roboYPos.to<double>() - (SPEAKER_Y.to<double>() + table->GetNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET))),
-            (roboXPos.to<double>() - (SPEAKER_RED_X.to<double>() - table->GetNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET)))
-        ));
-    }
-    state.targetAngle = targetRotAngle;
+
+    double speakerX = (frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue ? SPEAKER_BLUE_X : SPEAKER_RED_X).to<double>();
+    double redMultiplier = frc::DriverStation::GetAlliance() == frc::DriverStation::kRed ? -1.0 : 1.0;
+    double speakerXOffset = table->GetNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET) * redMultiplier;
+    double speakerYOffset = table->GetNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET);
+    state.targetAngle = units::radian_t(atan2(
+        (roboYPos.to<double>() - (SPEAKER_Y.to<double>() + speakerYOffset)),
+        (roboXPos.to<double>() - (speakerX + speakerXOffset))
+    ));
+    if (frc::DriverStation::GetAlliance() == frc::DriverStation::kRed)
+        state.targetAngle -= 180.0_deg;
 }
 
 units::radian_t Drivetrain::getAngleError(){
@@ -402,43 +390,27 @@ units::radian_t Drivetrain::getAngleError(){
     }
 }
 
-void Drivetrain::setAlignmentAngle(Alignment align){
-    if(frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue){
-        if (align == Alignment::AMP) state.targetAngle = units::radian_t(BLUE_AMP_ROT_ANGLE);
-        else if (align == Alignment::TRAP){
-            for(valor::AprilTagsSensor* aprilLime :  aprilTagSensors){
-                if(aprilLime->getTagID() == 16){
-                    state.targetAngle = units::radian_t(BLUE_RIGHT_TRAP_ROT_ANGLE);
-                }
-                else if(aprilLime->getTagID() == 15){
-                    state.targetAngle = units::radian_t(BLUE_LEFT_TRAP_ROT_ANGLE);
-                }
-                else if(aprilLime->getTagID() == 14){
-                    state.targetAngle = units::radian_t(BLUE_CENTER_TRAP_ROT_ANGLE);
-                }
+void Drivetrain::setAlignmentAngle(Alignment align) {
+    if (align == Alignment::AMP) state.targetAngle = BLUE_AMP_ROT_ANGLE;
+    else if (align == Alignment::TRAP){
+        for(valor::AprilTagsSensor* aprilLime :  aprilTagSensors){
+            if(aprilLime->getTagID() == 16){
+                // state.targetAngle = units::radian_t(BLUE_RIGHT_TRAP_ROT_ANGLE);
+            }
+            else if(aprilLime->getTagID() == 15){
+                // state.targetAngle = units::radian_t(BLUE_LEFT_TRAP_ROT_ANGLE);
+            }
+            else if(aprilLime->getTagID() == 14){
+                // state.targetAngle = units::radian_t(BLUE_CENTER_TRAP_ROT_ANGLE);
             }
         }
-        else if (align == Alignment::SOURCE) state.targetAngle = units::radian_t(BLUE_SOURCE_ROT_ANGLE);
-        else state.targetAngle = units::radian_t(BLUE_LOCK_ANGLE);
+        state.targetAngle = 0_deg;
     }
-    else{
-        if(align == Alignment::AMP) state.targetAngle = units::radian_t(RED_AMP_ROT_ANGLE);
-        else if (align == Alignment::TRAP){
-            for(valor::AprilTagsSensor* aprilLime :  aprilTagSensors){
-                if(aprilLime->getTagID() == 12){
-                    state.targetAngle = units::radian_t(RED_RIGHT_TRAP_ROT_ANGLE);
-                }
-                else if(aprilLime->getTagID() == 11){
-                    state.targetAngle = units::radian_t(RED_LEFT_TRAP_ROT_ANGLE);
-                }
-                else if(aprilLime->getTagID() == 13){
-                    state.targetAngle = units::radian_t(RED_CENTER_TRAP_ROT_ANGLE);
-                }
-            }
-        }
-        else if (align == Alignment::SOURCE) state.targetAngle = units::radian_t(RED_SOURCE_ROT_ANGLE);
-        else state.targetAngle = units::radian_t(RED_LOCK_ANGLE);
-    }
+    else if (align == Alignment::SOURCE) state.targetAngle = BLUE_SOURCE_ROT_ANGLE;
+    else state.targetAngle = BLUE_LOCK_ANGLE;
+
+    // Invert the angles if on RED. BLUE side is source of truth
+    state.targetAngle *= frc::DriverStation::GetAlliance() == frc::DriverStation::kRed ? -1.0 : 1.0;
 }
 
 double Drivetrain::clampAngleRadianRange(units::radian_t angle, double max){
