@@ -46,12 +46,34 @@ Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _beamBreak) :
             )
         )
     ).ToPtr());
+    pathplanner::NamedCommands::registerCommand("Enable full feeder", std::move(
+        frc2::SequentialCommandGroup(
+            frc2::InstantCommand(
+                [this]() {
+                    // shooter->state.isShooting = true;
+                    state.feederState = Feeder::ROLLER_STATE::SHOOT;
+                    state.intakeState = Feeder::ROLLER_STATE::SHOOT;
+                }
+            )
+        )
+    ).ToPtr());
+    pathplanner::NamedCommands::registerCommand("Disable full feeder", std::move(
+        frc2::SequentialCommandGroup(
+            frc2::InstantCommand(
+                [this]() {
+                    // shooter->state.isShooting = true;
+                    state.feederState = Feeder::ROLLER_STATE::STAGNANT;
+                    state.intakeState = Feeder::ROLLER_STATE::STAGNANT;
+                }
+            )
+        )
+    ).ToPtr());
     pathplanner::NamedCommands::registerCommand("Enable feeder", std::move(
         frc2::SequentialCommandGroup(
             frc2::InstantCommand(
                 [this]() {
                     // shooter->state.isShooting = true;
-                    state.feederState = Feeder::ROLLER_STATE::INTAKE;
+                    state.feederState = Feeder::ROLLER_STATE::SHOOT;
                 }
             )
         )
@@ -62,6 +84,27 @@ Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _beamBreak) :
                 [this]() {
                     // shooter->state.isShooting = true;
                     state.feederState = Feeder::ROLLER_STATE::STAGNANT;
+                }
+            )
+        )
+    ).ToPtr());
+    pathplanner::NamedCommands::registerCommand("Enable intake", std::move(
+        frc2::SequentialCommandGroup(
+            frc2::InstantCommand(
+                [this]() {
+                    // shooter->state.isShooting = true;
+                    state.intakeState = Feeder::ROLLER_STATE::INTAKE;
+                    state.feederState = Feeder::ROLLER_STATE::INTAKE;
+                }
+            )
+        )
+    ).ToPtr());
+    pathplanner::NamedCommands::registerCommand("Disable intake", std::move(
+        frc2::SequentialCommandGroup(
+            frc2::InstantCommand(
+                [this]() {
+                    // shooter->state.isShooting = true;
+                    state.intakeState = Feeder::ROLLER_STATE::STAGNANT;
                 }
             )
         )

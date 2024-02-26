@@ -5,7 +5,7 @@
       "x": 2.29,
       "y": 1.0774109479408873
     },
-    "rotation": 0.0
+    "rotation": 44.55203014352536
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Move n rotate"
+            "pathName": "Move n 45 deg rotate"
           }
         }
       ]

@@ -2,37 +2,31 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7885143244968206,
-      "y": 6.62422483818492
+      "x": 1.34,
+      "y": 5.56
     },
-    "rotation": 60.0
+    "rotation": 0.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "Start pivot tracking"
+            "pathName": "kick-s"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "kick-a"
+            "pathName": "Sf"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Af"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Enable feeder"
+            "pathName": "Sf-Af"
           }
         },
         {
@@ -50,7 +44,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "A-A2"
+            "pathName": "A-A3"
           }
         },
         {

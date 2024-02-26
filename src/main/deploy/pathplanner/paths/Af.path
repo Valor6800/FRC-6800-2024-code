@@ -3,32 +3,38 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.18,
-        "y": 6.8
+        "x": 0.7885143244968206,
+        "y": 6.62422483818492
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6040216249168031,
-        "y": 6.907543252846922
+        "x": 1.0670394617904977,
+        "y": 7.106644527162666
       },
       "isLocked": false,
       "linkedName": "Start amp"
     },
     {
       "anchor": {
-        "x": 2.894328082030563,
+        "x": 2.89,
         "y": 6.986896992070727
       },
       "prevControl": {
-        "x": 2.065572403086178,
-        "y": 6.986896992070727
+        "x": 2.3350498682023355,
+        "y": 6.666496384090527
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "Acrid"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.65,
+      "rotationDegrees": 60.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
@@ -47,26 +53,21 @@
             {
               "type": "wait",
               "data": {
-                "waitTime": 0.5
+                "waitTime": 0.4
               }
             },
             {
               "type": "named",
               "data": {
-                "name": "Enable feeder"
+                "name": "Enable full feeder"
               }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Disable feeder",
-      "waypointRelativePos": 0.55,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
+            },
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 0.1
+              }
+            },
             {
               "type": "named",
               "data": {
@@ -76,57 +77,17 @@
           ]
         }
       }
-    },
-    {
-      "name": "Enable intake",
-      "waypointRelativePos": 0.35,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Enable intake"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Reenable feeder, disable intake",
-      "waypointRelativePos": 0.95,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Enable feeder"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "Disable intake"
-              }
-            }
-          ]
-        }
-      }
     }
   ],
   "globalConstraints": {
     "maxVelocity": 3.5,
-    "maxAcceleration": 5.0,
+    "maxAcceleration": 1.5,
     "maxAngularVelocity": 720.0,
-    "maxAngularAcceleration": 1600.0
+    "maxAngularAcceleration": 1000.0
   },
   "goalEndState": {
-    "velocity": 2.0,
-    "rotation": 25.560000000000002,
+    "velocity": 1.0,
+    "rotation": 30.0,
     "rotateFast": false
   },
   "reversed": false,
@@ -135,5 +96,5 @@
     "rotation": 60.0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

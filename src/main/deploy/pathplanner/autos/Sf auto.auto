@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.34,
-      "y": 5.56
+      "x": 1.4,
+      "y": 5.572019226189894
     },
-    "rotation": 0.7199999999999989
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -20,42 +20,24 @@
         {
           "type": "path",
           "data": {
-            "pathName": "kick-s"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
             "pathName": "Sf"
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "Sf-A1"
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "Enable feeder"
+            "name": "Enable full feeder"
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "A-A3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot sequence-feeder"
+            "waitTime": 1.0
           }
         }
       ]
     }
   },
-  "folder": "Comp",
+  "folder": null,
   "choreoAuto": false
 }

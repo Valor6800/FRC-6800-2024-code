@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.9694390388491428,
-      "y": 4.28862101242721
+      "x": 2.29,
+      "y": 1.0774109479408873
     },
-    "rotation": 129.30682102739527
+    "rotation": 60.0
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Wf"
+            "pathName": "Move n 30 deg rotate"
           }
         }
       ]

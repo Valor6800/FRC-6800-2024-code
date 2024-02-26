@@ -20,19 +20,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "kick-a"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
             "pathName": "Af"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Enable feeder"
+            "name": "Enable full feeder"
           }
         },
         {
@@ -44,24 +38,18 @@
         {
           "type": "named",
           "data": {
-            "name": "Enable feeder"
+            "name": "Enable full feeder"
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "A-A2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot sequence-feeder"
+            "waitTime": 0.5
           }
         }
       ]
     }
   },
-  "folder": "Comp",
+  "folder": null,
   "choreoAuto": false
 }

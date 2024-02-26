@@ -4,11 +4,12 @@
   "holonomicMode": true,
   "pathFolders": [
     "FirstPick",
-    "Testing",
+    "TwoPick",
     "Pick chain",
     "PreLoad",
     "SecondPick",
     "Specials",
+    "Testing",
     "VisionTest"
   ],
   "autoFolders": [
@@ -17,7 +18,7 @@
     "Testing"
   ],
   "defaultMaxVel": 3.5,
-  "defaultMaxAccel": 5.0,
+  "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 720.0,
   "defaultMaxAngAccel": 1600.0,
   "maxModuleSpeed": 4.5
