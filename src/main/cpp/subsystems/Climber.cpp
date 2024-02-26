@@ -42,6 +42,7 @@ void Climber::init()
     climbMotor.setForwardLimit(48); //placeholder
     // climbMotor.setReverseLimit(0);
     climbMotor.setVoltageCompensation(12);
+    climbMotor.setMaxCurrent(100);
     setClimbPID();
 
     resetState();
