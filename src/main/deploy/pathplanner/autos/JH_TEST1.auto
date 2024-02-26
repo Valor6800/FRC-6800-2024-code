@@ -14,7 +14,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Standard Move"
+            "pathName": "Af_A1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "A1_A2"
           }
         }
       ]
