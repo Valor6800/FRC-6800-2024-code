@@ -36,11 +36,11 @@ using namespace pathplanner;
 // #define KP_LOCK 0.2f
 #define KP_LIMELIGHT 0.7f
 
-#define KPX 5.5f // 30
+#define KPX 7.0f // 30
 #define KIX 0.0f //0
 #define KDX 0.1f //.1
 
-#define KPT 4.0f //15
+#define KPT 16.0f //15
 #define KIT 0.0f
 #define KDT 0.0f
 
@@ -90,6 +90,9 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
+    pathplanner::NamedCommands::registerCommand("Wait for A button", std::move(
+        frc2::FunctionalCommand([](){}, [](){}, [](bool _b){}, [this](){ return operatorGamepad->GetAButtonPressed(); }, {this})
+    ).ToPtr());
 }
 
 Drivetrain::~Drivetrain()
@@ -418,7 +421,6 @@ void Drivetrain::assignOutputs()
             setDriveMotorNeutralMode(valor::NeutralMode::Coast);
             drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
         }
-            
     }
 }
 

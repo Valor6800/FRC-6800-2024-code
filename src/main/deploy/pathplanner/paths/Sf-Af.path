@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.92,
-        "y": 6.36
+        "x": 2.890018068152122,
+        "y": 5.572019226189894
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.9329409522551257,
-        "y": 6.311703708685547
+        "x": 2.3327354840473573,
+        "y": 5.812941446231561
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Rex"
     },
     {
       "anchor": {
-        "x": 4.255721341231456,
-        "y": 6.16995197600783
+        "x": 2.89,
+        "y": 6.986896992070727
       },
       "prevControl": {
-        "x": 4.24278038897633,
-        "y": 6.218248267322283
+        "x": 2.2795609674445845,
+        "y": 6.856908141331583
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Score amp"
+      "linkedName": "Acrid"
     }
   ],
   "rotationTargets": [],
@@ -33,20 +33,17 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.5,
-    "maxAcceleration": 3.0,
-    "maxAngularVelocity": 360.0,
+    "maxAcceleration": 5.0,
+    "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1600.0
   },
   "goalEndState": {
-    "velocity": 1.0,
-    "rotation": 15.0,
-    "rotateFast": false
+    "velocity": 0,
+    "rotation": 36.8139794861192,
+    "rotateFast": true
   },
   "reversed": false,
-  "folder": null,
-  "previewStartingState": {
-    "rotation": 15.0,
-    "velocity": 0
-  },
+  "folder": "FirstPick",
+  "previewStartingState": null,
   "useDefaultConstraints": false
 }

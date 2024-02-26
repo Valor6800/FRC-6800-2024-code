@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.179824435929254,
-      "y": 6.791464237044505
+      "x": 0.7885143244968206,
+      "y": 6.62422483818492
     },
     "rotation": 60.0
   },
@@ -11,6 +11,12 @@
     "type": "sequential",
     "data": {
       "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Start pivot tracking"
+          }
+        },
         {
           "type": "path",
           "data": {
@@ -24,15 +30,33 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Enable feeder"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Af-A1"
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Enable feeder"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "A-A3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot sequence-feeder"
           }
         }
       ]
