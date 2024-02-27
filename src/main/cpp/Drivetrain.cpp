@@ -63,7 +63,9 @@ using namespace pathplanner;
 
 #define BLUE_AMP_ROT_ANGLE -90.0_deg
 #define BLUE_SOURCE_ROT_ANGLE -30_deg
+#define RED_SOURCE_ROT_ANGLE -150_deg
 #define BLUE_LOCK_ANGLE 0_deg
+#define RED_LOCK_ANGLE 180_deg
 
 Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Drivetrain"),
                         rotMaxSpeed(ROT_SPEED_MUL * 2 * M_PI),
@@ -348,6 +350,10 @@ void Drivetrain::assignOutputs()
     state.angleRPS = units::angular_velocity::radians_per_second_t{getAngleError().to<double>()*kPRot*rotMaxSpeed};
     state.xSpeedMPS = units::velocity::meters_per_second_t{state.xSpeed * driveMaxSpeed};
     state.ySpeedMPS = units::velocity::meters_per_second_t{state.ySpeed * driveMaxSpeed};
+    if (frc::DriverStation::GetAlliance() == frc::DriverStation::kRed) {
+        state.xSpeedMPS *= -1.0;
+        state.ySpeedMPS *= -1.0;
+    }
     state.rotRPS = units::angular_velocity::radians_per_second_t{state.rot * rotMaxSpeed};
 
     if(state.ampAlign || state.trapAlign || state.sourceAlign || state.isHeadingTrack || state.thetaLock){
@@ -364,7 +370,7 @@ void Drivetrain::getSpeakerLockAngleRPS(){
     units::meter_t roboXPos = calculatedEstimator->GetEstimatedPosition().X();
     units::meter_t roboYPos = calculatedEstimator->GetEstimatedPosition().Y();
 
-    double speakerX = (frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue ? SPEAKER_BLUE_X : SPEAKER_RED_X).to<double>();
+    double speakerX = (frc::DriverStation::GetAlliance() == frc::DriverStation::kRed ? SPEAKER_RED_X : SPEAKER_BLUE_X).to<double>();
     double redMultiplier = frc::DriverStation::GetAlliance() == frc::DriverStation::kRed ? -1.0 : 1.0;
     double speakerXOffset = table->GetNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET) * redMultiplier;
     double speakerYOffset = table->GetNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET);
@@ -372,8 +378,6 @@ void Drivetrain::getSpeakerLockAngleRPS(){
         (roboYPos.to<double>() - (SPEAKER_Y.to<double>() + speakerYOffset)),
         (roboXPos.to<double>() - (speakerX + speakerXOffset))
     ));
-    if (frc::DriverStation::GetAlliance() == frc::DriverStation::kRed)
-        state.targetAngle += 180.0_deg;
 }
 
 units::radian_t Drivetrain::getAngleError(){
@@ -391,6 +395,8 @@ units::radian_t Drivetrain::getAngleError(){
 }
 
 void Drivetrain::setAlignmentAngle(Alignment align) {
+    bool isRed = frc::DriverStation::GetAlliance() == frc::DriverStation::kRed;
+
     if (align == Alignment::AMP) state.targetAngle = BLUE_AMP_ROT_ANGLE;
     else if (align == Alignment::TRAP){
         for(valor::AprilTagsSensor* aprilLime :  aprilTagSensors){
@@ -406,11 +412,10 @@ void Drivetrain::setAlignmentAngle(Alignment align) {
         }
         state.targetAngle = 0_deg;
     }
-    else if (align == Alignment::SOURCE) state.targetAngle = BLUE_SOURCE_ROT_ANGLE;
-    else state.targetAngle = BLUE_LOCK_ANGLE;
-
-    // Invert the angles if on RED. BLUE side is source of truth
-    state.targetAngle *= frc::DriverStation::GetAlliance() == frc::DriverStation::kRed ? -1.0 : 1.0;
+    else if (align == Alignment::SOURCE)
+        state.targetAngle = isRed ? RED_SOURCE_ROT_ANGLE : BLUE_SOURCE_ROT_ANGLE;
+    else 
+        state.targetAngle = isRed ? RED_LOCK_ANGLE : BLUE_LOCK_ANGLE;
 }
 
 double Drivetrain::clampAngleRadianRange(units::radian_t angle, double max){
