@@ -70,7 +70,7 @@ public:
       * * valor::PhoenixController
       * * valor::NeoController
       */
-     typedef valor::PhoenixController SwerveAzimuthMotor;
+     typedef valor::NeoController SwerveAzimuthMotor;
 
      /**
       * @brief Construct a new Drivetrain object

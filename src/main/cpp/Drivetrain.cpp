@@ -126,10 +126,9 @@ void Drivetrain::configSwerveModule(int i)
     azimuthControllers.push_back(new SwerveAzimuthMotor(CANIDs::AZIMUTH_CANS[i],
                                                       valor::NeutralMode::Brake,
                                                       Constants::swerveAzimuthsReversals()[i],
-                                                      1.0 / AZIMUTH_GEAR_RATIO,
-                                                      azimuthPID,
-                                                      12.0,
                                                       PIGEON_CAN_BUS));
+    azimuthControllers[i]->setConversion(1.0 / AZIMUTH_GEAR_RATIO);
+    azimuthControllers[i]->setPIDF(azimuthPID, 0);
     
     azimuthControllers[i]->setupCANCoder(CANIDs::CANCODER_CANS[i], Constants::swerveZeros()[i], 1.0, false, PIGEON_CAN_BUS);
 
