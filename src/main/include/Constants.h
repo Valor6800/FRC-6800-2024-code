@@ -92,6 +92,9 @@ namespace Constants {
         //     nt::NetworkTableInstance::GetDefault().GetTable("constants maybe")
         // }
 
+        static bool roughTowardsRedAllianceWall = true;
+        static double carpetGrainMultipler = 1.05;
+
         static double shooterPivotOffset(){ switch (teamNumber) {
             case ALPHA_TEAM_NUMBER: return 0;
             case SIDE_SWIPE_TEAM_NUMBER: return 0;

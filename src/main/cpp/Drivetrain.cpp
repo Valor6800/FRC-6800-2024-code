@@ -288,7 +288,13 @@ void Drivetrain::calculateCarpetPose()
     );
     frc::Pose2d newPose = calculatedEstimator->GetEstimatedPosition();
     units::meter_t deltaX = newPose.X() - previousPose.X();
-    double factor = deltaX < units::meter_t{0} ? 1.05 : 1;
+    double factor = 1.0;
+    if (Constants::roughTowardsRedAllianceWall) {
+        factor = deltaX < units::meter_t{0} ? Constants::carpetGrainMultipler : 1;
+    } else {
+        factor = deltaX > units::meter_t{0} ? Constants::carpetGrainMultipler : 1;
+    }
+    
     calculatedEstimator->AddVisionMeasurement(
         frc::Pose2d{
             factor * deltaX + previousPose.X(),
