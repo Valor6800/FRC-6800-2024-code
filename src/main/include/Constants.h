@@ -189,13 +189,13 @@ namespace Constants {
                 }
             }; // Temp value; TODO: Change it
             default: return frc::Pose3d{
-                0.18415_m, //x
-                -0.32385_m, //y
-                0.67945_m, //z
+                -9_in, //x
+                11.5_in, //y
+                24.75_in, //z
                 frc::Rotation3d{
                     0_deg, 
-                    12.3_deg,
-                    45_deg
+                    16.9_deg,
+                    -162_deg
                 }
             };
         }};
@@ -204,13 +204,13 @@ namespace Constants {
             case ALPHA_TEAM_NUMBER: return frc::Pose3d();
             case SIDE_SWIPE_TEAM_NUMBER: return frc::Pose3d(); // Temp value; TODO: Change it
             default: return frc::Pose3d(
-                -0.31115_m, //x
-                0.3175_m, //y
-                0.6604_m, //z
+                7.875_in, //x
+                -13.5_in, //y
+                25.75_in, //z
                 frc::Rotation3d(
                     0_deg,
-                    14.3_deg,
-                    180_deg
+                    0_deg,
+                    0_deg
                 )
             );
         }};
