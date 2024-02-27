@@ -28,7 +28,7 @@ void PoseTracker::addReading(frc::Pose2d pose, units::second_t timestamp) {
     resetBuffers(bufferSize);
 }
 
-void PoseTracker::resetBuffers(int count){
+void PoseTracker::resetBuffers(uint count){
     while (poseBuffer.size() > count) poseBuffer.pop_front(); 
     while (velBuffer.size() > count) velBuffer.pop_front(); 
     while (accelBuffer.size() > count) accelBuffer.pop_front();

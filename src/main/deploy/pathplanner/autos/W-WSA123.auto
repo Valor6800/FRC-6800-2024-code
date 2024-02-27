@@ -1,0 +1,61 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.7522949572447178,
+      "y": 4.417067566339995
+    },
+    "rotation": -60.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Start pivot tracking"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Wf"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Wf-Sf"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Sf-Af"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Af-A1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "A-A2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "A-A3"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Comp",
+  "choreoAuto": false
+}

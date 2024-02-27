@@ -236,7 +236,7 @@ void Drivetrain::init()
             PIDConstants(thetaPIDF.P, thetaPIDF.I, thetaPIDF.D), // Rotation PID constants
             units::meters_per_second_t{driveMaxSpeed}, // Max module speed, in m/s
             Constants::driveBaseRadius(), // Drive base radius in meters. Distance from robot center to furthest module.
-            ReplanningConfig() // Default path replanning config. See the API for the options here
+            ReplanningConfig(true, false, .01_m, .25_m) // Default path replanning config. See the API for the options here
         ),
         []() {
             // Boolean supplier that controls when the path will be mirrored for the red alliance
