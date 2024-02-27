@@ -373,7 +373,7 @@ void Drivetrain::getSpeakerLockAngleRPS(){
         (roboXPos.to<double>() - (speakerX + speakerXOffset))
     ));
     if (frc::DriverStation::GetAlliance() == frc::DriverStation::kRed)
-        state.targetAngle -= 180.0_deg;
+        state.targetAngle += 180.0_deg;
 }
 
 units::radian_t Drivetrain::getAngleError(){
