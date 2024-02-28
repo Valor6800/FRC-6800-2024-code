@@ -8,7 +8,6 @@
 #include <rev/CANEncoder.h>
 #include <rev/SparkAbsoluteEncoder.h>
 #include <string>
-#include <rev/CANSparkLowLevel.h> 
 
 namespace valor {
 
@@ -37,6 +36,8 @@ public:
     void setVoltage(double);
     
     void setupFollower(int, bool = false);
+    void setPeriodFrame(double);
+    void setPeriodFrame(double, rev::CANSparkMax *_motor);
     
     void setPIDF(valor::PIDF pidf, int slot);
     void setForwardLimit(double forward);

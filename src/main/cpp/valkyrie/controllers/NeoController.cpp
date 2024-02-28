@@ -47,13 +47,23 @@ void NeoController::setupFollower(int canID, bool followerInverted)
     followerMotor->RestoreFactoryDefaults();
     followerMotor->Follow(*motor, followerInverted);
     setNeutralMode(BaseController::neutralMode);
-    followerMotor->SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus0, 0);
-    followerMotor->SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus1, 0);
-    followerMotor->SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus2, 0);
-    followerMotor->SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus3, 0);
-    followerMotor->SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus4, 0);
-    followerMotor->SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus5, 0);
-    followerMotor->SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus6, 0);
+    setPeriodFrame(500, followerMotor);
+}
+
+void NeoController::setPeriodFrame(double period)
+{
+    setPeriodFrame(period, this->motor);
+}
+
+void NeoController::setPeriodFrame(double period, rev::CANSparkMax *_motor)
+{
+    _motor->SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus0, period);
+    _motor->SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus1, period);
+    _motor->SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus2, period);
+    _motor->SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus3, period);
+    _motor->SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus4, period);
+    _motor->SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus5, period);
+    _motor->SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus6, period);
 }
 
 void NeoController::setForwardLimit(double forward)
