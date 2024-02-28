@@ -207,6 +207,7 @@ void Drivetrain::init()
     table->PutNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET);
     table->PutNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET);
 
+    table->PutBoolean("Accepting Vision Measurements", true);
 
     state.lock = false;
     state.autoControlled = false;
@@ -369,7 +370,12 @@ void Drivetrain::analyzeDashboard()
     visionAcceptanceRadius = (units::meter_t) table->GetNumber("Vision Acceptance", VISION_ACCEPTANCE.to<double>());
 
     for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
-        aprilLime->applyVisionMeasurement(calculatedEstimator, doubtX, doubtY);
+        aprilLime->applyVisionMeasurement(
+            calculatedEstimator,
+            table->GetBoolean("Accepting Vision Measurements", true),
+            doubtX,
+            doubtY
+        );
     }
 
     if (driverGamepad && driverGamepad->IsConnected() && driverGamepad->GetStartButton()) {
