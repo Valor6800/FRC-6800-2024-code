@@ -95,4 +95,5 @@ void AprilTagsSensor::InitSendable(wpi::SendableBuilder& builder) {
     );
     builder.AddDoubleProperty("totalLatency", [this] {return getTotalLatency().to<double>();}, nullptr);
     builder.AddDoubleProperty("distanceFromTarget", [this] {return distance.to<double>();}, nullptr);
+    builder.AddDoubleProperty("Vision acceptance outlier", [this] {return visionOutlier.to<double>();}, nullptr);
 }
