@@ -26,42 +26,36 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Wf pt 2"
+            "pathName": "Wf-Sf"
           }
         },
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-            "waitTime": 0.5
+            "pathName": "Sf-Af"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "Enable full feeder"
+            "pathName": "Af-A1"
           }
         },
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-            "waitTime": 0.5
+            "pathName": "A-A2"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "Disable full feeder"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Disable shooter"
+            "pathName": "A-A3"
           }
         }
       ]
     }
   },
-  "folder": null,
+  "folder": "Comp",
   "choreoAuto": false
 }

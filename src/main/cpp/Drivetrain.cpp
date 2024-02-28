@@ -224,14 +224,14 @@ void Drivetrain::init()
             return getPose_m();
         }, // Robot pose supplier
         [this](frc::Pose2d pose){ resetOdometry(pose); }, // Method to reset odometry (will be called if your auto has a starting pose)
-        [this](){ state.autoControlled = true; return getRobotRelativeSpeeds(); }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+        [this](){ state.autoControlled = true; return getRobotRelativeSpeeds(); table->PutNumber("timestamp of retrieving speeds", frc::Timer::GetFPGATimestamp().to<double>()); }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         [this](frc::ChassisSpeeds speeds){ driveRobotRelative(speeds); }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
             PIDConstants(xPIDF.P, xPIDF.I, xPIDF.D), // Translation PID constants
             PIDConstants(thetaPIDF.P, thetaPIDF.I, thetaPIDF.D), // Rotation PID constants
             units::meters_per_second_t{driveMaxSpeed}, // Max module speed, in m/s
             Constants::driveBaseRadius(), // Drive base radius in meters. Distance from robot center to furthest module.
-            ReplanningConfig() // Default path replanning config. See the API for the options here
+            ReplanningConfig(true, false, .1_m, .25_m) // Default path replanning config. See the API for the options here
         ),
         []() {
             // Boolean supplier that controls when the path will be mirrored for the red alliance
@@ -537,6 +537,7 @@ void Drivetrain::drive(units::velocity::meters_per_second_t vx_mps, units::veloc
 }
 
 void Drivetrain::driveRobotRelative(frc::ChassisSpeeds speeds) {
+    table->PutNumberArray("target chassis speeds", std::vector<double>{speeds.vx.to<double>(), speeds.vy.to<double>(), speeds.omega.to<double>()});
     auto desiredStates = getModuleStates(speeds);
     setSwerveDesiredState(desiredStates, false);
     std::vector<double> sStates;

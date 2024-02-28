@@ -3,43 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7885143244968206,
-        "y": 6.62422483818492
+        "x": 2.6536797469211257,
+        "y": 4.087365499528453
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8827935060022323,
-        "y": 6.855660605454602
+        "x": 2.4036797469211257,
+        "y": 4.087365499528453
       },
       "isLocked": false,
-      "linkedName": "Start amp"
+      "linkedName": "Powerloader"
     },
     {
       "anchor": {
-        "x": 3.108658262527752,
-        "y": 7.080577081473897
+        "x": 1.2048104129845414,
+        "y": 4.087365499528453
       },
       "prevControl": {
-        "x": 2.202841661000162,
-        "y": 6.727887987636327
+        "x": 1.445567555201664,
+        "y": 4.0200156779144045
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Acrid"
+      "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.5,
-      "rotationDegrees": 30.0,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Shoot",
-      "waypointRelativePos": 0,
+      "name": "Feed",
+      "waypointRelativePos": 0.0,
       "command": {
         "type": "sequential",
         "data": {
@@ -65,7 +59,7 @@
             {
               "type": "wait",
               "data": {
-                "waitTime": 0.2
+                "waitTime": 0.1
               }
             },
             {
@@ -83,17 +77,17 @@
     "maxVelocity": 3.5,
     "maxAcceleration": 1.5,
     "maxAngularVelocity": 720.0,
-    "maxAngularAcceleration": 5400.0
+    "maxAngularAcceleration": 1600.0
   },
   "goalEndState": {
-    "velocity": 0.0,
-    "rotation": 25.0,
-    "rotateFast": false
+    "velocity": 0,
+    "rotation": -53.01999999999998,
+    "rotateFast": true
   },
   "reversed": false,
   "folder": "FirstPick",
   "previewStartingState": {
-    "rotation": 60.0,
+    "rotation": 0.0,
     "velocity": 0
   },
   "useDefaultConstraints": false

@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.890018068152122,
-        "y": 5.572019226189894
+        "x": 2.6536797469211257,
+        "y": 4.087365499528453
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3327354840473573,
-        "y": 5.812941446231561
+        "x": 2.046549287582863,
+        "y": 4.087365499528453
       },
       "isLocked": false,
-      "linkedName": "Rex"
+      "linkedName": "Powerloader"
     },
     {
       "anchor": {
-        "x": 3.108658262527752,
-        "y": 7.080577081473897
+        "x": 2.890018068152122,
+        "y": 5.572019226189894
       },
       "prevControl": {
-        "x": 2.4982192299723365,
-        "y": 6.950588230734753
+        "x": 1.5827146991956014,
+        "y": 5.550569558467452
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Acrid"
+      "linkedName": "Rex"
     }
   ],
   "rotationTargets": [],
@@ -33,17 +33,17 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.5,
-    "maxAcceleration": 5.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1600.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 36.8139794861192,
-    "rotateFast": true
+    "rotation": 0.0,
+    "rotateFast": false
   },
   "reversed": false,
   "folder": "FirstPick",
   "previewStartingState": null,
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

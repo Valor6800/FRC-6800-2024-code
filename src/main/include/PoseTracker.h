@@ -14,7 +14,7 @@ class PoseTracker {
         units::degrees_per_second_t getAverageAngularVelocity();
         void addReading(frc::Pose2d pose, units::second_t timestamp);
     private:
-        void resetBuffers(int count);
+        void resetBuffers(uint count);
         std::deque<std::pair<frc::Pose2d, units::second_t> > poseBuffer;
         std::deque<std::pair<units::meters_per_second_t, units::second_t>> velBuffer;
         std::deque<std::pair<units::meters_per_second_squared_t, units::second_t>> accelBuffer;
