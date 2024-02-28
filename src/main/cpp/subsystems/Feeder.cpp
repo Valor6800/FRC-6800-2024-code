@@ -12,13 +12,15 @@
 #define INTAKE_REVERSE_POWER -1.0f
 
 #define FEEDER_FORWARD_POWER 0.5f
+#define FEEDER_INTAKE_POWER 0.3f
 #define FEEDER_REVERSE_POWER -0.5f
 
 Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _beamBreak) :
     valor::BaseSubsystem(_robot, "Feeder"),
     intakeMotor(CANIDs::INTERNAL_INTAKE, valor::NeutralMode::Coast, true),
     feederMotor(CANIDs::FEEDER, valor::NeutralMode::Brake, true),
-    beamBreak(_beamBreak)
+    beamBreak(_beamBreak),
+    debounceSensor(_robot, "FeederBanner")
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -40,10 +42,17 @@ void Feeder::init()
 
     feederMotor.setVoltageCompensation(10);
 
+    debounceSensor.setGetter([this] { return !beamBreak->GetInWindow(); });
+    debounceSensor.setRisingEdgeCallback([this] {
+        state.beamTrip = true;
+        feederMotor.setPower(0);
+    });
+
     table->PutNumber("Intake Forward Power", INTAKE_FORWARD_POWER);
     table->PutNumber("Intake Reverse Power", INTAKE_REVERSE_POWER);
 
     table->PutNumber("Feeder Forward Power", FEEDER_FORWARD_POWER);
+    table->PutNumber("Feeder Intake Power", FEEDER_INTAKE_POWER);
     table->PutNumber("Feeder Reverse Power", FEEDER_REVERSE_POWER);
 
     table->PutBoolean("Beam Trip", false);
@@ -78,20 +87,21 @@ void Feeder::analyzeDashboard()
     state.intakeReverseSpeed = table->GetNumber("Intake Reverse Power", INTAKE_REVERSE_POWER);
 
     state.feederForwardSpeed = table->GetNumber("Feeder Forward Power", FEEDER_FORWARD_POWER);
+    state.feederIntakeSpeed = table->GetNumber("Feeder Intake Power", FEEDER_INTAKE_POWER);
     state.feederReverseSpeed = table->GetNumber("Feeder Reverse Power", FEEDER_REVERSE_POWER);
 
     if (state.feederState == ROLLER_STATE::SHOOT) {
         state.beamTrip = false;
-    } else {
-        state.beamTrip |= isBeamBreakTriggered();
     }
     blinkin.SetPulseTime(state.beamTrip ? LED_ON : LED_OFF);
 }
 
 void Feeder::assignOutputs()
 {
-    if(state.intakeState == ROLLER_STATE::INTAKE || state.intakeState == ROLLER_STATE::SHOOT) {
+    if(state.intakeState == ROLLER_STATE::SHOOT) {
         intakeMotor.setPower(state.intakeForwardSpeed);
+    } else if(state.intakeState == ROLLER_STATE::INTAKE) {
+        intakeMotor.setPower(state.beamTrip ? 0 : state.intakeForwardSpeed);
     } else if(state.intakeState == ROLLER_STATE::OUTTAKE) {
         intakeMotor.setPower(state.intakeReverseSpeed);
     } else {
@@ -101,17 +111,12 @@ void Feeder::assignOutputs()
     if (state.feederState == ROLLER_STATE::SHOOT) {
         feederMotor.setPower(state.feederForwardSpeed);
     } else if(state.feederState == ROLLER_STATE::INTAKE) {
-        feederMotor.setPower(state.beamTrip ? 0 : state.feederForwardSpeed);
+        feederMotor.setPower(state.beamTrip ? 0 : state.feederIntakeSpeed);
     } else if(state.feederState == ROLLER_STATE::OUTTAKE) {
         feederMotor.setPower(state.feederReverseSpeed);
     } else {
         feederMotor.setPower(0);
     }
-}
-
-bool Feeder::isBeamBreakTriggered()
-{
-    return !beamBreak->GetInWindow();
 }
 
 void Feeder::InitSendable(wpi::SendableBuilder& builder)
@@ -131,8 +136,8 @@ void Feeder::InitSendable(wpi::SendableBuilder& builder)
     );
 
     builder.AddBooleanProperty(
-        "Banner Raw",
-        [this]{return isBeamBreakTriggered();},
+        "Beam Trip",
+        [this]{return state.beamTrip;},
         nullptr
     );
 }
