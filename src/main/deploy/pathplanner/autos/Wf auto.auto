@@ -20,13 +20,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Wf"
+            "pathName": "Wf pt 1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Part of Wf-A5"
+            "pathName": "Wf pt 2"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         },
         {
@@ -38,7 +44,19 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Disable full feeder"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Disable shooter"
           }
         }
       ]

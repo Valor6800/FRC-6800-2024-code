@@ -215,21 +215,21 @@ void Shooter::assignOutputs()
         rightFlywheelMotor.setSpeed(RIGHT_SHOOT_POWER);
     }
 
-    // if(state.pivotState == PIVOT_STATE::SUBWOOFER){
-    //     pivotMotors->setPosition(SUBWOOFER_ANG.to<double>());
-    // } else if(state.pivotState == PIVOT_STATE::PODIUM){
-    //     pivotMotors->setPosition(PODIUM_ANG.to<double>());
-    // } else if(state.pivotState == PIVOT_STATE::WING){
-    //     pivotMotors->setPosition(WING_ANG.to<double>());
-    // } else if(state.pivotState == PIVOT_STATE::TRACKING) {
-    //     pivotMotors->setPosition(state.calculatingPivotingAngle.to<double>());
-    // } else if(state.pivotState == PIVOT_STATE::MANUAL) {
-    //     pivotMotors->setPosition(state.setpoint);
-    // } else if (state.pitMode) {
-    //     pivotMotors->setPower(0);
-    // } else {
-    //     pivotMotors->setPosition(SUBWOOFER_ANG.to<double>());
-    // }
+    if(state.pivotState == PIVOT_STATE::SUBWOOFER){
+        pivotMotors->setPosition(SUBWOOFER_ANG.to<double>());
+    } else if(state.pivotState == PIVOT_STATE::PODIUM){
+        pivotMotors->setPosition(PODIUM_ANG.to<double>());
+    } else if(state.pivotState == PIVOT_STATE::WING){
+        pivotMotors->setPosition(WING_ANG.to<double>());
+    } else if(state.pivotState == PIVOT_STATE::TRACKING) {
+        pivotMotors->setPosition(state.calculatingPivotingAngle.to<double>());
+    } else if(state.pivotState == PIVOT_STATE::MANUAL) {
+        pivotMotors->setPosition(state.setpoint);
+    } else if (state.pitMode) {
+        pivotMotors->setPower(0);
+    } else {
+        pivotMotors->setPosition(SUBWOOFER_ANG.to<double>());
+    }
 }
 
 void Shooter::calculatePivotAngle(){
