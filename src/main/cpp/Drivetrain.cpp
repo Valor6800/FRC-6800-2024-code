@@ -153,6 +153,8 @@ void Drivetrain::init()
         aprilTagSensors.push_back(new valor::AprilTagsSensor(robot, aprilCam.first, aprilCam.second));
     }
 
+    aprilTagSensors[0]->visionOutlier = 4.7_m;
+
     for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
         aprilLime->setPipe(valor::VisionSensor::PIPELINE_0);
     }
@@ -329,7 +331,7 @@ void Drivetrain::analyzeDashboard()
     visionAcceptanceRadius = (units::meter_t) table->GetNumber("Vision Acceptance", VISION_ACCEPTANCE.to<double>());
 
     for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
-        aprilLime->applyVisionMeasurement(calculatedEstimator, visionAcceptanceRadius, doubtX, doubtY);
+        aprilLime->applyVisionMeasurement(calculatedEstimator, doubtX, doubtY);
     }
 
     if (driverGamepad && driverGamepad->IsConnected() && driverGamepad->GetStartButton()) {
@@ -545,7 +547,7 @@ frc2::FunctionalCommand* Drivetrain::getResetOdom() {
             for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
                 if (aprilLime->hasTarget() && (aprilLime->getSensor().ToPose2d().X() > 0_m && aprilLime->getSensor().ToPose2d().Y() > 0_m)) {
                     table->PutNumber("resetting odom", table->GetNumber("resetting odom", 0) + 1);
-                    aprilLime->applyVisionMeasurement(estimator, (units::meter_t) table->GetNumber("Vision Acceptance", VISION_ACCEPTANCE.to<double>()));
+                    aprilLime->applyVisionMeasurement(estimator);
                     table->PutBoolean("resetting", true);
                     break;
                 } else {

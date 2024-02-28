@@ -33,14 +33,14 @@ frc::Pose3d AprilTagsSensor::getGlobalPose() {
     );
 }
 
-void AprilTagsSensor::applyVisionMeasurement(frc::SwerveDrivePoseEstimator<4> *estimator, units::meter_t acceptanceRadius, double doubtX, double doubtY, double doubtRot) {
+void AprilTagsSensor::applyVisionMeasurement(frc::SwerveDrivePoseEstimator<4> *estimator, double doubtX, double doubtY, double doubtRot) {
     if (!hasTarget()) return;
  
     //std::vector<double> botToTargetPose = limeTable->GetNumberArray("botpose_targetspace", std::span<const double>());
     //if (botToTargetPose.size() == 6) distance = units::meter_t(sqrtf(powf(botToTargetPose[0], 2) + powf(botToTargetPose[1], 2)));
     //else distance = 0_m; return;
 
-    if (distance >= acceptanceRadius) return;
+    if (distance >= visionOutlier) return;
     units::millisecond_t totalLatency = getTotalLatency();
 
     estimator->AddVisionMeasurement(
