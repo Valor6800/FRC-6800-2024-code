@@ -21,10 +21,10 @@
 #define FLYWHEEL_ROTATE_K_ACC 75.0f
 #define FLYWHEEL_ROTATE_K_P 0.00005f
 
-#define AMP_ANG 57.0f
+#define AMP_ANG 55.0f
 #define SUBWOOFER_ANG 59.5_deg
-#define PODIUM_ANG 39.0_deg
-#define WING_ANG 29.0_deg
+#define PODIUM_ANG 37.0_deg
+#define WING_ANG 26.5_deg
 
 #define AMP_POWER 10.0f
 #define LEFT_SHOOT_POWER 60.0f
@@ -112,7 +112,7 @@ void Shooter::assessInputs()
         state.pivotState = PIVOT_STATE::SUBWOOFER;
     } else if (operatorGamepad->GetBButton() || driverGamepad->GetRightBumper()) {
         state.pivotState = PIVOT_STATE::PODIUM;
-    } else if (operatorGamepad->GetYButton()) {// || climber->climbMotor.getPosition() > 1.0) { 
+    } else if (operatorGamepad->GetYButton() || climber->climbMotor.getPosition() > 1.0) { 
         state.pivotState = PIVOT_STATE::WING;
     } else if (operatorGamepad->GetXButton()) {
         state.pivotState = PIVOT_STATE::MANUAL;
@@ -173,7 +173,10 @@ void Shooter::assignOutputs()
 void Shooter::calculatePivotAngle(){
     double distance = drivetrain->state.distanceFromSpeaker.to<double>();
 
-    double bestPivot = 91.7 + (-32.5 * distance) + (5.9 * pow(distance, 2)) + (-0.398 * pow(distance, 3)); // subject to change
+    double A = 1.92;
+    double B = -20.6;
+    double C = 80.9;
+    double bestPivot = C + (B * distance) + (A * pow(distance, 2));
     state.calculatingPivotingAngle = units::degree_t(bestPivot);
 }
 
