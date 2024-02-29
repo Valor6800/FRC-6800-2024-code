@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.34,
-      "y": 5.56
+      "x": 1.4,
+      "y": 5.572019226189894
     },
     "rotation": 0.7199999999999989
   },
@@ -15,12 +15,6 @@
           "type": "named",
           "data": {
             "name": "Start pivot tracking"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "kick-s"
           }
         },
         {
