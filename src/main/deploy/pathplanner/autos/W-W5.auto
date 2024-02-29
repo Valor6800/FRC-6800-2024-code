@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.5543004817925148,
-      "y": 4.12
+      "x": 0.7522949572447178,
+      "y": 4.417067566339995
     },
-    "rotation": -0.6222761395300174
+    "rotation": -60.0
   },
   "command": {
     "type": "sequential",
@@ -26,7 +26,19 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot sequence-feeder"
+            "name": "Enable full feeder"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Disable full feeder"
           }
         }
       ]

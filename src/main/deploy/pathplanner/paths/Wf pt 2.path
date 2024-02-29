@@ -16,11 +16,11 @@
     },
     {
       "anchor": {
-        "x": 1.2048104129845414,
+        "x": 1.9557857214672765,
         "y": 4.087365499528453
       },
       "prevControl": {
-        "x": 1.445567555201664,
+        "x": 2.1965428636843987,
         "y": 4.0200156779144045
       },
       "nextControl": null,
@@ -28,57 +28,9 @@
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.35,
-      "rotationDegrees": -53.0,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [
-    {
-      "name": "Feed",
-      "waypointRelativePos": 0.0,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Enable shooter"
-              }
-            },
-            {
-              "type": "wait",
-              "data": {
-                "waitTime": 0.35
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "Enable full feeder"
-              }
-            },
-            {
-              "type": "wait",
-              "data": {
-                "waitTime": 0.1
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "Disable feeder"
-              }
-            }
-          ]
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.5,
     "maxAcceleration": 1.5,
@@ -87,7 +39,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -53.01999999999998,
+    "rotation": -39.94,
     "rotateFast": false
   },
   "reversed": false,
