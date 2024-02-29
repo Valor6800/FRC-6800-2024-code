@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.6536797469211257,
+        "x": 1.96,
         "y": 4.087365499528453
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.7043207031654224,
+        "x": 2.0106409562442966,
         "y": 2.0045948386891
       },
       "isLocked": false,
-      "linkedName": "Powerloader"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -49,34 +49,17 @@
       "waypointRelativePos": 1.0,
       "rotationDegrees": 0,
       "rotateFast": false
-    },
-    {
-      "waypointRelativePos": 0.25,
-      "rotationDegrees": -42.120000000000005,
-      "rotateFast": false
     }
   ],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0.25,
+      "name": "Disable shooter",
+      "waypointRelativePos": 0.2,
       "command": {
         "type": "sequential",
         "data": {
           "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Enable full feeder"
-              }
-            },
-            {
-              "type": "wait",
-              "data": {
-                "waitTime": 0.2
-              }
-            },
             {
               "type": "named",
               "data": {
@@ -128,7 +111,7 @@
       }
     },
     {
-      "name": "New Event Marker",
+      "name": "Pre set shooter",
       "waypointRelativePos": 1.65,
       "command": {
         "type": "parallel",
@@ -159,7 +142,7 @@
   "reversed": false,
   "folder": "SecondPick",
   "previewStartingState": {
-    "rotation": 0.0,
+    "rotation": -35.52904499256282,
     "velocity": 0
   },
   "useDefaultConstraints": true

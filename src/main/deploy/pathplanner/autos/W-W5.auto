@@ -20,6 +20,18 @@
         {
           "type": "path",
           "data": {
+            "pathName": "Wf pt 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Enable full feeder"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
             "pathName": "W-A5"
           }
         },
