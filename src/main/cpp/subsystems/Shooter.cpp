@@ -32,9 +32,9 @@
 #define PODIUM_ANG 37.0_deg
 #define WING_ANG 26.5_deg
 
-#define AMP_POWER 10.0f
-#define LEFT_SHOOT_POWER 60.0f
-#define RIGHT_SHOOT_POWER 30.0f
+#define AMP_POWER 15.0f // rps
+#define LEFT_SHOOT_POWER 60.0f // rps
+#define RIGHT_SHOOT_POWER 30.0f // rps
 
 Shooter::Shooter(frc::TimedRobot *_robot, Climber *_climber, Drivetrain *_drive) :
     valor::BaseSubsystem(_robot, "Shooter"),

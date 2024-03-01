@@ -114,5 +114,5 @@ bool Gamepad::DPadRight()
 
 void Gamepad::setRumble(bool turnOn)
 {
-    SetRumble(RumbleType::kBothRumble, turnOn ? 0.1 : 0.0);
+    SetRumble(RumbleType::kBothRumble, turnOn ? 0.5 : 0.0);
 }
