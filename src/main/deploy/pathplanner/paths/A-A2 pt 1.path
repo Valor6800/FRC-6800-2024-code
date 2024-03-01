@@ -16,48 +16,22 @@
     },
     {
       "anchor": {
-        "x": 7.846242802583985,
-        "y": 5.81037446370321
+        "x": 8.07468893757232,
+        "y": 5.786429569025226
       },
       "prevControl": {
-        "x": 7.307963725921003,
-        "y": 5.81037446370321
-      },
-      "nextControl": {
-        "x": 8.426242802583985,
-        "y": 5.81037446370321
-      },
-      "isLocked": false,
-      "linkedName": "Scorch"
-    },
-    {
-      "anchor": {
-        "x": 4.255721341231456,
-        "y": 6.16995197600783
-      },
-      "prevControl": {
-        "x": 6.886494998357975,
-        "y": 6.516299898555663
+        "x": 7.536409860909338,
+        "y": 5.786429569025226
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Score amp"
+      "linkedName": "Scorch"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.0,
-      "rotationDegrees": 0.0,
-      "rotateFast": true
-    },
-    {
       "waypointRelativePos": 0.5,
       "rotationDegrees": 7.5,
-      "rotateFast": false
-    },
-    {
-      "waypointRelativePos": 1.75,
-      "rotationDegrees": 0.0,
       "rotateFast": false
     }
   ],
@@ -74,23 +48,6 @@
               "type": "named",
               "data": {
                 "name": "Enable feeder"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Disable intake",
-      "waypointRelativePos": 1.4,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Disable feeder"
               }
             }
           ]
@@ -119,34 +76,17 @@
           ]
         }
       }
-    },
-    {
-      "name": "Enable shooter",
-      "waypointRelativePos": 1.5,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Enable shooter"
-              }
-            }
-          ]
-        }
-      }
     }
   ],
   "globalConstraints": {
     "maxVelocity": 3.5,
-    "maxAcceleration": 3.0,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1600.0
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 7.5,
+    "rotation": 0.0,
     "rotateFast": true
   },
   "reversed": false,

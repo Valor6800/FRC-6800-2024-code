@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7885143244968206,
-      "y": 6.62422483818492
+      "x": 1.4,
+      "y": 5.572019226189894
     },
-    "rotation": 60.0
+    "rotation": 0.7199999999999989
   },
   "command": {
     "type": "sequential",
@@ -20,24 +20,30 @@
         {
           "type": "path",
           "data": {
-            "pathName": "A-Af-A1 no back"
+            "pathName": "Sf"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Sf-A1"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Disable intake"
+            "name": "Enable feeder"
           }
         },
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-            "waitTime": 0.5
+            "pathName": "A-A3 pt 1"
           }
         }
       ]
     }
   },
-  "folder": null,
+  "folder": "Comp",
   "choreoAuto": false
 }

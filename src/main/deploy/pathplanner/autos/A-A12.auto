@@ -44,13 +44,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "A-A2"
+            "pathName": "A-A2 pt 1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "A-A2 pt 2"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Shoot sequence-feeder"
+            "name": "Enable full feeder"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Disable full feeder"
           }
         }
       ]

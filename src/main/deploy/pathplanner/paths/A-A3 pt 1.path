@@ -16,51 +16,19 @@
     },
     {
       "anchor": {
-        "x": 8.717819895853912,
-        "y": 4.136473596514902
+        "x": 8.100752184360273,
+        "y": 4.1071896750998365
       },
       "prevControl": {
-        "x": 7.6774844626801535,
-        "y": 4.132170084869684
-      },
-      "nextControl": {
-        "x": 9.701048654141255,
-        "y": 4.140540877390162
-      },
-      "isLocked": false,
-      "linkedName": "Mid"
-    },
-    {
-      "anchor": {
-        "x": 4.255721341231456,
-        "y": 6.16995197600783
-      },
-      "prevControl": {
-        "x": 4.311117798100761,
-        "y": 2.5438011225631847
+        "x": 7.060416751186514,
+        "y": 4.1028861634546185
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Score amp"
+      "linkedName": "Mid"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.65,
-      "rotationDegrees": 7.5,
-      "rotateFast": false
-    },
-    {
-      "waypointRelativePos": 1.0,
-      "rotationDegrees": 0,
-      "rotateFast": false
-    },
-    {
-      "waypointRelativePos": 1.7,
-      "rotationDegrees": 0.0,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
@@ -74,23 +42,6 @@
               "type": "named",
               "data": {
                 "name": "Enable feeder"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Disable intake",
-      "waypointRelativePos": 1.5,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Disable feeder"
               }
             }
           ]
@@ -119,35 +70,18 @@
           ]
         }
       }
-    },
-    {
-      "name": "Enable shooter",
-      "waypointRelativePos": 1.6,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Enable shooter"
-              }
-            }
-          ]
-        }
-      }
     }
   ],
   "globalConstraints": {
     "maxVelocity": 3.5,
-    "maxAcceleration": 3.0,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1600.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 7.5,
-    "rotateFast": true
+    "rotation": 0.0,
+    "rotateFast": false
   },
   "reversed": false,
   "folder": "Pick chain",
