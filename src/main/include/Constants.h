@@ -119,7 +119,7 @@ namespace Constants {
         static std::vector<double> swerveZeros(){ switch (teamNumber){
             case ALPHA_TEAM_NUMBER: return {0.3867, 0.8890, 0.0763, 0.610};
             case SIDE_SWIPE_TEAM_NUMBER: return {0.3106, 0.4369, 0.4780, 0.7372};
-            default: return {0.4240722, 0.857666, 0.471924, 0.078125};
+            default: return  {0.4240722, 0.858154, 0.471924, 0.081299}; // {0.4240722, 0.857666, 0.471924, 0.078125};
         }};
 
         static units::meter_t moduleDiff(){ switch (teamNumber){
