@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.34,
-      "y": 5.56
+      "x": 1.4,
+      "y": 5.572019226189894
     },
     "rotation": 0.7199999999999989
   },
@@ -36,21 +36,9 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "Enable full feeder"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "A-A2 pt 1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "A-A2 pt 2"
+            "waitTime": 0.25
           }
         },
         {
@@ -62,13 +50,13 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.2
+            "waitTime": 0.25
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "Disable full feeder"
+            "pathName": "A-A2 pt 1"
           }
         }
       ]

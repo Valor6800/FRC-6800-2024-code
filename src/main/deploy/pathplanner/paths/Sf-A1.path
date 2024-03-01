@@ -32,16 +32,16 @@
     },
     {
       "anchor": {
-        "x": 8.094832304175604,
-        "y": 7.4418192121251145
+        "x": 8.27122339241785,
+        "y": 7.446707288741545
       },
       "prevControl": {
-        "x": 7.094996730237257,
-        "y": 7.4236856772414415
+        "x": 7.2713878184795036,
+        "y": 7.428573753857872
       },
       "nextControl": {
-        "x": 9.09466787811395,
-        "y": 7.459952747008791
+        "x": 9.271058966356195,
+        "y": 7.464840823625222
       },
       "isLocked": false,
       "linkedName": "Northstar"
@@ -84,7 +84,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Enable feeder"
+                "name": "Enable intake"
               }
             }
           ]
@@ -124,7 +124,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Disable feeder"
+                "name": "Disable full feeder"
               }
             }
           ]
@@ -158,7 +158,7 @@
   "goalEndState": {
     "velocity": 0,
     "rotation": 7.5,
-    "rotateFast": true
+    "rotateFast": false
   },
   "reversed": false,
   "folder": "SecondPick",
