@@ -201,6 +201,8 @@ public:
      */
     bool DPadRight();
 
+    void setRumble(bool);
+
 private:
     double deadband(double, double, int);
 

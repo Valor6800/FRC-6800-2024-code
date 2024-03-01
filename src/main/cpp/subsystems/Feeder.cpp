@@ -178,6 +178,11 @@ void Feeder::analyzeDashboard()
     if (state.feederState == ROLLER_STATE::SHOOT) {
         state.beamTrip = false;
     }
+    if (state.beamTrip) {
+        driverGamepad->setRumble(true);
+    } else {
+        driverGamepad->setRumble(false);
+    }
     blinkin.SetPulseTime(state.beamTrip ? LED_ON : LED_OFF);
 }
 

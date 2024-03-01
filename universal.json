@@ -640,6 +640,73 @@
         }
       },
       "title": "Swerve numbers"
+    },
+    {
+      "type": 1,
+      "legends": {
+        "left": {
+          "lockedRange": null,
+          "unitConversion": {
+            "type": null,
+            "factor": 1
+          },
+          "fields": [
+            {
+              "key": "NT:/LiveWindow/PhoenixController/ID 1/reqPosition",
+              "color": "#2b66a2",
+              "show": true
+            },
+            {
+              "key": "NT:/LiveWindow/PhoenixController/ID 3/reqPosition",
+              "color": "#e5b31b",
+              "show": true
+            },
+            {
+              "key": "NT:/LiveWindow/PhoenixController/ID 5/reqPosition",
+              "color": "#af2437",
+              "show": true
+            },
+            {
+              "key": "NT:/LiveWindow/PhoenixController/ID 7/reqPosition",
+              "color": "#80588e",
+              "show": true
+            }
+          ]
+        },
+        "discrete": {
+          "fields": []
+        },
+        "right": {
+          "lockedRange": null,
+          "unitConversion": {
+            "type": null,
+            "factor": 1
+          },
+          "fields": [
+            {
+              "key": "NT:/LiveWindow/PhoenixController/ID 1/Position",
+              "color": "#e48b32",
+              "show": true
+            },
+            {
+              "key": "NT:/LiveWindow/PhoenixController/ID 3/Position",
+              "color": "#aacaee",
+              "show": true
+            },
+            {
+              "key": "NT:/LiveWindow/PhoenixController/ID 5/Position",
+              "color": "#c0b487",
+              "show": true
+            },
+            {
+              "key": "NT:/LiveWindow/PhoenixController/ID 7/Position",
+              "color": "#858584",
+              "show": true
+            }
+          ]
+        }
+      },
+      "title": "Line Graph"
     }
   ]
 }
