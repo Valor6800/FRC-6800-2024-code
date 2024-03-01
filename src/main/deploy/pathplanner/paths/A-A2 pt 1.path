@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.896724641033194,
-        "y": 6.517599723495165
+        "x": 6.24725135164556,
+        "y": 7.051199245255634
       },
       "isLocked": false,
       "linkedName": "Score amp"
@@ -28,13 +28,7 @@
       "linkedName": "Scorch"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.5,
-      "rotationDegrees": 7.5,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {

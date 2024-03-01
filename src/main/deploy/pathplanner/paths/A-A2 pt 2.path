@@ -20,8 +20,8 @@
         "y": 6.16995197600783
       },
       "prevControl": {
-        "x": 6.886494998357975,
-        "y": 6.516299898555663
+        "x": 6.731013462026924,
+        "y": 7.051199245255634
       },
       "nextControl": null,
       "isLocked": false,
@@ -81,7 +81,7 @@
   "goalEndState": {
     "velocity": 0.0,
     "rotation": 7.5,
-    "rotateFast": true
+    "rotateFast": false
   },
   "reversed": false,
   "folder": "Pick chain",
