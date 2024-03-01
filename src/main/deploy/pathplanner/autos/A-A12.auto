@@ -18,9 +18,39 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Enable shooter"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Enable full feeder"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Disable full feeder"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Af"
+            "pathName": "Af no shoot"
           }
         },
         {

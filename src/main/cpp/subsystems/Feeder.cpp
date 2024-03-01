@@ -131,6 +131,7 @@ void Feeder::init()
     debounceSensor.setRisingEdgeCallback([this] {
         state.beamTrip = true;
         feederMotor.setPower(0);
+        driverGamepad->setRumble(true);
     });
 
     table->PutNumber("Intake Forward Power", INTAKE_FORWARD_POWER);
@@ -178,9 +179,7 @@ void Feeder::analyzeDashboard()
     if (state.feederState == ROLLER_STATE::SHOOT) {
         state.beamTrip = false;
     }
-    if (state.beamTrip) {
-        driverGamepad->setRumble(true);
-    } else {
+    if (!state.beamTrip) {
         driverGamepad->setRumble(false);
     }
     blinkin.SetPulseTime(state.beamTrip ? LED_ON : LED_OFF);

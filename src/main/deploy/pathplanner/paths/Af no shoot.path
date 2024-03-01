@@ -38,8 +38,8 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Shoot",
-      "waypointRelativePos": 0,
+      "name": "Setup",
+      "waypointRelativePos": 0.3,
       "command": {
         "type": "sequential",
         "data": {
@@ -47,31 +47,13 @@
             {
               "type": "named",
               "data": {
+                "name": "Enable intake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
                 "name": "Enable shooter"
-              }
-            },
-            {
-              "type": "wait",
-              "data": {
-                "waitTime": 0.35
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "Enable full feeder"
-              }
-            },
-            {
-              "type": "wait",
-              "data": {
-                "waitTime": 0.2
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "Disable feeder"
               }
             }
           ]

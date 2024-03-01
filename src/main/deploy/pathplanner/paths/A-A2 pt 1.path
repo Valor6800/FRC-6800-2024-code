@@ -16,19 +16,25 @@
     },
     {
       "anchor": {
-        "x": 8.07468893757232,
-        "y": 5.786429569025226
+        "x": 8.21393243240516,
+        "y": 5.784984101182731
       },
       "prevControl": {
-        "x": 7.536409860909338,
-        "y": 5.786429569025226
+        "x": 6.608695351329409,
+        "y": 5.662948533615569
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "Scorch"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.8,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
