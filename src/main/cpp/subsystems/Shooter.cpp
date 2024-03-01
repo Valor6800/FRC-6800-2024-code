@@ -211,8 +211,13 @@ void Shooter::assignOutputs()
         leftFlywheelMotor.setSpeed(state.speedSetpoint);
         rightFlywheelMotor.setSpeed(state.speedSetpoint);
     } else {
-        leftFlywheelMotor.setSpeed(LEFT_SHOOT_POWER);
-        rightFlywheelMotor.setSpeed(RIGHT_SHOOT_POWER);
+        if (state.pivotState == PIVOT_STATE::SUBWOOFER || state.pivotState == PIVOT_STATE::DISABLED) {
+            leftFlywheelMotor.setSpeed(LEFT_SHOOT_POWER * 0.75);
+            rightFlywheelMotor.setSpeed(RIGHT_SHOOT_POWER * 0.75);
+        } else {
+            leftFlywheelMotor.setSpeed(LEFT_SHOOT_POWER);
+            rightFlywheelMotor.setSpeed(RIGHT_SHOOT_POWER);
+        }
     }
 
     if(state.pivotState == PIVOT_STATE::SUBWOOFER){
