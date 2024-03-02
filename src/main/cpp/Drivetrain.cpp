@@ -71,7 +71,7 @@ using namespace pathplanner;
 #define BLUE_LOCK_ANGLE 0_deg
 #define RED_LOCK_ANGLE 180_deg
 
-#define TIME_TELEOP_VERT 115.0f
+#define TIME_TELEOP_VERT 105.0f
 
 Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Drivetrain"),
                         rotMaxSpeed(ROT_SPEED_MUL * 2 * M_PI),
@@ -430,7 +430,7 @@ void Drivetrain::assignOutputs()
         }
     }
 
-    if (frc::Timer::GetFPGATimestamp().to<double>() - teleopStart > TIME_TELEOP_VERT) {
+    if (frc::Timer::GetFPGATimestamp().to<double>() - teleopStart > TIME_TELEOP_VERT && frc::Timer::GetFPGATimestamp().to<double>() - teleopStart < TIME_TELEOP_VERT + 3) {
         operatorGamepad->setRumble(true);
     } else {
         operatorGamepad->setRumble(false);
