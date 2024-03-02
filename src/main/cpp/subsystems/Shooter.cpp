@@ -236,7 +236,7 @@ void Shooter::assignOutputs()
         pivotMotors->setPosition(SUBWOOFER_ANG.to<double>());
     }
 }
-
+ 
 void Shooter::calculatePivotAngle(){
     double distance = drivetrain->state.distanceFromSpeaker.to<double>();
 
