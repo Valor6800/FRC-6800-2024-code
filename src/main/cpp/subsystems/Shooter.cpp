@@ -102,6 +102,14 @@ Shooter::Shooter(frc::TimedRobot *_robot, Climber *_climber, Drivetrain *_drive)
             }
         )
     ).ToPtr());
+    pathplanner::NamedCommands::registerCommand("Set pivot subwoofer", std::move(
+        frc2::InstantCommand(
+            [this]() {
+                // shooter->state.isShooting = true;
+                state.pivotState = Shooter::PIVOT_STATE::SUBWOOFER;
+            }
+        )
+    ).ToPtr());
 }
 
 void Shooter::resetState()

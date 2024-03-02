@@ -16,15 +16,15 @@
     },
     {
       "anchor": {
-        "x": 8.291918848160613,
+        "x": 8.09,
         "y": 7.420150409311236
       },
       "prevControl": {
-        "x": 7.503669061666523,
+        "x": 7.30175021350591,
         "y": 7.420150409311236
       },
       "nextControl": {
-        "x": 9.239030209564065,
+        "x": 9.037111361403452,
         "y": 7.420150409311236
       },
       "isLocked": false,
@@ -61,7 +61,19 @@
       "rotateFast": false
     }
   ],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 1.1,
+      "maxWaypointRelativePos": 2.0,
+      "constraints": {
+        "maxVelocity": 4.0,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 720.0,
+        "maxAngularAcceleration": 1600.0
+      }
+    }
+  ],
   "eventMarkers": [
     {
       "name": "Intake",

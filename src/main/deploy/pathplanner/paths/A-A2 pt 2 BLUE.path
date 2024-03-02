@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.27050614047698,
-        "y": 5.7964933653391615
+        "x": 8.071711367742758,
+        "y": 5.622917931708259
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.690506140476982,
-        "y": 5.7964933653391615
+        "x": 7.491711367742759,
+        "y": 5.622917931708259
       },
       "isLocked": false,
       "linkedName": "Scorch BLUE"
@@ -73,8 +73,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.5,
-    "maxAcceleration": 2.5,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1600.0
   },
@@ -89,5 +89,5 @@
     "rotation": 0.0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
