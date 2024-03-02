@@ -31,13 +31,13 @@
 #define SUBWOOFER_ANG 64.5_deg
 #define PODIUM_ANG 37.0_deg
 #define WING_ANG 26.5_deg
-#define POOP_ANG 45.0_deg
+#define POOP_ANG 48.0_deg
 
 #define AMP_POWER 10.75f // rps
 #define LEFT_SHOOT_POWER 60.0f // rps
 #define RIGHT_SHOOT_POWER 30.0f // rps
-#define LEFT_POOP_POWER 45.0f
-#define RIGHT_POOP_POWER 15.0f
+#define LEFT_POOP_POWER 35.0f
+#define RIGHT_POOP_POWER 28.0f
 
 Shooter::Shooter(frc::TimedRobot *_robot, Climber *_climber, Drivetrain *_drive) :
     valor::BaseSubsystem(_robot, "Shooter"),
