@@ -47,7 +47,7 @@ public:
     {
         NOT_SHOOTING,
         SPOOLED,
-        SHOOTING
+        SHOOTING,
     };
 
     enum PIVOT_STATE
@@ -57,7 +57,8 @@ public:
         PODIUM,
         WING,
         TRACKING,
-        MANUAL
+        MANUAL,
+        POOP
     };
 
     struct x

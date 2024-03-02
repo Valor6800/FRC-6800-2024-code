@@ -31,10 +31,13 @@
 #define SUBWOOFER_ANG 64.5_deg
 #define PODIUM_ANG 37.0_deg
 #define WING_ANG 26.5_deg
+#define POOP_ANG 45.0_deg
 
 #define AMP_POWER 10.75f // rps
 #define LEFT_SHOOT_POWER 60.0f // rps
 #define RIGHT_SHOOT_POWER 30.0f // rps
+#define LEFT_POOP_POWER 45.0f
+#define RIGHT_POOP_POWER 15.0f
 
 Shooter::Shooter(frc::TimedRobot *_robot, Climber *_climber, Drivetrain *_drive) :
     valor::BaseSubsystem(_robot, "Shooter"),
@@ -184,6 +187,8 @@ void Shooter::assessInputs()
         state.pivotState = PIVOT_STATE::PODIUM;
     } else if (operatorGamepad->GetYButton() || climber->climbMotor.getPosition() > 1.0) { 
         state.pivotState = PIVOT_STATE::WING;
+    } else if (operatorGamepad->GetRightBumper()) {
+        state.pivotState = PIVOT_STATE::POOP;
     } else if (operatorGamepad->GetXButton()) {
         state.pivotState = PIVOT_STATE::MANUAL;
     } else if (driverGamepad->leftTriggerActive()) {
@@ -222,6 +227,9 @@ void Shooter::assignOutputs()
         if (state.pivotState == PIVOT_STATE::SUBWOOFER || state.pivotState == PIVOT_STATE::DISABLED) {
             leftFlywheelMotor.setSpeed(LEFT_SHOOT_POWER * 0.75);
             rightFlywheelMotor.setSpeed(RIGHT_SHOOT_POWER * 0.75);
+        } else if (state.pivotState == PIVOT_STATE::POOP) {
+            leftFlywheelMotor.setSpeed(LEFT_POOP_POWER);
+            rightFlywheelMotor.setSpeed(RIGHT_POOP_POWER);
         } else {
             leftFlywheelMotor.setSpeed(LEFT_SHOOT_POWER);
             rightFlywheelMotor.setSpeed(RIGHT_SHOOT_POWER);
@@ -234,6 +242,8 @@ void Shooter::assignOutputs()
         pivotMotors->setPosition(PODIUM_ANG.to<double>());
     } else if(state.pivotState == PIVOT_STATE::WING){
         pivotMotors->setPosition(WING_ANG.to<double>());
+    } else if (state.pivotState == PIVOT_STATE::POOP) {
+        pivotMotors->setPosition(POOP_ANG.to<double>());
     } else if(state.pivotState == PIVOT_STATE::TRACKING) {
         pivotMotors->setPosition(state.calculatingPivotingAngle.to<double>());
     } else if(state.pivotState == PIVOT_STATE::MANUAL) {
