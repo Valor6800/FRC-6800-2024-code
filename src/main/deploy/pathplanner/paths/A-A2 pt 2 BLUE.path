@@ -16,25 +16,19 @@
     },
     {
       "anchor": {
-        "x": 4.255721341231456,
-        "y": 6.16995197600783
+        "x": 3.8361632874162743,
+        "y": 6.091237518991242
       },
       "prevControl": {
-        "x": 6.731013462026924,
-        "y": 7.051199245255634
+        "x": 6.311455408211742,
+        "y": 6.972484788239046
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "Score amp"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.75,
-      "rotationDegrees": 0.0,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
@@ -80,7 +74,7 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 7.5,
+    "rotation": 10.0,
     "rotateFast": false
   },
   "reversed": false,
