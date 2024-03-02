@@ -71,6 +71,8 @@ using namespace pathplanner;
 #define BLUE_LOCK_ANGLE 0_deg
 #define RED_LOCK_ANGLE 180_deg
 
+#define TIME_TELEOP_VERT 115.0f
+
 Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Drivetrain"),
                         rotMaxSpeed(ROT_SPEED_MUL * 2 * M_PI),
                         pigeon(CANIDs::PIGEON_CAN, PIGEON_CAN_BUS),
@@ -78,7 +80,8 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "
                         kinematics(NULL),
                         estimator(NULL),
                         calculatedEstimator(NULL),
-                        swerveNoError(true)
+                        swerveNoError(true),
+                        teleopStart(999999999999)
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -425,6 +428,12 @@ void Drivetrain::assignOutputs()
             setDriveMotorNeutralMode(valor::NeutralMode::Coast);
             drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
         }
+    }
+
+    if (frc::Timer::GetFPGATimestamp().to<double>() - teleopStart > TIME_TELEOP_VERT) {
+        operatorGamepad->setRumble(true);
+    } else {
+        operatorGamepad->setRumble(false);
     }
 }
 

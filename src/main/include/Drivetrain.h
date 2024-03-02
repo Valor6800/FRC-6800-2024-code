@@ -248,6 +248,7 @@ public:
      frc2::InstantCommand* getSetXMode();
 
      void setDriveMotorNeutralMode(valor::NeutralMode mode);
+     double teleopStart;
 
 private:
      
