@@ -28,7 +28,7 @@
 #define FLYWHEEL_ROTATE_K_P 0.00005f
 
 #define AMP_ANG 55.0f
-#define SUBWOOFER_ANG 59.5_deg
+#define SUBWOOFER_ANG 61.5_deg
 #define PODIUM_ANG 37.0_deg
 #define WING_ANG 26.5_deg
 
