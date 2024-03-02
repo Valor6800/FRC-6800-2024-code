@@ -1,0 +1,99 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 4.255721341231456,
+        "y": 6.16995197600783
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.24725135164556,
+        "y": 7.051199245255634
+      },
+      "isLocked": false,
+      "linkedName": "Score amp"
+    },
+    {
+      "anchor": {
+        "x": 8.27050614047698,
+        "y": 5.7964933653391615
+      },
+      "prevControl": {
+        "x": 6.665138612558846,
+        "y": 5.67444788076059
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Scorch BLUE"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.8,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0.65,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Enable intake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Stop shooting",
+      "waypointRelativePos": 0.1,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Disable shooter"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Disable feeder"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.5,
+    "maxAcceleration": 2.5,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 1600.0
+  },
+  "goalEndState": {
+    "velocity": 0.0,
+    "rotation": 0.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Pick chain",
+  "previewStartingState": {
+    "rotation": 7.5,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

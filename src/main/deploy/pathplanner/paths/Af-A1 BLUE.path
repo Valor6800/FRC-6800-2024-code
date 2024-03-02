@@ -1,0 +1,159 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.108658262527752,
+        "y": 7.080577081473897
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.108658262527752,
+        "y": 7.080577081473897
+      },
+      "isLocked": false,
+      "linkedName": "Acrid"
+    },
+    {
+      "anchor": {
+        "x": 8.291918848160613,
+        "y": 7.420150409311236
+      },
+      "prevControl": {
+        "x": 7.503669061666523,
+        "y": 7.420150409311236
+      },
+      "nextControl": {
+        "x": 9.239030209564065,
+        "y": 7.420150409311236
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.255721341231456,
+        "y": 6.16995197600783
+      },
+      "prevControl": {
+        "x": 5.218186927085613,
+        "y": 6.296662974227446
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Score amp"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 0.25,
+      "rotationDegrees": 0.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 1.5,
+      "rotationDegrees": 7.5,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0.65,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Enable intake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Stop shooting",
+      "waypointRelativePos": 0.15,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Disable full feeder"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Disable shooter"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Disable intake",
+      "waypointRelativePos": 1.5,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Disable intake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Enable shooter",
+      "waypointRelativePos": 1.7,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Enable shooter"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.5,
+    "maxAcceleration": 2.5,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 1600.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 7.5,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "SecondPick",
+  "previewStartingState": {
+    "rotation": 30.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
