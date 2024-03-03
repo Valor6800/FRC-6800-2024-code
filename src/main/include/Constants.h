@@ -7,6 +7,7 @@
 
 #pragma once
 
+
 #include <cmath>
 #include <iostream>
 #include <frc/RobotController.h>
@@ -77,6 +78,9 @@ namespace CANIDs {
     constexpr static int LEFT_CLIMBER = 16;
     constexpr static int AMP = 10;
 }
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-function"
 
 // Constants that stay the same across bots should not go here
 namespace Constants { 
@@ -269,3 +273,4 @@ namespace Constants {
                     std::pair("limelight-vanilla", vanillaCameraPosition())
         };
 }
+#pragma GCC diagnostic pop
