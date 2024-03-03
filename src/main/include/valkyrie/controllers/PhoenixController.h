@@ -32,6 +32,7 @@ public:
     void setVoltageCompensation(double volts) override;
     
     void setPosition(double);
+    void setPosition(double position, bool enableFOC);
     void setSpeed(double);
     void setPower(double);
 
