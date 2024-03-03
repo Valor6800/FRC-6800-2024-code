@@ -371,7 +371,6 @@ void PhoenixController::InitSendable(wpi::SendableBuilder& builder)
         "Config Status Code", 
         [this] { return status; },
         nullptr);
-
     builder.AddIntegerProperty(
         "Magnet Health",
         [this] { return cancoder ? cancoder->GetMagnetHealth().GetValue().value : -1; },
