@@ -267,7 +267,15 @@ void PhoenixController::setRange(int slot, double min, double max)
 void PhoenixController::setPosition(double position)
 {
     req_position.Position = units::make_unit<units::turn_t>(position); // Mechanism rotations
-    req_position.EnableFOC = true;
+    status = motor->SetControl(req_position);
+}
+/**
+ * Set a position in mechanism rotations, use FOC
+*/
+void PhoenixController::setPosition(double position, bool enableFOC)
+{
+    req_position.Position = units::make_unit<units::turn_t>(position); // Mechanism rotations
+    req_position.EnableFOC = enableFOC;
     status = motor->SetControl(req_position);
 
 }
