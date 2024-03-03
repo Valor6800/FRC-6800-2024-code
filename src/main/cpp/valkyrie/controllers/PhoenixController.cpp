@@ -277,7 +277,6 @@ void PhoenixController::setPosition(double position, bool enableFOC)
     req_position.Position = units::make_unit<units::turn_t>(position); // Mechanism rotations
     req_position.EnableFOC = enableFOC;
     status = motor->SetControl(req_position);
-
 }
 
 void PhoenixController::setSpeed(double speed)
