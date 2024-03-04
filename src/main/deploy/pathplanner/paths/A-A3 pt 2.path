@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 3.8361632874162743,
-        "y": 6.091237518991242
+        "x": 5.343755420294405,
+        "y": 6.400554042282853
       },
       "prevControl": {
-        "x": 3.8915597442855794,
-        "y": 2.465086665546597
+        "x": 7.270996539316574,
+        "y": 6.906197175096897
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,7 +32,7 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Disable intake",
+      "name": "Disable feeder",
       "waypointRelativePos": 0.5,
       "command": {
         "type": "parallel",
@@ -74,8 +74,8 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 7.5,
-    "rotateFast": true
+    "rotation": 10.0,
+    "rotateFast": false
   },
   "reversed": false,
   "folder": "Pick chain",

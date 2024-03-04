@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 3.8361632874162743,
-        "y": 6.091237518991242
+        "x": 5.343755420294405,
+        "y": 6.400554042282853
       },
       "prevControl": {
-        "x": 6.167986462419685,
-        "y": 7.075993349794859
+        "x": 7.675578595297816,
+        "y": 7.38530987308647
       },
       "nextControl": null,
       "isLocked": false,
@@ -44,7 +44,7 @@
   ],
   "eventMarkers": [
     {
-      "name": "Disable intake",
+      "name": "Disable feeder",
       "waypointRelativePos": 0.3999999999999999,
       "command": {
         "type": "parallel",
@@ -53,7 +53,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Disable full feeder"
+                "name": "Disable feeder"
               }
             }
           ]

@@ -40,12 +40,6 @@
           "data": {
             "pathName": "A-A3 pt 2"
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot sequence-feeder"
-          }
         }
       ]
     }

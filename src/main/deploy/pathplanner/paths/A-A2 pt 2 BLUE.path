@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 3.8361632874162743,
-        "y": 6.091237518991242
+        "x": 5.343755420294405,
+        "y": 6.400554042282853
       },
       "prevControl": {
-        "x": 6.311455408211742,
-        "y": 6.972484788239046
+        "x": 6.7569365987979655,
+        "y": 6.941277104595587
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,7 +32,7 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Disable intake",
+      "name": "Disable feeder",
       "waypointRelativePos": 0.3999999999999999,
       "command": {
         "type": "parallel",
@@ -41,7 +41,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Disable full feeder"
+                "name": "Disable feeder"
               }
             }
           ]

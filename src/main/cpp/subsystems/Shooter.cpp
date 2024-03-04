@@ -49,39 +49,11 @@ Shooter::Shooter(frc::TimedRobot *_robot, Climber *_climber, Drivetrain *_drive)
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
-    pathplanner::NamedCommands::registerCommand("Shoot sequence-shooter", std::move(
-        frc2::SequentialCommandGroup(
-            frc2::InstantCommand(
-                [this]() {
-                    // shooter->state.isShooting = true;
-                    state.flywheelState = Shooter::FLYWHEEL_STATE::SHOOTING;
-                }
-            ),
-            frc2::WaitCommand(1_s),
-            frc2::InstantCommand(
-                [this]() {
-                    // shooter->state.isShooting = false;
-                    state.flywheelState = Shooter::FLYWHEEL_STATE::NOT_SHOOTING;
-                }
-            )
-        )
-    ).ToPtr());
 
-    pathplanner::NamedCommands::registerCommand("Spool", std::move(
-        frc2::SequentialCommandGroup(
-            frc2::InstantCommand(
-                [this]() {
-                    // shooter->state.isShooting = true;
-                    state.flywheelState = Shooter::FLYWHEEL_STATE::SPOOLED;
-                }
-            )
-        )
-    ).ToPtr());
     pathplanner::NamedCommands::registerCommand("Enable shooter", std::move(
         frc2::SequentialCommandGroup(
             frc2::InstantCommand(
                 [this]() {
-                    // shooter->state.isShooting = true;
                     state.flywheelState = Shooter::FLYWHEEL_STATE::SHOOTING;
                 }
             )
@@ -91,7 +63,6 @@ Shooter::Shooter(frc::TimedRobot *_robot, Climber *_climber, Drivetrain *_drive)
         frc2::SequentialCommandGroup(
             frc2::InstantCommand(
                 [this]() {
-                    // shooter->state.isShooting = true;
                     state.flywheelState = Shooter::FLYWHEEL_STATE::NOT_SHOOTING;
                 }
             )
@@ -100,7 +71,6 @@ Shooter::Shooter(frc::TimedRobot *_robot, Climber *_climber, Drivetrain *_drive)
     pathplanner::NamedCommands::registerCommand("Start pivot tracking", std::move(
         frc2::InstantCommand(
             [this]() {
-                // shooter->state.isShooting = true;
                 state.pivotState = Shooter::PIVOT_STATE::TRACKING;
             }
         )
@@ -108,7 +78,6 @@ Shooter::Shooter(frc::TimedRobot *_robot, Climber *_climber, Drivetrain *_drive)
     pathplanner::NamedCommands::registerCommand("Set pivot subwoofer", std::move(
         frc2::InstantCommand(
             [this]() {
-                // shooter->state.isShooting = true;
                 state.pivotState = Shooter::PIVOT_STATE::SUBWOOFER;
             }
         )
@@ -181,7 +150,7 @@ void Shooter::assessInputs()
     } 
 
     //PIVOT LOGIC
-    if (operatorGamepad->GetAButton()) {// || driverGamepad->GetAButton()) {
+    if (operatorGamepad->GetAButton()) {
         state.pivotState = PIVOT_STATE::SUBWOOFER;
     } else if (operatorGamepad->GetBButton() || driverGamepad->GetRightBumper()) {
         state.pivotState = PIVOT_STATE::PODIUM;

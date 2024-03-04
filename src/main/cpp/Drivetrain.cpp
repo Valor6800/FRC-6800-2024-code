@@ -249,26 +249,6 @@ void Drivetrain::init()
         },
         this // Reference to this subsystem to set requirements
     );
-
-    pathplanner::NamedCommands::registerCommand("Set Camera Estimator", std::move(
-        frc2::SequentialCommandGroup(
-            frc2::InstantCommand(
-                [this]() {
-                    state.useCalculatedEstimator = true;
-                }
-            )
-        )
-    ).ToPtr());
-
-    pathplanner::NamedCommands::registerCommand("Set Estimator", std::move(
-        frc2::SequentialCommandGroup(
-            frc2::InstantCommand(
-                [this]() {
-                    state.useCalculatedEstimator = false;
-                }
-            )
-        )
-    ).ToPtr());
 }
 
 std::vector<valor::Swerve<Drivetrain::SwerveAzimuthMotor, Drivetrain::SwerveDriveMotor> *> Drivetrain::getSwerveModules()

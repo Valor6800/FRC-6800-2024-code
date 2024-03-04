@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.8361632874162743,
-        "y": 6.091237518991242
+        "x": 5.343755420294405,
+        "y": 6.400554042282853
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.090947432919172,
-        "y": 2.590117689841863
+        "x": 7.903169224090185,
+        "y": 6.946720981875123
       },
       "isLocked": false,
       "linkedName": "Score amp"
@@ -20,15 +20,21 @@
         "y": 4.1071896750998365
       },
       "prevControl": {
-        "x": 7.060416751186514,
-        "y": 4.1028861634546185
+        "x": 6.2457530890900905,
+        "y": 3.981581508880611
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "Mid"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.85,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
@@ -86,7 +92,7 @@
   "reversed": false,
   "folder": "Pick chain",
   "previewStartingState": {
-    "rotation": 7.5,
+    "rotation": 10.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

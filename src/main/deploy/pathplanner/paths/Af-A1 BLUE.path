@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.108658262527752,
-        "y": 7.080577081473897
+        "x": 4.069844549735871,
+        "y": 7.528785608112613
       },
       "isLocked": false,
       "linkedName": "Acrid"
@@ -32,12 +32,12 @@
     },
     {
       "anchor": {
-        "x": 3.8361632874162743,
-        "y": 6.091237518991242
+        "x": 5.343755420294405,
+        "y": 6.400554042282853
       },
       "prevControl": {
-        "x": 4.798628873270431,
-        "y": 6.217948517210858
+        "x": 6.268430498449538,
+        "y": 6.827904903892851
       },
       "nextControl": null,
       "isLocked": false,
@@ -102,7 +102,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Disable full feeder"
+                "name": "Disable feeder"
               }
             },
             {
@@ -116,7 +116,7 @@
       }
     },
     {
-      "name": "Disable intake",
+      "name": "Disable feeder",
       "waypointRelativePos": 1.5,
       "command": {
         "type": "parallel",
@@ -125,7 +125,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Disable intake"
+                "name": "Disable feeder"
               }
             }
           ]

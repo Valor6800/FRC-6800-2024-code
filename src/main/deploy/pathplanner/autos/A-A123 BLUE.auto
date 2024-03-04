@@ -2,84 +2,96 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 2.0,
-      "y": 7.0
+      "x": 0.7885143244968206,
+      "y": 6.62422483818492
     },
-    "rotation": 0
+    "rotation": 60.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "Swerves translation test"
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "Wait for A button"
+            "name": "Start pivot tracking"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Swerves rotation test"
+            "pathName": "Af"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Wait for A button"
+            "name": "Enable feeder"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Af-A1 BLUE"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "PIT sequence - intake"
+            "name": "Enable feeder"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "A-A2 pt 1 BLUE"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "A-A2 pt 2 BLUE"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Wait for A button"
+            "name": "Enable feeder"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "A-A3 pt 1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "A-A3 pt 2"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "PIT sequence - shooter fly"
+            "name": "Enable feeder"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Wait for A button"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "PIT sequence - feed"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Wait for A button"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "PIT sequence - shooter pivot"
+            "name": "Disable feeder"
           }
         }
       ]
     }
   },
-  "folder": null,
+  "folder": "Comp",
   "choreoAuto": false
 }

@@ -63,7 +63,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Disable full feeder"
+                "name": "Disable feeder"
               }
             },
             {
@@ -94,7 +94,7 @@
       }
     },
     {
-      "name": "Disable intake",
+      "name": "Disable feeder",
       "waypointRelativePos": 1.35,
       "command": {
         "type": "parallel",
@@ -103,7 +103,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Disable intake"
+                "name": "Disable feeder"
               }
             }
           ]

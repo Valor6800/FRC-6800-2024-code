@@ -70,7 +70,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Enable full feeder"
+                "name": "Enable feeder"
               }
             },
             {
@@ -82,7 +82,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Disable full feeder"
+                "name": "Disable feeder"
               }
             }
           ]
