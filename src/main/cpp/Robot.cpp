@@ -11,9 +11,8 @@
 Robot::Robot() : 
     drivetrain(this),
     valorAuto(),
-    beamBreak(AnalogPorts::BEAM_BREAK_PORT), 
-    climber(this),
-    shooter(this, &climber,  &drivetrain),
+    beamBreak(AnalogPorts::BEAM_BREAK_PORT),
+    shooter(this, &drivetrain),
     feeder(this, &beamBreak)
 {
     frc::TimedRobot();
@@ -29,9 +28,6 @@ void Robot::RobotInit() {
 
     feeder.setGamepads(&gamepadOperator, &gamepadDriver);
     feeder.resetState();
-
-    climber.setGamepads(&gamepadOperator, &gamepadDriver);
-    climber.resetState();
 
     frc::LiveWindow::EnableAllTelemetry();
     frc::DataLogManager::Start();

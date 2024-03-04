@@ -39,9 +39,8 @@
 #define LEFT_POOP_POWER 35.0f
 #define RIGHT_POOP_POWER 28.0f
 
-Shooter::Shooter(frc::TimedRobot *_robot, Climber *_climber, Drivetrain *_drive) :
+Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive) :
     valor::BaseSubsystem(_robot, "Shooter"),
-    climber(_climber),
     pivotMotors(nullptr),
     leftFlywheelMotor(CANIDs::LEFT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, true),
     rightFlywheelMotor(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false),
@@ -185,7 +184,7 @@ void Shooter::assessInputs()
         state.pivotState = PIVOT_STATE::SUBWOOFER;
     } else if (operatorGamepad->GetBButton() || driverGamepad->GetRightBumper()) {
         state.pivotState = PIVOT_STATE::PODIUM;
-    } else if (operatorGamepad->GetYButton() || climber->climbMotor.getPosition() > 1.0) { 
+    } else if (operatorGamepad->GetYButton()) { 
         state.pivotState = PIVOT_STATE::WING;
     } else if (operatorGamepad->GetRightBumper()) {
         state.pivotState = PIVOT_STATE::POOP;
