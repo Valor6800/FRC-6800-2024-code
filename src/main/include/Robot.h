@@ -21,7 +21,6 @@
 
 #include <subsystems/Shooter.h>
 #include "subsystems/Feeder.h"
-#include "subsystems/Climber.h"
 
 #include <fstream>
 #include "frc/DigitalInput.h"
@@ -51,7 +50,6 @@ class Robot : public frc::TimedRobot {
         valor::Auto valorAuto;
         frc::AnalogTrigger beamBreak;
         
-        Climber climber;
         Shooter shooter;
         Feeder feeder;
 };

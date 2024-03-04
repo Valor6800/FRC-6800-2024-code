@@ -19,14 +19,13 @@
 #include <unordered_map>
 #include "valkyrie/Gamepad.h"
 
-#include "subsystems/Climber.h"
 #include "Drivetrain.h"
 
 class Shooter : public valor::BaseSubsystem
 {
 public:
 
-    Shooter(frc::TimedRobot *robot, Climber *_climber, Drivetrain *drivetrain);
+    Shooter(frc::TimedRobot *robot, Drivetrain *drivetrain);
 
     void resetState();
 
@@ -76,7 +75,6 @@ public:
     } state;
 
 private:
-    Climber *climber;
     Drivetrain *drivetrain;
     valor::PhoenixController* pivotMotors;
 
