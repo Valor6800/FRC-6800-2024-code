@@ -71,7 +71,7 @@ Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive) :
             frc2::InstantCommand(
                 [this]() {
                     // shooter->state.isShooting = true;
-                    state.flywheelState = Shooter::FLYWHEEL_STATE::SPOOLED;
+                    state.flywheelState = Shooter::FLYWHEEL_STATE::SHOOTING;
                 }
             )
         )
@@ -123,8 +123,6 @@ void Shooter::resetState()
 
 void Shooter::init()
 {
-    state.pitMode = false;
-
     valor::PIDF pivotPID;
     pivotPID.maxVelocity = PIVOT_ROTATE_K_VEL;
     pivotPID.maxAcceleration = PIVOT_ROTATE_K_ACC;
@@ -158,81 +156,63 @@ void Shooter::init()
     table->PutNumber("Pivot Setpoint", AMP_ANG);
     table->PutNumber("Speed Setpoint", AMP_POWER);
 
-    table->PutBoolean("Pit Mode", false);
-
     resetState();
 }
 
 void Shooter::assessInputs()
 {
-    if (driverGamepad == nullptr || operatorGamepad == nullptr ||
-        !driverGamepad->IsConnected() || !operatorGamepad->IsConnected())
+    if (driverGamepad == nullptr || !driverGamepad->IsConnected())
         return;
 
     //SHOOT LOGIC
-    if (driverGamepad->rightTriggerActive() || operatorGamepad->leftTriggerActive() ||
-        driverGamepad->leftTriggerActive()) {
-        state.flywheelState = FLYWHEEL_STATE::SPOOLED;
-    } else if (operatorGamepad->GetStartButtonPressed()) {
-        state.flywheelState = FLYWHEEL_STATE::SPOOLED;
-    } else if (operatorGamepad->GetBackButtonPressed()) {
+    if (driverGamepad->rightTriggerActive() ||
+        driverGamepad->leftTriggerActive() ||
+        driverGamepad->GetXButton() ||
+        driverGamepad->GetBButton()) {
+        state.flywheelState = FLYWHEEL_STATE::SHOOTING;
+    } else {
         state.flywheelState = FLYWHEEL_STATE::NOT_SHOOTING;
     } 
 
     //PIVOT LOGIC
-    if (operatorGamepad->GetAButton()) {// || driverGamepad->GetAButton()) {
+    if (driverGamepad->GetAButton()) {
         state.pivotState = PIVOT_STATE::SUBWOOFER;
-    } else if (operatorGamepad->GetBButton() || driverGamepad->GetRightBumper()) {
-        state.pivotState = PIVOT_STATE::PODIUM;
-    } else if (operatorGamepad->GetYButton()) { 
-        state.pivotState = PIVOT_STATE::WING;
-    } else if (operatorGamepad->GetRightBumper()) {
-        state.pivotState = PIVOT_STATE::POOP;
-    } else if (operatorGamepad->GetXButton()) {
+    } else if (driverGamepad->GetBButton()) {
         state.pivotState = PIVOT_STATE::MANUAL;
+    } else if (driverGamepad->GetXButton()) {
+        state.pivotState = PIVOT_STATE::POOP;
     } else if (driverGamepad->leftTriggerActive()) {
         state.pivotState = PIVOT_STATE::TRACKING;
     } else {
         state.pivotState = PIVOT_STATE::DISABLED;
     }
-    
 }
 
 void Shooter::analyzeDashboard()
 {
-    bool lastPitMode = state.pitMode;
-    state.pitMode = table->GetBoolean("Pit Mode", false);
-
     state.setpoint = table->GetNumber("Pivot Setpoint", AMP_ANG);
     state.speedSetpoint = table->GetNumber("Speed Setpoint", AMP_POWER);
-
-    if (state.pitMode && !lastPitMode) {
-        pivotMotors->setNeutralMode(valor::NeutralMode::Coast);
-    } else if (lastPitMode && !state.pitMode) {
-        pivotMotors->setNeutralMode(valor::NeutralMode::Brake);
-    }
     calculatePivotAngle();
 }
 
 void Shooter::assignOutputs()
 {
+    // Do nothing
     if (state.flywheelState == NOT_SHOOTING) {
         leftFlywheelMotor.setPower(0.0);
         rightFlywheelMotor.setPower(0.0);
     } else if (state.pivotState == PIVOT_STATE::MANUAL) {
         leftFlywheelMotor.setSpeed(state.speedSetpoint);
         rightFlywheelMotor.setSpeed(state.speedSetpoint);
+    } else if (state.pivotState == PIVOT_STATE::SUBWOOFER || state.pivotState == PIVOT_STATE::DISABLED) {
+        leftFlywheelMotor.setSpeed(LEFT_SHOOT_POWER * 0.75);
+        rightFlywheelMotor.setSpeed(RIGHT_SHOOT_POWER * 0.75);
+    } else if (state.pivotState == PIVOT_STATE::POOP) {
+        leftFlywheelMotor.setSpeed(LEFT_POOP_POWER);
+        rightFlywheelMotor.setSpeed(RIGHT_POOP_POWER);
     } else {
-        if (state.pivotState == PIVOT_STATE::SUBWOOFER || state.pivotState == PIVOT_STATE::DISABLED) {
-            leftFlywheelMotor.setSpeed(LEFT_SHOOT_POWER * 0.75);
-            rightFlywheelMotor.setSpeed(RIGHT_SHOOT_POWER * 0.75);
-        } else if (state.pivotState == PIVOT_STATE::POOP) {
-            leftFlywheelMotor.setSpeed(LEFT_POOP_POWER);
-            rightFlywheelMotor.setSpeed(RIGHT_POOP_POWER);
-        } else {
-            leftFlywheelMotor.setSpeed(LEFT_SHOOT_POWER);
-            rightFlywheelMotor.setSpeed(RIGHT_SHOOT_POWER);
-        }
+        leftFlywheelMotor.setSpeed(LEFT_SHOOT_POWER);
+        rightFlywheelMotor.setSpeed(RIGHT_SHOOT_POWER);
     }
 
     if(state.pivotState == PIVOT_STATE::SUBWOOFER){
@@ -247,8 +227,6 @@ void Shooter::assignOutputs()
         pivotMotors->setPosition(state.calculatingPivotingAngle.to<double>());
     } else if(state.pivotState == PIVOT_STATE::MANUAL) {
         pivotMotors->setPosition(state.setpoint);
-    } else if (state.pitMode) {
-        pivotMotors->setPower(0);
     } else {
         pivotMotors->setPosition(SUBWOOFER_ANG.to<double>());
     }
@@ -262,14 +240,6 @@ void Shooter::calculatePivotAngle(){
     double C = 74.2;
     double bestPivot = C + (B * distance) + (A * pow(distance, 2));
     state.calculatingPivotingAngle = units::degree_t(bestPivot);
-}
-
-void Shooter::calculateRootsT(){
-    // add future code for solving roots of the quartic that results from the vector expression
-}
-
-void Shooter::bisectionTheorem(){
-    // neccessary for calculateRootsT where the bisection method is used to estimate these values
 }
 
 void Shooter::InitSendable(wpi::SendableBuilder& builder){

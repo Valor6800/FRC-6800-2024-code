@@ -36,16 +36,12 @@ public:
     void assignOutputs();
 
     void calculatePivotAngle();
-
-    void calculateRootsT();
-    void bisectionTheorem();
     
     void InitSendable(wpi::SendableBuilder& builder);
 
     enum FLYWHEEL_STATE
     {
         NOT_SHOOTING,
-        SPOOLED,
         SHOOTING,
     };
 
@@ -62,7 +58,6 @@ public:
 
     struct x
     {
-        bool pitMode;
         double setpoint;
 
         PIVOT_STATE pivotState;
