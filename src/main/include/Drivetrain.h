@@ -104,20 +104,12 @@ public:
 
      void InitSendable(wpi::SendableBuilder& builder);
 
-     enum LimelightPipes{
-          APRIL_TAGS,
-          TAPE_MID,
-          TAPE_HIGH
-     };
-
      enum Alignment{
           SOURCE,
           TRAP,
           AMP,
           LOCK
      };
-
-     
 
      struct x
      {
@@ -130,17 +122,11 @@ public:
   
           bool adas;
           bool lock;
-
-          LimelightPipes limeLocation;
           
           bool xPose;
 
           bool isLeveled;
           bool abovePitchThreshold;
-
-
-          bool topTape;
-          bool bottomTape;
 
           bool isAlign;
           bool isHeadingTrack;

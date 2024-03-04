@@ -305,7 +305,7 @@ void Drivetrain::assessInputs()
     }
 
     state.ampAlign = driverGamepad->GetBButton();
-    state.isHeadingTrack = driverGamepad->leftTriggerActive();
+    state.isHeadingTrack = driverGamepad->leftTriggerActive() || driverGamepad->GetXButton();
     state.trapAlign = driverGamepad->GetXButton();
     state.sourceAlign = driverGamepad->GetYButton();
     state.thetaLock = driverGamepad->GetAButton();
@@ -314,12 +314,6 @@ void Drivetrain::assessInputs()
     state.ySpeed = driverGamepad->leftStickX(2);
 
     state.rot = driverGamepad->rightStickX(3);
-
-    if (!operatorGamepad || !operatorGamepad->IsConnected())
-        return;
-
-    state.topTape = operatorGamepad->DPadUp();
-    state.bottomTape = operatorGamepad->DPadRight();
 }
 
 void Drivetrain::calculateCarpetPose()
