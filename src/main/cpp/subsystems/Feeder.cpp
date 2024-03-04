@@ -124,7 +124,6 @@ void Feeder::init()
 
     intakeMotor.setMaxCurrent(60);
     intakeMotor.setVoltageCompensation(10);
-
     feederMotor.setVoltageCompensation(10);
 
     debounceSensor.setGetter([this] { return !beamBreak->GetInWindow(); });
@@ -133,15 +132,6 @@ void Feeder::init()
         feederMotor.setPower(0);
         driverGamepad->setRumble(true);
     });
-
-    table->PutNumber("Intake Forward Power", INTAKE_FORWARD_POWER);
-    table->PutNumber("Intake Reverse Power", INTAKE_REVERSE_POWER);
-
-    table->PutNumber("Feeder Forward Power", FEEDER_FORWARD_POWER);
-    table->PutNumber("Feeder Intake Power", FEEDER_INTAKE_POWER);
-    table->PutNumber("Feeder Reverse Power", FEEDER_REVERSE_POWER);
-
-    table->PutBoolean("Beam Trip", false);
 }
 
 void Feeder::assessInputs()
@@ -168,18 +158,8 @@ void Feeder::assessInputs()
 
 void Feeder::analyzeDashboard()
 {
-    
-    state.intakeForwardSpeed = table->GetNumber("Intake Forward Power", INTAKE_FORWARD_POWER);
-    state.intakeReverseSpeed = table->GetNumber("Intake Reverse Power", INTAKE_REVERSE_POWER);
-
-    state.feederForwardSpeed = table->GetNumber("Feeder Forward Power", FEEDER_FORWARD_POWER);
-    state.feederIntakeSpeed = table->GetNumber("Feeder Intake Power", FEEDER_INTAKE_POWER);
-    state.feederReverseSpeed = table->GetNumber("Feeder Reverse Power", FEEDER_REVERSE_POWER);
-
     if (state.feederState == ROLLER_STATE::SHOOT) {
         state.beamTrip = false;
-    }
-    if (!state.beamTrip) {
         driverGamepad->setRumble(false);
     }
     blinkin.SetPulseTime(state.beamTrip ? LED_ON : LED_OFF);
@@ -188,21 +168,21 @@ void Feeder::analyzeDashboard()
 void Feeder::assignOutputs()
 {
     if(state.intakeState == ROLLER_STATE::SHOOT) {
-        intakeMotor.setPower(state.intakeForwardSpeed);
+        intakeMotor.setPower(INTAKE_FORWARD_POWER);
     } else if(state.intakeState == ROLLER_STATE::INTAKE) {
-        intakeMotor.setPower(state.beamTrip ? 0 : state.intakeForwardSpeed);
+        intakeMotor.setPower(state.beamTrip ? 0 : INTAKE_FORWARD_POWER);
     } else if(state.intakeState == ROLLER_STATE::OUTTAKE) {
-        intakeMotor.setPower(state.intakeReverseSpeed);
+        intakeMotor.setPower(INTAKE_REVERSE_POWER);
     } else {
         intakeMotor.setPower(0);
     }
     
     if (state.feederState == ROLLER_STATE::SHOOT) {
-        feederMotor.setPower(state.feederForwardSpeed);
+        feederMotor.setPower(FEEDER_FORWARD_POWER);
     } else if(state.feederState == ROLLER_STATE::INTAKE) {
-        feederMotor.setPower(state.beamTrip ? 0 : state.feederIntakeSpeed);
+        feederMotor.setPower(state.beamTrip ? 0 : FEEDER_FORWARD_POWER);
     } else if(state.feederState == ROLLER_STATE::OUTTAKE) {
-        feederMotor.setPower(state.feederReverseSpeed);
+        feederMotor.setPower(FEEDER_REVERSE_POWER);
     } else {
         feederMotor.setPower(0);
     }

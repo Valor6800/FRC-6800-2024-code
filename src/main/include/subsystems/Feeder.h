@@ -35,14 +35,6 @@ public:
     {
         ROLLER_STATE feederState;
         ROLLER_STATE intakeState;
-
-        double intakeForwardSpeed;
-        double intakeReverseSpeed;
-    
-        double feederForwardSpeed;
-        double feederIntakeSpeed;
-        double feederReverseSpeed;
-        
         bool beamTrip;
 
     } state;
