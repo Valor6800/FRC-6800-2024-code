@@ -136,8 +136,7 @@ void Feeder::init()
 
 void Feeder::assessInputs()
 {
-    if (driverGamepad == nullptr || operatorGamepad == nullptr ||
-        !driverGamepad->IsConnected() || !operatorGamepad->IsConnected())
+    if (driverGamepad == nullptr || !driverGamepad->IsConnected())
         return;
 
     if (driverGamepad->rightTriggerActive()) {
@@ -146,7 +145,7 @@ void Feeder::assessInputs()
     } else if (driverGamepad->GetRightBumper()) {
         state.intakeState = ROLLER_STATE::INTAKE;
         state.feederState = ROLLER_STATE::INTAKE;
-    } else if(operatorGamepad->GetLeftBumper()) {
+    } else if(driverGamepad->GetLeftBumper()) {
         state.intakeState = ROLLER_STATE::OUTTAKE;
         state.feederState = ROLLER_STATE::OUTTAKE;
     } else {
