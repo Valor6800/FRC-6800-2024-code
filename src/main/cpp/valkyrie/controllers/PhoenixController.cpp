@@ -194,7 +194,7 @@ void PhoenixController::setPIDF(configs::TalonFXConfiguration & config, valor::P
     // Motion magic configuration
     config.MotionMagic.MotionMagicCruiseVelocity = pidf.maxVelocity;
     config.MotionMagic.MotionMagicAcceleration = pidf.maxAcceleration;
-    // config.MotionMagic.MotionMagicJerk = pidf.jerk;
+    config.MotionMagic.MotionMagicJerk = pidf.maxJerk;
 }
 
 /**
