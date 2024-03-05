@@ -366,6 +366,6 @@ void PhoenixController::InitSendable(wpi::SendableBuilder& builder)
 
     builder.AddIntegerProperty(
         "Magnet Health",
-        [this] { return cancoder->GetMagnetHealth().GetValue().value; },
+        [this] { return cancoder ? cancoder->GetMagnetHealth().GetValue().value : -1; },
         nullptr);
 }
