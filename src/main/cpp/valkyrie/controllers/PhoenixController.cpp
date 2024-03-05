@@ -44,8 +44,9 @@ PhoenixController::PhoenixController(int canID,
                                              double gearRatio,
                                              valor::PIDF pidf,
                                              double voltageComp,
+                                             bool isKraken, 
                                              std::string canbus) :
-    BaseController(new hardware::TalonFX{canID, canbus}, _inverted, _mode, 6380),
+    BaseController(new hardware::TalonFX{canID, canbus}, _inverted, _mode, isKraken ? 5800 : 6380),
     status(),
     req_position(units::turn_t{0}),
     req_velocity(units::turns_per_second_t{0}),
@@ -283,14 +284,12 @@ void PhoenixController::setPosition(double position)
     req_position.Position = units::make_unit<units::turn_t>(position); // Mechanism rotations
     status = motor->SetControl(req_position);
 }
-/**
- * Set a position in mechanism rotations, use FOC
-*/
-void PhoenixController::setPosition(double position, bool enableFOC)
+
+void PhoenixController::enableFOC(bool enableFOC)
 {
-    req_position.Position = units::make_unit<units::turn_t>(position); // Mechanism rotations
     req_position.EnableFOC = enableFOC;
-    status = motor->SetControl(req_position);
+    req_velocity.EnableFOC = enableFOC;
+    req_voltage.EnableFOC = enableFOC;
 }
 
 void PhoenixController::setSpeed(double speed)

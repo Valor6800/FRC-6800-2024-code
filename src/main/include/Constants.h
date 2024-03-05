@@ -167,17 +167,17 @@ namespace Constants {
         static double driveKP(){ switch (teamNumber) {
             case ALPHA_TEAM_NUMBER: return 0.00001;
             case SIDE_SWIPE_TEAM_NUMBER: return 0.00001;
-            default: return 0.00001;
+            default: return 10.0;
         }};
         static double driveKVel(){ switch (teamNumber) {
             case ALPHA_TEAM_NUMBER: return 6.0;
             case SIDE_SWIPE_TEAM_NUMBER: return 6.0;
-            default: return 5.0;
+            default: return 5.36;
         }};
         static double driveKAcc(){ switch (teamNumber) {
             case ALPHA_TEAM_NUMBER: return 120.0;
             case SIDE_SWIPE_TEAM_NUMBER: return 120.0;
-            default: return 50.0;
+            default: return 100.0;
         }};
 
         static frc::Pose3d mintCameraPosition(){ switch (teamNumber) {
