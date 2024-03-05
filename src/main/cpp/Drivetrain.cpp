@@ -359,8 +359,6 @@ void Drivetrain::analyzeDashboard()
 
     frc::Pose2d botpose;
     
-    doubtX = table->GetNumber("DoubtX", DOUBTX);
-    doubtY = table->GetNumber("DoubtY", DOUBTY);
     visionAcceptanceRadius = (units::meter_t) table->GetNumber("Vision Acceptance", VISION_ACCEPTANCE.to<double>());
 
     for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {

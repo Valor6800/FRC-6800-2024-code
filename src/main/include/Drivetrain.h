@@ -236,6 +236,8 @@ public:
      void setDriveMotorNeutralMode(valor::NeutralMode mode);
      double teleopStart;
 
+     double doubtX, doubtY;
+
 private:
      
      double driveMaxSpeed;
@@ -274,7 +276,6 @@ private:
      
      std::vector<valor::AprilTagsSensor*> aprilTagSensors;
 
-     double doubtX, doubtY;
      units::meter_t visionAcceptanceRadius;
 
      PoseTracker botPoseTracker;
