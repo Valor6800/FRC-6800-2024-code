@@ -150,6 +150,7 @@ void Shooter::init()
         1.0 / PIVOT_GEAR_RATIO * PIVOT_CANCODER_GEAR_RATIO,
         pivotPID,
         10.0,
+        false,
         "baseCAN"
     );
     pivotMotors->setupCANCoder(CANIDs::SHOOTER_CANCODER, PIVOT_MAGNET_OFFSET, PIVOT_CANCODER_GEAR_RATIO / 360.0, true, "baseCAN");

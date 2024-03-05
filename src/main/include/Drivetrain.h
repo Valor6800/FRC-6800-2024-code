@@ -62,7 +62,7 @@ public:
       * * valor::PhoenixController
       * * valor::NeoController
       */
-     typedef valor::NeoController SwerveDriveMotor;
+     typedef valor::PhoenixController SwerveDriveMotor;
 
      /**
       * @brief Quick way to select the azimuth motor controller
