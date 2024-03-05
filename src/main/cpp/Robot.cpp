@@ -7,6 +7,10 @@
 #include <Constants.h>
 
 #include <ctime>
+#define AUTO_DOUBTX 3.0f;
+#define AUTO_DOUBTY 3.0f;
+#define TELE_DOUBTX 1.5f;
+#define TELE_DOUBTY 1.5f;
 
 Robot::Robot() : 
     drivetrain(this),
@@ -62,8 +66,8 @@ void Robot::AutonomousInit() {
     drivetrain.resetState();
     drivetrain.state.matchStart = frc::Timer::GetFPGATimestamp().to<double>();
     drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Brake);
-    drivetrain.doubtX = 3.0f;
-    drivetrain.doubtY = 3.0f;
+    drivetrain.doubtX = AUTO_DOUBTX;
+    drivetrain.doubtY = AUTO_DOUBTY;
 
     feeder.resetState();
     shooter.resetState();
@@ -82,8 +86,8 @@ void Robot::AutonomousPeriodic() {
 void Robot::TeleopInit() {
     drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Coast);
     drivetrain.teleopStart = frc::Timer::GetFPGATimestamp().to<double>();
-    drivetrain.doubtX = 1.5f;
-    drivetrain.doubtY = 1.5f;
+    drivetrain.doubtX = TELE_DOUBTX;
+    drivetrain.doubtY = TELE_DOUBTY;
 
     shooter.resetState();
     feeder.resetState();
