@@ -27,9 +27,6 @@ using namespace pathplanner;
 #define SPEAKER_BLUE_X 0.0_m
 #define SPEAKER_RED_X 16.4846_m
 
-#define DOUBTX 3.0f
-#define DOUBTY 3.0f
-
 #define TXRANGE  30.0f
 #define KPIGEON 2.0f
 #define KLIMELIGHT -29.8f
@@ -199,8 +196,6 @@ void Drivetrain::init()
     table->PutNumber("Vision Std", 3.0);
 
     table->PutNumber("Vision Acceptance", VISION_ACCEPTANCE.to<double>() );
-    table->PutNumber("DoubtX", DOUBTX);
-    table->PutNumber("DoubtY", DOUBTY);
 
     table->PutNumber("KPLIMELIGHT", KP_LIMELIGHT);
     table->PutNumber("KP_ROTATION", KP_ROTATE);
