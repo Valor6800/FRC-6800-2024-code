@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 8.09,
-        "y": 7.420150409311236
+        "x": 8.069365684810652,
+        "y": 7.411445030644691
       },
       "prevControl": {
-        "x": 7.30175021350591,
-        "y": 7.420150409311236
+        "x": 7.281115898316562,
+        "y": 7.411445030644691
       },
       "nextControl": {
-        "x": 9.037111361403452,
-        "y": 7.420150409311236
+        "x": 9.016477046214106,
+        "y": 7.411445030644691
       },
       "isLocked": false,
       "linkedName": null
@@ -61,19 +61,7 @@
       "rotateFast": false
     }
   ],
-  "constraintZones": [
-    {
-      "name": "Speed up",
-      "minWaypointRelativePos": 0.25,
-      "maxWaypointRelativePos": 0.8,
-      "constraints": {
-        "maxVelocity": 4.0,
-        "maxAcceleration": 3.5,
-        "maxAngularVelocity": 720.0,
-        "maxAngularAcceleration": 1600.0
-      }
-    }
-  ],
+  "constraintZones": [],
   "eventMarkers": [
     {
       "name": "Intake",

@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.49438988504713,
-        "y": 7.190778713118479
+        "x": 6.28830570747079,
+        "y": 7.135976674948142
       },
       "isLocked": false,
       "linkedName": "Score amp"
     },
     {
       "anchor": {
-        "x": 8.116406463137,
-        "y": 5.771502748879342
+        "x": 8.129081316322354,
+        "y": 7.45016271723805
       },
       "prevControl": {
-        "x": 6.511169382061249,
-        "y": 5.649467181312179
+        "x": 6.523844235246603,
+        "y": 7.3281271496708875
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Scorch"
+      "linkedName": "Northstar"
     }
   ],
   "rotationTargets": [

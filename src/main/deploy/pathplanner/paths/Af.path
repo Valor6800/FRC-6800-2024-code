@@ -3,16 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7885143244968206,
-        "y": 6.62422483818492
+        "x": 0.7647689242137745,
+        "y": 6.722096788341435
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8827935060022323,
-        "y": 6.855660605454602
+        "x": 1.4871218903679129,
+        "y": 6.411380556702086
       },
       "isLocked": false,
       "linkedName": "Start amp"
+    },
+    {
+      "anchor": {
+        "x": 2.286562274368762,
+        "y": 6.722096788341435
+      },
+      "prevControl": {
+        "x": 2.1567111933002745,
+        "y": 6.678309643560597
+      },
+      "nextControl": {
+        "x": 2.475107210667257,
+        "y": 6.785676115948586
+      },
+      "isLocked": false,
+      "linkedName": null
     },
     {
       "anchor": {
@@ -20,8 +36,8 @@
         "y": 7.080577081473897
       },
       "prevControl": {
-        "x": 2.140316108101002,
-        "y": 6.470260749829105
+        "x": 2.7698420855102706,
+        "y": 6.947569992904743
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,8 +46,8 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.65,
-      "rotationDegrees": 25.0,
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 29.169999999999987,
       "rotateFast": false
     }
   ],
@@ -49,13 +65,18 @@
               "data": {
                 "name": "Enable shooter"
               }
-            },
-            {
-              "type": "wait",
-              "data": {
-                "waitTime": 0.35
-              }
-            },
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Enable feeder",
+      "waypointRelativePos": 1.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
             {
               "type": "named",
               "data": {
@@ -71,7 +92,13 @@
             {
               "type": "named",
               "data": {
-                "name": "Disable feeder"
+                "name": "Enable intake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Disable shooter"
               }
             }
           ]
@@ -81,7 +108,7 @@
   ],
   "globalConstraints": {
     "maxVelocity": 3.5,
-    "maxAcceleration": 3.2,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1600.0
   },
@@ -96,5 +123,5 @@
     "rotation": 60.0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

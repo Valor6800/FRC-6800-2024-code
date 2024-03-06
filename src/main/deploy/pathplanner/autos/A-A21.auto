@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7522949572447178,
-      "y": 4.417067566339995
+      "x": 0.7647689242137745,
+      "y": 6.722096788341435
     },
-    "rotation": -60.0
+    "rotation": 60.0
   },
   "command": {
     "type": "sequential",
@@ -20,13 +20,37 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Wf pt 1"
+            "pathName": "Af"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0.5
+            "name": "Enable feeder"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Af-A2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Enable feeder"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "A-A1 pt 1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "A-A1 pt 2"
           }
         },
         {
@@ -38,7 +62,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
+            "waitTime": 0.2
           }
         },
         {
@@ -46,16 +70,10 @@
           "data": {
             "name": "Disable feeder"
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Disable shooter"
-          }
         }
       ]
     }
   },
-  "folder": null,
+  "folder": "Comp",
   "choreoAuto": false
 }

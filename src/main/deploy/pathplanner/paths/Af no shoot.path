@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7885143244968206,
-        "y": 6.62422483818492
+        "x": 0.7647689242137745,
+        "y": 6.722096788341435
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8827935060022323,
-        "y": 6.855660605454602
+        "x": 1.8590481057191868,
+        "y": 6.953532555611119
       },
       "isLocked": false,
       "linkedName": "Start amp"
@@ -104,7 +104,7 @@
   "reversed": false,
   "folder": "FirstPick",
   "previewStartingState": {
-    "rotation": 60.0,
+    "rotation": -0.7064552051895918,
     "velocity": 0
   },
   "useDefaultConstraints": false

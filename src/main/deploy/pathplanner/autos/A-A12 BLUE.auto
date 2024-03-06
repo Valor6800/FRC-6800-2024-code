@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7885143244968206,
-      "y": 6.62422483818492
+      "x": 0.7647689242137745,
+      "y": 6.722096788341435
     },
     "rotation": 60.0
   },
@@ -36,21 +36,9 @@
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.2
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "Enable feeder"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.2
           }
         },
         {
