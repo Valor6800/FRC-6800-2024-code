@@ -36,8 +36,8 @@ public:
     void setVoltage(double);
     
     void setupFollower(int, bool = false);
-    void setPeriodFrame(double);
-    void setPeriodFrame(double, rev::CANSparkMax *_motor);
+    void setPeriodFrame(rev::CANSparkLowLevel::PeriodicFrame frame, double period);
+    void setAllPeriodFrames(rev::CANSparkMax *_motor, double period);
     
     void setPIDF(valor::PIDF pidf, int slot);
     void setForwardLimit(double forward);

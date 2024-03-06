@@ -47,15 +47,14 @@ void NeoController::setupFollower(int canID, bool followerInverted)
     followerMotor->RestoreFactoryDefaults();
     followerMotor->Follow(*motor, followerInverted);
     setNeutralMode(BaseController::neutralMode);
-    setPeriodFrame(500, followerMotor);
 }
 
-void NeoController::setPeriodFrame(double period)
+void NeoController::setPeriodFrame(rev::CANSparkLowLevel::PeriodicFrame frame, double period)
 {
-    setPeriodFrame(period, this->motor);
+    motor->SetPeriodicFramePeriod(frame, period);
 }
 
-void NeoController::setPeriodFrame(double period, rev::CANSparkMax *_motor)
+void NeoController::setAllPeriodFrames(rev::CANSparkMax *_motor, double period)
 {
     _motor->SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus0, period);
     _motor->SetPeriodicFramePeriod(rev::CANSparkMaxLowLevel::PeriodicFrame::kStatus1, period);
