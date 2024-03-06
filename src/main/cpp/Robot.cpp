@@ -10,28 +10,28 @@
 
 Robot::Robot() : 
     drivetrain(this),
-    valorAuto(),
-    beamBreak(AnalogPorts::BEAM_BREAK_PORT), 
-    climber(this),
-    shooter(this, &climber,  &drivetrain),
-    feeder(this, &beamBreak)
+    valorAuto()
+    // beamBreak(AnalogPorts::BEAM_BREAK_PORT), 
+    // climber(this),
+    // shooter(this, &climber,  &drivetrain),
+    // feeder(this, &beamBreak)
 {
     frc::TimedRobot();
-    beamBreak.SetLimitsVoltage(4, 14);
+    // beamBreak.SetLimitsVoltage(4, 14);
 }
 
 void Robot::RobotInit() {
     drivetrain.setGamepads(&gamepadOperator, &gamepadDriver);
     drivetrain.resetState();
 
-    shooter.setGamepads(&gamepadOperator, &gamepadDriver);
-    shooter.resetState();
-
-    feeder.setGamepads(&gamepadOperator, &gamepadDriver);
-    feeder.resetState();
-
-    climber.setGamepads(&gamepadOperator, &gamepadDriver);
-    climber.resetState();
+    // shooter.setGamepads(&gamepadOperator, &gamepadDriver);
+    // shooter.resetState();
+    //
+    // feeder.setGamepads(&gamepadOperator, &gamepadDriver);
+    // feeder.resetState();
+    //
+    // climber.setGamepads(&gamepadOperator, &gamepadDriver);
+    // climber.resetState();
 
     frc::LiveWindow::EnableAllTelemetry();
     frc::DataLogManager::Start();
@@ -67,8 +67,8 @@ void Robot::AutonomousInit() {
     drivetrain.state.matchStart = frc::Timer::GetFPGATimestamp().to<double>();
     drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Brake);
 
-    feeder.resetState();
-    shooter.resetState();
+    // feeder.resetState();
+    // shooter.resetState();
 
     autoCommand = valorAuto.getCurrentAuto();
     autoCommand.Schedule();
@@ -84,8 +84,8 @@ void Robot::AutonomousPeriodic() {
 void Robot::TeleopInit() {
     drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Coast);
     drivetrain.teleopStart = frc::Timer::GetFPGATimestamp().to<double>();
-    shooter.resetState();
-    feeder.resetState();
+    // shooter.resetState();
+    // feeder.resetState();
 
     autoCommand.Cancel();
 }
