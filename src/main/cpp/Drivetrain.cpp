@@ -141,7 +141,7 @@ void Drivetrain::configSwerveModule(int i)
                                                     drivePID,
                                                     12.0,
                                                     true,
-                                                    DRIVETRAIN_CAN_BUS));
+                                                    PIGEON_CAN_BUS));
     driveControllers[i]->enableFOC(true);
 
     driveMaxSpeed = driveControllers[i]->getMaxMotorSpeed() / 60.0 * conversion;

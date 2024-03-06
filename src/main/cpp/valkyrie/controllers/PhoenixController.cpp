@@ -11,9 +11,10 @@
 #define FALCON_PIDF_KA 130.0f // RPS/S acceleration (6.5/130 = 0.05 seconds to max speed)
 #define FALCON_PIDF_KJ 650.0f // RPS/S^2 jerk (4000/40000 = 0.1 seconds to max acceleration)
 
-#define STATOR_CURRENT_LIMIT 60.0f
-#define SUPPLY_CURRENT_LIMIT 80.0f
+#define STATOR_CURRENT_LIMIT 80.0f
+#define SUPPLY_CURRENT_LIMIT 60.0f
 #define SUPPLY_TIME_THRESHOLD 0.75f
+#define SUPPLY_CURRENT_THRESHOLD 80.0f
 
 #define FALCON_DEADBAND 0.01f
 
@@ -90,6 +91,7 @@ void PhoenixController::init(double gearRatio, valor::PIDF pidf)
     config.CurrentLimits.SupplyCurrentLimit = SUPPLY_CURRENT_LIMIT;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.CurrentLimits.SupplyTimeThreshold = SUPPLY_TIME_THRESHOLD;
+    config.CurrentLimits.SupplyCurrentThreshold = SUPPLY_CURRENT_THRESHOLD;
 
     // Deadband configuration
     config.MotorOutput.DutyCycleNeutralDeadband = FALCON_DEADBAND;
