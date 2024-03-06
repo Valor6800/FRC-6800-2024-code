@@ -25,6 +25,9 @@ public:
     double getSpeed();
     double getCurrent();
 
+    void setPositionUpdateFrequency(units::frequency::hertz_t);
+    void setSpeedUpdateFrequency(units::frequency::hertz_t);
+
     void setEncoderPosition(double position);
     void setVoltageCompensation(double volts) override;
     

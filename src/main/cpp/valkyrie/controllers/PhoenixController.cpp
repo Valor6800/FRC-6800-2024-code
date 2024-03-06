@@ -250,6 +250,19 @@ double PhoenixController::getSpeed()
     // units::second_t latency = rotorPosSignal.GetTimestamp().GetLatency();
     return rotorPosSignal.GetValueAsDouble();
 }
+// Sets signal update rate for position
+void PhoenixController::setPositionUpdateFrequency(units::frequency::hertz_t hertz)
+{
+    auto& rotorPosSignal = motor->GetPosition();
+    rotorPosSignal.SetUpdateFrequency(hertz);
+}
+
+// Sets signal update rate for speed
+void PhoenixController::setSpeedUpdateFrequency(units::frequency::hertz_t hertz)
+{
+    auto& rotorPosSignal = motor->GetVelocity();
+    rotorPosSignal.SetUpdateFrequency(hertz);
+}
 
 void PhoenixController::setRange(int slot, double min, double max)
 {
