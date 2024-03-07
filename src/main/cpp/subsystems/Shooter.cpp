@@ -172,14 +172,6 @@ void Shooter::assessInputs()
         state.flywheelState = FLYWHEEL_STATE::SHOOTING;
     } else {
         state.flywheelState = FLYWHEEL_STATE::NOT_SHOOTING;
-    } 
-
-    switch(state.flywheelState){
-        case FLYWHEEL_STATE::SPOOLED:
-            spooledTest=true;
-            break;
-        default:
-            spooledTest=false;
     }
 
     //PIVOT LOGIC
