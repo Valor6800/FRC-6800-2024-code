@@ -46,8 +46,6 @@ void Leds::analyzeDashboard(){
     note_DBool= feeder-> isBeamBreakTriggered();
 
     trackingBool = shooter->getTrackingState();
-    spooledBool = shooter->getSpooledState();
-    PITModeBool = shooter->getPitModeState();
  
     if (spooledBool){
         candle.setColor(CANdleSensor::RGBColor(0,0,0));
@@ -64,9 +62,7 @@ void Leds::analyzeDashboard(){
     else if (autoIsONBool){
         candle.setColor(CANdleSensor::RGBColor(0,0,0));
     }
-    else if (PITModeBool){
-        candle.setColor(CANdleSensor::RGBColor(0,0,0));
-    }
+    
     else if (note_DBool){
         candle.setColor(CANdleSensor::RGBColor(0,0,0));
     }
