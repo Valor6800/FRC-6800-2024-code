@@ -45,7 +45,8 @@ public:
         motor(_motor),
         inverted(_inverted),
         neutralMode(_neutralMode),
-        conversion(1) {}
+        rotorToSensor(1),
+        sensorToMech(1) {}
 
     /**
      * @brief Destroy the Valor Controller object
@@ -265,7 +266,7 @@ public:
      * 
      * @param conversion The conversion factor to apply to all calculations
      */
-    virtual void setConversion(double conversion) = 0;
+    virtual void setConversion(double rotorToSensor, double sensorToMech) = 0;
 
     /**
      * @brief Set which profile to use
@@ -290,7 +291,7 @@ public:
 
     virtual double getAbsEncoderPosition() = 0;
 
-    virtual void setupCANCoder(int deviceId, double offset, double conversion, bool clockwise = false, std::string canbus = "") = 0;
+    virtual void setupCANCoder(int deviceId, double offset, bool clockwise = false, std::string canbus = "") = 0;
     virtual double getCANCoder() = 0;
 
 protected:
@@ -301,7 +302,8 @@ protected:
     
     bool inverted;
     valor::NeutralMode neutralMode;
-    double conversion;
+    double rotorToSensor;
+    double sensorToMech;
     T* followerMotor;
 };
 }

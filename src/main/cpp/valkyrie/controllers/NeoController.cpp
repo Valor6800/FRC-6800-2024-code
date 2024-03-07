@@ -68,15 +68,15 @@ void NeoController::setPIDF(valor::PIDF pidf, int slot)
     pidController.SetFF(1.0 / maxMotorSpeed, slot);
     pidController.SetIZone(0, slot);
 
-    double vel = pidf.maxVelocity * 60.0 / conversion;
-    double accel = pidf.maxAcceleration * 60 / conversion;
+    double vel = pidf.maxVelocity * 60.0 / sensorToMech;
+    double accel = pidf.maxAcceleration * 60 / sensorToMech;
 
     pidController.SetSmartMotionMaxVelocity(vel, slot);
     pidController.SetSmartMotionMaxAccel(accel, slot);
     pidController.SetSmartMotionAllowedClosedLoopError(pidf.error, slot);
 }
 
-void NeoController::setupCANCoder(int deviceId, double offset, double conversion, bool clockwise, std::string canbus)
+void NeoController::setupCANCoder(int deviceId, double offset, bool clockwise, std::string canbus)
 {
 }
 
@@ -90,12 +90,13 @@ double NeoController::getCANCoder()
  * Converts between your desired units and rotations of the neo motor shaft (includes gear ratio)
  * @param conversion Conversion rate for position
  */
-void NeoController::setConversion(double _conversion)
+void NeoController::setConversion(double _rotorToSensor, double _sensorToMech)
 {
-    conversion = _conversion;
-    encoder.SetPositionConversionFactor(conversion);
+    rotorToSensor = 1.0 / _rotorToSensor;
+    sensorToMech = 1.0 / _sensorToMech;
+    encoder.SetPositionConversionFactor(sensorToMech);
     // convert from minutes to seconds for velocity
-    encoder.SetVelocityConversionFactor(conversion / 60.0);
+    encoder.SetVelocityConversionFactor(sensorToMech / 60.0);
    
 }
 
@@ -174,7 +175,7 @@ void NeoController::setProfile(int profile)
  */
 void NeoController::setSpeed(double speed)
 {
-    pidController.SetReference(speed / conversion * 60.0, rev::CANSparkMax::ControlType::kVelocity, currentPidSlot);
+    pidController.SetReference(speed / sensorToMech * 60.0, rev::CANSparkMax::ControlType::kVelocity, currentPidSlot);
 }
 
 void NeoController::setPower(double power)

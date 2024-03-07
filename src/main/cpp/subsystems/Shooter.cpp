@@ -37,8 +37,8 @@
 #define AMP_POWER 10.75f // rps
 #define LEFT_SHOOT_POWER 60.0f // rps
 #define RIGHT_SHOOT_POWER 30.0f // rps
-#define LEFT_BLOOP_POWER 30.0f
-#define RIGHT_BLOOP_POWER 25.0f
+#define LEFT_BLOOP_POWER 32.0f
+#define RIGHT_BLOOP_POWER 27.0f
 
 Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive) :
     valor::BaseSubsystem(_robot, "Shooter"),
@@ -138,22 +138,23 @@ void Shooter::init()
     flywheelPID.maxAcceleration = FLYWHEEL_ROTATE_K_ACC;
     flywheelPID.P = FLYWHEEL_ROTATE_K_P;
     
-    leftFlywheelMotor.setConversion(1);
+    leftFlywheelMotor.setConversion(1, 1);
     leftFlywheelMotor.setPIDF(flywheelPID, 0);
-    rightFlywheelMotor.setConversion(1);
+    rightFlywheelMotor.setConversion(1, 1);
     rightFlywheelMotor.setPIDF(flywheelPID, 0);
 
     pivotMotors = new valor::PhoenixController(
         CANIDs::PIVOT,
         valor::NeutralMode::Brake,
         false,
-        1.0 / PIVOT_GEAR_RATIO * PIVOT_CANCODER_GEAR_RATIO,
+        PIVOT_GEAR_RATIO / PIVOT_CANCODER_GEAR_RATIO,
+        PIVOT_CANCODER_GEAR_RATIO / 360.0,
         pivotPID,
         10.0,
         false,
         "baseCAN"
     );
-    pivotMotors->setupCANCoder(CANIDs::SHOOTER_CANCODER, PIVOT_MAGNET_OFFSET, PIVOT_CANCODER_GEAR_RATIO / 360.0, true, "baseCAN");
+    pivotMotors->setupCANCoder(CANIDs::SHOOTER_CANCODER, PIVOT_MAGNET_OFFSET, true, "baseCAN");
     pivotMotors->setRange(0, PIVOT_FORWARD_LIMIT, PIVOT_REVERSE_LIMIT);
 
     table->PutNumber("Pivot Setpoint", AMP_ANG);
