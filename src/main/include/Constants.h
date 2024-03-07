@@ -140,7 +140,7 @@ namespace Constants {
         static std::vector<bool> swerveDrivesReversals(){ switch (teamNumber){
             case ALPHA_TEAM_NUMBER: return {true, false, false, false};
             case SIDE_SWIPE_TEAM_NUMBER: return {false, false, false, false};
-            default: return {true, false, false, false};
+            default: return {false, true, true, true};
         }};
         static std::vector<bool> swerveAzimuthsReversals(){ switch (teamNumber){
             case ALPHA_TEAM_NUMBER: return {true, false, true, true};
@@ -167,7 +167,7 @@ namespace Constants {
         static double driveKP(){ switch (teamNumber) {
             case ALPHA_TEAM_NUMBER: return 0.00001;
             case SIDE_SWIPE_TEAM_NUMBER: return 0.00001;
-            default: return 10.0;
+            default: return 5.0;
         }};
         static double driveKVel(){ switch (teamNumber) {
             case ALPHA_TEAM_NUMBER: return 6.0;

@@ -5,7 +5,7 @@
 #define FALCON_PIDF_KP 10.0f
 #define FALCON_PIDF_KI 0.0f
 #define FALCON_PIDF_KD 0.0f
-#define FALCON_PIDF_KS 0.1475f // Static friction - maybe 0.05f?
+#define FALCON_PIDF_KS 0.22f
 
 #define FALCON_PIDF_KV 6.0f // RPS cruise velocity
 #define FALCON_PIDF_KA 130.0f // RPS/S acceleration (6.5/130 = 0.05 seconds to max speed)
@@ -181,7 +181,7 @@ void PhoenixController::setPIDF(configs::TalonFXConfiguration & config, valor::P
     config.Slot0.kP = pidf.P;
     config.Slot0.kI = pidf.I;
     config.Slot0.kD = pidf.D;
-    config.Slot0.kV = voltageCompenstation / (maxMotorSpeed / 60.0 * conversion);
+    config.Slot0.kV = voltageCompenstation / (maxMotorSpeed / 60.0 / conversion);
     config.Slot0.kS = FALCON_PIDF_KS;
 
     // Feedforward gain configuration
@@ -209,7 +209,7 @@ void PhoenixController::setConversion(double _conversion)
 {
     configs::TalonFXConfiguration config{};
     setConversion(config, _conversion);
-    motor->GetConfigurator().Apply(config);
+    status = motor->GetConfigurator().Apply(config);
 }
 
 void PhoenixController::setConversion(configs::TalonFXConfiguration & config, double _conversion)
@@ -366,6 +366,10 @@ void PhoenixController::InitSendable(wpi::SendableBuilder& builder)
     builder.AddDoubleProperty(
         "reqSpeed", 
         [this] { return req_velocity.Velocity.to<double>(); },
+        nullptr);
+    builder.AddDoubleProperty(
+        "conversion", 
+        [this] { return conversion; },
         nullptr);
 
     builder.AddIntegerProperty(
