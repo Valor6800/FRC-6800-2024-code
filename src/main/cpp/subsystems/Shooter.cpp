@@ -186,6 +186,14 @@ void Shooter::assessInputs()
     } else {
         state.pivotState = PIVOT_STATE::DISABLED;
     }
+
+    switch(state.pivotState) {
+    case PIVOT_STATE::TRACKING:
+        trackingTest = true;
+    default:
+        trackingTest = false;
+    }
+
 }
 
 
@@ -234,17 +242,13 @@ void Shooter::assignOutputs()
 
 }
 
-bool Shooter::getSpooledState(){
-    return spooledTest;
-}
+
 
 bool Shooter::getTrackingState(){
     return trackingTest;
 }
 
-bool Shooter::getPitModeState(){
-    return pitModeTest;
-}
+
  
 void Shooter::calculatePivotAngle(){
     double distance = drivetrain->state.distanceFromSpeaker.to<double>();
