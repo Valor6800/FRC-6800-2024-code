@@ -37,8 +37,8 @@
 #define AMP_POWER 10.75f // rps
 #define LEFT_SHOOT_POWER 60.0f // rps
 #define RIGHT_SHOOT_POWER 30.0f // rps
-#define LEFT_POOP_POWER 35.0f
-#define RIGHT_POOP_POWER 28.0f
+#define LEFT_BLOOP_POWER 30.0f
+#define RIGHT_BLOOP_POWER 25.0f
 
 Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive) :
     valor::BaseSubsystem(_robot, "Shooter"),
@@ -186,6 +186,8 @@ void Shooter::assessInputs()
         state.pivotState = PIVOT_STATE::POOP;
     } else if (driverGamepad->leftTriggerActive()) {
         state.pivotState = PIVOT_STATE::TRACKING;
+    } else if (driverGamepad->GetLeftBumper() || driverGamepad->GetRightBumper()) {
+        state.pivotState = PIVOT_STATE::WING;
     } else {
         state.pivotState = PIVOT_STATE::DISABLED;
     }
@@ -211,8 +213,8 @@ void Shooter::assignOutputs()
         leftFlywheelMotor.setSpeed(LEFT_SHOOT_POWER * 0.75);
         rightFlywheelMotor.setSpeed(RIGHT_SHOOT_POWER * 0.75);
     } else if (state.pivotState == PIVOT_STATE::POOP) {
-        leftFlywheelMotor.setSpeed(LEFT_POOP_POWER);
-        rightFlywheelMotor.setSpeed(RIGHT_POOP_POWER);
+        leftFlywheelMotor.setSpeed(LEFT_BLOOP_POWER);
+        rightFlywheelMotor.setSpeed(RIGHT_BLOOP_POWER);
     } else {
         leftFlywheelMotor.setSpeed(LEFT_SHOOT_POWER);
         rightFlywheelMotor.setSpeed(RIGHT_SHOOT_POWER);

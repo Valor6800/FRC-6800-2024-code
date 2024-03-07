@@ -9,8 +9,8 @@
 #include <ctime>
 #define AUTO_DOUBTX 3.0f;
 #define AUTO_DOUBTY 3.0f;
-#define TELE_DOUBTX 1.5f;
-#define TELE_DOUBTY 1.5f;
+#define TELE_DOUBTX 0.75f;
+#define TELE_DOUBTY 0.75f;
 
 Robot::Robot() : 
     drivetrain(this),

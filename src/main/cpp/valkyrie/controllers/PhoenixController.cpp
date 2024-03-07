@@ -11,10 +11,10 @@
 #define FALCON_PIDF_KA 130.0f // RPS/S acceleration (6.5/130 = 0.05 seconds to max speed)
 #define FALCON_PIDF_KJ 650.0f // RPS/S^2 jerk (4000/40000 = 0.1 seconds to max acceleration)
 
+#define SUPPLY_CURRENT_THRESHOLD 60.0f
 #define STATOR_CURRENT_LIMIT 80.0f
-#define SUPPLY_CURRENT_LIMIT 60.0f
-#define SUPPLY_TIME_THRESHOLD 0.75f
-#define SUPPLY_CURRENT_THRESHOLD 80.0f
+#define SUPPLY_CURRENT_LIMIT 45.0f
+#define SUPPLY_TIME_THRESHOLD 0.5f
 
 #define FALCON_DEADBAND 0.01f
 
@@ -233,7 +233,7 @@ bool PhoenixController::getMotorInversion(){
 
 double PhoenixController::getCurrent()
 {
-    return motor->GetTorqueCurrent().GetValueAsDouble();
+    return motor->GetStatorCurrent().GetValueAsDouble();
 }
 
 /**
@@ -349,8 +349,20 @@ void PhoenixController::InitSendable(wpi::SendableBuilder& builder)
 {
     builder.SetSmartDashboardType("Subsystem");
     builder.AddDoubleProperty(
-        "Amps", 
-        [this] { return getCurrent(); },
+        "Stator Current", 
+        [this] { return motor->GetStatorCurrent().GetValueAsDouble(); },
+        nullptr);
+    builder.AddDoubleProperty(
+        "Supply Current", 
+        [this] { return motor->GetSupplyCurrent().GetValueAsDouble(); },
+        nullptr);
+    builder.AddDoubleProperty(
+        "Device Temp", 
+        [this] { return motor->GetDeviceTemp().GetValueAsDouble(); },
+        nullptr);
+    builder.AddDoubleProperty(
+        "Processor Temp", 
+        [this] { return motor->GetDeviceTemp().GetValueAsDouble(); },
         nullptr);
     builder.AddDoubleProperty(
         "Position", 
