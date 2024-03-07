@@ -116,6 +116,7 @@ void Feeder::resetState()
     blinkin.SetPulseTime(LED_OFF);
     state.intakeState = STAGNANT;
     state.feederState = STAGNANT;
+    intakeTest=false;
 }
 
 void Feeder::init()
@@ -185,6 +186,34 @@ void Feeder::assignOutputs()
     } else {
         feederMotor.setPower(0);
     }
+
+    switch(state.intakeState){
+        case ROLLER_STATE::INTAKE:
+            intakeTest=true;
+        default:
+            intakeTest=false;
+    }
+
+
+    switch(state.feederState){
+        case ROLLER_STATE::INTAKE:
+            intakeTest=true;
+        default:
+        intakeTest=false;
+
+       
+    }
+}
+
+bool Feeder::isBeamBreakTriggered()
+{
+    return !beamBreak->GetInWindow();
+}
+
+
+bool Feeder::isIntake()
+{
+    return intakeTest;
 }
 
 void Feeder::InitSendable(wpi::SendableBuilder& builder)
