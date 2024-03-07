@@ -12,9 +12,9 @@ class PhoenixController : public BaseController<ctre::phoenix6::hardware::TalonF
 {
 public:
     PhoenixController(int _canID, valor::NeutralMode _mode, bool _inverted, std::string _canbus = "");
-    PhoenixController(int _canID, valor::NeutralMode _mode, bool _inverted, double gearRatio, valor::PIDF pidf, double voltageComp, bool isKraken = false, std::string _canbus = "");
+    PhoenixController(int _canID, valor::NeutralMode _mode, bool _inverted, double rotorToSensor, double sensorToMech, valor::PIDF pidf, double voltageComp, bool isKraken = false, std::string _canbus = "");
 
-    void init(double gearRatio, valor::PIDF pidf);
+    void init(double rotorToSensor, double sensorToMech, valor::PIDF pidf);
     void init();
 
     void reset();
@@ -39,29 +39,22 @@ public:
     void setupFollower(int, bool = false);
     
     void setPIDF(valor::PIDF pidf, int slot);
-    void setPIDF(ctre::phoenix6::configs::TalonFXConfiguration& config, valor::PIDF pidf, int slot);
+    void setPIDF(ctre::phoenix6::configs::Slot0Configs&, ctre::phoenix6::configs::MotionMagicConfigs&, valor::PIDF pidf);
 
     void setForwardLimit(double forward);
     void setReverseLimit(double reverse);
     void setRange(int slot, double min, double max);
     
-    void setConversion(double);
-    void setConversion(ctre::phoenix6::configs::TalonFXConfiguration&, double);
+    void setConversion(double, double);
+    void setConversion(ctre::phoenix6::configs::FeedbackConfigs&, double, double);
 
     void setMotorInversion(bool);
     bool getMotorInversion();
 
     void setProfile(int slot);
     double getAbsEncoderPosition();
-    void setupCANCoder(int deviceId, double offset, double conversion, bool clockwise, std::string canbus = "") override;
+    void setupCANCoder(int deviceId, double offset, bool clockwise, std::string canbus = "") override;
     double getCANCoder() override;
-
-    /**
-     * @brief Prevent the motor from traveling backwards
-     * 
-     * Restrict the motor from going backwards
-     */
-    void preventBackwards();
     
     void setOpenLoopRamp(double time);
 
@@ -70,7 +63,6 @@ private:
     valor::PIDF pidf;
     int currentProfile;
     double voltageCompenstation;
-    double cancoderConversion;
 
     ctre::phoenix6::controls::MotionMagicVoltage req_position;
     ctre::phoenix6::controls::VelocityVoltage req_velocity;

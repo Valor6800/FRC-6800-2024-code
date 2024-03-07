@@ -41,7 +41,7 @@ public:
     void setReverseLimit(double reverse);
     void setRange(int slot, double min, double max);
 
-    void setConversion(double);
+    void setConversion(double, double);
 
     void setMotorInversion(bool);
     bool getMotorInversion();
@@ -52,7 +52,7 @@ public:
     void setOpenLoopRamp(double time);
 
     double getAbsEncoderPosition() override;
-    void setupCANCoder(int deviceId, double offset, double conversion, bool clockwise, std::string canbus = "") override;
+    void setupCANCoder(int deviceId, double offset, bool clockwise, std::string canbus = "") override;
     double getCANCoder() override;
     
     void InitSendable(wpi::SendableBuilder& builder) override;

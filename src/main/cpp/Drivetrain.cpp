@@ -118,14 +118,15 @@ void Drivetrain::configSwerveModule(int i)
     azimuthControllers.push_back(new SwerveAzimuthMotor(CANIDs::AZIMUTH_CANS[i],
                                                       valor::NeutralMode::Brake,
                                                       Constants::swerveAzimuthsReversals()[i],
-                                                      1.0 / AZIMUTH_GEAR_RATIO,
+                                                      1.0,
+                                                      AZIMUTH_GEAR_RATIO,
                                                       azimuthPID,
                                                       12.0,
                                                       true,
                                                       PIGEON_CAN_BUS));
     
     azimuthControllers[i]->enableFOC(true);
-    azimuthControllers[i]->setupCANCoder(CANIDs::CANCODER_CANS[i], Constants::swerveZeros()[i], 1.0, false, PIGEON_CAN_BUS);
+    azimuthControllers[i]->setupCANCoder(CANIDs::CANCODER_CANS[i], Constants::swerveZeros()[i], false, PIGEON_CAN_BUS);
 
     valor::PIDF drivePID;
     drivePID.maxVelocity = Constants::driveKVel();
@@ -133,10 +134,11 @@ void Drivetrain::configSwerveModule(int i)
     drivePID.P = Constants::driveKP();
     drivePID.error = 0.0027;
 
-    double conversion = 1.0 / DRIVE_GEAR_RATIO * M_PI * WHEEL_DIAMETER_M;
+    double conversion = DRIVE_GEAR_RATIO / (M_PI * WHEEL_DIAMETER_M);
     driveControllers.push_back(new SwerveDriveMotor(CANIDs::DRIVE_CANS[i],
                                                     valor::NeutralMode::Coast,
                                                     Constants::swerveDrivesReversals()[i],
+                                                    1.0,
                                                     conversion,
                                                     drivePID,
                                                     12.0,
@@ -144,7 +146,7 @@ void Drivetrain::configSwerveModule(int i)
                                                     PIGEON_CAN_BUS));
     driveControllers[i]->enableFOC(true);
 
-    driveMaxSpeed = driveControllers[i]->getMaxMotorSpeed() / 60.0 * conversion;
+    driveMaxSpeed = driveControllers[i]->getMaxMotorSpeed() / 60.0 / conversion;
 
     swerveModules.push_back(new valor::Swerve<SwerveAzimuthMotor, SwerveDriveMotor>(azimuthControllers[i], driveControllers[i], motorLocations[i]));
     swerveModules[i]->setMaxSpeed(driveMaxSpeed);

@@ -32,7 +32,6 @@ PhoenixController::PhoenixController(int canID,
     req_voltage(units::volt_t{0}),
     voltageCompenstation(12.0),
     cancoder(nullptr),
-    cancoderConversion(1),
     res_position(motor->GetPosition()),
     res_velocity(motor->GetVelocity())
 {
@@ -42,7 +41,8 @@ PhoenixController::PhoenixController(int canID,
 PhoenixController::PhoenixController(int canID,
                                              valor::NeutralMode _mode,
                                              bool _inverted,
-                                             double gearRatio,
+                                             double _rotorToSensor,
+                                             double _sensorToMech,
                                              valor::PIDF pidf,
                                              double voltageComp,
                                              bool isKraken, 
@@ -56,7 +56,7 @@ PhoenixController::PhoenixController(int canID,
     res_position(motor->GetPosition()),
     res_velocity(motor->GetVelocity())
 {
-    init(gearRatio, pidf);
+    init(_rotorToSensor, _sensorToMech, pidf);
 }
 
 
@@ -70,10 +70,10 @@ void PhoenixController::init()
     motionPIDF.maxVelocity = FALCON_PIDF_KV;
     motionPIDF.maxAcceleration = FALCON_PIDF_KA;
 
-    init(1, motionPIDF);
+    init(1, 1, motionPIDF);
 }
 
-void PhoenixController::init(double gearRatio, valor::PIDF pidf)
+void PhoenixController::init(double _rotorToSensor, double _sensorToMech, valor::PIDF pidf)
 {
     req_position.Slot = 0;
     req_position.UpdateFreqHz = 0_Hz;
@@ -82,7 +82,6 @@ void PhoenixController::init(double gearRatio, valor::PIDF pidf)
     
     configs::TalonFXConfiguration config;
 
-    config.MotorOutput.Inverted = inverted;
     setNeutralMode(config.MotorOutput, neutralMode);
 
     // Current limiting configuration
@@ -96,17 +95,17 @@ void PhoenixController::init(double gearRatio, valor::PIDF pidf)
     // Deadband configuration
     config.MotorOutput.DutyCycleNeutralDeadband = FALCON_DEADBAND;
 
-    setPIDF(config, pidf, 0);
-    setConversion(config, gearRatio);
+    setPIDF(config.Slot0, config.MotionMagic, pidf);
+    setConversion(config.Feedback, _rotorToSensor, _sensorToMech);
 
-    status = motor->GetConfigurator().Apply(config, units::second_t{5});
+    auto _status = motor->GetConfigurator().Apply(config, units::second_t{5});
+    if (_status.IsError()) status = _status;
 
     wpi::SendableRegistry::AddLW(this, "PhoenixController", "ID " + std::to_string(motor->GetDeviceID()));
 }
 
-void PhoenixController::setupCANCoder(int deviceId, double offset, double _cancoderConversion, bool clockwise, std::string canbus)
+void PhoenixController::setupCANCoder(int deviceId, double offset, bool clockwise, std::string canbus)
 {
-    cancoderConversion = _cancoderConversion;
     cancoder = new ctre::phoenix6::hardware::CANcoder(deviceId, canbus);
     ctre::phoenix6::configs::MagnetSensorConfigs config;
     config.AbsoluteSensorRange = ctre::phoenix6::signals::AbsoluteSensorRangeValue::Unsigned_0To1;
@@ -118,9 +117,10 @@ void PhoenixController::setupCANCoder(int deviceId, double offset, double _canco
     ctre::phoenix6::configs::FeedbackConfigs fx_cfg{};
     fx_cfg.FeedbackRemoteSensorID = cancoder->GetDeviceID();
     fx_cfg.FeedbackSensorSource = signals::FeedbackSensorSourceValue::FusedCANcoder;
-    fx_cfg.SensorToMechanismRatio = cancoderConversion;
-    fx_cfg.RotorToSensorRatio = conversion;
-    motor->GetConfigurator().Apply(fx_cfg);
+    fx_cfg.SensorToMechanismRatio = sensorToMech;
+    fx_cfg.RotorToSensorRatio = rotorToSensor;
+    auto _status = motor->GetConfigurator().Apply(fx_cfg);
+    if (_status.IsError()) status = _status;
 }
 
 double PhoenixController::getCANCoder()
@@ -154,7 +154,8 @@ void PhoenixController::setForwardLimit(double forward)
     configs::SoftwareLimitSwitchConfigs config{};
     config.ForwardSoftLimitEnable = true;
     config.ForwardSoftLimitThreshold = forward;
-    motor->GetConfigurator().Apply(config);
+    auto _status = motor->GetConfigurator().Apply(config);
+    if (_status.IsError()) status = _status;
 }
 
 void PhoenixController::setReverseLimit(double reverse)
@@ -162,18 +163,23 @@ void PhoenixController::setReverseLimit(double reverse)
     configs::SoftwareLimitSwitchConfigs config{};
     config.ReverseSoftLimitEnable = true;
     config.ReverseSoftLimitThreshold = reverse;
-    motor->GetConfigurator().Apply(config);
+    auto _status = motor->GetConfigurator().Apply(config);
+    if (_status.IsError()) status = _status;
 }
 
 
 void PhoenixController::setPIDF(valor::PIDF _pidf, int slot)
 {
-    configs::TalonFXConfiguration config{};
-    setPIDF(config, _pidf, slot);
-    motor->GetConfigurator().Apply(config);
+    configs::Slot0Configs slotConfig{};
+    configs::MotionMagicConfigs motionMagicConfig{};
+    setPIDF(slotConfig, motionMagicConfig, _pidf);
+    auto _status =  motor->GetConfigurator().Apply(slotConfig);
+    if (_status.IsError()) status = _status;
+    _status = motor->GetConfigurator().Apply(motionMagicConfig);
+    if (_status.IsError()) status = _status;
 }
 
-void PhoenixController::setPIDF(configs::TalonFXConfiguration & config, valor::PIDF _pidf, int slot)
+void PhoenixController::setPIDF(configs::Slot0Configs & slotConfig, configs::MotionMagicConfigs & motionMagicConfig, valor::PIDF _pidf)
 {
     pidf = _pidf;
 
@@ -182,45 +188,42 @@ void PhoenixController::setPIDF(configs::TalonFXConfiguration & config, valor::P
     // Generic PIDF configurations
     // Numerator for closed loop controls will be in volts
     // Feedback and feedforward gains are in volts / rpm of motor, NOT mechanism
-    config.Slot0.kP = pidf.P;
-    config.Slot0.kI = pidf.I;
-    config.Slot0.kD = pidf.D;
-    config.Slot0.kV = voltageCompenstation / (maxMotorSpeed / 60.0 / conversion);
-    config.Slot0.kS = FALCON_PIDF_KS;
+    slotConfig.kP = pidf.P;
+    slotConfig.kI = pidf.I;
+    slotConfig.kD = pidf.D;
+    slotConfig.kV = voltageCompenstation / (maxMotorSpeed / 60.0 / (rotorToSensor * sensorToMech));
+    slotConfig.kS = FALCON_PIDF_KS;
 
     // Feedforward gain configuration
     if (pidf.aFF != 0) {
-        config.Slot0.GravityType = pidf.aFFType == valor::FeedForwardType::LINEAR ?
+        slotConfig.GravityType = pidf.aFFType == valor::FeedForwardType::LINEAR ?
             signals::GravityTypeValue::Elevator_Static :
             signals::GravityTypeValue::Arm_Cosine;
-        config.Slot0.kG = pidf.aFF;
+        slotConfig.kG = pidf.aFF;
 
-        config.Feedback.FeedbackRotorOffset = pidf.aFFTarget;
+        // config.Feedback.FeedbackRotorOffset = pidf.aFFTarget;
     }
 
     // Motion magic configuration
-    config.MotionMagic.MotionMagicCruiseVelocity = pidf.maxVelocity;
-    config.MotionMagic.MotionMagicAcceleration = pidf.maxAcceleration;
-    config.MotionMagic.MotionMagicJerk = pidf.maxJerk;
+    motionMagicConfig.MotionMagicCruiseVelocity = pidf.maxVelocity;
+    motionMagicConfig.MotionMagicAcceleration = pidf.maxAcceleration;
+    motionMagicConfig.MotionMagicJerk = pidf.maxJerk;
 }
 
-/**
- * Input conversion is the gear ratio
- * FROM mechanism rotations TO motor rotations
- * Example from azimuth drivetrain: 1:13.37 = 1/13.37
-*/
-void PhoenixController::setConversion(double _conversion)
+void PhoenixController::setConversion(double _rotorToSensor, double _sensorToMech)
 {
-    configs::TalonFXConfiguration config{};
-    setConversion(config, _conversion);
-    status = motor->GetConfigurator().Apply(config);
+    configs::FeedbackConfigs config{};
+    setConversion(config, _rotorToSensor, _sensorToMech);
+    auto _status = motor->GetConfigurator().Apply(config);
+    if (_status.IsError()) status = _status;
 }
 
-void PhoenixController::setConversion(configs::TalonFXConfiguration & config, double _conversion)
+void PhoenixController::setConversion(configs::FeedbackConfigs & config, double _rotorToSensor, double _sensorToMech)
 {
-    // Why is this inverted? REV's conversion factor is flipped, so syncrhonize between the two vendors
-    conversion = 1.0 / _conversion;
-    config.Feedback.SensorToMechanismRatio = conversion; // Now the value is 13.37 in the example!
+    rotorToSensor = _rotorToSensor;
+    sensorToMech = _sensorToMech;
+    config.RotorToSensorRatio = rotorToSensor;
+    config.SensorToMechanismRatio = sensorToMech;
 }
 
 void PhoenixController::setMotorInversion(bool invert){
@@ -275,7 +278,8 @@ void PhoenixController::setRange(int slot, double min, double max)
     config.ForwardSoftLimitThreshold = max;
     config.ReverseSoftLimitEnable = true;
     config.ReverseSoftLimitThreshold = min;
-    motor->GetConfigurator().Apply(config);
+    auto _status = motor->GetConfigurator().Apply(config);
+    if (_status.IsError()) status = _status;
 }
 
 /**
@@ -284,7 +288,8 @@ void PhoenixController::setRange(int slot, double min, double max)
 void PhoenixController::setPosition(double position)
 {
     req_position.Position = units::make_unit<units::turn_t>(position); // Mechanism rotations
-    status = motor->SetControl(req_position);
+    auto _status = motor->SetControl(req_position);
+    if (_status.IsError()) status = _status;
 }
 
 void PhoenixController::enableFOC(bool enableFOC)
@@ -297,25 +302,20 @@ void PhoenixController::enableFOC(bool enableFOC)
 void PhoenixController::setSpeed(double speed)
 {
     req_velocity.Velocity = units::make_unit<units::turns_per_second_t>(speed); // Mechanism rotations
-    status = motor->SetControl(req_velocity);
+    auto _status = motor->SetControl(req_velocity);
+    if (_status.IsError()) status = _status;
 }
 
 void PhoenixController::setPower(double speed)
 {
     req_voltage.Output = units::make_unit<units::volt_t>(speed * 12);
-    status = motor->SetControl(req_voltage);
+    auto _status = motor->SetControl(req_voltage);
+    if (_status.IsError()) status = _status;
 }
 
 void PhoenixController::setProfile(int profile)
 {
     currentProfile = profile;
-}
-
-void PhoenixController::preventBackwards()
-{
-    configs::MotorOutputConfigs config{};
-    config.PeakReverseDutyCycle = 0;
-    motor->GetConfigurator().Apply(config);
 }
 
 double PhoenixController::getAbsEncoderPosition()
@@ -326,6 +326,7 @@ double PhoenixController::getAbsEncoderPosition()
 void PhoenixController::setNeutralMode(configs::MotorOutputConfigs & config, valor::NeutralMode mode)
 {
     neutralMode = mode;
+    config.Inverted = inverted;
     config.NeutralMode = neutralMode == valor::NeutralMode::Brake ?
         signals::NeutralModeValue::Brake :
         signals::NeutralModeValue::Coast;
@@ -335,14 +336,16 @@ void PhoenixController::setNeutralMode(valor::NeutralMode mode)
 {
     configs::MotorOutputConfigs config{};
     setNeutralMode(config, mode);
-    motor->GetConfigurator().Apply(config);
+    auto _status = motor->GetConfigurator().Apply(config);
+    if (_status.IsError()) status = _status;
 }
 
 void PhoenixController::setOpenLoopRamp(double time)
 {
     configs::OpenLoopRampsConfigs config{};
     config.DutyCycleOpenLoopRampPeriod = time;
-    motor->GetConfigurator().Apply(config);
+    auto _status = motor->GetConfigurator().Apply(config);
+    if (_status.IsError()) status = _status;
 }
 
 void PhoenixController::InitSendable(wpi::SendableBuilder& builder)
@@ -394,8 +397,12 @@ void PhoenixController::InitSendable(wpi::SendableBuilder& builder)
         [this] { return req_velocity.Velocity.to<double>(); },
         nullptr);
     builder.AddDoubleProperty(
-        "conversion", 
-        [this] { return conversion; },
+        "rotorToSensor", 
+        [this] { return rotorToSensor; },
+        nullptr);
+    builder.AddDoubleProperty(
+        "sensorToMech", 
+        [this] { return sensorToMech; },
         nullptr);
 
     builder.AddIntegerProperty(
