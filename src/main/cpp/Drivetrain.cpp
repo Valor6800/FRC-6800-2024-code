@@ -209,7 +209,6 @@ void Drivetrain::init()
     table->PutBoolean("Accepting Vision Measurements", true);
 
     state.lock = false;
-    state.autoControlled = false;
 
     resetState();
 
@@ -227,7 +226,7 @@ void Drivetrain::init()
             return getPose_m();
         }, // Robot pose supplier
         [this](frc::Pose2d pose){ resetOdometry(pose); }, // Method to reset odometry (will be called if your auto has a starting pose)
-        [this](){ state.autoControlled = true; return getRobotRelativeSpeeds(); table->PutNumber("timestamp of retrieving speeds", frc::Timer::GetFPGATimestamp().to<double>()); }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+        [this](){ return getRobotRelativeSpeeds(); table->PutNumber("timestamp of retrieving speeds", frc::Timer::GetFPGATimestamp().to<double>()); }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         [this](frc::ChassisSpeeds speeds){ driveRobotRelative(speeds); }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
             PIDConstants(xPIDF.P, xPIDF.I, xPIDF.D), // Translation PID constants
@@ -293,9 +292,6 @@ double Drivetrain::angleWrap(double degrees)
 
 void Drivetrain::assessInputs()
 {
-        // assesInputs will only run during teleop - therefore, auto is off
-    state.autoControlled = false;
-    
     if (!driverGamepad || !driverGamepad->IsConnected())
         return;
 
@@ -419,12 +415,7 @@ void Drivetrain::assignOutputs()
         drive(state.xSpeedMPS, state.ySpeedMPS, state.angleRPS, true);
     } 
     else {
-        if (state.autoControlled)
-            setDriveMotorNeutralMode(valor::NeutralMode::Brake);
-        else{
-            setDriveMotorNeutralMode(valor::NeutralMode::Coast);
-            drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
-        }
+        drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
     }
 
     if (frc::Timer::GetFPGATimestamp().to<double>() - teleopStart > TIME_TELEOP_VERT && frc::Timer::GetFPGATimestamp().to<double>() - teleopStart < TIME_TELEOP_VERT + 3) {

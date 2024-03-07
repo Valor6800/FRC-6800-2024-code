@@ -84,7 +84,7 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
-    drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Coast);
+    // drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Coast);
     drivetrain.teleopStart = frc::Timer::GetFPGATimestamp().to<double>();
     drivetrain.doubtX = TELE_DOUBTX;
     drivetrain.doubtY = TELE_DOUBTY;
