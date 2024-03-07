@@ -31,7 +31,9 @@ PhoenixController::PhoenixController(int canID,
     req_voltage(units::volt_t{0}),
     voltageCompenstation(12.0),
     cancoder(nullptr),
-    cancoderConversion(1)
+    cancoderConversion(1),
+    res_position(motor->GetPosition()),
+    res_velocity(motor->GetVelocity())
 {
     init();
 }
@@ -48,7 +50,9 @@ PhoenixController::PhoenixController(int canID,
     req_position(units::turn_t{0}),
     req_velocity(units::turns_per_second_t{0}),
     req_voltage(units::volt_t{0}),
-    voltageCompenstation(voltageComp)
+    voltageCompenstation(voltageComp),
+    res_position(motor->GetPosition()),
+    res_velocity(motor->GetVelocity())
 {
     init(gearRatio, pidf);
 }
@@ -234,10 +238,9 @@ double PhoenixController::getCurrent()
 */
 double PhoenixController::getPosition()
 {
-    auto& rotorPosSignal = motor->GetPosition();
     // @TODO Use FPGA - latency to identify timestamp of calculation
     // units::second_t latency = rotorPosSignal.GetTimestamp().GetLatency();
-    return rotorPosSignal.GetValueAsDouble();
+    return res_position.Refresh().GetValueAsDouble();
 }
 
 /**
@@ -245,23 +248,21 @@ double PhoenixController::getPosition()
 */
 double PhoenixController::getSpeed()
 {
-    auto& rotorPosSignal = motor->GetVelocity();
     // @TODO Use FPGA - latency to identify timestamp of calculation
     // units::second_t latency = rotorPosSignal.GetTimestamp().GetLatency();
-    return rotorPosSignal.GetValueAsDouble();
+    return res_velocity.Refresh().GetValueAsDouble();
 }
+
 // Sets signal update rate for position
 void PhoenixController::setPositionUpdateFrequency(units::frequency::hertz_t hertz)
 {
-    auto& rotorPosSignal = motor->GetPosition();
-    rotorPosSignal.SetUpdateFrequency(hertz);
+    res_position.SetUpdateFrequency(hertz);
 }
 
 // Sets signal update rate for speed
 void PhoenixController::setSpeedUpdateFrequency(units::frequency::hertz_t hertz)
 {
-    auto& rotorPosSignal = motor->GetVelocity();
-    rotorPosSignal.SetUpdateFrequency(hertz);
+    res_velocity.SetUpdateFrequency(hertz);
 }
 
 void PhoenixController::setRange(int slot, double min, double max)
