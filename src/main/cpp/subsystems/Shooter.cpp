@@ -11,11 +11,12 @@
 #include <frc2/command/WaitCommand.h>
 
 #define PIVOT_ROTATE_K_VEL 81.36f
-#define PIVOT_ROTATE_K_ACC 8136.0f
-#define PIVOT_ROTATE_K_P 3.0f
+#define PIVOT_ROTATE_K_ACC 3000.0f
+#define PIVOT_ROTATE_K_P 1.5f
 #define PIVOT_ROTATE_K_ERROR 0.0f
 #define PIVOT_ROTATE_K_AFF 0.0f
 #define PIVOT_ROTATE_K_AFF_POS 0.0f
+#define PIVOT_ROTATE_K_JERK 9999.9f
 
 #define PIVOT_CANCODER_GEAR_RATIO 2.0f
 #define PIVOT_MAGNET_OFFSET 0.5168f
@@ -130,6 +131,7 @@ void Shooter::init()
     pivotPID.error = PIVOT_ROTATE_K_ERROR;
     pivotPID.aFF = PIVOT_ROTATE_K_AFF;
     pivotPID.aFFTarget = PIVOT_ROTATE_K_AFF_POS;
+    pivotPID.maxJerk = PIVOT_ROTATE_K_JERK;
 
     valor::PIDF flywheelPID;
     flywheelPID.maxVelocity = FLYWHEEL_ROTATE_K_VEL;
