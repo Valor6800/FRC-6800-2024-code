@@ -184,6 +184,14 @@ void Shooter::assessInputs()
         state.flywheelState = FLYWHEEL_STATE::NOT_SHOOTING;
     } 
 
+    switch(state.flywheelState){
+        case FLYWHEEL_STATE::SPOOLED:
+            spooledTest=true;
+            break;
+        default:
+            spooledTest=false;
+    }
+
     //PIVOT LOGIC
     if (driverGamepad->GetAButton()) {
         state.pivotState = PIVOT_STATE::SUBWOOFER;
@@ -210,6 +218,7 @@ void Shooter::assessInputs()
         state.pivotOffset = 0.0;
     }
 }
+
 
 void Shooter::analyzeDashboard()
 {
@@ -265,6 +274,19 @@ void Shooter::assignOutputs()
     } else {
         pivotMotors->setPosition(SUBWOOFER_ANG.to<double>() + state.pivotOffset);
     }
+
+}
+
+bool Shooter::getSpooledState(){
+    return spooledTest;
+}
+
+bool Shooter::getTrackingState(){
+    return trackingTest;
+}
+
+bool Shooter::getPitModeState(){
+    return pitModeTest;
 }
  
 void Shooter::calculatePivotAngle(){

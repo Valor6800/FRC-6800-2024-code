@@ -79,6 +79,9 @@ namespace CANIDs {
     constexpr static int RIGHT_CLIMBER = 15;
     constexpr static int LEFT_CLIMBER = 16;
     constexpr static int AMP = 10;
+    constexpr static int CANDLE = 60;
+
+    
 }
 
 #pragma GCC diagnostic push
