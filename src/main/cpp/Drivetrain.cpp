@@ -157,6 +157,7 @@ void Drivetrain::resetState()
 {
     resetDriveEncoders();
     resetOdometry(frc::Pose2d{0_m, 0_m, 0_rad});
+    state.manualFlag = false;
 }
 
 void Drivetrain::init()
@@ -299,6 +300,11 @@ void Drivetrain::assessInputs()
 
     if (driverGamepad->GetBackButtonPressed()) {
         resetGyro();
+    }
+    if (driverGamepad->DPadDown()){
+        state.manualFlag = true;
+    } else {
+        state.manualFlag = false;
     }
 
     state.ampAlign = driverGamepad->GetBButton();
@@ -876,6 +882,11 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
         builder.AddDoubleProperty(
             "angular velocity target",
             [this] {return targetPoseTracker.getAverageAngularVelocity().to<double>();},
+            nullptr
+        );
+        builder.AddBooleanProperty(
+            "Manually flaged error",
+            [this] {return state.manualFlag;},
             nullptr
         );
     }
