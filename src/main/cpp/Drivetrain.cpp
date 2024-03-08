@@ -78,7 +78,8 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "
                         estimator(NULL),
                         calculatedEstimator(NULL),
                         swerveNoError(true),
-                        teleopStart(999999999999)
+                        teleopStart(999999999999),
+                        unfilteredPoseTracker(5)
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -395,7 +396,7 @@ void Drivetrain::analyzeDashboard()
     std::vector<double> bp = ppTable->GetNumberArray("currentPose", std::array<double, 3>{0, 0, 0});
     std::vector<double> tp = ppTable->GetNumberArray("targetPose", std::array<double, 3>{0, 0, 0});
 
-    botPoseTracker.addReading(frc::Pose2d{
+    currentPoseTracker.addReading(frc::Pose2d{
         units::meter_t{bp[0]},
         units::meter_t{bp[1]},
         units::radian_t{bp[2]}
@@ -405,6 +406,7 @@ void Drivetrain::analyzeDashboard()
         units::meter_t{tp[1]},
         units::radian_t{tp[2]}
     }, frc::Timer::GetFPGATimestamp());
+    unfilteredPoseTracker.addReading(getPose_m(), frc::Timer::GetFPGATimestamp());
 }
 
 void Drivetrain::assignOutputs()
@@ -772,6 +774,16 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
             },
             nullptr
         );
+        builder.AddBooleanProperty(
+            "Tilted",
+            [this]
+            {
+                double yaw = pigeon.GetYaw().GetValueAsDouble(), roll = pigeon.GetRoll().GetValueAsDouble(); // in degrees
+                double elevation = std::fabs(yaw) + std::fabs(roll); // not at all but close enough
+                return elevation > 5.0;
+            },
+            nullptr
+        );
         builder.AddIntegerProperty(
             "stage",
             [this]
@@ -856,7 +868,7 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
         );
         builder.AddDoubleProperty(
             "velocity current",
-            [this] {return botPoseTracker.getAverageVelocity().to<double>();},
+            [this] {return currentPoseTracker.getAverageVelocity().to<double>();},
             nullptr
         );
         builder.AddDoubleProperty(
@@ -866,7 +878,7 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
         );
         builder.AddDoubleProperty(
             "acceleration current",
-            [this] {return botPoseTracker.getAverageAcceleration().to<double>();},
+            [this] {return currentPoseTracker.getAverageAcceleration().to<double>();},
             nullptr
         );
         builder.AddDoubleProperty(
@@ -876,7 +888,7 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
         );
         builder.AddDoubleProperty(
             "angular velocity current",
-            [this] {return botPoseTracker.getAverageAngularVelocity().to<double>();},
+            [this] {return currentPoseTracker.getAverageAngularVelocity().to<double>();},
             nullptr
         );
         builder.AddDoubleProperty(
@@ -889,5 +901,12 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
             [this] {return state.manualFlag;},
             nullptr
         );
+        builder.AddDoubleProperty(
+            "Bonk!",
+            [this] {
+                return unfilteredPoseTracker.getAverageAcceleration() > 10.0_mps_sq; // ~60 kg bot -> 600 N, 5 measurements * 20ms = .1s, 
+                                                                                     // impulse = .1 * 600 = 60 Joules
+            },
+            nullptr
+        );
     }
-

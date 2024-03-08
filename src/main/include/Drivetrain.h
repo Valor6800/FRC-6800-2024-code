@@ -280,6 +280,7 @@ private:
 
      units::meter_t visionAcceptanceRadius;
 
-     PoseTracker botPoseTracker;
+     PoseTracker currentPoseTracker;
      PoseTracker targetPoseTracker;
+     PoseTracker unfilteredPoseTracker;
 };
