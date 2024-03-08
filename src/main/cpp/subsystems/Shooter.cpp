@@ -10,7 +10,7 @@
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/WaitCommand.h>
 
-#define PIVOT_ROTATE_K_VEL 81.36f
+#define PIVOT_ROTATE_K_VEL 67.815f
 #define PIVOT_ROTATE_K_ACC 3000.0f
 #define PIVOT_ROTATE_K_P 1.5f
 #define PIVOT_ROTATE_K_ERROR 0.0f

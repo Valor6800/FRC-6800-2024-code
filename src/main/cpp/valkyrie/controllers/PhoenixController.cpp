@@ -5,7 +5,7 @@
 #define FALCON_PIDF_KP 10.0f
 #define FALCON_PIDF_KI 0.0f
 #define FALCON_PIDF_KD 0.0f
-#define FALCON_PIDF_KS 0.22f
+#define FALCON_PIDF_KS 0.19f
 
 #define FALCON_PIDF_KV 6.0f // RPS cruise velocity
 #define FALCON_PIDF_KA 130.0f // RPS/S acceleration (6.5/130 = 0.05 seconds to max speed)
@@ -92,11 +92,8 @@ void PhoenixController::init(double _rotorToSensor, double _sensorToMech, valor:
     config.CurrentLimits.SupplyTimeThreshold = SUPPLY_TIME_THRESHOLD;
     config.CurrentLimits.SupplyCurrentThreshold = SUPPLY_CURRENT_THRESHOLD;
 
-    // Deadband configuration
-    config.MotorOutput.DutyCycleNeutralDeadband = FALCON_DEADBAND;
-
-    setPIDF(config.Slot0, config.MotionMagic, pidf);
     setConversion(config.Feedback, _rotorToSensor, _sensorToMech);
+    setPIDF(config.Slot0, config.MotionMagic, pidf);
 
     auto _status = motor->GetConfigurator().Apply(config, units::second_t{5});
     if (_status.IsError()) status = _status;
@@ -326,6 +323,9 @@ double PhoenixController::getAbsEncoderPosition()
 void PhoenixController::setNeutralMode(configs::MotorOutputConfigs & config, valor::NeutralMode mode)
 {
     neutralMode = mode;
+
+    // Deadband configuration
+    config.DutyCycleNeutralDeadband = FALCON_DEADBAND;
     config.Inverted = inverted;
     config.NeutralMode = neutralMode == valor::NeutralMode::Brake ?
         signals::NeutralModeValue::Brake :

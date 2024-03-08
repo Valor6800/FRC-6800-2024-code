@@ -118,11 +118,11 @@ void Drivetrain::configSwerveModule(int i)
     azimuthControllers.push_back(new SwerveAzimuthMotor(CANIDs::AZIMUTH_CANS[i],
                                                       valor::NeutralMode::Brake,
                                                       Constants::swerveAzimuthsReversals()[i],
-                                                      1.0,
                                                       AZIMUTH_GEAR_RATIO,
+                                                      1.0,
                                                       azimuthPID,
-                                                      12.0,
-                                                      true,
+                                                      8.0,
+                                                      false,
                                                       PIGEON_CAN_BUS));
     
     azimuthControllers[i]->enableFOC(true);
