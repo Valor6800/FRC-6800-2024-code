@@ -18,7 +18,8 @@ Robot::Robot() :
     feederBeamBreak(AnalogPorts::FEEDER_BEAM_BREAK_PORT),
     intakeBeamBreak(AnalogPorts::INTAKE_BEAM_BREAK_PORT),
     shooter(this, &drivetrain),
-    feeder(this, &feederBeamBreak, &intakeBeamBreak)
+    feeder(this, &feederBeamBreak, &intakeBeamBreak),
+    leds(this, &feeder, &drivetrain, &shooter)
 {
     frc::TimedRobot();
     feederBeamBreak.SetLimitsVoltage(4, 14);
