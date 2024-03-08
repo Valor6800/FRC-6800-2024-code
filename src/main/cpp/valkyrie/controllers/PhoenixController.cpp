@@ -433,4 +433,9 @@ void PhoenixController::InitSendable(wpi::SendableBuilder& builder)
         [this] { return getCANivoreBusUtil(); },
         nullptr
     );
+    builder.AddBooleanProperty(
+        "Undervolting",
+        [this] { return motor->GetFault_Undervoltage().GetValue(); },
+        nullptr);
+
 }
