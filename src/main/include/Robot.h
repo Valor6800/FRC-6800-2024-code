@@ -19,8 +19,8 @@
 
 #include <frc/livewindow/LiveWindow.h>
 
-#include <subsystems/Shooter.h>
 #include "subsystems/Feeder.h"
+#include "subsystems/leds.h"
 
 #include <fstream>
 #include "frc/DigitalInput.h"
@@ -52,4 +52,6 @@ class Robot : public frc::TimedRobot {
         
         Shooter shooter;
         Feeder feeder;
+        Leds leds;
+
 };

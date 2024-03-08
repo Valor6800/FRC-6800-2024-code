@@ -22,7 +22,7 @@
 class Leds : public valor::BaseSubsystem
 {
     public:
-        Leds(frc::TimedRobot *robot, Feeder *feeder, Drivetrain *drivetrain, Shooter *shooter);
+        Leds(frc::TimedRobot *robot, Feeder *feeder, Shooter *shooter);
         CANdleSensor::RGBColor value;
         
         void init();

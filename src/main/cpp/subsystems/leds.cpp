@@ -12,7 +12,7 @@
 #define WRIST_FORWARD_LIMIT 325.0f
 #define WRIST_REVERSE_LIMIT -325.0f
 
-Leds::Leds(frc::TimedRobot *_robot, Feeder *_feeder, Drivetrain *_drivetrain, Shooter *_shooter) :
+Leds::Leds(frc::TimedRobot *_robot, Feeder *_feeder, Shooter *_shooter) :
 valor::BaseSubsystem(_robot, "Leds"), feeder(_feeder), shooter(_shooter),
 candle(_robot, LED_COUNT, 2, CANIDs::CANDLE, "baseCAN")
 {
