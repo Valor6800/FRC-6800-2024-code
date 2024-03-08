@@ -17,7 +17,8 @@ Robot::Robot() :
     valorAuto(),
     beamBreak(AnalogPorts::BEAM_BREAK_PORT),
     shooter(this, &drivetrain),
-    feeder(this, &beamBreak)
+    feeder(this, &beamBreak),
+    leds(this, &feeder, &drivetrain, &shooter)
 {
     frc::TimedRobot();
     beamBreak.SetLimitsVoltage(4, 14);
