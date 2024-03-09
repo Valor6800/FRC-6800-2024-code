@@ -57,7 +57,8 @@ public:
     void setupCANCoder(int deviceId, double offset, bool clockwise, std::string canbus = "") override;
     double getCANCoder() override;
     
-    float getCANBusUtil();
+    float getRevBusUtil();
+    float getCANivoreBusUtil();
     
     void setOpenLoopRamp(double time);
 

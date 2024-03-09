@@ -53,8 +53,8 @@ using namespace pathplanner;
 #define MODULE_DIFF_XS {1, 1, -1, -1}
 #define MODULE_DIFF_YS {1, -1, -1, 1}
 
-#define DRIVETRAIN_CAN_BUS ""
-#define PIGEON_CAN_BUS "baseCAN"
+#define DRIVETRAIN_CAN_BUS "" //rev
+#define PIGEON_CAN_BUS "baseCAN" //phoenix
 
 #define KP_ROTATE -0.6f
 #define SPEAKER_X_OFFSET 0.15f

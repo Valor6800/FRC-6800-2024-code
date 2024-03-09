@@ -348,9 +348,14 @@ void PhoenixController::setOpenLoopRamp(double time)
     if (_status.IsError()) status = _status;
 }
 
-float PhoenixController::getCANBusUtil()
+float PhoenixController::getRevBusUtil()
 {
     return CANBus::GetStatus("").BusUtilization;
+}
+
+float PhoenixController::getCANivoreBusUtil()
+{
+    return CANBus::GetStatus("baseCAN").BusUtilization;
 }
 
 void PhoenixController::InitSendable(wpi::SendableBuilder& builder)
@@ -419,8 +424,13 @@ void PhoenixController::InitSendable(wpi::SendableBuilder& builder)
         [this] { return cancoder ? cancoder->GetMagnetHealth().GetValue().value : -1; },
         nullptr);
     builder.AddFloatProperty(
-        "CAN Bus Utilization",
-        [this] { return getCANBusUtil(); },
+        "Rev CAN Bus Utilization",
+        [this] { return getRevBusUtil(); },
+        nullptr
+    );
+    builder.AddFloatProperty(
+        "CANivore Bus Utilization",
+        [this] { return getCANivoreBusUtil(); },
         nullptr
     );
 }
