@@ -19,7 +19,7 @@
 
 #include <frc/livewindow/LiveWindow.h>
 
-#include "subsystems/Leds.h"
+#include "subsystems/leds.h"
 #include <subsystems/Shooter.h>
 #include "subsystems/Feeder.h"
 
