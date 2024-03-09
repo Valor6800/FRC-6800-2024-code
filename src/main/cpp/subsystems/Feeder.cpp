@@ -20,12 +20,14 @@
 #define FEEDER_INTAKE_POWER 0.3f
 #define FEEDER_REVERSE_POWER -0.5f
 
-Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _beamBreak) :
+Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _feederBeamBreak, frc::AnalogTrigger* _intakeBeamBreak) :
     valor::BaseSubsystem(_robot, "Feeder"),
     intakeMotor(CANIDs::INTERNAL_INTAKE, valor::NeutralMode::Coast, true),
     feederMotor(CANIDs::FEEDER, valor::NeutralMode::Brake, true),
-    beamBreak(_beamBreak),
-    debounceSensor(_robot, "FeederBanner")
+    feederBeamBreak(_feederBeamBreak),
+    feederDebounceSensor(_robot, "FeederBanner"),
+    intakeBeamBreak(_intakeBeamBreak),
+    intakeDebounceSensor(_robot, "IntakeBanner")
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -124,12 +126,19 @@ void Feeder::init()
 
     intakeMotor.setMaxCurrent(60);
     intakeMotor.setVoltageCompensation(10);
+    intakeMotor.setupFollower(CANIDs::INTERNAL_INTAKE_V2, true);
+
     feederMotor.setVoltageCompensation(10);
 
-    debounceSensor.setGetter([this] { return !beamBreak->GetInWindow(); });
-    debounceSensor.setRisingEdgeCallback([this] {
+    feederDebounceSensor.setGetter([this] { return !feederBeamBreak->GetInWindow(); });
+    feederDebounceSensor.setRisingEdgeCallback([this] {
         state.beamTrip = true;
         feederMotor.setPower(0);
+        driverGamepad->setRumble(true);
+    });
+
+    intakeDebounceSensor.setGetter([this] { return !intakeBeamBreak->GetInWindow(); });
+    intakeDebounceSensor.setRisingEdgeCallback([this] {
         driverGamepad->setRumble(true);
     });
 }
