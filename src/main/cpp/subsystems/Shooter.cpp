@@ -19,7 +19,7 @@
 #define PIVOT_ROTATE_K_JERK 9999.9f
 
 #define PIVOT_CANCODER_GEAR_RATIO 2.0f
-#define PIVOT_MAGNET_OFFSET 0.5168f
+#define PIVOT_MAGNET_OFFSET 0.3272f
 #define PIVOT_GEAR_RATIO 219.52f
 #define PIVOT_REVERSE_LIMIT 80.00f
 #define PIVOT_FORWARD_LIMIT 20.0f
@@ -146,8 +146,8 @@ void Shooter::init()
 
     pivotMotors = new valor::PhoenixController(
         CANIDs::PIVOT,
-        valor::NeutralMode::Brake,
-        false,
+        valor::NeutralMode::Coast,
+        true,
         PIVOT_GEAR_RATIO / PIVOT_CANCODER_GEAR_RATIO,
         PIVOT_CANCODER_GEAR_RATIO / 360.0,
         pivotPID,

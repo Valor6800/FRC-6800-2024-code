@@ -70,8 +70,8 @@ namespace CANIDs {
     constexpr static int CANCODER_CANS[4] = {20, 21, 22, 23};
     constexpr static int SHOOTER_CANCODER = 24;
     constexpr static int PIGEON_CAN = 61;
-    constexpr static int INTERNAL_INTAKE = 13;
-    constexpr static int INTERNAL_INTAKE_V2 = 17;
+    constexpr static int INTERNAL_INTAKE = 8;
+    constexpr static int INTERNAL_INTAKE_V2 = 9;
     constexpr static int PIVOT = 30;
     constexpr static int RIGHT_SHOOTER_WHEEL_CONTROLLER = 12;
     constexpr static int LEFT_SHOOTER_WHEEL_CONTROLLER = 11; // Relative to shooter being forward
@@ -142,12 +142,12 @@ namespace Constants {
         static std::vector<bool> swerveDrivesReversals(){ switch (teamNumber){
             case ALPHA_TEAM_NUMBER: return {true, false, false, false};
             case SIDE_SWIPE_TEAM_NUMBER: return {false, false, false, false};
-            default: return {true, false, false, false};
+            default: return {true, false, true, false};
         }};
         static std::vector<bool> swerveAzimuthsReversals(){ switch (teamNumber){
             case ALPHA_TEAM_NUMBER: return {true, false, true, true};
             case SIDE_SWIPE_TEAM_NUMBER: return {true, true, true, true};
-            default: return {true, false, true, true};
+            default: return {true, false, true, false};
         }};
 
         static double azimuthKP(){ switch (teamNumber) {
@@ -195,13 +195,13 @@ namespace Constants {
                 }
             }; // Temp value; TODO: Change it
             default: return frc::Pose3d{
-                -9.5_in, //x
-                12_in, //y
-                26.25_in, //z
+                -13.139_in, //x
+                0_in, //y
+                8.928_in, //z
                 frc::Rotation3d{
                     0_deg, 
-                    17.5_deg,
-                    -170_deg
+                    37_deg,
+                    -180_deg
                 }
             };
         }};
@@ -218,13 +218,13 @@ namespace Constants {
                     0_deg
                 }); // Temp value; TODO: Change it
             default: return frc::Pose3d(
-                7.875_in, //x
-                -5.5_in, //y
-                26.125_in, //z
+                -11.146_in, //x
+                -11.640_in, //y
+                10.175_in, //z
                 frc::Rotation3d(
                     0_deg,
-                    17.8_deg,
-                    0_deg
+                    37_deg,
+                    -125_deg
                 )
             );
         }};
@@ -232,7 +232,16 @@ namespace Constants {
         static frc::Pose3d chocolateCameraPosition(){ switch (teamNumber) {
             case ALPHA_TEAM_NUMBER: return frc::Pose3d();
             case SIDE_SWIPE_TEAM_NUMBER: return frc::Pose3d();
-            default: return frc::Pose3d();
+            default: return frc::Pose3d(
+                -11.515_in, //x
+                11.512_in, //y
+                10.175_in, //z
+                frc::Rotation3d(
+                    0_deg,
+                    125_deg,
+                    37_deg
+                )
+            );
         }};
 
         static frc::Pose3d lemonCameraPosition(){ switch (teamNumber){
