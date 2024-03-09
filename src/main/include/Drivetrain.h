@@ -131,6 +131,7 @@ public:
           bool abovePitchThreshold;
 
           bool isAlign;
+          bool ampHeadingTrack;
           bool isHeadingTrack;
           bool thetaLock;
           bool sourceAlign;
@@ -239,6 +240,7 @@ public:
 
      void setAlignmentAngle(Drivetrain::Alignment align);
      void getSpeakerLockAngleRPS();
+     void getAmpLockAngle();
      units::radian_t getAngleError();
      double clampAngleRadianRange(units::radian_t angle, double max);
      units::meter_t getDistanceFromSpeaker();

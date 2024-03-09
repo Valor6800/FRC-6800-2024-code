@@ -48,10 +48,6 @@ public:
     
     void setConversion(double, double);
     void setConversion(ctre::phoenix6::configs::FeedbackConfigs&, double, double);
-
-    void setMotorInversion(bool);
-    bool getMotorInversion();
-
     void setProfile(int slot);
     double getAbsEncoderPosition();
     void setupCANCoder(int deviceId, double offset, bool clockwise, std::string canbus = "") override;
