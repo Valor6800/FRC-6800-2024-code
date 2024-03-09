@@ -1,7 +1,7 @@
 #include "subsystems/leds.h"
 #include <iostream>
 
-#define LED_COUNT 288
+#define LED_COUNT 65 
 
 #define CARRIAGE_UPPER_LIMIT 0.89f 
 #define CARRIAGE_LOWER_LIMIT 0.0f
@@ -14,7 +14,7 @@
 
 Leds::Leds(frc::TimedRobot *_robot, Feeder *_feeder, Drivetrain *_drivetrain, Shooter *_shooter) :
 valor::BaseSubsystem(_robot, "Leds"), feeder(_feeder), shooter(_shooter),
-candle(_robot, LED_COUNT, 2, CANIDs::CANDLE, "baseCAN")
+candle(_robot, LED_COUNT, 4, CANIDs::CANDLE, "baseCAN") //empty during testing
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -24,8 +24,7 @@ candle(_robot, LED_COUNT, 2, CANIDs::CANDLE, "baseCAN")
 
 
 void Leds::init(){
-
-    resetState();
+     resetState();
     
     
     }
@@ -41,36 +40,55 @@ void Leds::analyzeDashboard(){
 
     autoIsONBool= robot-> IsAutonomousEnabled();
 
-
+  
     intakingBool=feeder->isIntake();
     note_DBool= feeder-> isBeamBreakTriggered();
 
     trackingBool = shooter->getTrackingState();
- 
-    if (spooledBool){
-        candle.setColor(CANdleSensor::RGBColor(0,0,0));
+
+     
+    if (autoIsONBool) {
+        candle.setColor(1, CANdleSensor::RGBColor(255, 0, 0)); // Red
+
+    }else{
+        candle.setColor(1, CANdleSensor::RGBColor(0, 0, 0)); // black
+
     }
-    else if (trackingBool){
-        candle.setColor(CANdleSensor::RGBColor(0,0,0));
+    if (intakingBool){
+        candle.setColor(2, CANdleSensor::RGBColor(0, 255, 0)); // Green
+
+
+    }else{
+        candle.setColor(2, CANdleSensor::RGBColor(0, 0, 0)); // black
+
     }
-    else if (intakingBool){
-        candle.setColor(CANdleSensor::RGBColor(0,0,0));
+    if(trackingBool){
+        candle.setColor(3, CANdleSensor::RGBColor(0, 0, 255)); // Blue
+
+        
+    }else{
+        candle.setColor(3, CANdleSensor::RGBColor(0, 0, 0)); // black
+
     }
-    else if (deployedBool){
-        candle.setColor(CANdleSensor::RGBColor(0,0,0));
-    }
-    else if (autoIsONBool){
-        candle.setColor(CANdleSensor::RGBColor(0,0,0));
-    }
-    
-    else if (note_DBool){
-        candle.setColor(CANdleSensor::RGBColor(0,0,0));
-    }
-    else{
-        candle.setColor(CANdleSensor::RGBColor(0,0,0));
+    if(note_DBool){
+        candle.setColor(4, CANdleSensor::RGBColor(255, 255, 0)); // Yellow
+
+
+    }else{
+        candle.setColor(4, CANdleSensor::RGBColor(0, 0, 0)); // black
+
     }
 
-}
+
+
+    }
+
+
+
+
+
+ 
+
 
 void Leds::assignOutputs(){}
 
@@ -78,13 +96,11 @@ void Leds::InitSendable(wpi::SendableBuilder& builder){
     builder.SetSmartDashboardType("Leds");
     builder.AddBooleanProperty(
         "PIT_MODE",
-        //yet need to figure this out
         [this]{return PIT_MODE;},
         nullptr
     );
     builder.AddDoubleProperty(
         "LED Puisle",
-        //yet need to figure this out
         [this]{return 12.0;},
         nullptr
     );
