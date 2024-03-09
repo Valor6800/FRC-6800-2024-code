@@ -102,13 +102,15 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "
         frc2::FunctionalCommand(
             [this, pitSequenceNames](){
                 int i = state.pitSequenceCommandIndex;
-                table->PutString("Next command", pitSequenceNames[i]);
+                if (i <= pitSequenceNames.size() - 1)
+                    table->PutString("Next command", pitSequenceNames[i]);
                 state.pitSequenceCommandIndex += 1;
             }, 
             [](){}, 
             [this, pitSequenceNames](bool _b){
                 int i = state.pitSequenceCommandIndex;
-                table->PutString("Current command", pitSequenceNames[i]);
+                if (i <= pitSequenceNames.size() - 1)
+                    table->PutString("Current command", pitSequenceNames[i]);
                 if (i < pitSequenceNames.size() - 1)
                     table->PutString("Next command", pitSequenceNames[i + 1]);
                 state.pitSequenceCommandIndex += 1;
