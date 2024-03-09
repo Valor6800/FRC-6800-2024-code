@@ -53,6 +53,10 @@ public:
     void setupCANCoder(int deviceId, double offset, bool clockwise, std::string canbus = "") override;
     double getCANCoder() override;
     
+    void setMotorInversion(bool);
+    bool getMotorInversion();
+
+
     float getRevBusUtil();
     float getCANivoreBusUtil();
     

@@ -7,10 +7,6 @@
 
 #pragma once
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 69c8819 (First commit :))
 #include <cmath>
 #include <iostream>
 #include <frc/RobotController.h>
