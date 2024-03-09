@@ -178,7 +178,6 @@ void PhoenixController::setPIDF(valor::PIDF _pidf, int slot)
     configs::Slot0Configs slotConfig{};
     configs::MotionMagicConfigs motionMagicConfig{};
     setPIDF(slotConfig, motionMagicConfig, _pidf);
-    auto _status =  motor->GetConfigurator().Apply(slotConfig);
     if (_status.IsError()) status = _status;
     _status = motor->GetConfigurator().Apply(motionMagicConfig);
     if (_status.IsError()) status = _status;
