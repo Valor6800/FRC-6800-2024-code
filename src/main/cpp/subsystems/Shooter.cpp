@@ -270,10 +270,11 @@ void Shooter::assignOutputs()
 void Shooter::calculatePivotAngle(){
     double distance = drivetrain->state.distanceFromSpeaker.to<double>();
 
-    double A = 1.41;
-    double B = -16.8;
-    double C = 74.2;
-    double bestPivot = C + (B * distance) + (A * pow(distance, 2));
+    double A = -0.293;
+    double B = 4.85;
+    double C = -28.5;
+    double D = 84.3;
+    double bestPivot = D + (C * distance) + (B * pow(distance, 2)) + (A * pow(distance, 3));
     state.calculatingPivotingAngle = units::degree_t(bestPivot);
 }
 
