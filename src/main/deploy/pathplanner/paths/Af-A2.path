@@ -16,19 +16,19 @@
     },
     {
       "anchor": {
-        "x": 8.09,
-        "y": 7.420150409311236
+        "x": 8.037861344385883,
+        "y": 5.780958783199396
       },
       "prevControl": {
-        "x": 7.30175021350591,
-        "y": 7.420150409311236
+        "x": 7.249671461113557,
+        "y": 5.790676489468572
       },
       "nextControl": {
-        "x": 9.037111361403452,
-        "y": 7.420150409311236
+        "x": 8.756962551902534,
+        "y": 5.772092881135994
       },
       "isLocked": false,
-      "linkedName": "Northstar blue"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -36,8 +36,8 @@
         "y": 6.094950434439353
       },
       "prevControl": {
-        "x": 4.82472923529465,
-        "y": 6.221661432658968
+        "x": 5.704699237234122,
+        "y": 6.7523883884211635
       },
       "nextControl": null,
       "isLocked": false,
@@ -51,7 +51,7 @@
       "rotateFast": false
     },
     {
-      "waypointRelativePos": 0.25,
+      "waypointRelativePos": 0.5,
       "rotationDegrees": 0.0,
       "rotateFast": false
     },

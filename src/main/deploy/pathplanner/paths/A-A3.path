@@ -8,29 +8,45 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.086462368237237,
-        "y": 6.770834196905662
+        "x": 4.381027018275102,
+        "y": 3.9544767157749012
       },
       "isLocked": false,
       "linkedName": "Score amp"
     },
     {
       "anchor": {
-        "x": 8.33710015314996,
-        "y": 5.422904387403103
+        "x": 8.100752184360273,
+        "y": 4.1071896750998365
       },
       "prevControl": {
-        "x": 6.7318630720742085,
-        "y": 5.300868819835941
+        "x": 6.518660471341039,
+        "y": 3.7184455240169374
+      },
+      "nextControl": {
+        "x": 8.609499078807184,
+        "y": 4.232196574491529
+      },
+      "isLocked": false,
+      "linkedName": "Mid"
+    },
+    {
+      "anchor": {
+        "x": 4.337617037936623,
+        "y": 5.071908381663985
+      },
+      "prevControl": {
+        "x": 5.198382462881824,
+        "y": 3.3615733427936765
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Scorch"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.8,
+      "waypointRelativePos": 0.9,
       "rotationDegrees": 0,
       "rotateFast": false
     }
@@ -76,6 +92,40 @@
           ]
         }
       }
+    },
+    {
+      "name": "Enable shooter",
+      "waypointRelativePos": 1.75,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Enable shooter"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "disable intake",
+      "waypointRelativePos": 1.45,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Disable intake"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "globalConstraints": {
@@ -86,7 +136,7 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 0.0,
+    "rotation": -6.730000000000018,
     "rotateFast": false
   },
   "reversed": false,

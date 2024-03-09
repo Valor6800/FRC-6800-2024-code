@@ -8,29 +8,45 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.086462368237237,
-        "y": 6.770834196905662
+        "x": 5.940512746621559,
+        "y": 7.326115710644325
       },
       "isLocked": false,
       "linkedName": "Score amp"
     },
     {
       "anchor": {
-        "x": 8.33710015314996,
-        "y": 5.422904387403103
+        "x": 8.09,
+        "y": 7.420150409311236
       },
       "prevControl": {
-        "x": 6.7318630720742085,
-        "y": 5.300868819835941
+        "x": 7.414376408541591,
+        "y": 7.413801848147678
+      },
+      "nextControl": {
+        "x": 8.570764221362856,
+        "y": 7.424667955920264
+      },
+      "isLocked": false,
+      "linkedName": "Northstar blue"
+    },
+    {
+      "anchor": {
+        "x": 3.862263649440494,
+        "y": 6.094950434439353
+      },
+      "prevControl": {
+        "x": 6.608149039648774,
+        "y": 7.094443333743438
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Scorch"
+      "linkedName": "Score amp"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.8,
+      "waypointRelativePos": 0.9,
       "rotationDegrees": 0,
       "rotateFast": false
     }
@@ -76,6 +92,40 @@
           ]
         }
       }
+    },
+    {
+      "name": "Enable shooter",
+      "waypointRelativePos": 1.75,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Enable shooter"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "disable intake",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Disable intake"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "globalConstraints": {
@@ -86,7 +136,7 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 0.0,
+    "rotation": 10.0,
     "rotateFast": false
   },
   "reversed": false,

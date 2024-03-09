@@ -26,31 +26,55 @@
         {
           "type": "named",
           "data": {
-            "name": "Enable feeder"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.25
+            "name": "Enable full feeder"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Af-A1"
+            "pathName": "Af-A2"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Enable feeder"
+            "name": "Enable full feeder"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": null
+            "pathName": "A-A1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Enable full feeder"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "A-A3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Enable full feeder"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Disable full feeder"
           }
         }
       ]
