@@ -12,6 +12,18 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Reset gyro"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Wait for A button"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Swerves translation test"
@@ -36,9 +48,9 @@
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "PIT sequence - intake"
+            "pathName": "Straighten wheels"
           }
         },
         {
@@ -50,7 +62,7 @@
         {
           "type": "named",
           "data": {
-            "name": "PIT sequence - shooter fly"
+            "name": "Enable intake"
           }
         },
         {
@@ -62,7 +74,7 @@
         {
           "type": "named",
           "data": {
-            "name": "PIT sequence - feed"
+            "name": "Disable intake"
           }
         },
         {
@@ -74,7 +86,67 @@
         {
           "type": "named",
           "data": {
-            "name": "PIT sequence - shooter pivot"
+            "name": "Shoot amp"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Wait for A button"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Disable full feeder"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Disable shooter"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Wait for A button"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Set pivot subwoofer"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Wait for A button"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Set pivot podium"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Wait for A button"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Set pivot wing"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Wait for A button"
           }
         }
       ]
