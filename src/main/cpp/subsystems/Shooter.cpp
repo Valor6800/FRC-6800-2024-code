@@ -161,6 +161,7 @@ void Shooter::init()
     table->PutNumber("Pivot Setpoint", AMP_ANG.to<double>());
     table->PutNumber("Speed Setpoint", AMP_POWER);
     table->PutBoolean("Tuning", false);
+    state.pivotOffset = 0.0;
 
     resetState();
 }
@@ -193,6 +194,17 @@ void Shooter::assessInputs()
         state.pivotState = PIVOT_STATE::LOAD;
     } else {
         state.pivotState = PIVOT_STATE::DISABLED;
+    }
+
+    //PIVOT OFFSET
+    if (operatorGamepad->leftTriggerActive()){
+        if (operatorGamepad->DPadUp()){
+            state.pivotOffset += 0.25;
+        } else if (operatorGamepad->DPadDown()){
+            state.pivotOffset -= 0.25;
+        } 
+    } else {
+        state.pivotOffset = 0.0;
     }
 }
 
@@ -233,21 +245,21 @@ void Shooter::assignOutputs()
     if (state.pivotState == PIVOT_STATE::TUNING) {
         pivotMotors->setPosition(state.tuningSetpoint);
     } else if(state.pivotState == PIVOT_STATE::SUBWOOFER){
-        pivotMotors->setPosition(SUBWOOFER_ANG.to<double>());
+        pivotMotors->setPosition(SUBWOOFER_ANG.to<double>() + state.pivotOffset);
     } else if(state.pivotState == PIVOT_STATE::LOAD){
         pivotMotors->setPosition(INTAKE_ANG.to<double>());
     } else if(state.pivotState == PIVOT_STATE::PODIUM){
-        pivotMotors->setPosition(PODIUM_ANG.to<double>());
+        pivotMotors->setPosition(PODIUM_ANG.to<double>() + state.pivotOffset);
     } else if(state.pivotState == PIVOT_STATE::WING){
-        pivotMotors->setPosition(WING_ANG.to<double>());
-    } else if (state.pivotState == PIVOT_STATE::ORBIT) {
+        pivotMotors->setPosition(WING_ANG.to<double>() + state.pivotOffset);
+    } else if (state.pivotState == PIVOT_STATE::ORBIT){
         pivotMotors->setPosition(POOP_ANG.to<double>());
-    } else if(state.pivotState == PIVOT_STATE::TRACKING) {
-        pivotMotors->setPosition(state.calculatingPivotingAngle.to<double>());
-    } else if(state.pivotState == PIVOT_STATE::AMP) {
-        pivotMotors->setPosition(AMP_ANG.to<double>());
+    } else if(state.pivotState == PIVOT_STATE::TRACKING){
+        pivotMotors->setPosition(state.calculatingPivotingAngle.to<double>() + state.pivotOffset);
+    } else if(state.pivotState == PIVOT_STATE::AMP){
+        pivotMotors->setPosition(AMP_ANG.to<double>() + state.pivotOffset);
     } else {
-        pivotMotors->setPosition(SUBWOOFER_ANG.to<double>());
+        pivotMotors->setPosition(SUBWOOFER_ANG.to<double>() + state.pivotOffset);
     }
 }
  

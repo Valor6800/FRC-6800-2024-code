@@ -62,6 +62,7 @@ public:
     {
         double tuningSetpoint;
         double tuningSpeed;
+        double pivotOffset;
 
         PIVOT_STATE pivotState;
         FLYWHEEL_STATE flywheelState;
