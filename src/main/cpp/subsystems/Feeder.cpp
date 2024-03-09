@@ -126,7 +126,7 @@ void Feeder::init()
 
     intakeMotor.setMaxCurrent(60);
     intakeMotor.setVoltageCompensation(10);
-    intakeMotor.setupFollower(CANIDs::INTERNAL_INTAKE_V2, true);
+    intakeMotor.setupFollower(CANIDs::INTERNAL_INTAKE_V2, false);
 
     feederMotor.setVoltageCompensation(10);
 

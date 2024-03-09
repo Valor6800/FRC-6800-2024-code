@@ -10,8 +10,8 @@
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/WaitCommand.h>
 
-#define PIVOT_ROTATE_K_VEL 67.815f
-#define PIVOT_ROTATE_K_ACC 3000.0f
+#define PIVOT_ROTATE_K_VEL 145.32f
+#define PIVOT_ROTATE_K_ACC 4000.0f
 #define PIVOT_ROTATE_K_P 1.5f
 #define PIVOT_ROTATE_K_ERROR 0.0f
 #define PIVOT_ROTATE_K_AFF 0.0f
@@ -21,8 +21,8 @@
 #define PIVOT_CANCODER_GEAR_RATIO 2.0f
 #define PIVOT_MAGNET_OFFSET 0.3272f
 #define PIVOT_GEAR_RATIO 219.52f
-#define PIVOT_REVERSE_LIMIT 80.00f
-#define PIVOT_FORWARD_LIMIT 20.0f
+#define PIVOT_REVERSE_LIMIT 115.00f
+#define PIVOT_FORWARD_LIMIT 22.0f
 
 #define FLYWHEEL_ROTATE_K_VEL 75.0f
 #define FLYWHEEL_ROTATE_K_ACC 75.0f
@@ -134,6 +134,9 @@ void Shooter::init()
     pivotPID.aFFTarget = PIVOT_ROTATE_K_AFF_POS;
     pivotPID.maxJerk = PIVOT_ROTATE_K_JERK;
 
+    // pivotPID.aFF = 0.42;
+    // pivotPID.aFFType = valor::FeedForwardType::CIRCULAR;
+
     valor::PIDF flywheelPID;
     flywheelPID.maxVelocity = FLYWHEEL_ROTATE_K_VEL;
     flywheelPID.maxAcceleration = FLYWHEEL_ROTATE_K_ACC;
@@ -146,8 +149,8 @@ void Shooter::init()
 
     pivotMotors = new valor::PhoenixController(
         CANIDs::PIVOT,
-        valor::NeutralMode::Coast,
-        true,
+        valor::NeutralMode::Brake,
+        false,
         PIVOT_GEAR_RATIO / PIVOT_CANCODER_GEAR_RATIO,
         PIVOT_CANCODER_GEAR_RATIO / 360.0,
         pivotPID,
