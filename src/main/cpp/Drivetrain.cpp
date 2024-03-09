@@ -30,6 +30,12 @@ using namespace pathplanner;
 #define SPEAKER_BLUE_X 0.0_m
 #define SPEAKER_RED_X 16.4846_m
 
+#define AMP_Y 8.1026_m
+#define AMP_BLUE_X 1.637157_m
+#define AMP_RED_X 14.499717_m
+#define AMP_Y_OFFSET 0.45085_m
+#define AMP_X_OFFSET 0.0_m
+
 #define TXRANGE  30.0f
 #define KPIGEON 2.0f
 #define KLIMELIGHT -29.8f
@@ -361,8 +367,8 @@ void Drivetrain::assessInputs()
     }
 
     state.ampAlign = driverGamepad->GetBButton();
-    state.isHeadingTrack = (driverGamepad->leftTriggerActive() && !driverGamepad->GetAButton()) || driverGamepad->GetXButton();
-    state.trapAlign = driverGamepad->GetXButton();
+    state.isHeadingTrack = driverGamepad->leftTriggerActive() || driverGamepad->GetXButton();
+    state.ampHeadingTrack = driverGamepad->GetXButton();
     state.sourceAlign = driverGamepad->GetYButton();
     state.thetaLock = driverGamepad->GetAButton();
 
@@ -413,6 +419,7 @@ void Drivetrain::analyzeDashboard()
     }
 
     if(state.isHeadingTrack) getSpeakerLockAngleRPS();
+    else if(state.ampHeadingTrack) getAmpLockAngle();
     else if(state.sourceAlign) setAlignmentAngle(Alignment::SOURCE);
     else if(state.ampAlign) setAlignmentAngle(Alignment::AMP);
     else if(state.trapAlign) setAlignmentAngle(Alignment::TRAP);
@@ -499,7 +506,7 @@ void Drivetrain::assignOutputs()
     }
     state.rotRPS = units::angular_velocity::radians_per_second_t{state.rot * rotMaxSpeed};
 
-    if(state.ampAlign || state.trapAlign || state.sourceAlign || state.isHeadingTrack || state.thetaLock){
+    if(state.ampAlign || state.trapAlign || state.sourceAlign || state.isHeadingTrack || state.thetaLock || state.ampHeadingTrack){
         drive(state.xSpeedMPS, state.ySpeedMPS, state.angleRPS, true);
     } else {
         drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
@@ -556,6 +563,21 @@ void Drivetrain::getSpeakerLockAngleRPS(){
         (roboXPos.to<double>() - (speakerX + speakerXOffset))
     ));
 }
+
+void Drivetrain::getAmpLockAngle(){
+    units::radian_t targetRotAngle;
+    units::meter_t roboXPos = calculatedEstimator->GetEstimatedPosition().X();
+    units::meter_t roboYPos = calculatedEstimator->GetEstimatedPosition().Y();
+    double ampX = (frc::DriverStation::GetAlliance() == frc::DriverStation::kRed ? AMP_RED_X : AMP_BLUE_X).to<double>();
+    double redMultiplier = frc::DriverStation::GetAlliance() == frc::DriverStation::kRed ? -1.0 : 1.0;
+    double ampXOffset = table->GetNumber("AMP_X_OFFSET", AMP_X_OFFSET.to<double>()) * redMultiplier;
+    double ampYOffset = table->GetNumber("AMP_Y_OFFSET", AMP_Y_OFFSET.to<double>());
+    state.targetAngle = units::radian_t(atan2(
+        roboYPos.to<double>() - (AMP_Y.to<double>() + ampYOffset), 
+        roboXPos.to<double>() - (ampX + ampXOffset)
+    ));
+}
+
 
 units::radian_t Drivetrain::getAngleError(){
     units::radian_t robotRotation = calculatedEstimator->GetEstimatedPosition().Rotation().Radians();
