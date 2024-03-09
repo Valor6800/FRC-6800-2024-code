@@ -18,9 +18,9 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "Wait for A button"
+            "waitTime": 1.0
           }
         },
         {
@@ -30,9 +30,9 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "Wait for A button"
+            "waitTime": 1.0
           }
         },
         {
@@ -42,9 +42,9 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "Wait for A button"
+            "waitTime": 1.0
           }
         },
         {
@@ -54,9 +54,9 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "Wait for A button"
+            "waitTime": 1.0
           }
         },
         {
@@ -66,9 +66,9 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "Wait for A button"
+            "waitTime": 1.0
           }
         },
         {
@@ -78,9 +78,9 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "Wait for A button"
+            "waitTime": 1.0
           }
         },
         {
@@ -96,9 +96,9 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "Wait for A button"
+            "waitTime": 1.0
           }
         },
         {
@@ -108,9 +108,9 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "Wait for A button"
+            "waitTime": 1.0
           }
         },
         {
@@ -120,9 +120,9 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "Wait for A button"
+            "waitTime": 1.0
           }
         },
         {
@@ -132,9 +132,9 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "Wait for A button"
+            "waitTime": 1.0
           }
         }
       ]
