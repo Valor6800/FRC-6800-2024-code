@@ -52,13 +52,16 @@ public:
         PODIUM,
         WING,
         TRACKING,
-        MANUAL,
-        POOP
+        AMP,
+        ORBIT,
+        TUNING,
+        LOAD
     };
 
     struct x
     {
-        double setpoint;
+        double tuningSetpoint;
+        double tuningSpeed;
 
         PIVOT_STATE pivotState;
         FLYWHEEL_STATE flywheelState;
@@ -66,7 +69,6 @@ public:
         units::degree_t pivotAngle;
         units::degree_t calculatingPivotingAngle;
 
-        double speedSetpoint;
     } state;
 
 private:

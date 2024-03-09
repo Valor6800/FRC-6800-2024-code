@@ -60,7 +60,8 @@ namespace DIOPorts {
 }
 
 namespace AnalogPorts {
-    constexpr static int BEAM_BREAK_PORT = 3;
+    constexpr static int FEEDER_BEAM_BREAK_PORT = 3;
+    constexpr static int INTAKE_BEAM_BREAK_PORT = 4;
 }
 
 namespace CANIDs {
@@ -70,6 +71,7 @@ namespace CANIDs {
     constexpr static int SHOOTER_CANCODER = 24;
     constexpr static int PIGEON_CAN = 61;
     constexpr static int INTERNAL_INTAKE = 13;
+    constexpr static int INTERNAL_INTAKE_V2 = 17;
     constexpr static int PIVOT = 30;
     constexpr static int RIGHT_SHOOTER_WHEEL_CONTROLLER = 12;
     constexpr static int LEFT_SHOOTER_WHEEL_CONTROLLER = 11; // Relative to shooter being forward
