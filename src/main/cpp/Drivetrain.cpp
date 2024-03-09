@@ -199,6 +199,8 @@ void Drivetrain::init()
     thetaPIDF.I = KIT;
     thetaPIDF.D = KDT;
 
+    state.weird = 0;
+
     table->PutNumber("Vision Std", 3.0);
 
     table->PutNumber("Vision Acceptance", VISION_ACCEPTANCE.to<double>() );
@@ -311,6 +313,10 @@ void Drivetrain::assessInputs()
     state.ySpeed = driverGamepad->leftStickX(2);
 
     state.rot = driverGamepad->rightStickX(3);
+
+    if (driverGamepad->GetStartButton()){
+        state.weird += 1;
+    }
 }
 
 void Drivetrain::calculateCarpetPose()
@@ -365,16 +371,6 @@ void Drivetrain::analyzeDashboard()
             doubtX,
             doubtY
         );
-    }
-
-    if (driverGamepad && driverGamepad->IsConnected() && driverGamepad->GetStartButton()) {
-        for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
-            if (aprilLime->hasTarget()) {
-                botpose = aprilLime->getSensor().ToPose2d();
-                resetOdometry(botpose);
-                break;
-            }
-        }
     }
 
     if(frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue){
@@ -767,14 +763,6 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
             nullptr
         );
         builder.AddIntegerProperty(
-            "stage",
-            [this]
-            {
-                return state.stage;
-            },
-            nullptr
-        );
-        builder.AddIntegerProperty(
             "xVelocity",
             [this]
             {
@@ -876,6 +864,11 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
         builder.AddDoubleProperty(
             "angular velocity target",
             [this] {return targetPoseTracker.getAverageAngularVelocity().to<double>();},
+            nullptr
+        );
+        builder.AddIntegerProperty(
+            "weird state",
+            [this] {return state.weird;},
             nullptr
         );
     }

@@ -135,7 +135,7 @@ public:
           bool trapAlign;
           bool ampAlign;
 
-          int stage;
+          int weird;
 
           int trackingID;
           double visionOdomDiff;
