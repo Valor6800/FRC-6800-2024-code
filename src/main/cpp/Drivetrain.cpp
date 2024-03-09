@@ -62,7 +62,7 @@ using namespace pathplanner;
 
 #define VISION_ACCEPTANCE 3.5_m // meters
 
-#define BLUE_AMP_ROT_ANGLE -90.0_deg
+#define BLUE_AMP_ROT_ANGLE 90.0_deg
 #define BLUE_SOURCE_ROT_ANGLE -30_deg
 #define RED_SOURCE_ROT_ANGLE -150_deg
 #define BLUE_LOCK_ANGLE 0_deg

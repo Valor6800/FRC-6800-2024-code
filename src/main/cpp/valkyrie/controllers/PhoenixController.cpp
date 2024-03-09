@@ -197,8 +197,6 @@ void PhoenixController::setPIDF(configs::Slot0Configs & slotConfig, configs::Mot
             signals::GravityTypeValue::Elevator_Static :
             signals::GravityTypeValue::Arm_Cosine;
         slotConfig.kG = pidf.aFF;
-
-        // config.Feedback.FeedbackRotorOffset = pidf.aFFTarget;
     }
 
     // Motion magic configuration

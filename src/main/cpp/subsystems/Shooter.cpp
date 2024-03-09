@@ -11,11 +11,10 @@
 #include <frc2/command/WaitCommand.h>
 
 #define PIVOT_ROTATE_K_VEL 145.32f
-#define PIVOT_ROTATE_K_ACC 4000.0f
-#define PIVOT_ROTATE_K_P 1.5f
+#define PIVOT_ROTATE_K_ACC 2500.0f
+#define PIVOT_ROTATE_K_P 1.0f
 #define PIVOT_ROTATE_K_ERROR 0.0f
-#define PIVOT_ROTATE_K_AFF 0.0f
-#define PIVOT_ROTATE_K_AFF_POS 0.0f
+#define PIVOT_ROTATE_K_AFF 0.42f
 #define PIVOT_ROTATE_K_JERK 9999.9f
 
 #define PIVOT_CANCODER_GEAR_RATIO 2.0f
@@ -29,7 +28,7 @@
 #define FLYWHEEL_ROTATE_K_P 0.00005f
 
 #define AMP_ANG 55.0_deg
-#define SUBWOOFER_ANG 64.5_deg
+#define SUBWOOFER_ANG 54_deg
 #define INTAKE_ANG 80.0_deg
 #define PODIUM_ANG 37.0_deg
 #define WING_ANG 26.5_deg
@@ -131,11 +130,10 @@ void Shooter::init()
     pivotPID.P = PIVOT_ROTATE_K_P;
     pivotPID.error = PIVOT_ROTATE_K_ERROR;
     pivotPID.aFF = PIVOT_ROTATE_K_AFF;
-    pivotPID.aFFTarget = PIVOT_ROTATE_K_AFF_POS;
     pivotPID.maxJerk = PIVOT_ROTATE_K_JERK;
 
-    // pivotPID.aFF = 0.42;
-    // pivotPID.aFFType = valor::FeedForwardType::CIRCULAR;
+    pivotPID.aFF = PIVOT_ROTATE_K_AFF;
+    pivotPID.aFFType = valor::FeedForwardType::CIRCULAR;
 
     valor::PIDF flywheelPID;
     flywheelPID.maxVelocity = FLYWHEEL_ROTATE_K_VEL;
@@ -163,6 +161,7 @@ void Shooter::init()
 
     table->PutNumber("Pivot Setpoint", AMP_ANG.to<double>());
     table->PutNumber("Speed Setpoint", AMP_POWER);
+    table->PutNumber("Speed Offset Pct", 0.5);
     table->PutBoolean("Tuning", false);
     state.pivotOffset = 0.0;
 
@@ -177,6 +176,7 @@ void Shooter::assessInputs()
     //SHOOT LOGIC
     if (driverGamepad->rightTriggerActive() ||
         driverGamepad->leftTriggerActive() ||
+        operatorGamepad->GetStartButton() ||
         driverGamepad->GetXButton() ||
         driverGamepad->GetBButton()) {
         state.flywheelState = FLYWHEEL_STATE::SHOOTING;
@@ -215,6 +215,7 @@ void Shooter::analyzeDashboard()
 {
     state.tuningSetpoint = table->GetNumber("Pivot Setpoint", AMP_ANG.to<double>());
     state.tuningSpeed = table->GetNumber("Speed Setpoint", AMP_POWER);
+    state.tuningOffset = table->GetNumber("Speed Offset Pct", 0.5);
 
     if (table->GetBoolean("Tuning", false)) {
         state.pivotState = PIVOT_STATE::TUNING;
@@ -229,7 +230,7 @@ void Shooter::assignOutputs()
         leftFlywheelMotor.setPower(0.0);
         rightFlywheelMotor.setPower(0.0);
     } else if (state.pivotState == PIVOT_STATE::TUNING) {
-        leftFlywheelMotor.setSpeed(state.tuningSpeed * 0.5);
+        leftFlywheelMotor.setSpeed(state.tuningSpeed * state.tuningOffset);
         rightFlywheelMotor.setSpeed(state.tuningSpeed);
     } else if (state.pivotState == PIVOT_STATE::AMP) {
         leftFlywheelMotor.setSpeed(AMP_POWER);

@@ -238,8 +238,8 @@ namespace Constants {
                 10.175_in, //z
                 frc::Rotation3d(
                     0_deg,
-                    125_deg,
-                    37_deg
+                    37_deg,
+                    125_deg
                 )
             );
         }};
