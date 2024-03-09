@@ -166,7 +166,7 @@ void Feeder::assessInputs()
 
 void Feeder::analyzeDashboard()
 {
-    if (state.feederState == ROLLER_STATE::SHOOT) {
+    if (state.feederState == ROLLER_STATE::SHOOT || state.feederState == ROLLER_STATE::OUTTAKE) {
         state.beamTrip = false;
         driverGamepad->setRumble(false);
     }
