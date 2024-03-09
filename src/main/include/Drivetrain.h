@@ -156,7 +156,6 @@ public:
           units::second_t startTimestamp; // generic
           
           bool useCalculatedEstimator; // only during auto
-          bool autoControlled;
 
           bool manualFlag;
      } state;

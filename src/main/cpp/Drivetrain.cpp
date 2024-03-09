@@ -302,8 +302,8 @@ void Drivetrain::assessInputs()
     if (driverGamepad->GetBackButtonPressed()) {
         resetGyro();
     }
-    if (driverGamepad->DPadDown()){
-        state.manualFlag = true;
+    if (driverGamepad->DPadDown()){ // All 4 back buttons are mapped to this as of 3/8/2024
+        state.manualFlag = true; 
     } else {
         state.manualFlag = false;
     }
