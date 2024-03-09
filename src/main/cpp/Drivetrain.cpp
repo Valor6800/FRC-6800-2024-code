@@ -35,7 +35,7 @@ using namespace pathplanner;
 
 #define KPX 7.0f // 30
 #define KIX 0.0f //0
-#define KDX 0.1f //.1
+#define KDX 0.0f //.1
 
 #define KPT 16.0f //15
 #define KIT 0.0f
