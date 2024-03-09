@@ -161,6 +161,7 @@ public:
           bool manualFlag;
           
           struct { units::acceleration::meters_per_second_squared_t x,y,z; } accel;
+          int pitSequenceCommandIndex;
      } state;
      
      

@@ -84,8 +84,38 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
+    std::vector<std::string> pitSequenceNames = {
+        "Swerves translation test", 
+        "Swerves rotation test",
+        "Straighten wheels",
+        "Enable intake",
+        "Disable intake",
+        "Shoot amp",
+        "Disable shoot",
+        "Set pivot subwoofer",
+        "Set pivot podium",
+        "Set pivot wing"
+    }; // WARNING: Jank and bad. 
+       // Should either be automatically loaded from the auto or the pit sequence should be a list of commands.
+       // Also shouldn't be stored here
     pathplanner::NamedCommands::registerCommand("Wait for A button", std::move(
-        frc2::FunctionalCommand([](){}, [](){}, [](bool _b){}, [this](){ return operatorGamepad->GetAButtonPressed(); }, {this})
+        frc2::FunctionalCommand(
+            [this, pitSequenceNames](){
+                int i = state.pitSequenceCommandIndex;
+                table->PutString("Next command", pitSequenceNames[i]);
+                state.pitSequenceCommandIndex += 1;
+            }, 
+            [](){}, 
+            [this, pitSequenceNames](bool _b){
+                int i = state.pitSequenceCommandIndex;
+                table->PutString("Current command", pitSequenceNames[i]);
+                if (i < pitSequenceNames.size() - 1)
+                    table->PutString("Next command", pitSequenceNames[i + 1]);
+                state.pitSequenceCommandIndex += 1;
+            }, 
+            [this](){ return operatorGamepad->GetAButtonPressed(); }, 
+            {this}
+        )
     ).ToPtr());
 }
 
@@ -272,6 +302,14 @@ void Drivetrain::init()
                     state.useCalculatedEstimator = false;
                 }
             )
+        )
+    ).ToPtr());
+
+    pathplanner::NamedCommands::registerCommand("Reset gyro", std::move(
+        frc2::InstantCommand(
+            [this]() {
+                resetGyro();
+            }
         )
     ).ToPtr());
 }

@@ -127,6 +127,34 @@ Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive, frc::AnalogTrigger
             [this]() {
                 // shooter->state.isShooting = true;
                 state.pivotState = Shooter::PIVOT_STATE::LOAD;
+    pathplanner::NamedCommands::registerCommand("Set pivot podium", std::move(
+        frc2::InstantCommand(
+            [this]() {
+                // shooter->state.isShooting = true;
+                state.pivotState = Shooter::PIVOT_STATE::PODIUM;
+            }
+        )
+    ).ToPtr());
+    pathplanner::NamedCommands::registerCommand("Set pivot wing", std::move(
+        frc2::InstantCommand(
+            [this]() {
+                // shooter->state.isShooting = true;
+                state.pivotState = Shooter::PIVOT_STATE::WING;
+            }
+        )
+    ).ToPtr());
+    pathplanner::NamedCommands::registerCommand("Set pivot poop", std::move(
+        frc2::InstantCommand(
+            [this]() {
+                // shooter->state.isShooting = true;
+                state.pivotState = Shooter::PIVOT_STATE::POOP;
+            }
+        )
+    ).ToPtr());
+    pathplanner::NamedCommands::registerCommand("Shoot amp", std::move(
+        frc2::InstantCommand(
+            [this]() {
+                state.pivotState = Shooter::PIVOT_STATE::MANUAL; // WARNING: Rename to AMP after robot_v2 gets merged in
             }
         )
     ).ToPtr());
