@@ -5,6 +5,7 @@
 #include <ctre/phoenix6/TalonFX.hpp>
 #include <string>
 #include <ctre/phoenix6/CANcoder.hpp>
+#include <ctre/phoenix6/CANBus.hpp>
 
 namespace valor {
 
@@ -55,6 +56,8 @@ public:
     double getAbsEncoderPosition();
     void setupCANCoder(int deviceId, double offset, bool clockwise, std::string canbus = "") override;
     double getCANCoder() override;
+    
+    float getCANBusUtil();
     
     void setOpenLoopRamp(double time);
 

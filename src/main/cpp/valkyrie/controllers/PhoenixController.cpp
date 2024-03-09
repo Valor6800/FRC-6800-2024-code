@@ -348,6 +348,11 @@ void PhoenixController::setOpenLoopRamp(double time)
     if (_status.IsError()) status = _status;
 }
 
+float PhoenixController::getCANBusUtil()
+{
+    return CANBus::GetStatus("").BusUtilization;
+}
+
 void PhoenixController::InitSendable(wpi::SendableBuilder& builder)
 {
     builder.SetSmartDashboardType("Subsystem");
@@ -413,4 +418,9 @@ void PhoenixController::InitSendable(wpi::SendableBuilder& builder)
         "Magnet Health",
         [this] { return cancoder ? cancoder->GetMagnetHealth().GetValue().value : -1; },
         nullptr);
+    builder.AddFloatProperty(
+        "CAN Bus Utilization",
+        [this] { return getCANBusUtil(); },
+        nullptr
+    );
 }
