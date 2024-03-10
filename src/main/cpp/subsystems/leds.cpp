@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #include "subsystems/leds.h"
 #include <iostream>
 
@@ -145,3 +146,5 @@ void Leds::InitSendable(wpi::SendableBuilder& builder){
         nullptr
     );
 }
+=======
+>>>>>>> bb77256 (rebased and cleaned up)
