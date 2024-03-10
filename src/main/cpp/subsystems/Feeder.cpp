@@ -135,6 +135,8 @@ void Feeder::resetState()
     state.intakeState = STAGNANT;
     state.feederState = STAGNANT;
     state.unjam = false;
+    intakeTest=false;
+
 }
 
 void Feeder::init()
@@ -234,7 +236,36 @@ void Feeder::assignOutputs()
             feederMotor.setPower(0);
         }
     }
+
+    switch(state.intakeState){
+        case ROLLER_STATE::INTAKE:
+            intakeTest=true;
+        default:
+            intakeTest=false;
+    }
+
+
+    switch(state.feederState){
+        case ROLLER_STATE::INTAKE:
+            intakeTest=true;
+        default:
+        intakeTest=false;
+
+       
+    }
 }
+
+bool Feeder::isBeamBreakTriggered()
+{
+    return !feederBeamBreak->GetInWindow();
+}
+
+
+bool Feeder::isIntake()
+{
+    return intakeTest;
+}
+
 
 void Feeder::InitSendable(wpi::SendableBuilder& builder)
 {

@@ -22,6 +22,9 @@ public:
     void assignOutputs();
 
     void InitSendable(wpi::SendableBuilder& builder);
+    bool isBeamBreakTriggered();
+    bool isIntake();
+
 
     enum ROLLER_STATE
     {
@@ -54,4 +57,6 @@ private:
     valor::DebounceSensor feederDebounceSensor;
     frc::AnalogTrigger* intakeBeamBreak;
     valor::DebounceSensor intakeDebounceSensor;
+    bool intakeTest;
+
 };

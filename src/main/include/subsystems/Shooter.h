@@ -31,6 +31,10 @@ public:
     void resetState();
 
     void init();
+    bool getSpooledState();
+    bool getTrackingState();
+    bool getPitModeState();
+
 
     void assessInputs();
     void analyzeDashboard();
@@ -92,4 +96,6 @@ private:
 
     valor::NeoController leftFlywheelMotor;
     valor::NeoController rightFlywheelMotor;
+    bool trackingTest;
+
 };

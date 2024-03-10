@@ -309,6 +309,14 @@ void Shooter::assessInputs()
     } else {
         state.pivotOffset = 0.0;
     }
+
+    switch(state.pivotState) {
+    case PIVOT_STATE::TRACKING:
+        trackingTest = true;
+    default:
+        trackingTest = false;
+    }
+
 }
 
 void Shooter::analyzeDashboard()
@@ -404,6 +412,12 @@ void Shooter::assignOutputs()
         pivotMotors->setPosition(SUBWOOFER_ANG.to<double>() + state.pivotOffset);
     }
 }
+
+
+bool Shooter::getTrackingState(){
+    return trackingTest;
+}
+
  
 void Shooter::calculatePivotAngle(){
     double distance = drivetrain->state.distanceFromSpeaker.to<double>();
