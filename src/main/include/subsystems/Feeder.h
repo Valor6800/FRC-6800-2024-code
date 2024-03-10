@@ -21,11 +21,14 @@ public:
     void analyzeDashboard();
     void assignOutputs();
     
+    
 
     void InitSendable(wpi::SendableBuilder& builder);
 
     bool isBeamBreakTriggered();
     bool isIntake();
+
+
 
     enum ROLLER_STATE
     {
