@@ -1,7 +1,10 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> f254cb1 (rebased and cleaned up)
+=======
+>>>>>>> 4db549d (rebased and cleaned up)
 #include "subsystems/leds.h"
 #include <iostream>
 
@@ -54,6 +57,7 @@ void Leds::analyzeDashboard(){
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     }
 
 
@@ -76,6 +80,9 @@ void Leds::assignOutputs(){
 
 void Leds::assignOutputs(){
 >>>>>>> 241a0f2 (added to assignoutputs)
+=======
+     
+>>>>>>> 4db549d (rebased and cleaned up)
     if (autoIsONBool) {
         candle.setColor(1, CANdleSensor::RGBColor(255, 0, 0)); // Red
 
@@ -111,10 +118,13 @@ void Leds::assignOutputs(){
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 =======
 =======
 >>>>>>> f254cb1 (rebased and cleaned up)
+=======
+>>>>>>> 4db549d (rebased and cleaned up)
 
 
 
@@ -129,6 +139,7 @@ void Leds::assignOutputs(){
 
 void Leds::assignOutputs(){}
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 3bcf999 (rebased and cleaned up)
 =======
 }
@@ -138,6 +149,8 @@ void Leds::assignOutputs(){}
 =======
 }
 >>>>>>> 241a0f2 (added to assignoutputs)
+=======
+>>>>>>> 4db549d (rebased and cleaned up)
 
 void Leds::InitSendable(wpi::SendableBuilder& builder){
     builder.SetSmartDashboardType("Leds");
@@ -171,7 +184,10 @@ void Leds::InitSendable(wpi::SendableBuilder& builder){
     );
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> bb77256 (rebased and cleaned up)
 =======
 >>>>>>> f254cb1 (rebased and cleaned up)
+=======
+>>>>>>> 4db549d (rebased and cleaned up)
