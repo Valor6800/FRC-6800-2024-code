@@ -12,6 +12,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Start pivot tracking"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Wf pt 1"

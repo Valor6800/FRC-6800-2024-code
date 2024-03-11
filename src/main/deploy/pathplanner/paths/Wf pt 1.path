@@ -71,7 +71,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Disable feeder"
+                "name": "Enable intake"
               }
             }
           ]
