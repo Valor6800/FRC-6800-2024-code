@@ -218,13 +218,13 @@ namespace Constants {
                     0_deg
                 }); // Temp value; TODO: Change it
             default: return frc::Pose3d(
-                -11.146_in, //x
-                -11.640_in, //y
+                -11.515_in, //x
+                11.512_in, //y
                 10.175_in, //z
                 frc::Rotation3d(
                     0_deg,
                     37_deg,
-                    -125_deg
+                    125_deg
                 )
             );
         }};
@@ -233,13 +233,13 @@ namespace Constants {
             case ALPHA_TEAM_NUMBER: return frc::Pose3d();
             case SIDE_SWIPE_TEAM_NUMBER: return frc::Pose3d();
             default: return frc::Pose3d(
-                -11.515_in, //x
-                11.512_in, //y
+                -11.146_in, //x
+                -11.640_in, //y
                 10.175_in, //z
                 frc::Rotation3d(
                     0_deg,
-                    37_deg,
-                    125_deg
+                    39.7_deg,
+                    -125_deg
                 )
             );
         }};

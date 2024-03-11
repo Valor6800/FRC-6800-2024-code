@@ -26,7 +26,7 @@ namespace valor
 
             void InitSendable(wpi::SendableBuilder& builder) override;
 
-            units::meter_t visionOutlier;
+            units::meter_t visionOutlier = 3.5_m;
             void applyVisionMeasurement(frc::SwerveDrivePoseEstimator<4> *estimator, bool accept = true, double doubtX = 1, double doubtY = 1, double doubtRot = 1);
 
         private:
