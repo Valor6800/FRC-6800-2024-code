@@ -1,4 +1,5 @@
 #include "valkyrie/Auto.h"
+#include "pathplanner/lib/auto/AutoBuilder.h"
 // #include <frc/Filesystem.h>
 #include <pathplanner/lib/commands/PathPlannerAuto.h>
 #include <pathplanner/lib/auto/NamedCommands.h>
@@ -22,9 +23,22 @@ frc2::CommandPtr Auto::makeAuto(std::string autoName){
     return pathplanner::PathPlannerAuto(autoName).ToPtr();
 }
 
+std::string Auto::getSelectedAutoName(){
+    return m_chooser.GetSelected();
+}
+
 frc2::CommandPtr Auto::getCurrentAuto(){
     std::string selection = m_chooser.GetSelected(); 
-    return makeAuto(selection);
+    if (loadedAutos.find(selection) != loadedAutos.end())
+        return std::move(loadedAutos[selection]);
+    else 
+        return makeAuto(selection);
+}
+
+void Auto::preloadAuto(std::string autoName){
+    if (loadedAutos.find(autoName) == loadedAutos.end()){
+        loadedAutos[autoName] = makeAuto(autoName);
+    }
 }
 
 std::string removeFileType(std::string fileName) {
@@ -75,8 +89,6 @@ std::vector<std::string> listDirectory(std::string path_name){
 }
 
 void Auto::fillAutoList(){
-    // for (std::string path : listDirectory(PATHS_PATH)){
-    //     m_chooser.AddOption(makeFriendlyName(removeFileType(path)), removeFileType(path));
     for (std::string path : listDirectory(AUTOS_PATH)){
         m_chooser.AddOption(makeFriendlyName(removeFileType(path)), removeFileType(path));
     }
