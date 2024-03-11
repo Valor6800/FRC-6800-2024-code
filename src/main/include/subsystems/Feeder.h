@@ -46,6 +46,7 @@ private:
 
     valor::NeoController feederMotor;
     valor::NeoController intakeMotor;
+    valor::NeoController intakeBackMotor;
     frc::AnalogTrigger* feederBeamBreak;
     valor::DebounceSensor feederDebounceSensor;
     frc::AnalogTrigger* intakeBeamBreak;

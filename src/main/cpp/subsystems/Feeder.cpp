@@ -23,6 +23,7 @@
 Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _feederBeamBreak, frc::AnalogTrigger* _intakeBeamBreak) :
     valor::BaseSubsystem(_robot, "Feeder"),
     intakeMotor(CANIDs::INTERNAL_INTAKE, valor::NeutralMode::Coast, true),
+    intakeBackMotor(CANIDs::INTERNAL_INTAKE_V2, valor::NeutralMode::Coast, false),
     feederMotor(CANIDs::FEEDER, valor::NeutralMode::Brake, true),
     feederBeamBreak(_feederBeamBreak),
     feederDebounceSensor(_robot, "FeederBanner"),
@@ -126,7 +127,9 @@ void Feeder::init()
 
     intakeMotor.setMaxCurrent(60);
     intakeMotor.setVoltageCompensation(10);
-    intakeMotor.setupFollower(CANIDs::INTERNAL_INTAKE_V2, false);
+
+    intakeBackMotor.setMaxCurrent(60);
+    intakeBackMotor.setVoltageCompensation(10);
 
     feederMotor.setVoltageCompensation(10);
 
@@ -177,12 +180,16 @@ void Feeder::assignOutputs()
 {
     if(state.intakeState == ROLLER_STATE::SHOOT) {
         intakeMotor.setPower(INTAKE_FORWARD_POWER);
+        intakeBackMotor.setPower(INTAKE_FORWARD_POWER);
     } else if(state.intakeState == ROLLER_STATE::INTAKE) {
         intakeMotor.setPower(state.beamTrip ? 0 : INTAKE_FORWARD_POWER);
+        intakeBackMotor.setPower(state.beamTrip ? 0 : INTAKE_FORWARD_POWER);
     } else if(state.intakeState == ROLLER_STATE::OUTTAKE) {
         intakeMotor.setPower(INTAKE_REVERSE_POWER);
+        intakeBackMotor.setPower(INTAKE_REVERSE_POWER);
     } else {
         intakeMotor.setPower(0);
+        intakeBackMotor.setPower(0);
     }
     
     if (state.feederState == ROLLER_STATE::SHOOT) {
