@@ -43,6 +43,12 @@
               "data": {
                 "name": "Disable full feeder"
               }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Start pivot tracking"
+              }
             }
           ]
         }
