@@ -40,9 +40,10 @@
 #define LEFT_BLOOP_POWER 32.0f
 #define RIGHT_BLOOP_POWER 27.0f
 
-Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive) :
+Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive, frc::AnalogTrigger* _feederBeamBreak) :
     valor::BaseSubsystem(_robot, "Shooter"),
     pivotMotors(nullptr),
+    feederBeamBreak(_feederBeamBreak),
     leftFlywheelMotor(CANIDs::LEFT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, true),
     rightFlywheelMotor(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false),
     drivetrain(_drive)
@@ -118,7 +119,7 @@ Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive) :
 void Shooter::resetState()
 {
     state.flywheelState = FLYWHEEL_STATE::NOT_SHOOTING;
-    state.pivotState = PIVOT_STATE::DISABLED;
+    state.pivotState = PIVOT_STATE::TRACKING;
     state.calculatingPivotingAngle = units::degree_t{0};
 }
 
@@ -191,12 +192,10 @@ void Shooter::assessInputs()
         state.pivotState = PIVOT_STATE::AMP;
     } else if (driverGamepad->GetXButton()) {
         state.pivotState = PIVOT_STATE::ORBIT;
-    } else if (driverGamepad->leftTriggerActive()) {
-        state.pivotState = PIVOT_STATE::TRACKING;
     } else if (driverGamepad->GetLeftBumper() || driverGamepad->GetRightBumper()) {
         state.pivotState = PIVOT_STATE::LOAD;
     } else {
-        state.pivotState = PIVOT_STATE::DISABLED;
+        state.pivotState = PIVOT_STATE::TRACKING;
     }
 
     //PIVOT OFFSET
@@ -216,6 +215,10 @@ void Shooter::analyzeDashboard()
     state.tuningSetpoint = table->GetNumber("Pivot Setpoint", AMP_ANG.to<double>());
     state.tuningSpeed = table->GetNumber("Speed Setpoint", AMP_POWER);
     state.tuningOffset = table->GetNumber("Speed Offset Pct", 0.5);
+
+    if (feederBeamBreak->GetInWindow() && state.pivotState == PIVOT_STATE::LOAD) {
+        state.pivotState = PIVOT_STATE::TRACKING;
+    }
 
     if (table->GetBoolean("Tuning", false)) {
         state.pivotState = PIVOT_STATE::TUNING;
