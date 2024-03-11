@@ -21,6 +21,7 @@ AprilTagsSensor::AprilTagsSensor(frc::TimedRobot* robot, const char *name, frc::
     limeTable->PutNumber("vp", vp);
     limeTable->PutNumber("new doubt x", 0);
     limeTable->PutNumber("new doubt y", 0);
+    isPoseUsed = false;
 }
 
 frc::Pose3d AprilTagsSensor::getGlobalPose() {
@@ -61,16 +62,23 @@ frc::Pose3d AprilTagsSensor::getPoseFromAprilTag() {
 }
 
 void AprilTagsSensor::applyVisionMeasurement(frc::SwerveDrivePoseEstimator<4> *estimator, units::velocity::meters_per_second_t speed, bool accept, double doubtX, double doubtY, double doubtRot) {
-    if (!hasTarget() || !accept) return;
+   if (!hasTarget() || !accept) {
+        isPoseUsed = false;
+        return;
+    } 
     dp = limeTable->GetNumber("dp", dp);
     vp = limeTable->GetNumber("vp", vp);
- 
+    
     //std::vector<double> botToTargetPose = limeTable->GetNumberArray("botpose_targetspace", std::span<const double>());
     //if (botToTargetPose.size() == 6) distance = units::meter_t(sqrtf(powf(botToTargetPose[0], 2) + powf(botToTargetPose[1], 2)));
     //else distance = 0_m; return;
     double newDoubtX = doubtX + (distance.to<double>() * dp) + (vp * speed.to<double>());
     double newDoubtY = doubtY + (distance.to<double>() * dp) + (vp * speed.to<double>());
-    if (distance >= normalVisionOutlier) return;
+
+    if (distance >= normalVisionOutlier) {
+        isPoseUsed = false;
+        return;
+    }
     units::millisecond_t totalLatency = getTotalLatency();
 
     frc::Pose2d tGone = frc::Pose2d{
@@ -88,6 +96,7 @@ void AprilTagsSensor::applyVisionMeasurement(frc::SwerveDrivePoseEstimator<4> *e
         frc::Timer::GetFPGATimestamp() - totalLatency,
         {newDoubtX, newDoubtY, 999999999999.9}
     );
+    isPoseUsed = true;
 }
 
 int AprilTagsSensor::getTagID(){
@@ -136,4 +145,5 @@ void AprilTagsSensor::InitSendable(wpi::SendableBuilder& builder) {
     builder.AddDoubleProperty("totalLatency", [this] {return getTotalLatency().to<double>();}, nullptr);
     builder.AddDoubleProperty("distanceFromTarget", [this] {return distance.to<double>();}, nullptr);
     builder.AddDoubleProperty("Vision acceptance outlier", [this] {return normalVisionOutlier.to<double>();}, nullptr);
+    builder.AddBooleanProperty("Is Pose Being Used", [this] {return isPoseUsed;}, nullptr);
 }
