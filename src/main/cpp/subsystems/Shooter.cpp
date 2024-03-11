@@ -114,6 +114,14 @@ Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive, frc::AnalogTrigger
             }
         )
     ).ToPtr());
+    pathplanner::NamedCommands::registerCommand("Set pivot load", std::move(
+        frc2::InstantCommand(
+            [this]() {
+                // shooter->state.isShooting = true;
+                state.pivotState = Shooter::PIVOT_STATE::LOAD;
+            }
+        )
+    ).ToPtr());
 }
 
 void Shooter::resetState()
@@ -192,7 +200,7 @@ void Shooter::assessInputs()
         state.pivotState = PIVOT_STATE::AMP;
     } else if (driverGamepad->GetXButton()) {
         state.pivotState = PIVOT_STATE::ORBIT;
-    } else if (driverGamepad->GetLeftBumper() || driverGamepad->GetRightBumper()) {
+    } else if (driverGamepad->GetLeftBumper() || driverGamepad->GetRightBumper() || driverGamepad->GetYButton()) {
         state.pivotState = PIVOT_STATE::LOAD;
     } else {
         state.pivotState = PIVOT_STATE::TRACKING;
@@ -216,7 +224,7 @@ void Shooter::analyzeDashboard()
     state.tuningSpeed = table->GetNumber("Speed Setpoint", AMP_POWER);
     state.tuningOffset = table->GetNumber("Speed Offset Pct", 0.5);
 
-    if (feederBeamBreak->GetInWindow() && state.pivotState == PIVOT_STATE::LOAD) {
+    if (!feederBeamBreak->GetInWindow() && state.pivotState == PIVOT_STATE::LOAD) {
         state.pivotState = PIVOT_STATE::TRACKING;
     }
 

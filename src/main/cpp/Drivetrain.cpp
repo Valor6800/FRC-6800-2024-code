@@ -309,7 +309,7 @@ void Drivetrain::assessInputs()
     }
 
     state.ampAlign = driverGamepad->GetBButton();
-    state.isHeadingTrack = driverGamepad->leftTriggerActive() || driverGamepad->GetXButton();
+    state.isHeadingTrack = (driverGamepad->leftTriggerActive() && !driverGamepad->GetAButton()) || driverGamepad->GetXButton();
     state.trapAlign = driverGamepad->GetXButton();
     state.sourceAlign = driverGamepad->GetYButton();
     state.thetaLock = driverGamepad->GetAButton();
