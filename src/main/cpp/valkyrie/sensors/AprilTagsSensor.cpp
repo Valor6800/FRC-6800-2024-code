@@ -7,13 +7,19 @@
 #include <cmath>
 
 #define OUTLIER_EDGE 4.0f //meters
-#define DP 1.0f
-#define VP 1.0f
+#define DP 0.1f
+#define VP 0.2f
 
 using namespace valor;
 
 AprilTagsSensor::AprilTagsSensor(frc::TimedRobot* robot, const char *name, frc::Pose3d _cameraPose) : valor::VisionSensor(robot, name, _cameraPose) {
-   setGetter([this](){return getGlobalPose();});
+    setGetter([this](){return getGlobalPose();});
+    dp = DP;
+    vp = VP;
+    limeTable->PutNumber("dp", dp);
+    limeTable->PutNumber("vp", vp);
+    limeTable->PutNumber("new doubt x", 0);
+    limeTable->PutNumber("new doubt y", 0);
 }
 
 frc::Pose3d AprilTagsSensor::getGlobalPose() {
@@ -38,12 +44,14 @@ frc::Pose3d AprilTagsSensor::getGlobalPose() {
 
 void AprilTagsSensor::applyVisionMeasurement(frc::SwerveDrivePoseEstimator<4> *estimator, units::velocity::meters_per_second_t speed, bool accept, double doubtX, double doubtY, double doubtRot) {
     if (!hasTarget() || !accept) return;
+    dp = limeTable->GetNumber("dp", dp);
+    vp = limeTable->GetNumber("vp", vp);
  
     //std::vector<double> botToTargetPose = limeTable->GetNumberArray("botpose_targetspace", std::span<const double>());
     //if (botToTargetPose.size() == 6) distance = units::meter_t(sqrtf(powf(botToTargetPose[0], 2) + powf(botToTargetPose[1], 2)));
     //else distance = 0_m; return;
-    double newDoubtX = (distance.to<double>() * DP) + (VP * speed.to<double>());
-    double newDoubtY = (distance.to<double>() * DP) + (VP * speed.to<double>());
+    double newDoubtX = doubtX + (distance.to<double>() * dp) + (vp * speed.to<double>());
+    double newDoubtY = doubtY + (distance.to<double>() * dp) + (vp * speed.to<double>());
     if (distance >= normalVisionOutlier) return;
     units::millisecond_t totalLatency = getTotalLatency();
 
@@ -52,11 +60,13 @@ void AprilTagsSensor::applyVisionMeasurement(frc::SwerveDrivePoseEstimator<4> *e
         currState.ToPose2d().Y(),
         estimator->GetEstimatedPosition().Rotation()
     };
+    limeTable->PutNumber("new doubt x", newDoubtX);
+    limeTable->PutNumber("new doubt y", newDoubtY);
 
     estimator->AddVisionMeasurement(
         tGone,  
         frc::Timer::GetFPGATimestamp() - totalLatency,
-        {doubtX, doubtY, 999999999999.9}
+        {newDoubtX, newDoubtY, 999999999999.9}
     );
 }
 

@@ -169,7 +169,7 @@ void Drivetrain::init()
         aprilTagSensors.push_back(new valor::AprilTagsSensor(robot, aprilCam.first, aprilCam.second));
     }
 
-    //aprilTagSensors[0]->visionOutlier = 4.7_m;
+    aprilTagSensors[0]->normalVisionOutlier = 6.0_m;
 
     for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
         aprilLime->setPipe(valor::VisionSensor::PIPELINE_0);
