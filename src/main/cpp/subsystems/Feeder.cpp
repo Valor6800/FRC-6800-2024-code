@@ -137,6 +137,8 @@ void Feeder::init()
     feederDebounceSensor.setRisingEdgeCallback([this] {
         state.beamTrip = true;
         feederMotor.setPower(0);
+        intakeMotor.setPower(0);
+        intakeBackMotor.setPower(0);
         driverGamepad->setRumble(true);
     });
 
