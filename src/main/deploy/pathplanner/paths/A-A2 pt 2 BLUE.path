@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.491711367742759,
-        "y": 5.622917931708259
+        "x": 7.41845815665011,
+        "y": 5.692946495557344
       },
       "isLocked": false,
       "linkedName": "Scorch BLUE"
     },
     {
       "anchor": {
-        "x": 3.8361632874162743,
-        "y": 6.091237518991242
+        "x": 4.995921632685279,
+        "y": 6.454890284238034
       },
       "prevControl": {
-        "x": 6.311455408211742,
-        "y": 6.972484788239046
+        "x": 6.665804077451492,
+        "y": 6.474704941984625
       },
       "nextControl": null,
       "isLocked": false,
@@ -74,13 +74,13 @@
   ],
   "globalConstraints": {
     "maxVelocity": 4.0,
-    "maxAcceleration": 3.0,
+    "maxAcceleration": 3.5,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1600.0
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 10.0,
+    "rotation": 11.5,
     "rotateFast": false
   },
   "reversed": false,
