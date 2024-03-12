@@ -119,7 +119,7 @@ namespace Constants {
         static units::degree_t pigeonMountYaw(){ switch (teamNumber){ 
             case ALPHA_TEAM_NUMBER: return -1.477661_deg; 
             case SIDE_SWIPE_TEAM_NUMBER: return 0_deg; // Temp value; TODO: Change it  
-            default: return -90.230049133_deg; // Temp value; TODO: Change it 
+            default: return -90.230049133_deg; 
         }};
 
         static std::vector<double> swerveZeros(){ switch (teamNumber){
@@ -135,7 +135,7 @@ namespace Constants {
         }};
         static units::meter_t driveBaseRadius(){ switch (teamNumber){
             case ALPHA_TEAM_NUMBER: return 0.36_m; 
-            case SIDE_SWIPE_TEAM_NUMBER: return 0.3_m; // Temp value; TODO: Change it
+            case SIDE_SWIPE_TEAM_NUMBER: return 0.3_m; 
             default: return 0.4175_m;
         }};
 
@@ -195,12 +195,12 @@ namespace Constants {
                 }
             }; // Temp value; TODO: Change it
             default: return frc::Pose3d{
-                -13.139_in, //x
+                -13.295_in, //x
                 0_in, //y
                 8.928_in, //z
                 frc::Rotation3d{
                     0_deg, 
-                    37_deg,
+                    28.7_deg,
                     -180_deg
                 }
             };
@@ -218,8 +218,8 @@ namespace Constants {
                     0_deg
                 }); // Temp value; TODO: Change it
             default: return frc::Pose3d(
-                -11.515_in, //x
-                11.512_in, //y
+                -11.535_in, //x
+                11.513_in, //y
                 10.175_in, //z
                 frc::Rotation3d(
                     0_deg,
@@ -233,8 +233,8 @@ namespace Constants {
             case ALPHA_TEAM_NUMBER: return frc::Pose3d();
             case SIDE_SWIPE_TEAM_NUMBER: return frc::Pose3d();
             default: return frc::Pose3d(
-                -11.146_in, //x
-                -11.640_in, //y
+                -11.675_in, //x
+                -11.217_in, //y
                 10.175_in, //z
                 frc::Rotation3d(
                     0_deg,
