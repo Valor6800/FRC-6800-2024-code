@@ -143,6 +143,8 @@ void Feeder::init()
         state.unjam = true;
         feederMotor.setPower(FEEDER_UNJAM_POWER);
         state.unjamStart = frc::Timer::GetFPGATimestamp();
+        intakeMotor.setPower(0);
+        intakeBackMotor.setPower(0);
         driverGamepad->setRumble(true);
     });
 
