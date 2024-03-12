@@ -49,12 +49,6 @@ void Leds::analyzeDashboard(){
     }
 
 
-
-
-
- 
-
-
 void Leds::assignOutputs(){
     if (autoIsONBool) {
         candle.setColor(1, CANdleSensor::RGBColor(255, 0, 0)); // Red
