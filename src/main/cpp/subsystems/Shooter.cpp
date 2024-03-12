@@ -201,10 +201,8 @@ void Shooter::assessInputs()
         state.pivotState = PIVOT_STATE::AMP;
     } else if (driverGamepad->GetXButton()) {
         state.pivotState = PIVOT_STATE::ORBIT;
-    } else if (driverGamepad->GetLeftBumper() || driverGamepad->GetRightBumper() || driverGamepad->GetYButton()) {
-        state.pivotState = PIVOT_STATE::LOAD;
     } else {
-        state.pivotState = PIVOT_STATE::TRACKING;
+        state.pivotState = PIVOT_STATE::LOAD;
     }
 
     //PIVOT OFFSET
