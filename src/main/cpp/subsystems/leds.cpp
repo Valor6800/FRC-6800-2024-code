@@ -74,12 +74,6 @@ void Leds::assignOutputs(){
     }
 
 
-
-
-
- 
-
-
 void Leds::assignOutputs(){
 >>>>>>> 241a0f2 (added to assignoutputs)
     if (autoIsONBool) {
