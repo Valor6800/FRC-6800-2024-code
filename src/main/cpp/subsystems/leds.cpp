@@ -47,6 +47,7 @@ void Leds::analyzeDashboard(){
     trackingBool = shooter->getTrackingState();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     }
 
 
@@ -54,6 +55,18 @@ void Leds::assignOutputs(){
 =======
      
 >>>>>>> 3bcf999 (rebased and cleaned up)
+=======
+    }
+
+
+
+
+
+ 
+
+
+void Leds::assignOutputs(){
+>>>>>>> c39f3aa (added to assignoutputs)
     if (autoIsONBool) {
         candle.setColor(1, CANdleSensor::RGBColor(255, 0, 0)); // Red
 
@@ -86,6 +99,7 @@ void Leds::assignOutputs(){
 
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 =======
 
@@ -102,6 +116,9 @@ void Leds::assignOutputs(){
 
 void Leds::assignOutputs(){}
 >>>>>>> 3bcf999 (rebased and cleaned up)
+=======
+}
+>>>>>>> c39f3aa (added to assignoutputs)
 
 void Leds::InitSendable(wpi::SendableBuilder& builder){
     builder.SetSmartDashboardType("Leds");
