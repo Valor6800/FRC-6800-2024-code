@@ -55,7 +55,8 @@ public:
         AMP,
         ORBIT,
         TUNING,
-        LOAD
+        LOAD,
+        AUTO_FAR
     };
 
     struct x

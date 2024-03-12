@@ -20,21 +20,22 @@
 #define PIVOT_CANCODER_GEAR_RATIO 2.0f
 #define PIVOT_MAGNET_OFFSET 0.3272f
 #define PIVOT_GEAR_RATIO 219.52f
-#define PIVOT_REVERSE_LIMIT 115.00f
+#define PIVOT_REVERSE_LIMIT 119.00f
 #define PIVOT_FORWARD_LIMIT 22.0f
 
 #define FLYWHEEL_ROTATE_K_VEL 75.0f
 #define FLYWHEEL_ROTATE_K_ACC 75.0f
 #define FLYWHEEL_ROTATE_K_P 0.00005f
 
-#define AMP_ANG 55.0_deg
+#define AMP_ANG 118.0_deg
 #define SUBWOOFER_ANG 54_deg
 #define INTAKE_ANG 80.0_deg
 #define PODIUM_ANG 37.0_deg
 #define WING_ANG 26.5_deg
 #define POOP_ANG 48.0_deg
+#define AUTO_FAR_ANG 32.0_deg
 
-#define AMP_POWER 10.75f // rps
+#define AMP_POWER 20.0f // rps
 #define LEFT_SHOOT_POWER 60.0f // rps
 #define RIGHT_SHOOT_POWER 30.0f // rps
 #define LEFT_BLOOP_POWER 32.0f
@@ -119,6 +120,14 @@ Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive, frc::AnalogTrigger
             [this]() {
                 // shooter->state.isShooting = true;
                 state.pivotState = Shooter::PIVOT_STATE::LOAD;
+            }
+        )
+    ).ToPtr());
+    pathplanner::NamedCommands::registerCommand("Set pivot far", std::move(
+        frc2::InstantCommand(
+            [this]() {
+                // shooter->state.isShooting = true;
+                state.pivotState = Shooter::PIVOT_STATE::AUTO_FAR;
             }
         )
     ).ToPtr());
@@ -273,6 +282,8 @@ void Shooter::assignOutputs()
         pivotMotors->setPosition(state.calculatingPivotingAngle.to<double>() + state.pivotOffset);
     } else if(state.pivotState == PIVOT_STATE::AMP){
         pivotMotors->setPosition(AMP_ANG.to<double>() + state.pivotOffset);
+    } else if (state.pivotState == PIVOT_STATE::AUTO_FAR) {
+        pivotMotors->setPosition(AUTO_FAR_ANG.to<double>());
     } else {
         pivotMotors->setPosition(SUBWOOFER_ANG.to<double>() + state.pivotOffset);
     }
@@ -281,10 +292,10 @@ void Shooter::assignOutputs()
 void Shooter::calculatePivotAngle(){
     double distance = drivetrain->state.distanceFromSpeaker.to<double>();
 
-    double A = -0.293;
-    double B = 4.85;
-    double C = -28.5;
-    double D = 84.3;
+    double A = 0;
+    double B = 2.23;
+    double C = -21.3;
+    double D =  78.5;
     double bestPivot = D + (C * distance) + (B * pow(distance, 2)) + (A * pow(distance, 3));
     state.calculatingPivotingAngle = units::degree_t(bestPivot);
 }
