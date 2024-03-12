@@ -20,15 +20,17 @@
 #define FEEDER_INTAKE_POWER 0.3f
 #define FEEDER_REVERSE_POWER -0.5f
 
-Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _feederBeamBreak, frc::AnalogTrigger* _intakeBeamBreak) :
+Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _leftFeederBeamBreak, frc::AnalogTrigger* _intakeBeamBreak, frc::AnalogTrigger* _rightFeederBeamBreak) :
     valor::BaseSubsystem(_robot, "Feeder"),
     intakeMotor(CANIDs::INTERNAL_INTAKE, valor::NeutralMode::Coast, true),
     intakeBackMotor(CANIDs::INTERNAL_INTAKE_V2, valor::NeutralMode::Coast, true),
     feederMotor(CANIDs::FEEDER, valor::NeutralMode::Brake, true),
-    feederBeamBreak(_feederBeamBreak),
-    feederDebounceSensor(_robot, "FeederBanner"),
+    leftFeederBeamBreak(_leftFeederBeamBreak),
+    leftFeederDebounceSensor(_robot, "LeftFeederBanner"),
     intakeBeamBreak(_intakeBeamBreak),
-    intakeDebounceSensor(_robot, "IntakeBanner")
+    intakeDebounceSensor(_robot, "IntakeBanner"),
+    rightFeederBeamBreak(_rightFeederBeamBreak),
+    rightFeederDebounceSensor(_robot, "RightFeederBanner")
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -133,8 +135,8 @@ void Feeder::init()
 
     feederMotor.setVoltageCompensation(10);
 
-    feederDebounceSensor.setGetter([this] { return !feederBeamBreak->GetInWindow(); });
-    feederDebounceSensor.setRisingEdgeCallback([this] {
+    leftFeederDebounceSensor.setGetter([this] { return !leftFeederBeamBreak->GetInWindow(); });
+    leftFeederDebounceSensor.setRisingEdgeCallback([this] {
         state.beamTrip = true;
         feederMotor.setPower(0);
         driverGamepad->setRumble(true);
@@ -142,6 +144,13 @@ void Feeder::init()
 
     intakeDebounceSensor.setGetter([this] { return !intakeBeamBreak->GetInWindow(); });
     intakeDebounceSensor.setRisingEdgeCallback([this] {
+        driverGamepad->setRumble(true);
+    });
+
+    rightFeederDebounceSensor.setGetter([this] { return !rightFeederBeamBreak->GetInWindow(); });
+    rightFeederDebounceSensor.setRisingEdgeCallback([this] {
+        state.beamTrip = true;
+        feederMotor.setPower(0);
         driverGamepad->setRumble(true);
     });
 }

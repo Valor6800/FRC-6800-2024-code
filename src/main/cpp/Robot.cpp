@@ -15,14 +15,16 @@
 Robot::Robot() : 
     drivetrain(this),
     valorAuto(),
-    feederBeamBreak(AnalogPorts::FEEDER_BEAM_BREAK_PORT),
+    leftFeederBeamBreak(AnalogPorts::LEFT_FEEDER_BEAM_BREAK_PORT),
     intakeBeamBreak(AnalogPorts::INTAKE_BEAM_BREAK_PORT),
-    shooter(this, &drivetrain, &feederBeamBreak),
-    feeder(this, &feederBeamBreak, &intakeBeamBreak)
+    rightFeederBeamBreak(AnalogPorts::RIGHT_FEEDER_BEAM_BREAK_PORT),
+    shooter(this, &drivetrain, &leftFeederBeamBreak, &rightFeederBeamBreak),
+    feeder(this, &leftFeederBeamBreak, &intakeBeamBreak, &rightFeederBeamBreak)
 {
     frc::TimedRobot();
-    feederBeamBreak.SetLimitsVoltage(4, 14);
+    leftFeederBeamBreak.SetLimitsVoltage(4, 14);
     intakeBeamBreak.SetLimitsVoltage(4, 14);
+    rightFeederBeamBreak.SetLimitsVoltage(4, 14);
 }
 
 void Robot::RobotInit() {

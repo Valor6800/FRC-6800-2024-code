@@ -12,7 +12,7 @@ class Feeder : public valor::BaseSubsystem
 {
 public:
 
-    Feeder(frc::TimedRobot *, frc::AnalogTrigger*, frc::AnalogTrigger*);
+    Feeder(frc::TimedRobot *, frc::AnalogTrigger*, frc::AnalogTrigger*, frc::AnalogTrigger*);
 
     void resetState();
     void init();
@@ -47,8 +47,10 @@ private:
     valor::NeoController feederMotor;
     valor::NeoController intakeMotor;
     valor::NeoController intakeBackMotor;
-    frc::AnalogTrigger* feederBeamBreak;
-    valor::DebounceSensor feederDebounceSensor;
+    frc::AnalogTrigger* leftFeederBeamBreak;
+    valor::DebounceSensor leftFeederDebounceSensor;
     frc::AnalogTrigger* intakeBeamBreak;
     valor::DebounceSensor intakeDebounceSensor;
+    frc::AnalogTrigger* rightFeederBeamBreak;
+    valor::DebounceSensor rightFeederDebounceSensor;
 };

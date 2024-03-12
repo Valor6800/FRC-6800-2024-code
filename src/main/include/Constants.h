@@ -60,8 +60,9 @@ namespace DIOPorts {
 }
 
 namespace AnalogPorts {
-    constexpr static int FEEDER_BEAM_BREAK_PORT = 3;
+    constexpr static int LEFT_FEEDER_BEAM_BREAK_PORT = 3;
     constexpr static int INTAKE_BEAM_BREAK_PORT = 2;
+    constexpr static int RIGHT_FEEDER_BEAM_BREAK_PORT = 1;
 }
 
 namespace CANIDs {

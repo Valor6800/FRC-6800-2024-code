@@ -40,10 +40,11 @@
 #define LEFT_BLOOP_POWER 32.0f
 #define RIGHT_BLOOP_POWER 27.0f
 
-Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive, frc::AnalogTrigger* _feederBeamBreak) :
+Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive, frc::AnalogTrigger* _leftFeederBeamBreak, frc::AnalogTrigger* _rightFeederBeamBreak) :
     valor::BaseSubsystem(_robot, "Shooter"),
     pivotMotors(nullptr),
-    feederBeamBreak(_feederBeamBreak),
+    leftFeederBeamBreak(_leftFeederBeamBreak),
+    rightFeederBeamBreak(_rightFeederBeamBreak),
     leftFlywheelMotor(CANIDs::LEFT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, true),
     rightFlywheelMotor(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false),
     drivetrain(_drive)
@@ -225,10 +226,9 @@ void Shooter::analyzeDashboard()
     state.tuningSpeed = table->GetNumber("Speed Setpoint", AMP_POWER);
     state.tuningOffset = table->GetNumber("Speed Offset Pct", 0.5);
 
-    if (!feederBeamBreak->GetInWindow() && state.pivotState == PIVOT_STATE::LOAD) {
-        state.ignoreLoad = true;
-    } else 
-        state.ignoreLoad = false;
+    if ((!leftFeederBeamBreak->GetInWindow() || !rightFeederBeamBreak->GetInWindow()) && state.pivotState == PIVOT_STATE::LOAD) {
+        state.pivotState = PIVOT_STATE::TRACKING;
+    }
 
     if (table->GetBoolean("Tuning", false)) {
         state.pivotState = PIVOT_STATE::TUNING;

@@ -25,7 +25,7 @@ class Shooter : public valor::BaseSubsystem
 {
 public:
 
-    Shooter(frc::TimedRobot *robot, Drivetrain *drivetrain, frc::AnalogTrigger*);
+    Shooter(frc::TimedRobot *robot, Drivetrain *drivetrain, frc::AnalogTrigger*, frc::AnalogTrigger*);
 
     void resetState();
 
@@ -78,7 +78,8 @@ public:
 private:
     Drivetrain *drivetrain;
     valor::PhoenixController* pivotMotors;
-    frc::AnalogTrigger* feederBeamBreak;
+    frc::AnalogTrigger* leftFeederBeamBreak;
+    frc::AnalogTrigger* rightFeederBeamBreak;
 
     valor::NeoController leftFlywheelMotor;
     valor::NeoController rightFlywheelMotor;
