@@ -11,6 +11,7 @@
 #include "frc2/command/FunctionalCommand.h"
 #include "frc2/command/SequentialCommandGroup.h"
 #include "units/length.h"
+#include "units/velocity.h"
 #include "valkyrie/sensors/AprilTagsSensor.h"
 #include "units/length.h"
 #include "valkyrie/sensors/VisionSensor.h"
@@ -168,7 +169,7 @@ void Drivetrain::init()
         aprilTagSensors.push_back(new valor::AprilTagsSensor(robot, aprilCam.first, aprilCam.second));
     }
 
-    aprilTagSensors[0]->visionOutlier = 4.7_m;
+    //aprilTagSensors[0]->visionOutlier = 4.7_m;
 
     for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
         aprilLime->setPipe(valor::VisionSensor::PIPELINE_0);
@@ -368,6 +369,7 @@ void Drivetrain::analyzeDashboard()
     for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
         aprilLime->applyVisionMeasurement(
             calculatedEstimator,
+            getRobotSpeeds(),
             table->GetBoolean("Accepting Vision Measurements", true),
             doubtX,
             doubtY
@@ -433,6 +435,10 @@ void Drivetrain::assignOutputs()
     } else {
         operatorGamepad->setRumble(false);
     }
+}
+
+units::meters_per_second_t Drivetrain::getRobotSpeeds(){
+    return units::meters_per_second_t{sqrtf(powf(getRobotRelativeSpeeds().vx.to<double>(), 2) + powf(getRobotRelativeSpeeds().vy.to<double>(), 2))};
 }
 
 void Drivetrain::getSpeakerLockAngleRPS(){
@@ -617,7 +623,7 @@ frc2::FunctionalCommand* Drivetrain::getResetOdom() {
             for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
                 if (aprilLime->hasTarget() && (aprilLime->getSensor().ToPose2d().X() > 0_m && aprilLime->getSensor().ToPose2d().Y() > 0_m)) {
                     table->PutNumber("resetting odom", table->GetNumber("resetting odom", 0) + 1);
-                    aprilLime->applyVisionMeasurement(estimator);
+                    //aprilLime->applyVisionMeasurement(estimator);
                     table->PutBoolean("resetting", true);
                     break;
                 } else {

@@ -225,6 +225,8 @@ public:
 
      frc2::FunctionalCommand* getResetOdom();
 
+     units::meters_per_second_t getRobotSpeeds();
+
      void setAlignmentAngle(Drivetrain::Alignment align);
      void getSpeakerLockAngleRPS();
      units::radian_t getAngleError();

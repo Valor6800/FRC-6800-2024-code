@@ -3,9 +3,12 @@
 #include <array>
 #include "units/length.h"
 #include "units/time.h"
+#include "units/velocity.h"
 #include <cmath>
 
 #define OUTLIER_EDGE 4.0f //meters
+#define DP 1.0f
+#define VP 1.0f
 
 using namespace valor;
 
@@ -33,14 +36,15 @@ frc::Pose3d AprilTagsSensor::getGlobalPose() {
     );
 }
 
-void AprilTagsSensor::applyVisionMeasurement(frc::SwerveDrivePoseEstimator<4> *estimator, bool accept, double doubtX, double doubtY, double doubtRot) {
+void AprilTagsSensor::applyVisionMeasurement(frc::SwerveDrivePoseEstimator<4> *estimator, units::velocity::meters_per_second_t speed, bool accept, double doubtX, double doubtY, double doubtRot) {
     if (!hasTarget() || !accept) return;
  
     //std::vector<double> botToTargetPose = limeTable->GetNumberArray("botpose_targetspace", std::span<const double>());
     //if (botToTargetPose.size() == 6) distance = units::meter_t(sqrtf(powf(botToTargetPose[0], 2) + powf(botToTargetPose[1], 2)));
     //else distance = 0_m; return;
-
-    if (distance >= visionOutlier) return;
+    double newDoubtX = (distance.to<double>() * DP) + (VP * speed.to<double>());
+    double newDoubtY = (distance.to<double>() * DP) + (VP * speed.to<double>());
+    if (distance >= normalVisionOutlier) return;
     units::millisecond_t totalLatency = getTotalLatency();
 
     frc::Pose2d tGone = frc::Pose2d{
@@ -101,5 +105,5 @@ void AprilTagsSensor::InitSendable(wpi::SendableBuilder& builder) {
     );
     builder.AddDoubleProperty("totalLatency", [this] {return getTotalLatency().to<double>();}, nullptr);
     builder.AddDoubleProperty("distanceFromTarget", [this] {return distance.to<double>();}, nullptr);
-    builder.AddDoubleProperty("Vision acceptance outlier", [this] {return visionOutlier.to<double>();}, nullptr);
+    builder.AddDoubleProperty("Vision acceptance outlier", [this] {return normalVisionOutlier.to<double>();}, nullptr);
 }

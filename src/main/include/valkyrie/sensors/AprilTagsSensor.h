@@ -26,8 +26,8 @@ namespace valor
 
             void InitSendable(wpi::SendableBuilder& builder) override;
 
-            units::meter_t visionOutlier = 3.5_m;
-            void applyVisionMeasurement(frc::SwerveDrivePoseEstimator<4> *estimator, bool accept = true, double doubtX = 1, double doubtY = 1, double doubtRot = 1);
+            units::meter_t normalVisionOutlier = 8.0_m;
+            void applyVisionMeasurement(frc::SwerveDrivePoseEstimator<4> *estimator, units::velocity::meters_per_second_t speed, bool accept = true, double doubtX = 1, double doubtY = 1, double doubtRot = 1);
 
         private:
             frc::Pose3d getGlobalPose() override;
