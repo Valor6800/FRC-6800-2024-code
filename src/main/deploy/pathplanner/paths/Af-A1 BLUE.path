@@ -32,12 +32,12 @@
     },
     {
       "anchor": {
-        "x": 3.8361632874162743,
-        "y": 6.091237518991242
+        "x": 4.995921632685279,
+        "y": 6.454890284238034
       },
       "prevControl": {
-        "x": 4.798628873270431,
-        "y": 6.217948517210858
+        "x": 5.9583872185394355,
+        "y": 6.581601282457649
       },
       "nextControl": null,
       "isLocked": false,
@@ -61,19 +61,7 @@
       "rotateFast": false
     }
   ],
-  "constraintZones": [
-    {
-      "name": "Speed up",
-      "minWaypointRelativePos": 0.25,
-      "maxWaypointRelativePos": 0.8,
-      "constraints": {
-        "maxVelocity": 4.0,
-        "maxAcceleration": 3.5,
-        "maxAngularVelocity": 720.0,
-        "maxAngularAcceleration": 1600.0
-      }
-    }
-  ],
+  "constraintZones": [],
   "eventMarkers": [
     {
       "name": "Intake",
@@ -144,6 +132,12 @@
               "data": {
                 "name": "Enable shooter"
               }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Set pivot far"
+              }
             }
           ]
         }
@@ -151,14 +145,14 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.5,
-    "maxAcceleration": 2.5,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.5,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1600.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 7.5,
+    "rotation": 11.5,
     "rotateFast": false
   },
   "reversed": false,
@@ -167,5 +161,5 @@
     "rotation": 30.0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.8361632874162743,
-        "y": 6.091237518991242
+        "x": 4.995921632685279,
+        "y": 6.454890284238034
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.986797752169,
-        "y": 6.881462189826868
+        "x": 7.098438527099855,
+        "y": 6.963904872326527
       },
       "isLocked": false,
       "linkedName": "Score amp"
@@ -20,21 +20,15 @@
         "y": 5.422904387403103
       },
       "prevControl": {
-        "x": 6.7318630720742085,
-        "y": 5.300868819835941
+        "x": 7.064852949801385,
+        "y": 6.133043193242058
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "Scorch"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.8,
-      "rotationDegrees": 0,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
@@ -86,7 +80,7 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 0.0,
+    "rotation": -21.862119244284507,
     "rotateFast": false
   },
   "reversed": false,

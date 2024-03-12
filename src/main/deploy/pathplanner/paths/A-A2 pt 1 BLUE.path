@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.8361632874162743,
-        "y": 6.091237518991242
+        "x": 4.995921632685279,
+        "y": 6.454890284238034
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.1609911682641645,
-        "y": 7.54772846669536
+        "x": 6.5358736121841465,
+        "y": 6.606884135860286
       },
       "isLocked": false,
       "linkedName": "Score amp"
@@ -20,21 +20,15 @@
         "y": 5.622917931708259
       },
       "prevControl": {
-        "x": 6.466343839824623,
-        "y": 5.500872447129687
+        "x": 7.184629384522079,
+        "y": 6.133991487528693
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "Scorch BLUE"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.8,
-      "rotationDegrees": 0,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
@@ -72,6 +66,12 @@
               "data": {
                 "name": "Disable feeder"
               }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Set pivot load"
+              }
             }
           ]
         }
@@ -86,7 +86,7 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 0.0,
+    "rotation": -21.126365561991683,
     "rotateFast": false
   },
   "reversed": false,
