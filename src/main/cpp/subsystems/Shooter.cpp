@@ -129,6 +129,7 @@ void Shooter::resetState()
     state.flywheelState = FLYWHEEL_STATE::NOT_SHOOTING;
     state.pivotState = PIVOT_STATE::TRACKING;
     state.calculatingPivotingAngle = units::degree_t{0};
+    state.ignoreLoad = false;
 }
 
 void Shooter::init()
@@ -225,8 +226,9 @@ void Shooter::analyzeDashboard()
     state.tuningOffset = table->GetNumber("Speed Offset Pct", 0.5);
 
     if (!feederBeamBreak->GetInWindow() && state.pivotState == PIVOT_STATE::LOAD) {
-        state.pivotState = PIVOT_STATE::TRACKING;
-    }
+        state.ignoreLoad = true;
+    } else 
+        state.ignoreLoad = false;
 
     if (table->GetBoolean("Tuning", false)) {
         state.pivotState = PIVOT_STATE::TUNING;
@@ -261,7 +263,7 @@ void Shooter::assignOutputs()
         pivotMotors->setPosition(state.tuningSetpoint);
     } else if(state.pivotState == PIVOT_STATE::SUBWOOFER){
         pivotMotors->setPosition(SUBWOOFER_ANG.to<double>() + state.pivotOffset);
-    } else if(state.pivotState == PIVOT_STATE::LOAD){
+    } else if(state.pivotState == PIVOT_STATE::LOAD && !state.ignoreLoad){
         pivotMotors->setPosition(INTAKE_ANG.to<double>());
     } else if(state.pivotState == PIVOT_STATE::PODIUM){
         pivotMotors->setPosition(PODIUM_ANG.to<double>() + state.pivotOffset);
@@ -269,7 +271,7 @@ void Shooter::assignOutputs()
         pivotMotors->setPosition(WING_ANG.to<double>() + state.pivotOffset);
     } else if (state.pivotState == PIVOT_STATE::ORBIT){
         pivotMotors->setPosition(POOP_ANG.to<double>());
-    } else if(state.pivotState == PIVOT_STATE::TRACKING){
+    } else if(state.pivotState == PIVOT_STATE::TRACKING || state.ignoreLoad){
         pivotMotors->setPosition(state.calculatingPivotingAngle.to<double>() + state.pivotOffset);
     } else if(state.pivotState == PIVOT_STATE::AMP){
         pivotMotors->setPosition(AMP_ANG.to<double>() + state.pivotOffset);

@@ -71,6 +71,8 @@ public:
         units::degree_t pivotAngle;
         units::degree_t calculatingPivotingAngle;
 
+        bool ignoreLoad;
+
     } state;
 
 private:

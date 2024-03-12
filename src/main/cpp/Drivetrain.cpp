@@ -56,8 +56,8 @@ using namespace pathplanner;
 #define DRIVETRAIN_CAN_BUS "" //rev
 #define PIGEON_CAN_BUS "baseCAN" //phoenix
 
-#define KP_ROTATE -0.6f
-#define SPEAKER_X_OFFSET 0.15f
+#define KP_ROTATE -1.0f
+#define SPEAKER_X_OFFSET 0.00f
 #define SPEAKER_Y_OFFSET 0.00f
 
 #define VISION_ACCEPTANCE 3.5_m // meters

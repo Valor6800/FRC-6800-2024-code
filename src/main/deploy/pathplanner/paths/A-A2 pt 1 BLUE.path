@@ -49,12 +49,6 @@
               "data": {
                 "name": "Enable intake"
               }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "Set pivot load"
-              }
             }
           ]
         }
