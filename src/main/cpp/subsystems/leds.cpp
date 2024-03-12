@@ -46,7 +46,16 @@ void Leds::analyzeDashboard(){
 
     trackingBool = shooter->getTrackingState();
 
-     
+    }
+
+
+
+
+
+ 
+
+
+void Leds::assignOutputs(){
     if (autoIsONBool) {
         candle.setColor(1, CANdleSensor::RGBColor(255, 0, 0)); // Red
 
@@ -78,19 +87,7 @@ void Leds::analyzeDashboard(){
         candle.setColor(4, CANdleSensor::RGBColor(0, 0, 0)); // black
 
     }
-
-
-
-    }
-
-
-
-
-
- 
-
-
-void Leds::assignOutputs(){}
+}
 
 void Leds::InitSendable(wpi::SendableBuilder& builder){
     builder.SetSmartDashboardType("Leds");
