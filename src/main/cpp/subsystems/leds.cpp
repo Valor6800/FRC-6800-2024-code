@@ -53,6 +53,7 @@ void Leds::analyzeDashboard(){
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     }
 
 
@@ -69,6 +70,18 @@ void Leds::assignOutputs(){
 =======
      
 >>>>>>> f254cb1 (rebased and cleaned up)
+=======
+    }
+
+
+
+
+
+ 
+
+
+void Leds::assignOutputs(){
+>>>>>>> 241a0f2 (added to assignoutputs)
     if (autoIsONBool) {
         candle.setColor(1, CANdleSensor::RGBColor(255, 0, 0)); // Red
 
@@ -103,6 +116,7 @@ void Leds::assignOutputs(){
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 =======
 =======
@@ -127,6 +141,9 @@ void Leds::assignOutputs(){}
 >>>>>>> c39f3aa (added to assignoutputs)
 =======
 >>>>>>> f254cb1 (rebased and cleaned up)
+=======
+}
+>>>>>>> 241a0f2 (added to assignoutputs)
 
 void Leds::InitSendable(wpi::SendableBuilder& builder){
     builder.SetSmartDashboardType("Leds");
