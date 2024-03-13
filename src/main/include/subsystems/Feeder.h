@@ -36,6 +36,8 @@ public:
         ROLLER_STATE feederState;
         ROLLER_STATE intakeState;
         bool beamTrip;
+        bool unjam;
+        units::second_t unjamStart;
 
     } state;
 

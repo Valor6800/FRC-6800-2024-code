@@ -19,6 +19,9 @@
 #define FEEDER_FORWARD_POWER 0.5f
 #define FEEDER_INTAKE_POWER 0.3f
 #define FEEDER_REVERSE_POWER -0.5f
+#define FEEDER_UNJAM_POWER -0.3f
+
+#define USE_UNJAM true
 
 Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _feederBeamBreak, frc::AnalogTrigger* _intakeBeamBreak) :
     valor::BaseSubsystem(_robot, "Feeder"),
@@ -119,6 +122,7 @@ void Feeder::resetState()
     blinkin.SetPulseTime(LED_OFF);
     state.intakeState = STAGNANT;
     state.feederState = STAGNANT;
+    state.unjam = false;
 }
 
 void Feeder::init()
@@ -136,7 +140,9 @@ void Feeder::init()
     feederDebounceSensor.setGetter([this] { return !feederBeamBreak->GetInWindow(); });
     feederDebounceSensor.setRisingEdgeCallback([this] {
         state.beamTrip = true;
-        feederMotor.setPower(0);
+        state.unjam = true;
+        feederMotor.setPower(FEEDER_UNJAM_POWER);
+        state.unjamStart = frc::Timer::GetFPGATimestamp();
         driverGamepad->setRumble(true);
     });
 
@@ -174,6 +180,9 @@ void Feeder::analyzeDashboard()
         driverGamepad->setRumble(false);
     }
     blinkin.SetPulseTime(state.beamTrip ? LED_ON : LED_OFF);
+    if (state.unjam && (frc::Timer::GetFPGATimestamp() - state.unjamStart) > 0.1_s) {
+        state.unjam = false;
+    }
 }
 
 void Feeder::assignOutputs()
@@ -192,14 +201,18 @@ void Feeder::assignOutputs()
         intakeBackMotor.setPower(0);
     }
     
-    if (state.feederState == ROLLER_STATE::SHOOT) {
-        feederMotor.setPower(FEEDER_FORWARD_POWER);
-    } else if(state.feederState == ROLLER_STATE::INTAKE) {
-        feederMotor.setPower(state.beamTrip ? 0 : FEEDER_FORWARD_POWER);
-    } else if(state.feederState == ROLLER_STATE::OUTTAKE) {
-        feederMotor.setPower(FEEDER_REVERSE_POWER);
+    if (state.unjam && FEEDER_UNJAM_POWER) {
+        feederMotor.setPower(FEEDER_UNJAM_POWER);
     } else {
-        feederMotor.setPower(0);
+        if (state.feederState == ROLLER_STATE::SHOOT) {
+            feederMotor.setPower(FEEDER_FORWARD_POWER);
+        } else if(state.feederState == ROLLER_STATE::INTAKE) {
+            feederMotor.setPower(state.beamTrip ? 0 : FEEDER_FORWARD_POWER);
+        } else if(state.feederState == ROLLER_STATE::OUTTAKE) {
+            feederMotor.setPower(FEEDER_REVERSE_POWER);
+        } else {
+            feederMotor.setPower(0);
+        }
     }
 }
 
@@ -222,6 +235,12 @@ void Feeder::InitSendable(wpi::SendableBuilder& builder)
     builder.AddBooleanProperty(
         "Beam Trip",
         [this]{return state.beamTrip;},
+        nullptr
+    );
+
+    builder.AddBooleanProperty(
+        "Unjam",
+        [this]{return state.unjam;},
         nullptr
     );
 }
