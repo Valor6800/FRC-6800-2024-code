@@ -14,6 +14,7 @@
 #include <frc/geometry/Rotation2d.h>
 #include <frc/trajectory/TrajectoryGenerator.h>
 #include <frc/DigitalOutput.h>
+#include "valkyrie/sensors/DebounceSensor.h"
 
 #include <frc2/command/FunctionalCommand.h>
 #include <unordered_map>
@@ -56,7 +57,9 @@ public:
         ORBIT,
         TUNING,
         LOAD,
-        AUTO_FAR
+        AUTO_FAR_LOW,
+        AUTO_FAR_HIGH,
+        AUTO_NEAR
     };
 
     struct x
@@ -74,6 +77,7 @@ public:
 
         bool ignoreLoad;
         bool otherSide;
+        bool insideWing;
 
     } state;
 

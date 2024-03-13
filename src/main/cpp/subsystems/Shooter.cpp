@@ -30,12 +30,14 @@
 #define FLYWHEEL_ROTATE_K_P 0.00005f
 
 #define AMP_ANG 118.0_deg
-#define SUBWOOFER_ANG 54_deg
+#define SUBWOOFER_ANG 56.0_deg
 #define INTAKE_ANG 80.0_deg
 #define PODIUM_ANG 37.0_deg
 #define WING_ANG 26.5_deg
 #define POOP_ANG 48.0_deg
-#define AUTO_FAR_ANG 26.0_deg
+#define AUTO_NEAR_ANG 33.5_deg
+#define AUTO_FAR_LOW_ANG 29.5_deg
+#define AUTO_FAR_HIGH_ANG 29.5_deg
 
 #define AMP_POWER 20.0f // rps
 #define LEFT_SHOOT_POWER 60.0f // rps
@@ -125,11 +127,27 @@ Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive, frc::AnalogTrigger
             }
         )
     ).ToPtr());
-    pathplanner::NamedCommands::registerCommand("Set pivot far", std::move(
+    pathplanner::NamedCommands::registerCommand("Set pivot far low", std::move(
         frc2::InstantCommand(
             [this]() {
                 // shooter->state.isShooting = true;
-                state.pivotState = Shooter::PIVOT_STATE::AUTO_FAR;
+                state.pivotState = Shooter::PIVOT_STATE::AUTO_FAR_LOW;
+            }
+        )
+    ).ToPtr());
+    pathplanner::NamedCommands::registerCommand("Set pivot far high", std::move(
+        frc2::InstantCommand(
+            [this]() {
+                // shooter->state.isShooting = true;
+                state.pivotState = Shooter::PIVOT_STATE::AUTO_FAR_HIGH;
+            }
+        )
+    ).ToPtr());
+    pathplanner::NamedCommands::registerCommand("Set pivot near", std::move(
+        frc2::InstantCommand(
+            [this]() {
+                // shooter->state.isShooting = true;
+                state.pivotState = Shooter::PIVOT_STATE::AUTO_NEAR;
             }
         )
     ).ToPtr());
@@ -141,6 +159,7 @@ void Shooter::resetState()
     state.pivotState = PIVOT_STATE::TRACKING;
     state.calculatingPivotingAngle = units::degree_t{0};
     state.ignoreLoad = false;
+    state.otherSide = false;
 }
 
 void Shooter::init()
@@ -251,6 +270,14 @@ void Shooter::analyzeDashboard()
     } else {
         state.otherSide = false;
     }
+    if (
+            (xPos < 5.85_m && frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue) ||
+            (xPos > 10.69_m && frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed)
+       ) {
+        state.insideWing = true;
+    } else {
+        state.insideWing = false;
+    }
     table->PutNumber("On other side", state.otherSide);
     calculatePivotAngle();
 }
@@ -268,8 +295,8 @@ void Shooter::assignOutputs()
         leftFlywheelMotor.setSpeed(AMP_POWER);
         rightFlywheelMotor.setSpeed(AMP_POWER);
     } else if (state.pivotState == PIVOT_STATE::SUBWOOFER || state.pivotState == PIVOT_STATE::DISABLED) {
-        leftFlywheelMotor.setSpeed(LEFT_SHOOT_POWER * 0.75);
-        rightFlywheelMotor.setSpeed(RIGHT_SHOOT_POWER * 0.75);
+        leftFlywheelMotor.setSpeed(LEFT_SHOOT_POWER * 0.85);
+        rightFlywheelMotor.setSpeed(RIGHT_SHOOT_POWER * 0.85);
     } else if (state.pivotState == PIVOT_STATE::ORBIT) {
         leftFlywheelMotor.setSpeed(LEFT_BLOOP_POWER);
         rightFlywheelMotor.setSpeed(RIGHT_BLOOP_POWER);
@@ -294,8 +321,12 @@ void Shooter::assignOutputs()
         pivotMotors->setPosition(state.calculatingPivotingAngle.to<double>() + state.pivotOffset);
     } else if(state.pivotState == PIVOT_STATE::AMP){
         pivotMotors->setPosition(AMP_ANG.to<double>() + state.pivotOffset);
-    } else if (state.pivotState == PIVOT_STATE::AUTO_FAR) {
-        pivotMotors->setPosition(AUTO_FAR_ANG.to<double>());
+    } else if (state.pivotState == PIVOT_STATE::AUTO_FAR_LOW) {
+        pivotMotors->setPosition(AUTO_FAR_LOW_ANG.to<double>());
+    } else if (state.pivotState == PIVOT_STATE::AUTO_FAR_HIGH) {
+        pivotMotors->setPosition(AUTO_FAR_HIGH_ANG.to<double>());
+    } else if (state.pivotState == PIVOT_STATE::AUTO_NEAR) {
+        pivotMotors->setPosition(AUTO_NEAR_ANG.to<double>());
     } else {
         pivotMotors->setPosition(SUBWOOFER_ANG.to<double>() + state.pivotOffset);
     }
