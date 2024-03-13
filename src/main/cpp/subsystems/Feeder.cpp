@@ -186,7 +186,7 @@ void Feeder::analyzeDashboard()
     if (state.unjam && (frc::Timer::GetFPGATimestamp() - state.unjamStart) > 0.1_s) {
         state.unjam = false;
     }
-    if (driverGamepad != nullptr && driverGamepad->IsConnected() && !frc::DriverStation::IsTeleop())
+    if (driverGamepad != nullptr && driverGamepad->IsConnected() && !(frc::DriverStation::IsTeleop() && frc::DriverStation::IsEnabled()))
         driverGamepad->setRumble(false);
 }
 

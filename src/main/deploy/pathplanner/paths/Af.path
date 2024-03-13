@@ -39,10 +39,10 @@
     {
       "name": "Slow down",
       "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 0.15,
+      "maxWaypointRelativePos": 0.05,
       "constraints": {
         "maxVelocity": 3.5,
-        "maxAcceleration": 1.5,
+        "maxAcceleration": 0.5,
         "maxAngularVelocity": 720.0,
         "maxAngularAcceleration": 1600.0
       }
