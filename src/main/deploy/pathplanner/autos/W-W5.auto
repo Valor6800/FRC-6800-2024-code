@@ -14,7 +14,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Start pivot tracking"
+            "name": "Set pivot load"
           }
         },
         {

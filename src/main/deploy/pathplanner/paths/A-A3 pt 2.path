@@ -20,8 +20,8 @@
         "y": 6.454890284238034
       },
       "prevControl": {
-        "x": 5.051318089554584,
-        "y": 2.828739430793388
+        "x": 7.768367613847496,
+        "y": 6.702705933153475
       },
       "nextControl": null,
       "isLocked": false,
@@ -41,7 +41,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Disable feeder"
+                "name": "Disable full feeder"
               }
             }
           ]
@@ -60,6 +60,12 @@
               "data": {
                 "name": "Enable shooter"
               }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Set pivot far"
+              }
             }
           ]
         }
@@ -74,8 +80,8 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 7.5,
-    "rotateFast": true
+    "rotation": 10.3,
+    "rotateFast": false
   },
   "reversed": false,
   "folder": "Pick chain",
