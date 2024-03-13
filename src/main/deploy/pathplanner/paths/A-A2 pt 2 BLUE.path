@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.068255011365347,
-        "y": 5.71129209290392
+        "x": 8.215895709713873,
+        "y": 5.958484205850066
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.415001800272699,
-        "y": 5.781320656753005
+        "x": 7.5626424986212255,
+        "y": 6.028512769699151
       },
       "isLocked": false,
       "linkedName": "Scorch BLUE"
@@ -33,9 +33,9 @@
   "eventMarkers": [
     {
       "name": "Disable intake",
-      "waypointRelativePos": 0.3999999999999999,
+      "waypointRelativePos": 0.0,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {
@@ -43,28 +43,23 @@
               "data": {
                 "name": "Disable full feeder"
               }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Enable shooter",
-      "waypointRelativePos": 0.5,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
+            },
             {
               "type": "named",
               "data": {
-                "name": "Enable shooter"
+                "name": "Set pivot far high"
               }
             },
             {
               "type": "named",
               "data": {
-                "name": "Set pivot far"
+                "name": "Centering sequence"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Enable shooter"
               }
             }
           ]

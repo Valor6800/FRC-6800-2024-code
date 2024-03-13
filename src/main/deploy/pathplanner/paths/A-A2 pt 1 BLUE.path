@@ -8,27 +8,33 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.5358736121841465,
-        "y": 6.606884135860286
+        "x": 6.5441363916582,
+        "y": 6.37353878968464
       },
       "isLocked": false,
       "linkedName": "Score amp"
     },
     {
       "anchor": {
-        "x": 8.068255011365347,
-        "y": 5.72
+        "x": 8.215895709713873,
+        "y": 5.958484205850066
       },
       "prevControl": {
-        "x": 7.181173028144668,
-        "y": 6.2310735558204335
+        "x": 7.221225935362749,
+        "y": 6.3009803585434705
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "Scorch BLUE"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.85,
+      "rotationDegrees": -21.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {

@@ -24,15 +24,33 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Set pivot near"
+          }
+        },
+        {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
+            "waitTime": 0.3
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Enable full feeder"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.1
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Set pivot load"
           }
         },
         {
@@ -72,9 +90,21 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.3
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "Enable full feeder"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.1
           }
         },
         {
