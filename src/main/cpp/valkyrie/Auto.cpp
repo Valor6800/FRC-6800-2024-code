@@ -17,27 +17,27 @@ using namespace pathplanner;
 
 Auto::Auto(){
     table = nt::NetworkTableInstance::GetDefault().GetTable("auto");
+    previousAutoName = "";
 }
 
 frc2::CommandPtr Auto::makeAuto(std::string autoName){
     return pathplanner::PathPlannerAuto(autoName).ToPtr();
 }
 
-std::string Auto::getSelectedAutoName(){
-    return m_chooser.GetSelected();
-}
-
 frc2::CommandPtr Auto::getCurrentAuto(){
     std::string selection = m_chooser.GetSelected(); 
-    if (loadedAutos.find(selection) != loadedAutos.end())
-        return std::move(loadedAutos[selection]);
+    if (preloadedAuto && selection == previousAutoName)
+        return std::move(loadedAuto);
     else 
         return makeAuto(selection);
 }
 
-void Auto::preloadAuto(std::string autoName){
-    if (loadedAutos.find(autoName) == loadedAutos.end()){
-        loadedAutos[autoName] = makeAuto(autoName);
+void Auto::preloadAuto(){
+    std::string autoName = m_chooser.GetSelected();
+    if (autoName != previousAutoName){
+        loadedAuto = makeAuto(autoName);
+        preloadedAuto = true;
+        previousAutoName = autoName;
     }
 }
 

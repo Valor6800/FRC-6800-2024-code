@@ -59,7 +59,7 @@ void Robot::RobotPeriodic() { frc2::CommandScheduler::GetInstance().Run(); }
 void Robot::DisabledInit() { }
 
 void Robot::DisabledPeriodic() { 
-    valorAuto.preloadAuto(valorAuto.getSelectedAutoName());
+    valorAuto.preloadAuto();
 }
 
 /**
