@@ -183,7 +183,7 @@ void Feeder::analyzeDashboard()
         driverGamepad->setRumble(false);
     }
     blinkin.SetPulseTime(state.beamTrip ? LED_ON : LED_OFF);
-    if (state.unjam && (frc::Timer::GetFPGATimestamp() - state.unjamStart) > 0.1_s) {
+    if (state.unjam && (frc::Timer::GetFPGATimestamp() - state.unjamStart) > 0.06_s) {
         state.unjam = false;
     }
     if (driverGamepad != nullptr && driverGamepad->IsConnected() && !(frc::DriverStation::IsTeleop() && frc::DriverStation::IsEnabled()))
