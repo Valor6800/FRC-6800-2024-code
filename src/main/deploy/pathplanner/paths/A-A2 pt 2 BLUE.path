@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.071711367742758,
-        "y": 5.622917931708259
+        "x": 8.068255011365347,
+        "y": 5.71129209290392
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.41845815665011,
-        "y": 5.692946495557344
+        "x": 7.415001800272699,
+        "y": 5.781320656753005
       },
       "isLocked": false,
       "linkedName": "Scorch BLUE"
@@ -43,12 +43,6 @@
               "data": {
                 "name": "Disable full feeder"
               }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "Start pivot tracking"
-              }
             }
           ]
         }
@@ -66,6 +60,12 @@
               "data": {
                 "name": "Enable shooter"
               }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Set pivot far"
+              }
             }
           ]
         }
@@ -80,7 +80,7 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 11.5,
+    "rotation": 10.3,
     "rotateFast": false
   },
   "reversed": false,

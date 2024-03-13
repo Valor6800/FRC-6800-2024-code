@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.250705778188177,
-        "y": 2.9537704550886543
+        "x": 6.950653079329886,
+        "y": 6.636994335222757
       },
       "isLocked": false,
       "linkedName": "Score amp"
@@ -20,8 +20,8 @@
         "y": 4.1071896750998365
       },
       "prevControl": {
-        "x": 7.060416751186514,
-        "y": 4.1028861634546185
+        "x": 7.343667244047451,
+        "y": 5.270277257062038
       },
       "nextControl": null,
       "isLocked": false,
@@ -41,7 +41,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Enable feeder"
+                "name": "Enable intake"
               }
             }
           ]
@@ -58,13 +58,19 @@
             {
               "type": "named",
               "data": {
-                "name": "Disable feeder"
+                "name": "Disable full feeder"
               }
             },
             {
               "type": "named",
               "data": {
                 "name": "Disable shooter"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Set pivot load"
               }
             }
           ]
@@ -79,8 +85,8 @@
     "maxAngularAcceleration": 1600.0
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 0.0,
+    "velocity": 0.0,
+    "rotation": -59.64662229609101,
     "rotateFast": false
   },
   "reversed": false,
