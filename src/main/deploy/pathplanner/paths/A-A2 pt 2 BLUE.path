@@ -53,12 +53,6 @@
             {
               "type": "named",
               "data": {
-                "name": "Centering sequence"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
                 "name": "Enable shooter"
               }
             }
