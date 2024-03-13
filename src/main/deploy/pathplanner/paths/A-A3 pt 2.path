@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.100752184360273,
-        "y": 4.1071896750998365
+        "x": 8.263506206916928,
+        "y": 4.178871258784184
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.120752184360272,
-        "y": 4.1071896750998365
+        "x": 7.6790943360532555,
+        "y": 5.276218014567106
       },
       "isLocked": false,
       "linkedName": "Mid"
@@ -20,8 +20,8 @@
         "y": 6.454890284238034
       },
       "prevControl": {
-        "x": 7.768367613847496,
-        "y": 6.702705933153475
+        "x": 6.488702002649954,
+        "y": 6.638901594426453
       },
       "nextControl": null,
       "isLocked": false,
@@ -86,7 +86,7 @@
   "reversed": false,
   "folder": "Pick chain",
   "previewStartingState": {
-    "rotation": 0.0,
+    "rotation": -59.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

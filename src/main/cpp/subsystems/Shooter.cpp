@@ -35,7 +35,7 @@
 #define PODIUM_ANG 37.0_deg
 #define WING_ANG 26.5_deg
 #define POOP_ANG 48.0_deg
-#define AUTO_FAR_ANG 26.5_deg
+#define AUTO_FAR_ANG 26.0_deg
 
 #define AMP_POWER 20.0f // rps
 #define LEFT_SHOOT_POWER 60.0f // rps
