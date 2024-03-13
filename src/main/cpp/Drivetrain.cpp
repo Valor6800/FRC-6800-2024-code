@@ -38,7 +38,7 @@ using namespace pathplanner;
 #define KIX 0.0f //0
 #define KDX 0.1f //.1
 
-#define KPT 16.0f //15
+#define KPT 8.0f //15
 #define KIT 0.0f
 #define KDT 0.0f
 
@@ -147,6 +147,7 @@ void Drivetrain::configSwerveModule(int i)
                                                     true,
                                                     PIGEON_CAN_BUS));
     driveControllers[i]->enableFOC(true);
+    driveControllers[i]->setOpenLoopRamp(0.75);
 
     driveMaxSpeed = driveControllers[i]->getMaxMotorSpeed() / 60.0 / conversion;
 
