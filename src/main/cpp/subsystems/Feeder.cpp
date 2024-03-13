@@ -8,6 +8,7 @@
 #include "Constants.h"
 #include "frc/AnalogTriggerOutput.h"
 #include <pathplanner/lib/auto/NamedCommands.h>
+#include <frc/DriverStation.h>
 
 #include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/InstantCommand.h>
@@ -176,6 +177,8 @@ void Feeder::analyzeDashboard()
         driverGamepad->setRumble(false);
     }
     blinkin.SetPulseTime(state.beamTrip ? LED_ON : LED_OFF);
+    if (driverGamepad != nullptr && driverGamepad->IsConnected() && !frc::DriverStation::IsTeleop())
+        driverGamepad->setRumble(false);
 }
 
 void Feeder::assignOutputs()
