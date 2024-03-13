@@ -11,6 +11,7 @@
 #include <frc2/command/WaitCommand.h>
 
 #include <frc/DriverStation.h>
+#define SHOOTING_TIME 0.1f
 
 #define PIVOT_ROTATE_K_VEL 145.32f
 #define PIVOT_ROTATE_K_ACC 2500.0f
@@ -425,6 +426,31 @@ void Shooter::calculatePivotAngle(){
     double D = 89.4; // 78.5;
     double bestPivot = D + (C * distance) + (B * pow(distance, 2)) + (A * pow(distance, 3));
     state.calculatingPivotingAngle = units::degree_t(bestPivot);
+}
+
+units::degree_t Shooter::calculatePivotAngleFromDistance(double distance){
+    double A = -0.293;
+    double B = 4.85;
+    double C = -28.5;
+    double D = 84.3;
+    double bestPivot = D + (C * distance) + (B * pow(distance, 2)) + (A * pow(distance, 3));
+    return units::degree_t(bestPivot);
+}
+
+void Shooter::shootOnTheMove(){
+    double fixedShotTime = table->GetNumber("Shooting Time", SHOOTING_TIME);
+    double currentTime = frc::Timer::GetFPGATimestamp().to<double>();
+
+    frc::Pose2d robotOrigPose = drivetrain->getCalculatedPose_m();
+    units::meters_per_second_t robotVelocityX = drivetrain->state.xSpeedMPS;
+    units::meters_per_second_t robotVelocityY = drivetrain->state.ySpeedMPS;
+
+    units::meter_t futureRobotX = units::meter_t((robotVelocityX.to<double>()*fixedShotTime) + robotOrigPose.X().to<double>());
+    units::meter_t futureRobotY = units::meter_t((robotVelocityY.to<double>()*fixedShotTime) + robotOrigPose.Y().to<double>());
+    frc::Pose2d robotFuturePose = frc::Pose2d(futureRobotX, futureRobotY, robotOrigPose.Rotation());
+
+    double distance = drivetrain->distanceToSpeakerFromPose(robotFuturePose).to<double>();
+    state.calculatingPivotingAngle = calculatePivotAngleFromDistance(distance);
 }
 
 void Shooter::InitSendable(wpi::SendableBuilder& builder){
