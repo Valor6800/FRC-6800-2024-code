@@ -177,7 +177,7 @@ void Feeder::analyzeDashboard()
         driverGamepad->setRumble(false);
     }
     blinkin.SetPulseTime(state.beamTrip ? LED_ON : LED_OFF);
-    if (driverGamepad != nullptr && driverGamepad->IsConnected() && !frc::DriverStation::IsTeleop())
+    if (driverGamepad != nullptr && driverGamepad->IsConnected() && !(frc::DriverStation::IsTeleop() && frc::DriverStation::IsEnabled()))
         driverGamepad->setRumble(false);
 }
 
