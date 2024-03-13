@@ -169,7 +169,7 @@ void Drivetrain::init()
         aprilTagSensors.push_back(new valor::AprilTagsSensor(robot, aprilCam.first, aprilCam.second));
     }
 
-    aprilTagSensors[0]->normalVisionOutlier = 6.0_m;
+    aprilTagSensors[0]->normalVisionOutlier = 5.5_m;
 
     for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
         aprilLime->setPipe(valor::VisionSensor::PIPELINE_0);
@@ -506,6 +506,11 @@ frc::SwerveDriveKinematics<SWERVE_COUNT>* Drivetrain::getKinematics()
 frc::Pose2d Drivetrain::getPose_m()
 {
     return estimator->GetEstimatedPosition();
+}
+
+frc::Pose2d Drivetrain::getCalculatedPose_m()
+{
+    return calculatedEstimator->GetEstimatedPosition();
 }
 
 void Drivetrain::resetGyro(){

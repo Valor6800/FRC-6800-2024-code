@@ -73,6 +73,7 @@ public:
         units::degree_t calculatingPivotingAngle;
 
         bool ignoreLoad;
+        bool otherSide;
 
     } state;
 
