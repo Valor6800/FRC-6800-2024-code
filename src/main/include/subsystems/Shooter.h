@@ -38,6 +38,8 @@ public:
     void assignOutputs();
 
     void calculatePivotAngle();
+    units::degree_t calculatePivotAngleFromDistance(double distance);
+    void shootOnTheMove();
     
     void InitSendable(wpi::SendableBuilder& builder);
 

@@ -593,8 +593,7 @@ frc::Pose2d Drivetrain::getPose_m()
     return estimator->GetEstimatedPosition();
 }
 
-frc::Pose2d Drivetrain::getCalculatedPose_m()
-{
+frc::Pose2d Drivetrain::getCalculatedPose_m(){
     return calculatedEstimator->GetEstimatedPosition();
 }
 
@@ -763,6 +762,15 @@ frc2::InstantCommand* Drivetrain::getSetXMode(){
         setXMode();
     });
      return cmd_XMode;
+}
+
+units::meter_t Drivetrain::distanceToSpeakerFromPose(frc::Pose2d pose){
+    if(frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue){
+        return units::meter_t(sqrtf(powf((pose.X() - SPEAKER_BLUE_X).to<double>(), 2) + powf((pose.Y() - SPEAKER_Y).to<double>(), 2)));
+    }
+    else{
+        return units::meter_t(sqrtf(powf((pose.X() - SPEAKER_RED_X).to<double>(), 2) + powf((pose.Y() - SPEAKER_Y).to<double>(), 2)));
+    }
 }
 
 void Drivetrain::InitSendable(wpi::SendableBuilder& builder)

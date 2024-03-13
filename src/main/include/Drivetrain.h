@@ -225,6 +225,8 @@ public:
      frc::Pose2d getPose_m();
      frc::Pose2d getCalculatedPose_m();
 
+     frc::Pose2d getCalculatedPose_m();
+
      /**
       * Returns the kinematics object in use by the swerve drive
       * @return kinematics object
@@ -239,6 +241,7 @@ public:
 
      void setAlignmentAngle(Drivetrain::Alignment align);
      void getSpeakerLockAngleRPS();
+     units::meter_t distanceToSpeakerFromPose(frc::Pose2d pose);
      units::radian_t getAngleError();
      double clampAngleRadianRange(units::radian_t angle, double max);
      units::meter_t getDistanceFromSpeaker();
