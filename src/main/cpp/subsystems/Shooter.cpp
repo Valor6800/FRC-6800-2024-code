@@ -10,6 +10,8 @@
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/WaitCommand.h>
 
+#include <frc/DriverStation.h>
+
 #define PIVOT_ROTATE_K_VEL 145.32f
 #define PIVOT_ROTATE_K_ACC 2500.0f
 #define PIVOT_ROTATE_K_P 1.0f
@@ -33,7 +35,7 @@
 #define PODIUM_ANG 37.0_deg
 #define WING_ANG 26.5_deg
 #define POOP_ANG 48.0_deg
-#define AUTO_FAR_ANG 32.0_deg
+#define AUTO_FAR_ANG 26.5_deg
 
 #define AMP_POWER 20.0f // rps
 #define LEFT_SHOOT_POWER 60.0f // rps
@@ -240,6 +242,16 @@ void Shooter::analyzeDashboard()
     if (table->GetBoolean("Tuning", false)) {
         state.pivotState = PIVOT_STATE::TUNING;
     }
+    units::meter_t xPos = drivetrain->getCalculatedPose_m().X();
+    if (
+            (xPos > 16.54_m / 2 && frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue) ||
+            (xPos < 16.54_m / 2 && frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed)
+       ) {
+        state.otherSide = true;
+    } else {
+        state.otherSide = false;
+    }
+    table->PutNumber("On other side", state.otherSide);
     calculatePivotAngle();
 }
 
@@ -276,9 +288,9 @@ void Shooter::assignOutputs()
         pivotMotors->setPosition(PODIUM_ANG.to<double>() + state.pivotOffset);
     } else if(state.pivotState == PIVOT_STATE::WING){
         pivotMotors->setPosition(WING_ANG.to<double>() + state.pivotOffset);
-    } else if (state.pivotState == PIVOT_STATE::ORBIT){
+    } else if (state.pivotState == PIVOT_STATE::ORBIT || (state.ignoreLoad && state.otherSide)){
         pivotMotors->setPosition(POOP_ANG.to<double>());
-    } else if(state.pivotState == PIVOT_STATE::TRACKING || state.ignoreLoad){
+    } else if(state.pivotState == PIVOT_STATE::TRACKING || (state.ignoreLoad && !state.otherSide)){
         pivotMotors->setPosition(state.calculatingPivotingAngle.to<double>() + state.pivotOffset);
     } else if(state.pivotState == PIVOT_STATE::AMP){
         pivotMotors->setPosition(AMP_ANG.to<double>() + state.pivotOffset);
@@ -291,6 +303,7 @@ void Shooter::assignOutputs()
  
 void Shooter::calculatePivotAngle(){
     double distance = drivetrain->state.distanceFromSpeaker.to<double>();
+    distance = fmin(distance, 9.0); // Since the parabola has a positive x^2 term, it'll eventually curve up
 
     double A = 0;
     double B = 2.23;
