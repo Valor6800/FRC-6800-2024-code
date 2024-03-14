@@ -36,8 +36,8 @@
 #define WING_ANG 26.5_deg
 #define POOP_ANG 48.0_deg
 #define AUTO_NEAR_ANG 32.5_deg
-#define AUTO_FAR_LOW_ANG 28.5_deg
-#define AUTO_FAR_HIGH_ANG 28.5_deg
+#define AUTO_FAR_LOW_ANG 27.5_deg
+#define AUTO_FAR_HIGH_ANG 27.0_deg
 
 #define AMP_POWER 20.0f // rps
 #define LEFT_SHOOT_POWER 60.0f // rps
@@ -218,7 +218,7 @@ void Shooter::assessInputs()
         driverGamepad->leftTriggerActive() ||
         operatorGamepad->GetStartButton() ||
         driverGamepad->GetXButton() ||
-        driverGamepad->GetBButton()) {
+        (driverGamepad->GetBButton() && !driverGamepad->GetRightBumper())) {
         state.flywheelState = FLYWHEEL_STATE::SHOOTING;
     } else {
         state.flywheelState = FLYWHEEL_STATE::NOT_SHOOTING;
@@ -226,9 +226,15 @@ void Shooter::assessInputs()
 
     //PIVOT LOGIC
     if (driverGamepad->GetAButton()) {
-        state.pivotState = PIVOT_STATE::SUBWOOFER;
+        if (driverGamepad->GetRightBumper())
+            state.pivotState = PIVOT_STATE::FORCE_INTAKE;
+        else
+            state.pivotState = PIVOT_STATE::SUBWOOFER;
     } else if (driverGamepad->GetBButton()) {
-        state.pivotState = PIVOT_STATE::AMP;
+        if (driverGamepad->GetRightBumper())
+            state.pivotState = PIVOT_STATE::FORCE_INTAKE;
+        else
+            state.pivotState = PIVOT_STATE::AMP;
     } else if (driverGamepad->GetXButton()) {
         state.pivotState = PIVOT_STATE::ORBIT;
     } else {
@@ -327,6 +333,8 @@ void Shooter::assignOutputs()
         pivotMotors->setPosition(AUTO_FAR_HIGH_ANG.to<double>());
     } else if (state.pivotState == PIVOT_STATE::AUTO_NEAR) {
         pivotMotors->setPosition(AUTO_NEAR_ANG.to<double>());
+    } else if(state.pivotState == PIVOT_STATE::FORCE_INTAKE){
+        pivotMotors->setPosition(INTAKE_ANG.to<double>());
     } else {
         pivotMotors->setPosition(SUBWOOFER_ANG.to<double>() + state.pivotOffset);
     }

@@ -59,7 +59,8 @@ public:
         LOAD,
         AUTO_FAR_LOW,
         AUTO_FAR_HIGH,
-        AUTO_NEAR
+        AUTO_NEAR,
+        FORCE_INTAKE
     };
 
     struct x
