@@ -94,26 +94,6 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "
     pathplanner::NamedCommands::registerCommand("Wait for A button", std::move(
         frc2::FunctionalCommand([](){}, [](){}, [](bool _b){}, [this](){ return operatorGamepad->GetAButtonPressed(); }, {this})
     ).ToPtr());
-    NamedCommands::registerCommand("Drive To White Line", std::move(
-        frc2::SequentialCommandGroup(
-            frc2::InstantCommand(
-                [this] () {
-                    getPathFindToPose((frc::Pose2d(2.32_m, 3.65_m, frc::Rotation2d(0_deg))), 0_mps, 0_m);
-                }
-            )
-        )
-    ).ToPtr());
-
-   NamedCommands::registerCommand("Drive To Random Point", std::move(
-        frc2::SequentialCommandGroup(
-            frc2::InstantCommand(
-                [this] () {
-                    makeCommandFromPath(makePath(
-                        generatePoses(frc::Pose2d(units::meter_t(2.32), units::meter_t(3.65), frc::Rotation2d(0_deg)), false), 0_mps, 0_deg));
-                }
-            )
-        )
-    ).ToPtr());
 }
 
 Drivetrain::~Drivetrain()
