@@ -16,19 +16,19 @@
     },
     {
       "anchor": {
-        "x": 8.09,
-        "y": 7.48
+        "x": 8.215895709713873,
+        "y": 5.958484205850066
       },
       "prevControl": {
-        "x": 7.30175021350591,
-        "y": 7.48
+        "x": 7.427645923219783,
+        "y": 5.958484205850066
       },
       "nextControl": {
-        "x": 9.037111361403452,
-        "y": 7.48
+        "x": 9.163007071117326,
+        "y": 5.958484205850066
       },
       "isLocked": false,
-      "linkedName": "Northstar blue"
+      "linkedName": "Scorch BLUE"
     },
     {
       "anchor": {
@@ -47,12 +47,12 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 1.0,
-      "rotationDegrees": 0,
+      "rotationDegrees": -12.171083463002224,
       "rotateFast": false
     },
     {
-      "waypointRelativePos": 0.25,
-      "rotationDegrees": 0.0,
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": -11.496814939194078,
       "rotateFast": false
     },
     {
