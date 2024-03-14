@@ -14,7 +14,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Start pivot tracking"
+            "name": "Set pivot load"
           }
         },
         {
@@ -26,19 +26,55 @@
         {
           "type": "named",
           "data": {
-            "name": "Enable feeder"
+            "name": "Set pivot near"
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "Af-A1"
+            "waitTime": 0.2
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Enable feeder"
+            "name": "Enable full feeder"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.1
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Set pivot load"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Af-A1 BLUE"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Enable full feeder"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
           }
         },
         {
@@ -69,6 +105,12 @@
           "type": "named",
           "data": {
             "name": "Disable full feeder"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Set pivot load"
           }
         }
       ]
