@@ -20,7 +20,7 @@
 #define FEEDER_FORWARD_POWER 0.5f
 #define FEEDER_INTAKE_POWER 0.3f
 #define FEEDER_REVERSE_POWER -0.5f
-#define FEEDER_UNJAM_POWER -0.3f
+#define FEEDER_UNJAM_POWER -0.2f
 
 #define USE_UNJAM true
 
@@ -102,6 +102,16 @@ Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _feederBeamBreak, fr
                     // shooter->state.isShooting = true;
                     state.intakeState = Feeder::ROLLER_STATE::INTAKE;
                     state.feederState = Feeder::ROLLER_STATE::INTAKE;
+                }
+            )
+        )
+    ).ToPtr());
+    pathplanner::NamedCommands::registerCommand("Enable only intake", std::move(
+        frc2::SequentialCommandGroup(
+            frc2::InstantCommand(
+                [this]() {
+                    // shooter->state.isShooting = true;
+                    state.intakeState = Feeder::ROLLER_STATE::INTAKE;
                 }
             )
         )
@@ -206,7 +216,7 @@ void Feeder::assignOutputs()
         intakeBackMotor.setPower(0);
     }
     
-    if (state.unjam && FEEDER_UNJAM_POWER) {
+    if (state.unjam && USE_UNJAM) {
         feederMotor.setPower(FEEDER_UNJAM_POWER);
     } else {
         if (state.feederState == ROLLER_STATE::SHOOT) {

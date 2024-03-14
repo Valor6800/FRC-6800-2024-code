@@ -86,7 +86,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Enable intake"
+                "name": "Enable only intake"
               }
             }
           ]
