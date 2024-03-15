@@ -56,7 +56,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Af-A1 BLUE"
+            "pathName": "Af-A1 RED"
           }
         },
         {
@@ -80,13 +80,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "A-A2 pt 1 BLUE"
+            "pathName": "A-A2 pt 1 RED"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "A-A2 pt 2 BLUE"
+            "pathName": "A-A2 pt 2 RED"
           }
         },
         {

@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.215895709713873,
-        "y": 5.958484205850066
+        "x": 8.101284216189319,
+        "y": 5.71927264172349
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.5626424986212255,
-        "y": 6.028512769699151
+        "x": 7.448031005096671,
+        "y": 5.789301205572574
       },
       "isLocked": false,
-      "linkedName": "Scorch BLUE"
+      "linkedName": "Scorch"
     },
     {
       "anchor": {

@@ -29,15 +29,15 @@
 #define FLYWHEEL_ROTATE_K_ACC 75.0f
 #define FLYWHEEL_ROTATE_K_P 0.00005f
 
-#define AMP_ANG 118.0_deg
+#define AMP_ANG 116.5_deg
 #define SUBWOOFER_ANG 56.0_deg
 #define INTAKE_ANG 80.0_deg
 #define PODIUM_ANG 37.0_deg
 #define WING_ANG 26.5_deg
 #define POOP_ANG 48.0_deg
 #define AUTO_NEAR_ANG 32.5_deg
-#define AUTO_FAR_LOW_ANG 27.5_deg
-#define AUTO_FAR_HIGH_ANG 27.0_deg
+#define AUTO_FAR_LOW_ANG 28.0_deg
+#define AUTO_FAR_HIGH_ANG 28.0_deg
 
 #define AMP_POWER 15.0f // rps
 #define LEFT_SHOOT_POWER 60.0f // rps

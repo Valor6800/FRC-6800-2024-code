@@ -8,7 +8,7 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.108658262527751,
+        "x": 4.108658262527752,
         "y": 7.080577081473897
       },
       "isLocked": false,
@@ -17,15 +17,15 @@
     {
       "anchor": {
         "x": 8.1388336215946,
-        "y": 7.418383236312444
+        "y": 7.408995884961123
       },
       "prevControl": {
         "x": 7.35058383510051,
-        "y": 7.418383236312444
+        "y": 7.408995884961123
       },
       "nextControl": {
         "x": 9.085944982998052,
-        "y": 7.418383236312444
+        "y": 7.408995884961123
       },
       "isLocked": false,
       "linkedName": "Northstar"
@@ -61,30 +61,7 @@
       "rotateFast": false
     }
   ],
-  "constraintZones": [
-    {
-      "name": "Speed up pickup",
-      "minWaypointRelativePos": 0.25,
-      "maxWaypointRelativePos": 0.9,
-      "constraints": {
-        "maxVelocity": 4.0,
-        "maxAcceleration": 3.0,
-        "maxAngularVelocity": 720.0,
-        "maxAngularAcceleration": 1600.0
-      }
-    },
-    {
-      "name": "Speed up shoot",
-      "minWaypointRelativePos": 1.05,
-      "maxWaypointRelativePos": 1.75,
-      "constraints": {
-        "maxVelocity": 4.0,
-        "maxAcceleration": 3.0,
-        "maxAngularVelocity": 720.0,
-        "maxAngularAcceleration": 1600.0
-      }
-    }
-  ],
+  "constraintZones": [],
   "eventMarkers": [
     {
       "name": "Intake",
@@ -128,9 +105,9 @@
     },
     {
       "name": "Disable intake",
-      "waypointRelativePos": 1.5,
+      "waypointRelativePos": 1.15,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {
@@ -138,18 +115,13 @@
               "data": {
                 "name": "Disable intake"
               }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Enable shooter",
-      "waypointRelativePos": 1.7,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Set pivot far low"
+              }
+            },
             {
               "type": "named",
               "data": {
@@ -162,14 +134,14 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.5,
-    "maxAcceleration": 2.5,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.5,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1600.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 10.0,
+    "rotation": 9.0,
     "rotateFast": false
   },
   "reversed": false,
@@ -178,5 +150,5 @@
     "rotation": 30.0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
