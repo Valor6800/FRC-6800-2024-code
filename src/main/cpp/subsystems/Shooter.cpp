@@ -344,10 +344,10 @@ void Shooter::calculatePivotAngle(){
     double distance = drivetrain->state.distanceFromSpeaker.to<double>();
     distance = fmin(distance, 9.0); // Since the parabola has a positive x^2 term, it'll eventually curve up
 
-    double A = 0;
-    double B = 2.23;
-    double C = -21.3;
-    double D =  78.5;
+    double A = -0.433; // 0;
+    double B = 6.42; // 2.23;
+    double C = -33.5; // -21.3;
+    double D = 89.4; // 78.5;
     double bestPivot = D + (C * distance) + (B * pow(distance, 2)) + (A * pow(distance, 3));
     state.calculatingPivotingAngle = units::degree_t(bestPivot);
 }
