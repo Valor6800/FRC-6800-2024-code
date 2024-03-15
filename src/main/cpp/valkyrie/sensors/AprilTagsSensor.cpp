@@ -63,6 +63,8 @@ void AprilTagsSensor::applyVisionMeasurement(frc::SwerveDrivePoseEstimator<4> *e
     limeTable->PutNumber("new doubt x", newDoubtX);
     limeTable->PutNumber("new doubt y", newDoubtY);
 
+    if (tGone.X() == 0.0_m || tGone.Y() == 0.0_m)
+        return;
     estimator->AddVisionMeasurement(
         tGone,  
         frc::Timer::GetFPGATimestamp() - totalLatency,
