@@ -351,6 +351,7 @@ void Drivetrain::calculateCarpetPose()
 //1.313793103448276*
 void Drivetrain::analyzeDashboard()
 {
+    table->PutBoolean("Calculated estimator?", state.useCalculatedEstimator);
     if(state.isHeadingTrack) getSpeakerLockAngleRPS();
     else if(state.sourceAlign) setAlignmentAngle(Alignment::SOURCE);
     else if(state.ampAlign) setAlignmentAngle(Alignment::AMP);
@@ -368,14 +369,14 @@ void Drivetrain::analyzeDashboard()
     visionAcceptanceRadius = (units::meter_t) table->GetNumber("Vision Acceptance", VISION_ACCEPTANCE.to<double>());
 
     for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
-        aprilLime->applyVisionMeasurement(
-            calculatedEstimator,
-            getRobotSpeeds(),
-            table->GetBoolean("Accepting Vision Measurements", true),
-            doubtX,
-            doubtY
-        );
-    }
+            aprilLime->applyVisionMeasurement(
+                calculatedEstimator,
+                getRobotSpeeds(),
+                table->GetBoolean("Accepting Vision Measurements", true),
+                doubtX,
+                doubtY
+            );
+    }        
 
     if (driverGamepad && driverGamepad->IsConnected() && driverGamepad->GetStartButton()) {
         for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
