@@ -39,7 +39,7 @@
 #define AUTO_FAR_LOW_ANG 27.5_deg
 #define AUTO_FAR_HIGH_ANG 27.0_deg
 
-#define AMP_POWER 20.0f // rps
+#define AMP_POWER 15.0f // rps
 #define LEFT_SHOOT_POWER 60.0f // rps
 #define RIGHT_SHOOT_POWER 30.0f // rps
 #define LEFT_BLOOP_POWER 32.0f
