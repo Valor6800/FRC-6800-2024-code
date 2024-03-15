@@ -14,6 +14,12 @@
         {
           "type": "named",
           "data": {
+            "name": "Reverse flywheels"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Set Estimator"
           }
         },
@@ -63,6 +69,12 @@
           "type": "named",
           "data": {
             "name": "Set Camera Estimator"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Normal flywheels"
           }
         },
         {

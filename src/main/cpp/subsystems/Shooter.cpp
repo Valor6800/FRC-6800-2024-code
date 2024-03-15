@@ -151,6 +151,22 @@ Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive, frc::AnalogTrigger
             }
         )
     ).ToPtr());
+    pathplanner::NamedCommands::registerCommand("Reverse flywheels", std::move(
+        frc2::InstantCommand(
+            [this]() {
+                // shooter->state.isShooting = true;
+                state.reverseFlywheels = true;
+            }
+        )
+    ).ToPtr());
+    pathplanner::NamedCommands::registerCommand("Normal flywheels", std::move(
+        frc2::InstantCommand(
+            [this]() {
+                // shooter->state.isShooting = true;
+                state.reverseFlywheels = false;
+            }
+        )
+    ).ToPtr());
 }
 
 void Shooter::resetState()
@@ -160,6 +176,7 @@ void Shooter::resetState()
     state.calculatingPivotingAngle = units::degree_t{0};
     state.ignoreLoad = false;
     state.otherSide = false;
+    state.reverseFlywheels = false;
 }
 
 void Shooter::init()
@@ -307,8 +324,13 @@ void Shooter::assignOutputs()
         leftFlywheelMotor.setSpeed(LEFT_BLOOP_POWER);
         rightFlywheelMotor.setSpeed(RIGHT_BLOOP_POWER);
     } else {
-        leftFlywheelMotor.setSpeed(LEFT_SHOOT_POWER);
-        rightFlywheelMotor.setSpeed(RIGHT_SHOOT_POWER);
+        if (state.reverseFlywheels) {
+            leftFlywheelMotor.setSpeed(RIGHT_SHOOT_POWER);
+            rightFlywheelMotor.setSpeed(LEFT_SHOOT_POWER);
+        } else {
+            leftFlywheelMotor.setSpeed(LEFT_SHOOT_POWER);
+            rightFlywheelMotor.setSpeed(RIGHT_SHOOT_POWER);
+        }
     }
 
     if (state.pivotState == PIVOT_STATE::TUNING) {

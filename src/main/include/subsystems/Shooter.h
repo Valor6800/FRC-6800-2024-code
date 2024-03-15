@@ -80,6 +80,7 @@ public:
         bool otherSide;
         bool insideWing;
 
+        bool reverseFlywheels;
     } state;
 
 private:
