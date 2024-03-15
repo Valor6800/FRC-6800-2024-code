@@ -1,0 +1,118 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.7885143244968206,
+        "y": 6.62422483818492
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.8827935060022323,
+        "y": 6.855660605454602
+      },
+      "isLocked": false,
+      "linkedName": "Start amp"
+    },
+    {
+      "anchor": {
+        "x": 3.108658262527752,
+        "y": 7.080577081473897
+      },
+      "prevControl": {
+        "x": 2.140316108101002,
+        "y": 6.470260749829105
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Acrid"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.65,
+      "rotationDegrees": 25.0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Slow down",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.05,
+      "constraints": {
+        "maxVelocity": 3.5,
+        "maxAcceleration": 0.5,
+        "maxAngularVelocity": 720.0,
+        "maxAngularAcceleration": 1600.0
+      }
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "Shoot",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Enable shooter"
+              }
+            },
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 0.35
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Enable full feeder"
+              }
+            },
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 0.2
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Enable intake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Set pivot load"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.5,
+    "maxAcceleration": 2.5,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 1600.0
+  },
+  "goalEndState": {
+    "velocity": 0.0,
+    "rotation": 25.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "FirstPick",
+  "previewStartingState": {
+    "rotation": 60.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
