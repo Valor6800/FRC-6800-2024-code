@@ -14,7 +14,7 @@
 
 #define PIVOT_ROTATE_K_VEL 145.32f
 #define PIVOT_ROTATE_K_ACC 2500.0f
-#define PIVOT_ROTATE_K_P 1.0f
+#define PIVOT_ROTATE_K_P 1.25f
 #define PIVOT_ROTATE_K_ERROR 0.0f
 #define PIVOT_ROTATE_K_AFF 0.42f
 #define PIVOT_ROTATE_K_JERK 9999.9f
@@ -29,7 +29,7 @@
 #define FLYWHEEL_ROTATE_K_ACC 75.0f
 #define FLYWHEEL_ROTATE_K_P 0.00005f
 
-#define AMP_ANG 116.0_deg
+#define AMP_ANG 101.0_deg
 #define SUBWOOFER_ANG 56.0_deg
 #define INTAKE_ANG 80.0_deg
 #define PODIUM_ANG 37.0_deg
