@@ -245,6 +245,7 @@ void Shooter::assessInputs()
         driverGamepad->leftTriggerActive() ||
         operatorGamepad->GetStartButton() ||
         driverGamepad->GetXButton() ||
+        operatorGamepad->GetAButton() ||
         (driverGamepad->GetBButton() && !driverGamepad->GetRightBumper())) {
         state.flywheelState = FLYWHEEL_STATE::SHOOTING;
     } else {
@@ -252,7 +253,7 @@ void Shooter::assessInputs()
     } 
 
     //PIVOT LOGIC
-    if (driverGamepad->GetAButton()) {
+    if (driverGamepad->GetAButton() || operatorGamepad->GetAButton()) {
         if (driverGamepad->GetRightBumper())
             state.pivotState = PIVOT_STATE::FORCE_INTAKE;
         else
