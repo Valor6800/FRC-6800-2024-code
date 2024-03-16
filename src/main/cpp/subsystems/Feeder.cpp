@@ -24,13 +24,14 @@
 
 #define USE_UNJAM true
 
-Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _feederBeamBreak, frc::AnalogTrigger* _intakeBeamBreak) :
+Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _feederBeamBreak, frc::AnalogTrigger* _intakeBeamBreak, frc::AnalogTrigger* _feederBeamBreak2) :
     valor::BaseSubsystem(_robot, "Feeder"),
     intakeMotor(CANIDs::INTERNAL_INTAKE, valor::NeutralMode::Coast, true),
     intakeBackMotor(CANIDs::INTERNAL_INTAKE_V2, valor::NeutralMode::Coast, true),
     feederMotor(CANIDs::FEEDER, valor::NeutralMode::Brake, true),
     feederBeamBreak(_feederBeamBreak),
     feederDebounceSensor(_robot, "FeederBanner"),
+    feederBeamBreak2(_feederBeamBreak2),
     intakeBeamBreak(_intakeBeamBreak),
     intakeDebounceSensor(_robot, "IntakeBanner")
 {
@@ -148,7 +149,7 @@ void Feeder::init()
 
     feederMotor.setVoltageCompensation(10);
 
-    feederDebounceSensor.setGetter([this] { return !feederBeamBreak->GetInWindow(); });
+    feederDebounceSensor.setGetter([this] { return (!feederBeamBreak->GetInWindow() || !feederBeamBreak2->GetInWindow()); });
     feederDebounceSensor.setRisingEdgeCallback([this] {
         state.beamTrip = true;
         state.unjam = true;

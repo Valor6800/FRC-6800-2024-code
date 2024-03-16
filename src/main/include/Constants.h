@@ -60,6 +60,7 @@ namespace DIOPorts {
 }
 
 namespace AnalogPorts {
+    constexpr static int FEEDER_BEAM_BREAK2_PORT = 1;
     constexpr static int FEEDER_BEAM_BREAK_PORT = 3;
     constexpr static int INTAKE_BEAM_BREAK_PORT = 2;
 }

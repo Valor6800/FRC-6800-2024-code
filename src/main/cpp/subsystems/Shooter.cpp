@@ -22,7 +22,7 @@
 #define PIVOT_CANCODER_GEAR_RATIO 2.0f
 #define PIVOT_MAGNET_OFFSET 0.3272f
 #define PIVOT_GEAR_RATIO 219.52f
-#define PIVOT_REVERSE_LIMIT 119.00f
+#define PIVOT_REVERSE_LIMIT 101.00f
 #define PIVOT_FORWARD_LIMIT 22.0f
 
 #define FLYWHEEL_ROTATE_K_VEL 75.0f
@@ -31,7 +31,7 @@
 
 #define AMP_ANG 101.0_deg
 #define SUBWOOFER_ANG 56.0_deg
-#define INTAKE_ANG 80.0_deg
+#define INTAKE_ANG 62.0_deg
 #define PODIUM_ANG 37.0_deg
 #define WING_ANG 26.5_deg
 #define POOP_ANG 48.0_deg
@@ -46,10 +46,11 @@
 #define LEFT_BLOOP_POWER 32.0f
 #define RIGHT_BLOOP_POWER 27.0f
 
-Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive, frc::AnalogTrigger* _feederBeamBreak) :
+Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive, frc::AnalogTrigger* _feederBeamBreak, frc::AnalogTrigger* _feederBeamBreak2) :
     valor::BaseSubsystem(_robot, "Shooter"),
     pivotMotors(nullptr),
     feederBeamBreak(_feederBeamBreak),
+    feederBeamBreak2(_feederBeamBreak2),
     leftFlywheelMotor(CANIDs::LEFT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, true),
     rightFlywheelMotor(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false),
     drivetrain(_drive)
@@ -256,7 +257,7 @@ void Shooter::assessInputs()
         else
             state.pivotState = PIVOT_STATE::SUBWOOFER;
     } else if (driverGamepad->GetBButton()) {
-        if (driverGamepad->GetRightBumper())
+        if (driverGamepad->GetRightBumper() || operatorGamepad->GetBButton())
             state.pivotState = PIVOT_STATE::FORCE_INTAKE;
         else
             state.pivotState = PIVOT_STATE::AMP;
@@ -284,7 +285,7 @@ void Shooter::analyzeDashboard()
     state.tuningSpeed = table->GetNumber("Speed Setpoint", AMP_POWER);
     state.tuningOffset = table->GetNumber("Speed Offset Pct", 0.5);
 
-    if (!feederBeamBreak->GetInWindow() && state.pivotState == PIVOT_STATE::LOAD) {
+    if ((!feederBeamBreak->GetInWindow() || !feederBeamBreak2->GetInWindow()) && state.pivotState == PIVOT_STATE::LOAD) {
         state.ignoreLoad = true;
     } else 
         state.ignoreLoad = false;
