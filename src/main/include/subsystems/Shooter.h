@@ -61,7 +61,8 @@ public:
         AUTO_FAR_HIGH,
         AUTO_NEAR,
         FORCE_INTAKE,
-        AUTO_SUBWOOFER
+        AUTO_SUBWOOFER,
+        PREAMP
     };
 
     struct x

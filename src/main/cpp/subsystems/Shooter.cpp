@@ -32,6 +32,7 @@
 #define AMP_ANG 101.0_deg
 #define SUBWOOFER_ANG 56.0_deg
 #define INTAKE_ANG 62.0_deg
+#define PREAMP_ANG 77.5_deg
 #define PODIUM_ANG 37.0_deg
 #define WING_ANG 26.5_deg
 #define POOP_ANG 48.0_deg
@@ -256,8 +257,10 @@ void Shooter::assessInputs()
             state.pivotState = PIVOT_STATE::FORCE_INTAKE;
         else
             state.pivotState = PIVOT_STATE::SUBWOOFER;
+    } else if (operatorGamepad->GetBButton()) {
+        state.pivotState = PIVOT_STATE::PREAMP;
     } else if (driverGamepad->GetBButton()) {
-        if (driverGamepad->GetRightBumper() || operatorGamepad->GetBButton())
+        if (driverGamepad->GetRightBumper())
             state.pivotState = PIVOT_STATE::FORCE_INTAKE;
         else
             state.pivotState = PIVOT_STATE::AMP;
@@ -368,6 +371,8 @@ void Shooter::assignOutputs()
         pivotMotors->setPosition(AUTO_SUBWOOFER_ANG.to<double>());
     } else if(state.pivotState == PIVOT_STATE::FORCE_INTAKE){
         pivotMotors->setPosition(INTAKE_ANG.to<double>());
+    } else if (state.pivotState == PIVOT_STATE::PREAMP) {
+        pivotMotors->setPosition(PREAMP_ANG.to<double>());
     } else {
         pivotMotors->setPosition(SUBWOOFER_ANG.to<double>() + state.pivotOffset);
     }
