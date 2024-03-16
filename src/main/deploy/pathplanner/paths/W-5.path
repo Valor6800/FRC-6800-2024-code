@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.8029359134890144,
-        "y": 2.3342969055006413
+        "x": 1.1546442162123824,
+        "y": 3.17530042551572
       },
       "isLocked": false,
       "linkedName": "Start wall"
     },
     {
       "anchor": {
-        "x": 8.054676402176879,
-        "y": 0.7423047253501917
+        "x": 8.007410702676117,
+        "y": 0.7533637768751132
       },
       "prevControl": {
-        "x": 6.605840302599416,
-        "y": 0.7839444623515633
+        "x": 6.880928540517694,
+        "y": 0.7815258309290734
       },
       "nextControl": {
-        "x": 9.174036668530515,
-        "y": 0.710134166434422
+        "x": 9.13389286483454,
+        "y": 0.7252017228211531
       },
       "isLocked": false,
       "linkedName": null
@@ -36,8 +36,8 @@
         "y": 3.783113350225544
       },
       "prevControl": {
-        "x": 3.4169958918805463,
-        "y": 1.4949645336294066
+        "x": 4.177371351337482,
+        "y": 1.100695776873959
       },
       "nextControl": null,
       "isLocked": false,
@@ -51,11 +51,23 @@
       "rotateFast": false
     }
   ],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.05,
+      "constraints": {
+        "maxVelocity": 3.5,
+        "maxAcceleration": 0.5,
+        "maxAngularVelocity": 720.0,
+        "maxAngularAcceleration": 1600.0
+      }
+    }
+  ],
   "eventMarkers": [
     {
-      "name": "Disable shooter",
-      "waypointRelativePos": 0.2,
+      "name": "Feed",
+      "waypointRelativePos": 0.0,
       "command": {
         "type": "sequential",
         "data": {
@@ -63,7 +75,25 @@
             {
               "type": "named",
               "data": {
-                "name": "Disable full feeder"
+                "name": "Enable shooter"
+              }
+            },
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 0.65
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Enable full feeder"
+              }
+            },
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 0.1
               }
             },
             {
@@ -71,35 +101,7 @@
               "data": {
                 "name": "Disable shooter"
               }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Intake",
-      "waypointRelativePos": 0.7,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Enable only intake"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Disable intake",
-      "waypointRelativePos": 1.35,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
+            },
             {
               "type": "named",
               "data": {
@@ -111,8 +113,8 @@
       }
     },
     {
-      "name": "Pre set shooter",
-      "waypointRelativePos": 1.65,
+      "name": "Enable shooter",
+      "waypointRelativePos": 1.6,
       "command": {
         "type": "parallel",
         "data": {
@@ -122,6 +124,29 @@
               "data": {
                 "name": "Enable shooter"
               }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Disable intake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Enable intake",
+      "waypointRelativePos": 0.55,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Enable intake"
+              }
             }
           ]
         }
@@ -129,14 +154,14 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.5,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 3.5,
+    "maxAcceleration": 3.5,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1600.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -40.0,
+    "rotation": -39.94,
     "rotateFast": false
   },
   "reversed": false,
