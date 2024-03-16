@@ -37,8 +37,8 @@
 #define WING_ANG 26.5_deg
 #define POOP_ANG 48.0_deg
 #define AUTO_NEAR_ANG 32.5_deg
-#define AUTO_FAR_LOW_ANG 28.0_deg
-#define AUTO_FAR_HIGH_ANG 28.0_deg
+#define AUTO_FAR_LOW_ANG 27.75_deg
+#define AUTO_FAR_HIGH_ANG 27.75_deg
 #define AUTO_SUBWOOFER_ANG 58.0_deg
 
 #define AMP_POWER 10.0f // rps
