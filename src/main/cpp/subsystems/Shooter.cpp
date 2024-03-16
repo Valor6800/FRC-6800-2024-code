@@ -38,6 +38,7 @@
 #define AUTO_NEAR_ANG 32.5_deg
 #define AUTO_FAR_LOW_ANG 28.0_deg
 #define AUTO_FAR_HIGH_ANG 28.0_deg
+#define AUTO_SUBWOOFER_ANG 58.0_deg
 
 #define AMP_POWER 10.0f // rps
 #define LEFT_SHOOT_POWER 60.0f // rps
@@ -164,6 +165,13 @@ Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive, frc::AnalogTrigger
             [this]() {
                 // shooter->state.isShooting = true;
                 state.reverseFlywheels = false;
+            }
+        )
+    ).ToPtr());
+    pathplanner::NamedCommands::registerCommand("Set pivot auto subwoofer", std::move(
+        frc2::InstantCommand(
+            [this]() {
+                state.pivotState = Shooter::PIVOT_STATE::AUTO_SUBWOOFER;
             }
         )
     ).ToPtr());
@@ -355,6 +363,8 @@ void Shooter::assignOutputs()
         pivotMotors->setPosition(AUTO_FAR_HIGH_ANG.to<double>());
     } else if (state.pivotState == PIVOT_STATE::AUTO_NEAR) {
         pivotMotors->setPosition(AUTO_NEAR_ANG.to<double>());
+    } else if (state.pivotState == PIVOT_STATE::AUTO_SUBWOOFER) {
+        pivotMotors->setPosition(AUTO_SUBWOOFER_ANG.to<double>());
     } else if(state.pivotState == PIVOT_STATE::FORCE_INTAKE){
         pivotMotors->setPosition(INTAKE_ANG.to<double>());
     } else {
