@@ -1,6 +1,7 @@
 #pragma once
 
 #include "frc/geometry/Pose3d.h"
+#include "units/acceleration.h"
 #include "units/length.h"
 #include "valkyrie/sensors/AprilTagsSensor.h"
 #include "valkyrie/BaseSubsystem.h"
@@ -158,6 +159,8 @@ public:
           bool useCalculatedEstimator; // only during auto
 
           bool manualFlag;
+          
+          struct { units::acceleration::meters_per_second_squared_t x,y,z; } accel;
      } state;
      
      

@@ -537,6 +537,11 @@ void Drivetrain::resetOdometry(frc::Pose2d pose)
 }
 
 frc::Rotation2d Drivetrain::getPigeon() {
+    state.accel = {
+        pigeon.GetAccelerationX().GetValue(),
+        pigeon.GetAccelerationY().GetValue(),
+        pigeon.GetAccelerationZ().GetValue()
+    };
     return pigeon.GetRotation2d();
 }
 
@@ -682,6 +687,18 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
         builder.AddDoubleProperty(
             "ySpeed",
             [this] { return state.ySpeed; },
+            nullptr
+        );
+
+        builder.AddDoubleArrayProperty(
+            "Acceleration",
+            [this] {
+                std::vector<double> acceleration;
+                acceleration.push_back(state.accel.x.to<double>());
+                acceleration.push_back(state.accel.y.to<double>());
+                acceleration.push_back(state.accel.z.to<double>());
+                return acceleration;
+            },
             nullptr
         );
 
