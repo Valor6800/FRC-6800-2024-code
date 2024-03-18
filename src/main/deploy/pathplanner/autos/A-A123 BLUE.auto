@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7885143244968206,
-      "y": 6.62422483818492
+      "x": 1.3471626541054011,
+      "y": 6.467440337441439
     },
-    "rotation": 60.0
+    "rotation": 0.0
   },
   "command": {
     "type": "sequential",
@@ -14,19 +14,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Reverse flywheels"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "Set Estimator"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Set pivot auto subwoofer"
           }
         },
         {
@@ -38,31 +26,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Set pivot near"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.2
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "Enable full feeder"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.1
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Set pivot load"
           }
         },
         {
@@ -72,33 +36,15 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Normal flywheels"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Af-A1 BLUE"
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.2
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "Enable full feeder"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.2
           }
         },
         {
@@ -114,21 +60,9 @@
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.3
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "Enable full feeder"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.1
           }
         },
         {

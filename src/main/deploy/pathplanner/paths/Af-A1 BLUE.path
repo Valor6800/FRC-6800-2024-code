@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.108658262527752,
-        "y": 7.080577081473897
+        "x": 3.9986324223656746,
+        "y": 7.536588040575521
       },
       "isLocked": false,
       "linkedName": "Acrid"
@@ -20,12 +20,12 @@
         "y": 7.408995884961123
       },
       "prevControl": {
-        "x": 7.313034429695229,
-        "y": 7.408995884961123
+        "x": 7.916094972289077,
+        "y": 7.404863202457073
       },
       "nextControl": {
-        "x": 9.048395577592771,
-        "y": 7.408995884961123
+        "x": 8.239389654271207,
+        "y": 7.4120778454230525
       },
       "isLocked": false,
       "linkedName": "Northstar blue"
@@ -150,5 +150,5 @@
     "rotation": 30.0,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }
