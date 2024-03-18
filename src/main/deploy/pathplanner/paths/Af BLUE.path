@@ -3,16 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3471626541054011,
+        "x": 1.35,
         "y": 6.467440337441439
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4429312177608873,
-        "y": 6.699154072261782
+        "x": 1.3998739175292008,
+        "y": 6.463891767265932
       },
       "isLocked": false,
       "linkedName": "Start amp"
+    },
+    {
+      "anchor": {
+        "x": 1.9395598453337846,
+        "y": 6.467440337441439
+      },
+      "prevControl": {
+        "x": 1.875309589897207,
+        "y": 6.434519358466618
+      },
+      "nextControl": {
+        "x": 2.003810100770362,
+        "y": 6.50036131641626
+      },
+      "isLocked": false,
+      "linkedName": null
     },
     {
       "anchor": {
@@ -30,12 +46,24 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.25,
+      "waypointRelativePos": 1.0,
       "rotationDegrees": 27.1325,
       "rotateFast": false
     }
   ],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Hold",
+      "minWaypointRelativePos": 0.9,
+      "maxWaypointRelativePos": 1.85,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 3.5,
+        "maxAngularVelocity": 720.0,
+        "maxAngularAcceleration": 1600.0
+      }
+    }
+  ],
   "eventMarkers": [
     {
       "name": "Enable shooter",
@@ -56,7 +84,7 @@
     },
     {
       "name": "Feed",
-      "waypointRelativePos": 0.45,
+      "waypointRelativePos": 1.15,
       "command": {
         "type": "parallel",
         "data": {
@@ -86,7 +114,7 @@
   ],
   "globalConstraints": {
     "maxVelocity": 4.0,
-    "maxAcceleration": 3.5,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1600.0
   },

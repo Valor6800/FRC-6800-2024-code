@@ -3,57 +3,39 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3471626541054011,
-        "y": 6.467440337441439
+        "x": 1.450074853347045,
+        "y": 7.315176458694931
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4414418356108127,
-        "y": 6.698876104711122
+        "x": 2.057344606406516,
+        "y": 7.487004692578541
       },
       "isLocked": false,
-      "linkedName": "Start amp"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.108658262527752,
-        "y": 7.080577081473897
+        "x": 2.935109273502691,
+        "y": 7.61920638052069
       },
       "prevControl": {
-        "x": 2.140316108101002,
-        "y": 6.470260749829105
+        "x": 2.371973453341084,
+        "y": 7.61920638052069
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Acrid"
+      "linkedName": "VA"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.65,
-      "rotationDegrees": 25.0,
-      "rotateFast": false
-    }
-  ],
-  "constraintZones": [
-    {
-      "name": "Slow down",
-      "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 0.05,
-      "constraints": {
-        "maxVelocity": 3.5,
-        "maxAcceleration": 0.5,
-        "maxAngularVelocity": 720.0,
-        "maxAngularAcceleration": 1600.0
-      }
-    }
-  ],
+  "rotationTargets": [],
+  "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Shoot",
+      "name": "Enable shooter",
       "waypointRelativePos": 0,
       "command": {
-        "type": "sequential",
+        "type": "parallel",
         "data": {
           "commands": [
             {
@@ -61,13 +43,18 @@
               "data": {
                 "name": "Enable shooter"
               }
-            },
-            {
-              "type": "wait",
-              "data": {
-                "waitTime": 0.35
-              }
-            },
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Feed",
+      "waypointRelativePos": 0.5,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
             {
               "type": "named",
               "data": {
@@ -83,7 +70,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Enable intake"
+                "name": "Disable full feeder"
               }
             }
           ]
@@ -98,14 +85,14 @@
     "maxAngularAcceleration": 1600.0
   },
   "goalEndState": {
-    "velocity": 0.0,
-    "rotation": 25.0,
+    "velocity": 1.5,
+    "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "FirstPick",
   "previewStartingState": {
-    "rotation": 60.0,
+    "rotation": 90.0,
     "velocity": 0
   },
   "useDefaultConstraints": true
