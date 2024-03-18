@@ -5,6 +5,7 @@
 #include "units/time.h"
 #include "units/velocity.h"
 #include <cmath>
+#include <vector>
 
 #define OUTLIER_EDGE 4.0f //meters
 #define DP 0.1f
@@ -40,6 +41,23 @@ frc::Pose3d AprilTagsSensor::getGlobalPose() {
             (units::degree_t) botPose[5]
         )
     );
+}
+
+frc::Pose3d AprilTagsSensor::getPoseFromAprilTag() {
+    if (!hasTarget()) return frc::Pose3d();
+
+    std::vector<double> botToTargetPose = limeTable->GetNumberArray("botpose_targetspace", std::span<const double>());
+
+    return frc::Pose3d(
+        (units::meter_t) botToTargetPose[0],
+        (units::meter_t) botToTargetPose[1],
+        (units::meter_t) botToTargetPose[2],
+        frc::Rotation3d(
+            (units::degree_t) botToTargetPose[3],
+            (units::degree_t) botToTargetPose[4],
+            (units::degree_t) botToTargetPose[5]
+        )
+    ); 
 }
 
 void AprilTagsSensor::applyVisionMeasurement(frc::SwerveDrivePoseEstimator<4> *estimator, units::velocity::meters_per_second_t speed, bool accept, double doubtX, double doubtY, double doubtRot) {
