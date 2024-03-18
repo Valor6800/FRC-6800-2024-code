@@ -245,7 +245,6 @@ void Shooter::assessInputs()
         driverGamepad->leftTriggerActive() ||
         operatorGamepad->GetStartButton() ||
         driverGamepad->GetXButton() ||
-        operatorGamepad->GetAButton() ||
         (driverGamepad->GetBButton() && !driverGamepad->GetRightBumper())) {
         state.flywheelState = FLYWHEEL_STATE::SHOOTING;
     } else {
@@ -253,13 +252,11 @@ void Shooter::assessInputs()
     } 
 
     //PIVOT LOGIC
-    if (driverGamepad->GetAButton() || operatorGamepad->GetAButton()) {
+    if (driverGamepad->GetAButton()) {
         if (driverGamepad->GetRightBumper())
             state.pivotState = PIVOT_STATE::FORCE_INTAKE;
         else
             state.pivotState = PIVOT_STATE::SUBWOOFER;
-    } else if (operatorGamepad->GetBButton()) {
-        state.pivotState = PIVOT_STATE::PREAMP;
     } else if (driverGamepad->GetBButton()) {
         if (driverGamepad->GetRightBumper())
             state.pivotState = PIVOT_STATE::FORCE_INTAKE;
@@ -372,8 +369,6 @@ void Shooter::assignOutputs()
         pivotMotors->setPosition(AUTO_SUBWOOFER_ANG.to<double>());
     } else if(state.pivotState == PIVOT_STATE::FORCE_INTAKE){
         pivotMotors->setPosition(INTAKE_ANG.to<double>());
-    } else if (state.pivotState == PIVOT_STATE::PREAMP) {
-        pivotMotors->setPosition(PREAMP_ANG.to<double>());
     } else {
         pivotMotors->setPosition(SUBWOOFER_ANG.to<double>() + state.pivotOffset);
     }
