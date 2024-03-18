@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 2.0,
-      "y": 7.0
+      "x": 2.079910206116709,
+      "y": 6.97736749640166
     },
     "rotation": 0
   },
@@ -12,39 +12,9 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "Reset gyro"
-          }
-        },
-        {
           "type": "wait",
           "data": {
             "waitTime": 1.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Swerves translation test"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Straighten wheels"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
           }
         },
         {
@@ -62,7 +32,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Disable intake"
+            "name": "Disable full feeder"
           }
         },
         {
@@ -75,6 +45,12 @@
           "type": "named",
           "data": {
             "name": "Shoot amp"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Enable full feeder"
           }
         },
         {
@@ -116,19 +92,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Set pivot podium"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 7.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Set pivot wing"
+            "name": "Set pivot orbit"
           }
         },
         {
