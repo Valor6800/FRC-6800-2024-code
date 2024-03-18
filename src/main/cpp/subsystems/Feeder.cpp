@@ -173,6 +173,8 @@ void Feeder::init()
             intakeBackMotor.setPower(INTAKE_REVERSE_POWER * .75);
         }
     });
+
+    table->PutNumber("Intake tuning speed", INTAKE_FORWARD_POWER);
 }
 
 void Feeder::assessInputs()
@@ -198,6 +200,10 @@ void Feeder::assessInputs()
 
 void Feeder::analyzeDashboard()
 {
+    state.tuningPower = table->PutNumber("Intake tuning speed", INTAKE_FORWARD_POWER);
+    if (table->GetBoolean("Tuning", false)) {
+        state.intakeState = ROLLER_STATE::TUNING;
+    }
     if (state.feederState == ROLLER_STATE::SHOOT || state.feederState == ROLLER_STATE::OUTTAKE) {
         state.beamTrip = false;
         driverGamepad->setRumble(false);
@@ -222,6 +228,9 @@ void Feeder::assignOutputs()
     } else if(state.intakeState == ROLLER_STATE::OUTTAKE) {
         intakeMotor.setPower(INTAKE_REVERSE_POWER);
         intakeBackMotor.setPower(INTAKE_REVERSE_POWER);
+    } else if(state.intakeState == ROLLER_STATE::TUNING) {
+        intakeMotor.setPower(state.tuningPower);
+        intakeBackMotor.setPower(state.tuningPower);
     } else {
         intakeMotor.setPower(0);
         intakeBackMotor.setPower(0);

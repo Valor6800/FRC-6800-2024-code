@@ -29,7 +29,8 @@ public:
         SHOOT,
         INTAKE,
         STAGNANT,
-        OUTTAKE
+        OUTTAKE,
+        TUNING
     };
 
     struct x
@@ -39,7 +40,7 @@ public:
         bool beamTrip;
         bool unjam;
         units::second_t unjamStart;
-
+        double tuningPower;
     } state;
 
 private:
