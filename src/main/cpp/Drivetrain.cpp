@@ -1,4 +1,5 @@
 #include "Drivetrain.h"
+#include <cmath>
 #include <frc/DriverStation.h>
 #include <iostream>
 #include <math.h>
@@ -442,12 +443,7 @@ void Drivetrain::analyzeDashboard()
         }
     }
 
-    if(frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue){
-        state.distanceFromSpeaker = units::meter_t(sqrtf(powf((calculatedEstimator->GetEstimatedPosition().X() - SPEAKER_BLUE_X).to<double>(), 2) + powf((calculatedEstimator->GetEstimatedPosition().Y() - SPEAKER_Y).to<double>(), 2)));
-    }
-    else{
-        state.distanceFromSpeaker = units::meter_t(sqrtf(powf((calculatedEstimator->GetEstimatedPosition().X() - SPEAKER_RED_X).to<double>(), 2) + powf((calculatedEstimator->GetEstimatedPosition().Y() - SPEAKER_Y).to<double>(), 2)));
-    }
+    state.distanceFromSpeaker = getDistanceFromSpeaker();
 
     auto ppTable = nt::NetworkTableInstance::GetDefault().GetTable("PathPlanner");
     
@@ -493,14 +489,49 @@ void Drivetrain::assignOutputs()
     }
 }
 
+units::meter_t Drivetrain::getDistanceFromSpeaker() {
+    units::meter_t distance = 0_m;
+
+    if(frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue){
+        if (aprilTagSensors[0]->getTagID() == 7 || aprilTagSensors[0]->getTagID() == 8){
+            distance = units::meter_t(
+                sqrtf(powf((aprilTagSensors[0]->getSensor().X() - SPEAKER_BLUE_X).to<double>(), 2) + powf((aprilTagSensors[0]->getSensor().Y() - SPEAKER_Y).to<double>(), 2))
+            );
+        } else {
+            distance = units::meter_t(
+                sqrtf(powf((calculatedEstimator->GetEstimatedPosition().X() - SPEAKER_BLUE_X).to<double>(), 2) + powf((calculatedEstimator->GetEstimatedPosition().Y() - SPEAKER_Y).to<double>(), 2))
+            );
+        }
+    } else {
+        if (aprilTagSensors[0]->getTagID() == 4 || aprilTagSensors[0]->getTagID() == 3) {
+            distance = units::meter_t(
+                sqrtf(powf((aprilTagSensors[0]->getSensor().X() - SPEAKER_RED_X).to<double>(), 2) + powf((aprilTagSensors[0]->getSensor().Y() - SPEAKER_Y).to<double>(), 2))
+            );
+        } else {
+            distance = units::meter_t(
+                sqrtf(powf((calculatedEstimator->GetEstimatedPosition().X() - SPEAKER_RED_X).to<double>(), 2) + powf((calculatedEstimator->GetEstimatedPosition().Y() - SPEAKER_Y).to<double>(), 2))
+            );
+        }
+    }
+
+    return distance;
+}
+
 units::meters_per_second_t Drivetrain::getRobotSpeeds(){
     return units::meters_per_second_t{sqrtf(powf(getRobotRelativeSpeeds().vx.to<double>(), 2) + powf(getRobotRelativeSpeeds().vy.to<double>(), 2))};
 }
 
 void Drivetrain::getSpeakerLockAngleRPS(){
-    units::radian_t targetRotAngle;
     units::meter_t roboXPos = calculatedEstimator->GetEstimatedPosition().X();
     units::meter_t roboYPos = calculatedEstimator->GetEstimatedPosition().Y();
+
+    if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue && (aprilTagSensors[0]->getTagID() == 7 || aprilTagSensors[0]->getTagID() == 8)) {
+        roboXPos = aprilTagSensors[0]->getSensor().X();
+        roboYPos = aprilTagSensors[0]->getSensor().Y();
+    } else if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed && (aprilTagSensors[0]->getTagID() == 4 || aprilTagSensors[0]->getTagID() == 3)) {
+        roboXPos = aprilTagSensors[0]->getSensor().X();
+        roboYPos = aprilTagSensors[0]->getSensor().Y();
+    }
 
     double speakerX = (frc::DriverStation::GetAlliance() == frc::DriverStation::kRed ? SPEAKER_RED_X : SPEAKER_BLUE_X).to<double>();
     double redMultiplier = frc::DriverStation::GetAlliance() == frc::DriverStation::kRed ? -1.0 : 1.0;

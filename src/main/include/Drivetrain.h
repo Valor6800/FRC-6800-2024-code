@@ -238,6 +238,7 @@ public:
      void getSpeakerLockAngleRPS();
      units::radian_t getAngleError();
      double clampAngleRadianRange(units::radian_t angle, double max);
+     units::meter_t getDistanceFromSpeaker();
 
      void setXMode();
 
