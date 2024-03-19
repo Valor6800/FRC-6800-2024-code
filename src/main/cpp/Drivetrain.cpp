@@ -490,10 +490,11 @@ void Drivetrain::assignOutputs()
 }
 
 frc::Pose2d Drivetrain::getPoseFromSpeaker() {
-    if (frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue && (aprilTagSensors[0]->getTagID() == 7 || aprilTagSensors[0]->getTagID() == 8)) {
-        return aprilTagSensors[0]->getSensor().ToPose2d();
-    } else if (frc::DriverStation::GetAlliance() == frc::DriverStation::kRed && (aprilTagSensors[0]->getTagID() == 4 || aprilTagSensors[0]->getTagID() == 3)) {
-        return aprilTagSensors[0]->getSensor().ToPose2d();
+    valor::AprilTagsSensor* tagSensor = aprilTagSensors[3];
+    if (frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue && (tagSensor->getTagID() == 7 || tagSensor->getTagID() == 8)) {
+        return tagSensor->getSensor().ToPose2d();
+    } else if (frc::DriverStation::GetAlliance() == frc::DriverStation::kRed && (tagSensor->getTagID() == 4 || tagSensor->getTagID() == 3)) {
+        return tagSensor->getSensor().ToPose2d();
     }
     return calculatedEstimator->GetEstimatedPosition();
 }
@@ -846,14 +847,14 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
             nullptr
         );
         builder.AddDoubleArrayProperty(
-            "Pose From Speaker",
+            "Pose From Speaker Diff",
             [this]
             {
                 std::vector<double> pose;
                 frc::Pose2d myPos = getPoseFromSpeaker();
-                pose.push_back(myPos.X().to<double>());
-                pose.push_back(myPos.Y().to<double>());
-                pose.push_back(myPos.Rotation().Radians().to<double>());
+                pose.push_back(calculatedEstimator->GetEstimatedPosition().X().to<double>() - myPos.X().to<double>());
+                pose.push_back(calculatedEstimator->GetEstimatedPosition().Y().to<double>() - myPos.Y().to<double>());
+                pose.push_back(calculatedEstimator->GetEstimatedPosition().Rotation().Radians().to<double>() - myPos.Rotation().Radians().to<double>());
                 return pose;
             },
             nullptr
