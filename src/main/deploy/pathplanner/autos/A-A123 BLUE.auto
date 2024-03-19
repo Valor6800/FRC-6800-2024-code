@@ -32,12 +32,6 @@
         {
           "type": "named",
           "data": {
-            "name": "Enable full feeder"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "Set Camera Estimator"
           }
         },

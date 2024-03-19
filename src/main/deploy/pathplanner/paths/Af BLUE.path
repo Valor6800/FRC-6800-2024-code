@@ -84,7 +84,7 @@
     },
     {
       "name": "Feed",
-      "waypointRelativePos": 1.15,
+      "waypointRelativePos": 1.3,
       "command": {
         "type": "parallel",
         "data": {
@@ -105,6 +105,23 @@
               "type": "named",
               "data": {
                 "name": "Enable intake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Feed 2",
+      "waypointRelativePos": 1.9,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Enable full feeder"
               }
             }
           ]
