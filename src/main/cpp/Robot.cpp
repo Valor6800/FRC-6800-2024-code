@@ -39,6 +39,7 @@ Robot::Robot() :
                 autoCommand = valorAuto.getAuto("3-3");
             else
                 autoCommand = valorAuto.getAuto("3-4");
+            autoCommand.Schedule();
         })
     ).ToPtr());
 }
@@ -57,7 +58,8 @@ void Robot::RobotInit() {
     frc::DataLogManager::Start();
 
     valorAuto.fillAutoList();
-
+    valorAuto.preloadAuto("3-3");
+    valorAuto.preloadAuto("3-4");
 }
 /**
  * This function is called every robot packet, no matter the mode. Use
@@ -77,7 +79,7 @@ void Robot::RobotPeriodic() { frc2::CommandScheduler::GetInstance().Run(); }
 void Robot::DisabledInit() { }
 
 void Robot::DisabledPeriodic() { 
-    valorAuto.preloadAuto();
+    valorAuto.preloadSelectedAuto();
 }
 
 /**
@@ -94,7 +96,7 @@ void Robot::AutonomousInit() {
     feeder.resetState();
     shooter.resetState();
 
-    autoCommand = valorAuto.getCurrentAuto();
+    autoCommand = valorAuto.getSelectedAuto();
     autoCommand.Schedule();
 }
 

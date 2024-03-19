@@ -12,20 +12,51 @@ class Auto
 {
     public:
         Auto();
-        void fillAutoList();
-        frc2::CommandPtr getAuto(std::string selection);
-        frc2::CommandPtr getCurrentAuto();
 
-        // "Preloads" an auto to be made available the moment its requested through getCurrentAuto,
-        // as opposed to waiting to load it when getCurrentAuto is called.
-        // Will not re-load if an auto with the provided name is already loaded
-        void preloadAuto();
-        bool newAutoSelected();
+        /**
+         * Fills the SendableChooser with a list of .auto filenames found in ~/deploy/pathplanner/autos key'd with a 
+         * corresponding "human readable" name.
+         */
+        void fillAutoList();
+        
+        /**
+         * Loads a selected pathplanner auto or returns the preloaded auto.
+         *
+         * @param filename Filename of the pathplanner auto to get
+         * @returns The generated auto
+         */
+        frc2::CommandPtr getAuto(std::string filename);
+
+        /**
+         * Loads the auto with the filename selected in the SendableChooser.
+         *
+         * @returns The generated auto.
+         */
+        frc2::CommandPtr getSelectedAuto();
+
+        /**
+         * Loads and stores an auto to be retrieved with getAuto. This cuts out the delay that would normally happen if the auto 
+         * was generated on AutonomousInit.
+         *
+         * Does nothing if an auto with the given filename is already loaded. Use clearAutos to clear the preloaded autos list,
+         * then rebuild them.
+         *
+         * @param filename Filename of the pathplanner auto to preload
+         */
+        void preloadAuto(std::string filename);
+
+        /**
+         * Preloads the auto selected in the SendableChooser.
+         */
+        void preloadSelectedAuto();
+
+        /**
+         * Clears all preloaded autos.
+         */
+        void clearAutos();
 
     private:
-        frc2::CommandPtr loadedAuto = frc2::cmd::Sequence();
-        bool preloadedAuto;
-        std::string previousAutoName;
+        std::vector<std::pair<std::string, frc2::CommandPtr>> loadedAutos;
         frc2::CommandPtr makeAuto(std::string autoName);
         std::shared_ptr<nt::NetworkTable> table;
         frc::SendableChooser<std::string> m_chooser;

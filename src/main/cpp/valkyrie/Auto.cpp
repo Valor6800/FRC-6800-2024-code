@@ -17,34 +17,43 @@ using namespace pathplanner;
 
 Auto::Auto(){
     table = nt::NetworkTableInstance::GetDefault().GetTable("auto");
-    previousAutoName = "";
 }
 
 frc2::CommandPtr Auto::makeAuto(std::string autoName){
     return pathplanner::PathPlannerAuto(autoName).ToPtr();
 }
 
-frc2::CommandPtr Auto::getCurrentAuto(){
+frc2::CommandPtr Auto::getSelectedAuto(){
     std::string selection = m_chooser.GetSelected(); 
     return getAuto(selection);
 }
 
 frc2::CommandPtr Auto::getAuto(std::string selection) {
-    if (preloadedAuto && selection == previousAutoName) {
-        return std::move(loadedAuto);
+    for (uint i = 0; i < loadedAutos.size(); i++) {
+        if (loadedAutos[i].first == selection)
+            return std::move(loadedAutos[i].second);
     }
-    else {
-        return makeAuto(selection);
-    }
+    return makeAuto(selection);
 }
 
-void Auto::preloadAuto(){
-    std::string autoName = m_chooser.GetSelected();
-    if (autoName != previousAutoName){
-        previousAutoName = autoName;
-        loadedAuto = makeAuto(autoName);
-        preloadedAuto = true;
+void Auto::preloadAuto(std::string autoName){
+    for (uint i = 0; i < loadedAutos.size(); i++) {
+        if (loadedAutos[i].first == autoName) {
+            return ;
+        }
     }
+    loadedAutos.push_back({
+        autoName,
+        makeAuto(autoName)
+    });
+}
+
+void Auto::preloadSelectedAuto(){
+    preloadAuto(m_chooser.GetSelected());
+}
+
+void Auto::clearAutos(){
+    loadedAutos.clear();
 }
 
 std::string removeFileType(std::string fileName) {
