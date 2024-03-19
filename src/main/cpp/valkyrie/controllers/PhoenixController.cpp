@@ -99,6 +99,8 @@ void PhoenixController::init(double _rotorToSensor, double _sensorToMech, valor:
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.CurrentLimits.SupplyTimeThreshold = SUPPLY_TIME_THRESHOLD;
     config.CurrentLimits.SupplyCurrentThreshold = SUPPLY_CURRENT_THRESHOLD;
+    config.TorqueCurrent.PeakForwardTorqueCurrent = PEAK_DRIVE_FORWARD_TORQUE_CURRENT;
+    config.TorqueCurrent.PeakReverseTorqueCurrent = PEAK_DRIVE_REVERSE_TORQUE_CURRENT;
 
     setConversion(config.Feedback, _rotorToSensor, _sensorToMech);
     setPIDF(config.Slot0, config.MotionMagic, pidf);
@@ -171,7 +173,6 @@ void PhoenixController::setReverseLimit(double reverse)
     auto _status = motor->GetConfigurator().Apply(config);
     if (_status.IsError()) status = _status;
 }
-
 
 void PhoenixController::setPIDF(valor::PIDF _pidf, int slot)
 {
