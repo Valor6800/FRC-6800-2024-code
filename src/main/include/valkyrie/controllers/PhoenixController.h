@@ -36,6 +36,7 @@ public:
     void enableFOC(bool enableFOC);
     void setSpeed(double);
     void setPower(double);
+    void setTorqueCurrent(double);
 
     void setupFollower(int, bool = false);
     
@@ -71,6 +72,7 @@ private:
     ctre::phoenix6::controls::MotionMagicVoltage req_position;
     ctre::phoenix6::controls::VelocityVoltage req_velocity;
     ctre::phoenix6::controls::VoltageOut req_voltage;
+    ctre::phoenix6::controls::TorqueCurrentFOC req_torqueCurrent;
 
     ctre::phoenix6::StatusSignal<units::turn_t>& res_position;
     ctre::phoenix6::StatusSignal<units::turns_per_second_t>& res_velocity;

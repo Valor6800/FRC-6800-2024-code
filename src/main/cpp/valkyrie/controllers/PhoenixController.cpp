@@ -16,6 +16,12 @@
 #define SUPPLY_CURRENT_LIMIT 45.0f
 #define SUPPLY_TIME_THRESHOLD 0.5f
 
+#define PEAK_DRIVE_FORWARD_TORQUE_CURRENT 80.0f
+#define PEAK_DRIVE_REVERSE_TORQUE_CURRENT -80.0f
+#define PEAK_TURN_FORWARD_TORQUE_CURRENT 40.0f
+#define PEAK_TURN_REVERSE_TORQUE_CURRENT -40.0f
+#define TORQUE_OPEN_LOOP_RAMP 0.02f
+
 #define FALCON_DEADBAND 0.01f
 
 using namespace valor;
@@ -30,6 +36,7 @@ PhoenixController::PhoenixController(int canID,
     req_position(units::turn_t{0}),
     req_velocity(units::turns_per_second_t{0}),
     req_voltage(units::volt_t{0}),
+    req_torqueCurrent(units::ampere_t{0}),
     voltageCompenstation(12.0),
     cancoder(nullptr),
     res_position(motor->GetPosition()),
@@ -52,6 +59,7 @@ PhoenixController::PhoenixController(int canID,
     req_position(units::turn_t{0}),
     req_velocity(units::turns_per_second_t{0}),
     req_voltage(units::volt_t{0}),
+    req_torqueCurrent(units::ampere_t{0}),
     voltageCompenstation(voltageComp),
     res_position(motor->GetPosition()),
     res_velocity(motor->GetVelocity())
@@ -308,6 +316,13 @@ void PhoenixController::setPower(double speed)
     if (_status.IsError()) status = _status;
 }
 
+void PhoenixController::setTorqueCurrent(double amps)
+{
+    req_torqueCurrent.Output = units::make_unit<units::current::ampere_t> (amps);
+    auto _status = motor->SetControl(req_torqueCurrent);
+    if (_status.IsError()) status = _status;
+}
+
 void PhoenixController::setProfile(int profile)
 {
     currentProfile = profile;
@@ -342,6 +357,7 @@ void PhoenixController::setOpenLoopRamp(double time)
 {
     configs::OpenLoopRampsConfigs config{};
     config.DutyCycleOpenLoopRampPeriod = time;
+    config.TorqueOpenLoopRampPeriod = TORQUE_OPEN_LOOP_RAMP;
     auto _status = motor->GetConfigurator().Apply(config);
     if (_status.IsError()) status = _status;
 }
