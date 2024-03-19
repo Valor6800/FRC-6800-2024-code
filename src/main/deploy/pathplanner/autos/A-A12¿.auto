@@ -1,0 +1,79 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.3471626541054011,
+      "y": 6.467440337441439
+    },
+    "rotation": 0.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Set pivot load"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Set Estimator"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Af BLUE"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Set Camera Estimator"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Af-A1 BLUE"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Enable full feeder"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "A-A2 pt 1 BLUE"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "A-A2 pt 2 BLUE"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Enable full feeder"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "A-A3 pt 1"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Comp",
+  "choreoAuto": false
+}

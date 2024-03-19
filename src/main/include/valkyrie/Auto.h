@@ -13,6 +13,7 @@ class Auto
     public:
         Auto();
         void fillAutoList();
+        frc2::CommandPtr getAuto(std::string selection);
         frc2::CommandPtr getCurrentAuto();
 
         // "Preloads" an auto to be made available the moment its requested through getCurrentAuto,

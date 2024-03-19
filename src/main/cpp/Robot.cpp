@@ -6,6 +6,8 @@
 #include <frc/RobotController.h>
 #include <Constants.h>
 
+#include <pathplanner/lib/auto/NamedCommands.h>
+
 #include <ctime>
 #define AUTO_DOUBTX 3.0f;
 #define AUTO_DOUBTY 3.0f;
@@ -29,6 +31,16 @@ Robot::Robot() :
     feederBeamBreak.SetLimitsVoltage(4, 14);
     feederBeamBreak2.SetLimitsVoltage(4, 14);
     intakeBeamBreak.SetLimitsVoltage(4, 14);
+
+    pathplanner::NamedCommands::registerCommand("Reschedule", std::move(
+        frc2::InstantCommand([this](){
+            autoCommand.Cancel();
+            if (feeder.state.beamTrip)
+                autoCommand = valorAuto.getAuto("3-3");
+            else
+                autoCommand = valorAuto.getAuto("3-4");
+        })
+    ).ToPtr());
 }
 
 void Robot::RobotInit() {

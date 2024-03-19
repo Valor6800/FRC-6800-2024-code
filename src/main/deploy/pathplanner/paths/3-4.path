@@ -8,32 +8,54 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.704094231322143,
-        "y": 5.276859180273627
+        "x": 8.273541238922755,
+        "y": 3.7529395910209646
       },
       "isLocked": false,
       "linkedName": "Mid"
     },
     {
       "anchor": {
-        "x": 4.995921632685279,
-        "y": 6.454890284238034
+        "x": 8.288506102185815,
+        "y": 2.4567938870397428
       },
       "prevControl": {
-        "x": 6.488702002649954,
-        "y": 6.638901594426453
+        "x": 8.285184288539874,
+        "y": 3.0756412741124097
+      },
+      "nextControl": {
+        "x": 8.290893773082976,
+        "y": 2.011975467528977
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.346241690964285,
+        "y": 5.05009854095229
+      },
+      "prevControl": {
+        "x": 5.830978261348884,
+        "y": 3.828288160048543
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Score amp"
+      "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.7,
+      "rotationDegrees": -90.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
       "name": "Disable intake",
-      "waypointRelativePos": 0.5,
+      "waypointRelativePos": 1.1,
       "command": {
         "type": "parallel",
         "data": {
@@ -50,7 +72,7 @@
     },
     {
       "name": "Enable shooter",
-      "waypointRelativePos": 0.6000000000000001,
+      "waypointRelativePos": 1.5,
       "command": {
         "type": "parallel",
         "data": {
@@ -80,13 +102,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 10.3,
+    "rotation": -7.100000000000023,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Pick chain",
   "previewStartingState": {
-    "rotation": -59.0,
+    "rotation": -90.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

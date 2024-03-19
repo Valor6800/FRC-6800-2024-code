@@ -26,6 +26,10 @@ frc2::CommandPtr Auto::makeAuto(std::string autoName){
 
 frc2::CommandPtr Auto::getCurrentAuto(){
     std::string selection = m_chooser.GetSelected(); 
+    return getAuto(selection);
+}
+
+frc2::CommandPtr Auto::getAuto(std::string selection) {
     if (preloadedAuto && selection == previousAutoName) {
         return std::move(loadedAuto);
     }
