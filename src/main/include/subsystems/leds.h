@@ -57,7 +57,7 @@ class Leds : public valor::BaseSubsystem
         bool spikedBool=false;
         bool intakingBool=false;
         bool deployedBool=false;
-        bool note_DBool=false;
+        bool beamBroken=false;
         bool note_NOTdetected= false;
         bool autoIsONBool = false;
         bool PITModeBool=false;

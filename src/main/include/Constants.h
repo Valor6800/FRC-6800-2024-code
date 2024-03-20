@@ -52,6 +52,18 @@ namespace LimelightConstants {
     constexpr static int TRACK_MODE_OFF = 1;
 }
 
+namespace ledColors{
+    constexpr static int CYAN= (64, 224, 219);
+    constexpr static int PURPLE=(106, 0, 255);
+    constexpr static int ORANGE=(255, 98, 0);
+    constexpr static int FUCHSIA=(255, 51, 153);
+    constexpr static int BLACK=(0,0,0);
+
+
+
+
+}
+
 namespace DIOPorts {
     constexpr static int MAG_ENCODER_PORTS[4] = {1, 2, 3, 4};
     constexpr static int BEAM_BREAK_PORT = 0;
