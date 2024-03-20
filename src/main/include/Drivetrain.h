@@ -225,8 +225,6 @@ public:
      frc::Pose2d getPose_m();
      frc::Pose2d getCalculatedPose_m();
 
-     frc::Pose2d getCalculatedPose_m();
-
      /**
       * Returns the kinematics object in use by the swerve drive
       * @return kinematics object
