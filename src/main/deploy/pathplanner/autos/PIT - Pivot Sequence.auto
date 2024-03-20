@@ -44,7 +44,19 @@
         {
           "type": "named",
           "data": {
+            "name": "Enable shooter"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Shoot amp"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
           }
         },
         {
