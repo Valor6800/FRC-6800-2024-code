@@ -14,7 +14,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Reset gyro"
+            "name": "Set pivot load"
           }
         },
         {
