@@ -193,7 +193,7 @@ void Drivetrain::resetState()
     resetDriveEncoders();
     resetOdometry(frc::Pose2d{0_m, 0_m, 0_rad});
     state.manualFlag = false;
-    pitMode = false;
+    state.pitMode = false;
 }
 
 void Drivetrain::init()
@@ -237,7 +237,7 @@ void Drivetrain::init()
     thetaPIDF.D = KDT;
 
     state.lock = false;
-    pitMode = false;
+    state.pitMode = false;
 
     table->PutNumber("Vision Std", 3.0);
 
@@ -354,13 +354,11 @@ void Drivetrain::assessInputs()
         state.manualFlag = false;
     }
 
-    if (!pitMode){
-        state.ampAlign = driverGamepad->GetBButton();
-        state.isHeadingTrack = (driverGamepad->leftTriggerActive() && !driverGamepad->GetAButton()) || driverGamepad->GetXButton();
-        state.trapAlign = driverGamepad->GetXButton();
-        state.sourceAlign = driverGamepad->GetYButton();
-        state.thetaLock = driverGamepad->GetAButton();
-    }
+    state.ampAlign = driverGamepad->GetBButton();
+    state.isHeadingTrack = (driverGamepad->leftTriggerActive() && !driverGamepad->GetAButton()) || driverGamepad->GetXButton();
+    state.trapAlign = driverGamepad->GetXButton();
+    state.sourceAlign = driverGamepad->GetYButton();
+    state.thetaLock = driverGamepad->GetAButton();
 
     state.xSpeed = driverGamepad->leftStickY(2);
     state.ySpeed = driverGamepad->leftStickX(2);
@@ -398,7 +396,15 @@ void Drivetrain::calculateCarpetPose()
 void Drivetrain::analyzeDashboard()
 {
     table->PutBoolean("Calculated estimator?", state.useCalculatedEstimator);
-    pitMode = table->GetBoolean("Pit Mode", false);
+    state.pitMode = table->GetBoolean("Pit Mode", false);
+
+    if (state.pitMode){
+        state.ampAlign = false;
+        state.isHeadingTrack = false;
+        state.trapAlign = false;
+        state.sourceAlign = false;
+        state.thetaLock = false;
+    }
 
     if(state.isHeadingTrack) getSpeakerLockAngleRPS();
     else if(state.sourceAlign) setAlignmentAngle(Alignment::SOURCE);
@@ -989,7 +995,7 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
         );
         builder.AddBooleanProperty(
             "Pit Mode",
-            [this] {return pitMode;},
+            [this] {return state.pitMode;},
             nullptr
         );
     }

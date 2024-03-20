@@ -136,6 +136,8 @@ public:
           bool trapAlign;
           bool ampAlign;
 
+          bool pitMode;
+
           int stage;
 
           int trackingID;
@@ -245,7 +247,6 @@ public:
      double teleopStart;
 
      double doubtX, doubtY;
-     bool pitMode;
 
 private:
      
