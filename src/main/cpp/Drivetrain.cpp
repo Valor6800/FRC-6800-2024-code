@@ -987,4 +987,9 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
             },
             nullptr
         );
+        builder.AddBooleanProperty(
+            "Pit Mode",
+            [this] {return pitMode;},
+            nullptr
+        );
     }
