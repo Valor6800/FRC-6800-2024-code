@@ -490,7 +490,7 @@ void Drivetrain::assignOutputs()
 }
 
 frc::Pose2d Drivetrain::getPoseFromSpeaker() {
-    valor::AprilTagsSensor* tagSensor = aprilTagSensors[3];
+    valor::AprilTagsSensor* tagSensor = aprilTagSensors[0];
     if (frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue && (tagSensor->getTagID() == 7 || tagSensor->getTagID() == 8)) {
         return tagSensor->getSensor().ToPose2d();
     } else if (frc::DriverStation::GetAlliance() == frc::DriverStation::kRed && (tagSensor->getTagID() == 4 || tagSensor->getTagID() == 3)) {
@@ -847,14 +847,14 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
             nullptr
         );
         builder.AddDoubleArrayProperty(
-            "Pose From Speaker Diff",
+            "Pose From Speaker",
             [this]
             {
                 std::vector<double> pose;
                 frc::Pose2d myPos = getPoseFromSpeaker();
-                pose.push_back(calculatedEstimator->GetEstimatedPosition().X().to<double>() - myPos.X().to<double>());
-                pose.push_back(calculatedEstimator->GetEstimatedPosition().Y().to<double>() - myPos.Y().to<double>());
-                pose.push_back(calculatedEstimator->GetEstimatedPosition().Rotation().Radians().to<double>() - myPos.Rotation().Radians().to<double>());
+                pose.push_back(myPos.X().to<double>());
+                pose.push_back(myPos.Y().to<double>());
+                pose.push_back(myPos.Rotation().Radians().to<double>());
                 return pose;
             },
             nullptr
