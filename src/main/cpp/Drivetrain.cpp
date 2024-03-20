@@ -87,6 +87,34 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "
     pathplanner::NamedCommands::registerCommand("Wait for A button", std::move(
         frc2::FunctionalCommand([](){}, [](){}, [](bool _b){}, [this](){ return operatorGamepad->GetAButtonPressed(); }, {this})
     ).ToPtr());
+
+    for (double time : {1.0, 4.0, 7.0}) {
+        pathplanner::NamedCommands::registerCommand("Paused wait " + std::to_string(time), std::move(
+            frc2::FunctionalCommand(
+                [this](){
+                    state.timer = 0_s;
+                    state.pressed = false;
+                    state.previousTimestamp = frc::Timer::GetFPGATimestamp();
+                }, 
+                [this](){
+                    if (driverGamepad->GetAButtonPressed())
+                        state.pressed = !state.pressed;
+                    if (state.pressed)
+                        state.timer = 0_s;
+                    else 
+                        state.timer += frc::Timer::GetFPGATimestamp() - state.previousTimestamp;
+                    state.previousTimestamp = frc::Timer::GetFPGATimestamp();
+                },  
+                [this](bool _b){
+
+                }, 
+                [this, time](){
+                    return state.timer >= units::second_t{time};
+                }, 
+                {this}
+            )
+        ).ToPtr());
+    }
 }
 
 Drivetrain::~Drivetrain()

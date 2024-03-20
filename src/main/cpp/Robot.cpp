@@ -6,6 +6,9 @@
 #include <frc/RobotController.h>
 #include <Constants.h>
 
+#include <frc2/command/FunctionalCommand.h>
+#include <pathplanner/lib/auto/NamedCommands.h>
+
 #include <ctime>
 #define AUTO_DOUBTX 3.0f;
 #define AUTO_DOUBTY 3.0f;
@@ -41,7 +44,6 @@ void Robot::RobotInit() {
     frc::DataLogManager::Start();
 
     valorAuto.fillAutoList();
-
 }
 /**
  * This function is called every robot packet, no matter the mode. Use
