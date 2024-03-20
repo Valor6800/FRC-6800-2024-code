@@ -245,6 +245,7 @@ public:
      double teleopStart;
 
      double doubtX, doubtY;
+     bool pitMode;
 
 private:
      

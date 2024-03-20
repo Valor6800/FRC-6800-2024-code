@@ -193,6 +193,7 @@ void Drivetrain::resetState()
     resetDriveEncoders();
     resetOdometry(frc::Pose2d{0_m, 0_m, 0_rad});
     state.manualFlag = false;
+    pitMode = false;
 }
 
 void Drivetrain::init()
@@ -235,6 +236,9 @@ void Drivetrain::init()
     thetaPIDF.I = KIT;
     thetaPIDF.D = KDT;
 
+    state.lock = false;
+    pitMode = false;
+
     table->PutNumber("Vision Std", 3.0);
 
     table->PutNumber("Vision Acceptance", VISION_ACCEPTANCE.to<double>() );
@@ -245,8 +249,8 @@ void Drivetrain::init()
     table->PutNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET);
 
     table->PutBoolean("Accepting Vision Measurements", true);
+    table->PutBoolean("Pit Mode", false);
 
-    state.lock = false;
 
     resetState();
 
@@ -350,11 +354,13 @@ void Drivetrain::assessInputs()
         state.manualFlag = false;
     }
 
-    state.ampAlign = driverGamepad->GetBButton();
-    state.isHeadingTrack = (driverGamepad->leftTriggerActive() && !driverGamepad->GetAButton()) || driverGamepad->GetXButton();
-    state.trapAlign = driverGamepad->GetXButton();
-    state.sourceAlign = driverGamepad->GetYButton();
-    state.thetaLock = driverGamepad->GetAButton();
+    if (!pitMode){
+        state.ampAlign = driverGamepad->GetBButton();
+        state.isHeadingTrack = (driverGamepad->leftTriggerActive() && !driverGamepad->GetAButton()) || driverGamepad->GetXButton();
+        state.trapAlign = driverGamepad->GetXButton();
+        state.sourceAlign = driverGamepad->GetYButton();
+        state.thetaLock = driverGamepad->GetAButton();
+    }
 
     state.xSpeed = driverGamepad->leftStickY(2);
     state.ySpeed = driverGamepad->leftStickX(2);
@@ -392,6 +398,8 @@ void Drivetrain::calculateCarpetPose()
 void Drivetrain::analyzeDashboard()
 {
     table->PutBoolean("Calculated estimator?", state.useCalculatedEstimator);
+    pitMode = table->GetBoolean("Pit Mode", false);
+
     if(state.isHeadingTrack) getSpeakerLockAngleRPS();
     else if(state.sourceAlign) setAlignmentAngle(Alignment::SOURCE);
     else if(state.ampAlign) setAlignmentAngle(Alignment::AMP);
