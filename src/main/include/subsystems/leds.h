@@ -63,6 +63,7 @@ class Leds : public valor::BaseSubsystem
         bool PITModeBool=false;
         bool trackingBool= false;
         bool jammedBool = false;
+        bool isEnabled=false;
 
         CANdleSensor candle;
         Feeder *feeder;

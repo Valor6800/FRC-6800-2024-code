@@ -68,6 +68,8 @@ public:
         int green;
         int blue;
     };
+
+    
     /**
      * @brief Represents a Segment of LEDs with their own settings
     */
