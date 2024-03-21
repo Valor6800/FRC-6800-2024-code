@@ -119,12 +119,6 @@
             {
               "type": "named",
               "data": {
-                "name": "Set pivot far low"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
                 "name": "Enable shooter"
               }
             }

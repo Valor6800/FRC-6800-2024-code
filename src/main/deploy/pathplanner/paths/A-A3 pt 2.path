@@ -50,7 +50,7 @@
     },
     {
       "name": "Enable shooter",
-      "waypointRelativePos": 0.6000000000000001,
+      "waypointRelativePos": 0.35,
       "command": {
         "type": "parallel",
         "data": {
@@ -59,12 +59,6 @@
               "type": "named",
               "data": {
                 "name": "Enable shooter"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "Set pivot far high"
               }
             }
           ]

@@ -55,7 +55,7 @@
     {
       "name": "Hold",
       "minWaypointRelativePos": 0.9,
-      "maxWaypointRelativePos": 1.85,
+      "maxWaypointRelativePos": 2.0,
       "constraints": {
         "maxVelocity": 1.0,
         "maxAcceleration": 3.5,

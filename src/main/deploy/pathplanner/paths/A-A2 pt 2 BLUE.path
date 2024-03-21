@@ -47,12 +47,6 @@
             {
               "type": "named",
               "data": {
-                "name": "Set pivot far high"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
                 "name": "Enable shooter"
               }
             }

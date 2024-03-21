@@ -49,7 +49,8 @@ void Auto::preloadAuto(std::string autoName){
 }
 
 void Auto::preloadSelectedAuto(){
-    preloadAuto(m_chooser.GetSelected());
+    if (m_chooser.GetSelected() != "")
+        preloadAuto(m_chooser.GetSelected());
 }
 
 void Auto::clearAutos(){
