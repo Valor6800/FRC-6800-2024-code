@@ -58,7 +58,8 @@ using namespace pathplanner;
 #define DRIVETRAIN_CAN_BUS "" //rev
 #define PIGEON_CAN_BUS "baseCAN" //phoenix
 
-#define KP_ROTATE -0.9f
+#define KP_ROTATE -1.4f
+#define KD_ROTATE -30.0f
 #define SPEAKER_X_OFFSET 0.00f
 #define SPEAKER_Y_OFFSET 0.00f
 
@@ -246,6 +247,7 @@ void Drivetrain::init()
 
     table->PutNumber("KPLIMELIGHT", KP_LIMELIGHT);
     table->PutNumber("KP_ROTATION", KP_ROTATE);
+    table->PutNumber("KD_ROTATION", KD_ROTATE);
     table->PutNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET);
     table->PutNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET);
 
@@ -466,7 +468,10 @@ void Drivetrain::analyzeDashboard()
 void Drivetrain::assignOutputs()
 {
     double kPRot = table->GetNumber("KP_ROTATION", KP_ROTATE);
-    state.angleRPS = units::angular_velocity::radians_per_second_t{getAngleError().to<double>()*kPRot*rotMaxSpeed};
+    double kDRot = table->GetNumber("KD_ROTATION", KD_ROTATE);
+    double error = getAngleError().to<double>();
+    state.angleRPS = units::angular_velocity::radians_per_second_t{error*kPRot*rotMaxSpeed + (error - state.prevError) * kDRot};
+    state.prevError = error;
     state.xSpeedMPS = units::velocity::meters_per_second_t{state.xSpeed * driveMaxSpeed};
     state.ySpeedMPS = units::velocity::meters_per_second_t{state.ySpeed * driveMaxSpeed};
     if (frc::DriverStation::GetAlliance() == frc::DriverStation::kRed) {
@@ -491,10 +496,16 @@ void Drivetrain::assignOutputs()
 
 frc::Pose2d Drivetrain::getPoseFromSpeaker() {
     valor::AprilTagsSensor* tagSensor = aprilTagSensors[0];
-    if (frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue && (tagSensor->getTagID() == 7 || tagSensor->getTagID() == 8)) {
-        return tagSensor->getSensor().ToPose2d();
-    } else if (frc::DriverStation::GetAlliance() == frc::DriverStation::kRed && (tagSensor->getTagID() == 4 || tagSensor->getTagID() == 3)) {
-        return tagSensor->getSensor().ToPose2d();
+    table->PutNumber("translation norm", tagSensor->getPoseFromAprilTag().Translation().Norm().to<double>());
+    if (tagSensor->getPoseFromAprilTag().Translation().Norm() < 4.7_m) {
+        if (frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue && (tagSensor->getTagID() == 7 || tagSensor->getTagID() == 8)) {
+            table->PutBoolean("good to shoot", true);
+            return tagSensor->getSensor().ToPose2d();
+        } else if (frc::DriverStation::GetAlliance() == frc::DriverStation::kRed && (tagSensor->getTagID() == 4 || tagSensor->getTagID() == 3)) {
+            table->PutBoolean("good to shoot", true);
+            return tagSensor->getSensor().ToPose2d();
+        }
+        table->PutBoolean("good to shoot", false);
     }
     return calculatedEstimator->GetEstimatedPosition();
 }
