@@ -155,7 +155,6 @@ void Feeder::init()
     feederDebounceSensor.setRisingEdgeCallback([this] {
         state.beamTrip = true;
         state.unjam = true;
-        state.notein = false;
         feederMotor.setPower(FEEDER_UNJAM_POWER);
         state.unjamStart = frc::Timer::GetFPGATimestamp();
         intakeMotor.setPower(0);
@@ -186,14 +185,12 @@ void Feeder::assessInputs()
     if (driverGamepad->rightTriggerActive()) {
         state.intakeState = ROLLER_STATE::SHOOT;
         state.feederState = ROLLER_STATE::SHOOT;
-        state.notein = false;
-    } else if (driverGamepad->GetRightBumper() && !state.notein) {
+    } else if (driverGamepad->GetRightBumper()) {
         state.intakeState = ROLLER_STATE::INTAKE;
         state.feederState = ROLLER_STATE::INTAKE;
     } else if(driverGamepad->GetLeftBumper()) {
         state.intakeState = ROLLER_STATE::OUTTAKE;
         state.feederState = ROLLER_STATE::OUTTAKE;
-        state.notein = false;
     } else {
         state.intakeState = ROLLER_STATE::STAGNANT;
         state.feederState = ROLLER_STATE::STAGNANT;
@@ -222,8 +219,6 @@ void Feeder::analyzeDashboard()
     if (driverGamepad != nullptr && driverGamepad->IsConnected() && !(frc::DriverStation::IsTeleop() && frc::DriverStation::IsEnabled()))
         driverGamepad->setRumble(false);
 
-    if(!intakeBeamBreak->GetInWindow()) 
-        state.notein = true;
 }
 
 void Feeder::assignOutputs()
