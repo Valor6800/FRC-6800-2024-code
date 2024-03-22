@@ -254,11 +254,15 @@ void Feeder::assignOutputs()
             feederMotor.setPower(FEEDER_FORWARD_POWER);
         } else if(state.feederState == ROLLER_STATE::INTAKE) {
             if(state.bothFeederBeamBreakTripped){
-                //50% decrease in power if both beam breaks are tripped
+                //100% decrease in power if both beam breaks are tripped
+                feederMotor.setPower(0);
+            }
+            else if(state.beamTrip){
+                //50% decrease in power if one of the beam breaks are tripped
                 feederMotor.setPower(FEEDER_FORWARD_POWER  * FEEDER_SPEED_DECREASE);
             }
             else{
-                feederMotor.setPower(state.beamTrip ? 0 : FEEDER_FORWARD_POWER);
+                feederMotor.setPower(0);
             }
         } else if(state.feederState == ROLLER_STATE::OUTTAKE) {
             feederMotor.setPower(FEEDER_REVERSE_POWER);
