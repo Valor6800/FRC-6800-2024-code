@@ -227,15 +227,8 @@ void Feeder::assignOutputs()
         intakeMotor.setPower(INTAKE_FORWARD_POWER);
         intakeBackMotor.setPower(INTAKE_FORWARD_POWER);
     } else if(state.intakeState == ROLLER_STATE::INTAKE) {
-        //if both(or one) beam breaks are tripped, stop the intake
-        if(state.bothFeederBeamBreakTripped || state.beamTrip){
-            intakeMotor.setPower(0);
-            intakeBackMotor.setPower(0);
-        }
-        else{
-            intakeMotor.setPower(INTAKE_FORWARD_POWER);
-            intakeBackMotor.setPower(INTAKE_FORWARD_POWER);
-        }
+        intakeMotor.setPower((state.bothFeederBeamBreakTripped || state.beamTrip) ? 0 : INTAKE_FORWARD_POWER);
+        intakeBackMotor.setPower((state.bothFeederBeamBreakTripped || state.beamTrip) ? 0 : INTAKE_FORWARD_POWER);
     } else if(state.intakeState == ROLLER_STATE::OUTTAKE) {
         intakeMotor.setPower(INTAKE_REVERSE_POWER);
         intakeBackMotor.setPower(INTAKE_REVERSE_POWER);
@@ -253,17 +246,7 @@ void Feeder::assignOutputs()
         if (state.feederState == ROLLER_STATE::SHOOT) {
             feederMotor.setPower(FEEDER_FORWARD_POWER);
         } else if(state.feederState == ROLLER_STATE::INTAKE) {
-            if(state.bothFeederBeamBreakTripped){
-                //100% decrease in power if both beam breaks are tripped
-                feederMotor.setPower(0);
-            }
-            else if(state.beamTrip){
-                //50% decrease in power if one of the beam breaks are tripped
-                feederMotor.setPower(FEEDER_FORWARD_POWER  * FEEDER_SPEED_DECREASE);
-            }
-            else{
-                feederMotor.setPower(0);
-            }
+            feederMotor.setPower((state.bothFeederBeamBreakTripped) ? 0 : (state.beamTrip ? FEEDER_SPEED_DECREASE : FEEDER_FORWARD_POWER));
         } else if(state.feederState == ROLLER_STATE::OUTTAKE) {
             feederMotor.setPower(FEEDER_REVERSE_POWER);
         } else {
