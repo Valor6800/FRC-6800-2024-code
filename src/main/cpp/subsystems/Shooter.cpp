@@ -310,12 +310,7 @@ void Shooter::assessInputs()
         state.pivotOffset = 0.0;
     }
 
-    switch(state.pivotState) {
-    case PIVOT_STATE::TRACKING:
-        trackingTest = true;
-    default:
-        trackingTest = false;
-    }
+
 
 }
 
@@ -414,9 +409,6 @@ void Shooter::assignOutputs()
 }
 
 
-bool Shooter::getTrackingState(){
-    return trackingTest;
-}
 
  
 void Shooter::calculatePivotAngle(){

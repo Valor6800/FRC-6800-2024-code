@@ -50,7 +50,7 @@ void Leds::analyzeDashboard(){
     if(isEnabled){
          candle.setColor(1, CANdleSensor::RGBColor(ledColors::BLUE));
     }else{
-        candle.setColor(1, CANdleSensor::RGBColor(ledColors::YELLOW)); 
+        candle.setColor(1, CANdleSensor::RGBColor(ledColors::BLACK)); 
 
     }
     if (autoIsONBool) {
