@@ -50,13 +50,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "A-A2 pt 1 BLUE"
+            "pathName": "A-A2 BLUE"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "A-A2 pt 2 BLUE"
+            "pathName": null
           }
         },
         {
@@ -68,7 +68,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "A-A3 pt 1"
+            "pathName": "A-A3"
           }
         },
         {

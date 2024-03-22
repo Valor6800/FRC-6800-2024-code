@@ -110,23 +110,6 @@
           ]
         }
       }
-    },
-    {
-      "name": "Feed 2",
-      "waypointRelativePos": 1.9,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Enable full feeder"
-              }
-            }
-          ]
-        }
-      }
     }
   ],
   "globalConstraints": {

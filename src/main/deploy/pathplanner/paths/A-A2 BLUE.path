@@ -20,12 +20,28 @@
         "y": 5.83
       },
       "prevControl": {
-        "x": 7.125330225648875,
-        "y": 6.172496152693404
+        "x": 7.105101355490902,
+        "y": 6.106861546609651
+      },
+      "nextControl": {
+        "x": 8.471645668262402,
+        "y": 5.7340720331035575
+      },
+      "isLocked": false,
+      "linkedName": "Scorch BLUE"
+    },
+    {
+      "anchor": {
+        "x": 4.995921632685279,
+        "y": 6.454890284238034
+      },
+      "prevControl": {
+        "x": 6.672331489845271,
+        "y": 6.334672178205757
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Scorch BLUE"
+      "linkedName": "Score amp"
     }
   ],
   "rotationTargets": [
@@ -82,6 +98,40 @@
           ]
         }
       }
+    },
+    {
+      "name": "Disable intake",
+      "waypointRelativePos": 1.25,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Disable full feeder"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Enable shooter",
+      "waypointRelativePos": 1.4,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Enable shooter"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "globalConstraints": {
@@ -92,7 +142,7 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": -21.126365561991683,
+    "rotation": 9.0,
     "rotateFast": false
   },
   "reversed": false,

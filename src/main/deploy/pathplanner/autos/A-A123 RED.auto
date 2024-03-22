@@ -122,13 +122,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "A-A3 pt 1"
+            "pathName": "A-A3"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "A-A3 pt 2"
+            "pathName": null
           }
         },
         {
