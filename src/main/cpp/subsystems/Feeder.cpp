@@ -18,6 +18,7 @@
 #define INTAKE_REVERSE_POWER -1.0f
 
 #define FEEDER_FORWARD_POWER 0.5f
+#define FEEDER_SPEED_DECREASE 0.5f
 #define FEEDER_INTAKE_POWER 0.3f
 #define FEEDER_REVERSE_POWER -0.5f
 #define FEEDER_UNJAM_POWER -0.2f
@@ -181,7 +182,6 @@ void Feeder::assessInputs()
 {
     if (driverGamepad == nullptr || !driverGamepad->IsConnected())
         return;
-
     if (driverGamepad->rightTriggerActive()) {
         state.intakeState = ROLLER_STATE::SHOOT;
         state.feederState = ROLLER_STATE::SHOOT;
@@ -204,8 +204,11 @@ void Feeder::analyzeDashboard()
     if (table->GetBoolean("Tuning", false)) {
         state.intakeState = ROLLER_STATE::TUNING;
     }
+    state.bothFeederBeamBreakTripped = !feederBeamBreak->GetInWindow() && !feederBeamBreak2->GetInWindow();
+
     if (state.feederState == ROLLER_STATE::SHOOT || state.feederState == ROLLER_STATE::OUTTAKE) {
         state.beamTrip = false;
+        state.bothFeederBeamBreakTripped = false;
         driverGamepad->setRumble(false);
     }
     leds->setColor(1, state.beamTrip ? valor::CANdleSensor::LIGHT_BLUE : valor::CANdleSensor::RED);
@@ -225,8 +228,15 @@ void Feeder::assignOutputs()
         intakeMotor.setPower(INTAKE_FORWARD_POWER);
         intakeBackMotor.setPower(INTAKE_FORWARD_POWER);
     } else if(state.intakeState == ROLLER_STATE::INTAKE) {
-        intakeMotor.setPower(state.beamTrip ? 0 : INTAKE_FORWARD_POWER);
-        intakeBackMotor.setPower(state.beamTrip ? 0 : INTAKE_FORWARD_POWER);
+        //if both(or one) beam breaks are tripped, stop the intake
+        if(state.bothFeederBeamBreakTripped || state.beamTrip){
+            intakeMotor.setPower(0);
+            intakeBackMotor.setPower(0);
+        }
+        else{
+            intakeMotor.setPower(INTAKE_FORWARD_POWER);
+            intakeBackMotor.setPower(INTAKE_FORWARD_POWER);
+        }
     } else if(state.intakeState == ROLLER_STATE::OUTTAKE) {
         intakeMotor.setPower(INTAKE_REVERSE_POWER);
         intakeBackMotor.setPower(INTAKE_REVERSE_POWER);
@@ -244,7 +254,13 @@ void Feeder::assignOutputs()
         if (state.feederState == ROLLER_STATE::SHOOT) {
             feederMotor.setPower(FEEDER_FORWARD_POWER);
         } else if(state.feederState == ROLLER_STATE::INTAKE) {
-            feederMotor.setPower(state.beamTrip ? 0 : FEEDER_FORWARD_POWER);
+            if(state.bothFeederBeamBreakTripped){
+                //50% decrease in power if both beam breaks are tripped
+                feederMotor.setPower(FEEDER_FORWARD_POWER  * FEEDER_SPEED_DECREASE);
+            }
+            else{
+                feederMotor.setPower(state.beamTrip ? 0 : FEEDER_FORWARD_POWER);
+            }
         } else if(state.feederState == ROLLER_STATE::OUTTAKE) {
             feederMotor.setPower(FEEDER_REVERSE_POWER);
         } else {
@@ -272,6 +288,12 @@ void Feeder::InitSendable(wpi::SendableBuilder& builder)
     builder.AddBooleanProperty(
         "Beam Trip",
         [this]{return state.beamTrip;},
+        nullptr
+    );
+
+    builder.AddBooleanProperty(
+        "Both Beam Breaks Tripped",
+        [this]{return state.bothFeederBeamBreakTripped;},
         nullptr
     );
 
