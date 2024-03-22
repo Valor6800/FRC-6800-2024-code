@@ -26,14 +26,27 @@ namespace valor
 
             void InitSendable(wpi::SendableBuilder& builder) override;
 
-            units::meter_t normalVisionOutlier = 5.5_m;
+            units::meter_t normalVisionOutlier = 4.5_m;
             void applyVisionMeasurement(frc::SwerveDrivePoseEstimator<4> *estimator, units::velocity::meters_per_second_t speed, bool accept = true, double doubtX = 1, double doubtY = 1, double doubtRot = 1);
+
             frc::Pose3d getPoseFromAprilTag();
+
+            units::meter_t getDistanceToRobot();
+            units::meter_t getDistanceToCamera();
+
+            double getTagCount();
+            double getTagAmbiguity();
 
         private:
             frc::Pose3d getGlobalPose() override;
             units::meter_t distance{0_m};
             double dp, vp;
-            
+            double ambiguity, tagCount;
+            units::meter_t distanceToCamera, distanceToRobot;
+
+            void updateMiscValues();
+    
+            std::vector<double> botPose;
+            std::vector<double> botToTargetPose;
     };
 } // namespace valor

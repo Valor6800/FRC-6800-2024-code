@@ -25,9 +25,9 @@ AprilTagsSensor::AprilTagsSensor(frc::TimedRobot* robot, const char *name, frc::
 
 frc::Pose3d AprilTagsSensor::getGlobalPose() {
     if (!hasTarget()) return frc::Pose3d();
-    std::vector<double> botPose = limeTable->GetNumberArray("botpose_wpiblue", std::span<double>());
+    botPose = limeTable->GetNumberArray("botpose_wpiblue", std::span<double>());
     
-    std::vector<double> botToTargetPose = limeTable->GetNumberArray("botpose_targetspace", std::span<const double>());
+    botToTargetPose = limeTable->GetNumberArray("botpose_targetspace", std::span<const double>());
     if (botToTargetPose.size() == 6) distance = units::meter_t(sqrtf(powf(botToTargetPose[0], 2) + powf(botToTargetPose[1], 2) + powf(botToTargetPose[2], 2)));
     else distance = 0_m;
 
@@ -45,8 +45,6 @@ frc::Pose3d AprilTagsSensor::getGlobalPose() {
 
 frc::Pose3d AprilTagsSensor::getPoseFromAprilTag() {
     if (!hasTarget()) return frc::Pose3d();
-
-    std::vector<double> botToTargetPose = limeTable->GetNumberArray("botpose_targetspace", std::span<const double>());
 
     return frc::Pose3d(
         (units::meter_t) botToTargetPose[0],
@@ -95,6 +93,16 @@ int AprilTagsSensor::getTagID(){
 
     return limeTable->GetNumber("tid", -1);
 }
+
+void AprilTagsSensor::updateMiscValues() { return; }
+
+units::meter_t AprilTagsSensor::getDistanceToRobot() { return 0.0_m; }
+
+units::meter_t AprilTagsSensor::getDistanceToCamera() { return 0.0_m; }
+
+double AprilTagsSensor::getTagCount() { return 0.0; }
+
+double AprilTagsSensor::getTagAmbiguity() { return 0.0; }
 
 void AprilTagsSensor::InitSendable(wpi::SendableBuilder& builder) {
     builder.SetSmartDashboardType("Subsystem");
