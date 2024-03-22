@@ -48,33 +48,33 @@ void Leds::analyzeDashboard(){
 
 
     if(isEnabled){
-         candle.setColor(1, CANdleSensor::RGBColor(ledColors::BLUE));
+         candle.setColor(0, CANdleSensor::RGBColor(ledColors::BLUE));
     }else{
-        candle.setColor(1, CANdleSensor::RGBColor(ledColors::BLACK)); 
+        candle.setColor(0, CANdleSensor::RGBColor(ledColors::BLACK)); 
 
     }
     if (autoIsONBool) {
-        candle.setColor(2, CANdleSensor::RGBColor(ledColors::CYAN));
+        candle.setColor(1, CANdleSensor::RGBColor(ledColors::CYAN));
     } else {
-        candle.setColor(2, CANdleSensor::RGBColor(ledColors::BLACK)); 
+        candle.setColor(1, CANdleSensor::RGBColor(ledColors::BLACK)); 
     }
 
     if (intakingBool) {
-        candle.setColor(3, CANdleSensor::RGBColor(ledColors::PURPLE)); 
+        candle.setColor(2, CANdleSensor::RGBColor(ledColors::PURPLE)); 
+    } else {
+        candle.setColor(2, CANdleSensor::RGBColor(ledColors::BLACK));
+    }
+
+    if (trackingBool) {
+        candle.setColor(3, CANdleSensor::RGBColor(ledColors::ORANGE));
     } else {
         candle.setColor(3, CANdleSensor::RGBColor(ledColors::BLACK));
     }
 
-    if (trackingBool) {
-        candle.setColor(4, CANdleSensor::RGBColor(ledColors::ORANGE));
+    if (beamBroken) {
+        candle.setColor(4, CANdleSensor::RGBColor(ledColors::FUCHSIA));
     } else {
         candle.setColor(4, CANdleSensor::RGBColor(ledColors::BLACK));
-    }
-
-    if (beamBroken) {
-        candle.setColor(5, CANdleSensor::RGBColor(ledColors::FUCHSIA));
-    } else {
-        candle.setColor(5, CANdleSensor::RGBColor(ledColors::BLACK));
     }
 }
 
