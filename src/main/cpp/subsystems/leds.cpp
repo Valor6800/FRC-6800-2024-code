@@ -14,7 +14,7 @@
 #define WRIST_FORWARD_LIMIT 325.0f
 #define WRIST_REVERSE_LIMIT -325.0f
 
-Leds::Leds(frc::TimedRobot *_robot, Feeder *_feeder, Shooter *_shooter) :
+Leds::Leds(frc::TimedRobot *_robot, Shooter*_shooter, Feeder *_feeder) :
 valor::BaseSubsystem(_robot, "Leds"), feeder(_feeder), shooter(_shooter),
 candle(_robot, LED_COUNT, 5, CANIDs::CANDLE, "") //empty during testing
 {
@@ -42,7 +42,7 @@ void Leds::analyzeDashboard(){
     isEnabled=frc::DriverStation::IsEnabled();
 
     autoIsONBool= robot-> IsAutonomousEnabled();
-    intakingBool=feeder-> state.feederState = Feeder::ROLLER_STATE::INTAKE;
+    intakingBool = (feeder->state.feederState == Feeder::ROLLER_STATE::INTAKE);
     beamBroken= feeder->state.beamTrip;
     trackingBool= shooter ->state.pivotState == Shooter::PIVOT_STATE::TRACKING;
 

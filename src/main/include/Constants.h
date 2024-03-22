@@ -53,13 +53,13 @@ namespace LimelightConstants {
 }
 
 namespace ledColors{
-    constexpr static int CYAN= 0x40E0DB;
-    constexpr static int PURPLE=0x6A00FF;
-    constexpr static int ORANGE=0xFF6400;
-    constexpr static int FUCHSIA=0xFF3399;
-    constexpr static int BLACK=0x000000;
-    constexpr static int YELLOW= 0xFFFF00;
-    constexpr static int BLUE=0x0000FF;
+    constexpr static int CYAN = 0x40E0DB;
+    constexpr static int PURPLE = 0x6A00FF;
+    constexpr static int ORANGE = 0xFF6400;
+    constexpr static int FUCHSIA = 0xFF3399;
+    constexpr static int BLACK = 0x000000;
+    constexpr static int YELLOW = 0xFFFF00;
+    constexpr static int BLUE = 0x0000FF;
 }
 
 namespace DIOPorts {

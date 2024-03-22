@@ -22,7 +22,7 @@
 class Leds : public valor::BaseSubsystem
 {
     public:
-        Leds(frc::TimedRobot *robot, Feeder *feeder, Shooter *shooter);
+        Leds(frc::TimedRobot *robot, Shooter *shooter, Feeder *feeder);
         CANdleSensor::RGBColor value;
         
         void init();
@@ -65,8 +65,9 @@ class Leds : public valor::BaseSubsystem
         bool jammedBool = false;
         bool isEnabled=false;
 
-        CANdleSensor candle;
         Feeder *feeder;
         Shooter *shooter;
+        CANdleSensor candle;
+
         
 };

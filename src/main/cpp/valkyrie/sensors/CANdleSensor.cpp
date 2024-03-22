@@ -28,6 +28,7 @@ CANdleSensor::CANdleSensor(frc::TimedRobot *_robot, int _ledCount, int _segments
     //286
     for (int i = 0; i<segments + 1; i++){
         SegmentSettings newSegment;
+        newSegment.recentlyChanged=false;
         newSegment.currentColor = toRGB(VALOR_GOLD);
         newSegment.activeAnimation = NULL;
         newSegment.activeAnimationType = AnimationType::None;
@@ -61,26 +62,14 @@ CANdleSensor::~CANdleSensor()
 
 void CANdleSensor::setColor(int segment, RGBColor rgb)
 {
-    segmentMap[segment].currentColor = rgb;
-    candle.SetLEDs(
-        segmentMap[segment].currentColor.red,
-        segmentMap[segment].currentColor.green,
-        segmentMap[segment].currentColor.blue,
-        0,
-        segmentMap[segment].startLed,
-        segmentMap[segment].endLed
-    );
-    if(segment == 1){
-        segmentMap[0].currentColor = rgb;
-        candle.SetLEDs(
-        segmentMap[0].currentColor.red,
-        segmentMap[0].currentColor.green,
-        segmentMap[0].currentColor.blue,
-        0,
-        segmentMap[0].startLed,
-        segmentMap[0].endLed
-    );
+    segment++;
+    if (segment>=segmentMap.size()){
+        return;
     }
+
+    segmentMap[segment].recentlyChanged=true;
+    segmentMap[segment].currentColor = rgb;
+    calculate();     
 }
 void CANdleSensor::setColor(RGBColor rgb)
 {
@@ -101,10 +90,18 @@ void CANdleSensor::setAnimation(AnimationType animation, RGBColor color, double 
 }
 
 void CANdleSensor::setAnimation(int segment, AnimationType animation,RGBColor color, double speed)
+
 {
+    segment++;
+        if (segment>=segmentMap.size()){
+        return;
+    }
     int brightness = 1;
 
     if (animation != segmentMap[segment].activeAnimationType) {
+        
+
+    segmentMap[segment].recentlyChanged=true;
         clearAnimation(segment);
         // setColor(segment, color);
         // setColor(segmentMap[segment].currentColor);
@@ -241,7 +238,23 @@ void CANdleSensor::reset()
 }
 
 void CANdleSensor::calculate()
+
 {
+    for(auto segment : segmentMap) {
+    if (segment.second.recentlyChanged){
+        candle.SetLEDs(
+        segment.second.currentColor.red,
+        segment.second.currentColor.green,
+        segment.second.currentColor.blue,
+        0,
+        segment.second.startLed,
+        segment.second.endLed
+    );
+       
+  }
+  segmentMap[segment.first].recentlyChanged=true;
+ }
+
 }
 
 void CANdleSensor::InitSendable(wpi::SendableBuilder& builder)

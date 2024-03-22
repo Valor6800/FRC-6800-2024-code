@@ -79,6 +79,7 @@ public:
         AnimationType activeAnimationType;
         int startLed;
         int endLed;
+        bool recentlyChanged;
     };
 
 

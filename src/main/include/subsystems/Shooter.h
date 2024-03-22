@@ -96,6 +96,5 @@ private:
 
     valor::NeoController leftFlywheelMotor;
     valor::NeoController rightFlywheelMotor;
-    bool trackingTest;
 
 };

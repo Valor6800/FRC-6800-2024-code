@@ -135,7 +135,6 @@ void Feeder::resetState()
     state.intakeState = STAGNANT;
     state.feederState = STAGNANT;
     state.unjam = false;
-    intakeTest=false;
 
 }
 
