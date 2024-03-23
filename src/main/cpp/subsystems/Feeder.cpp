@@ -217,10 +217,10 @@ void Feeder::analyzeDashboard()
         driverGamepad->setRumble(false);
 
     if (state.feederState == Feeder::ROLLER_STATE::INTAKE) {
-        leds->setColor(0, valor::CANdleSensor::LIGHT_BLUE);
+        leds->setColor(2, valor::CANdleSensor::LIGHT_BLUE);
         
     }else{
-        leds->setColor(0, valor::CANdleSensor::RED);
+        leds->setColor(2, valor::CANdleSensor::RED);
     }
 }
 
