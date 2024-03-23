@@ -373,7 +373,7 @@ void PhoenixController::InitSendable(wpi::SendableBuilder& builder)
         nullptr);
     builder.AddDoubleProperty(
         "Processor Temp", 
-        [this] { return motor->GetDeviceTemp().GetValueAsDouble(); },
+        [this] { return motor->GetProcessorTemp().GetValueAsDouble(); },
         nullptr);
     builder.AddDoubleProperty(
         "Position", 
