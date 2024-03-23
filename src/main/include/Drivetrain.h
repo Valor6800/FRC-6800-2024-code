@@ -296,6 +296,7 @@ private:
      PoseTracker currentPoseTracker;
      PoseTracker targetPoseTracker;
      PoseTracker unfilteredPoseTracker;
+     
 
      valor::CANdleSensor *leds;
 };
