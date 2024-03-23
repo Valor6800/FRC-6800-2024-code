@@ -24,7 +24,7 @@
 
 #define USE_UNJAM true
 
-Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _feederBeamBreak, frc::AnalogTrigger* _intakeBeamBreak, frc::AnalogTrigger* _feederBeamBreak2) :
+Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _feederBeamBreak, frc::AnalogTrigger* _intakeBeamBreak, frc::AnalogTrigger* _feederBeamBreak2, valor::CANdleSensor* _leds) :
     valor::BaseSubsystem(_robot, "Feeder"),
     intakeMotor(CANIDs::INTERNAL_INTAKE, valor::NeutralMode::Coast, true),
     intakeBackMotor(CANIDs::INTERNAL_INTAKE_V2, valor::NeutralMode::Coast, true),
@@ -33,7 +33,8 @@ Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _feederBeamBreak, fr
     feederDebounceSensor(_robot, "FeederBanner"),
     feederBeamBreak2(_feederBeamBreak2),
     intakeBeamBreak(_intakeBeamBreak),
-    intakeDebounceSensor(_robot, "IntakeBanner")
+    intakeDebounceSensor(_robot, "IntakeBanner"),
+    leds(_leds)
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -158,6 +159,10 @@ void Feeder::init()
         intakeMotor.setPower(0);
         intakeBackMotor.setPower(0);
         driverGamepad->setRumble(true);
+        // leds->setAnimation(1, valor::CANdleSensor::AnimationType::Fire, valor::CANdleSensor::RGBColor(255,0,0));
+    });
+    feederDebounceSensor.setFallingEdgeCallback([this] {
+        // leds->clearAnimation(1);
     });
 
     intakeDebounceSensor.setGetter([this] { return !intakeBeamBreak->GetInWindow(); });
@@ -197,6 +202,7 @@ void Feeder::analyzeDashboard()
         state.beamTrip = false;
         driverGamepad->setRumble(false);
     }
+    leds->setColor(1, state.beamTrip ? 0x00FF00: 0xFF0000);
     blinkin.SetPulseTime(state.beamTrip ? LED_ON : LED_OFF);
     if (state.unjam && (frc::Timer::GetFPGATimestamp() - state.unjamStart) > 0.06_s) {
         state.unjam = false;

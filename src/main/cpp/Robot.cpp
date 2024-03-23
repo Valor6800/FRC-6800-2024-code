@@ -12,14 +12,18 @@
 #define TELE_DOUBTX 0.75f;
 #define TELE_DOUBTY 0.75f;
 
+#define LED_COUNT 65
+#define SEGMENTS 2
+
 Robot::Robot() : 
-    drivetrain(this),
+    leds(this, LED_COUNT, SEGMENTS, CANIDs::CANDLE, ""),
+    drivetrain(this, &leds),
     valorAuto(),
     feederBeamBreak(AnalogPorts::FEEDER_BEAM_BREAK_PORT),
     feederBeamBreak2(AnalogPorts::FEEDER_BEAM_BREAK2_PORT),
     intakeBeamBreak(AnalogPorts::INTAKE_BEAM_BREAK_PORT),
     shooter(this, &drivetrain, &feederBeamBreak, &feederBeamBreak2),
-    feeder(this, &feederBeamBreak, &intakeBeamBreak, &feederBeamBreak2)
+    feeder(this, &feederBeamBreak, &intakeBeamBreak, &feederBeamBreak2, &leds)
 {
     frc::TimedRobot();
     feederBeamBreak.SetLimitsVoltage(4, 14);

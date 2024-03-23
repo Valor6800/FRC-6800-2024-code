@@ -13,6 +13,7 @@
 #include "valkyrie/controllers/PhoenixController.h"
 #include "valkyrie/controllers/NeoController.h"
 #include "valkyrie/controllers/PIDF.h"
+#include "valkyrie/sensors/CANdleSensor.h"
 
 #include "PoseTracker.h"
 
@@ -78,7 +79,7 @@ public:
       * 
       * @param robot Top level robot object to parse out smart dashboard and table information
       */
-     Drivetrain(frc::TimedRobot *robot);
+     Drivetrain(frc::TimedRobot *robot, valor::CANdleSensor *_leds);
 
      /**
       * @brief Destroy the Drivetrain object
@@ -295,4 +296,6 @@ private:
      PoseTracker currentPoseTracker;
      PoseTracker targetPoseTracker;
      PoseTracker unfilteredPoseTracker;
+
+     valor::CANdleSensor *leds;
 };

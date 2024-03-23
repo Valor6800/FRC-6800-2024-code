@@ -7,12 +7,13 @@
 #include <frc/DigitalInput.h>
 #include <frc/PWM.h>
 #include "valkyrie/sensors/DebounceSensor.h"
+#include "valkyrie/sensors/CANdleSensor.h"
 
 class Feeder : public valor::BaseSubsystem
 {
 public:
 
-    Feeder(frc::TimedRobot *, frc::AnalogTrigger*, frc::AnalogTrigger*, frc::AnalogTrigger*);
+    Feeder(frc::TimedRobot *, frc::AnalogTrigger*, frc::AnalogTrigger*, frc::AnalogTrigger*, valor::CANdleSensor*);
 
     void resetState();
     void init();
@@ -54,4 +55,6 @@ private:
     valor::DebounceSensor feederDebounceSensor;
     frc::AnalogTrigger* intakeBeamBreak;
     valor::DebounceSensor intakeDebounceSensor;
+
+     valor::CANdleSensor *leds;
 };

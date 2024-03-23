@@ -11,6 +11,7 @@
 
 #include "Drivetrain.h"
 #include "subsystems/Shooter.h"
+#include "valkyrie/sensors/CANdleSensor.h"
 
 #include "valkyrie/Auto.h"
 
@@ -46,6 +47,7 @@ class Robot : public frc::TimedRobot {
 
         frc2::CommandPtr autoCommand = frc2::cmd::Sequence();
 
+        valor::CANdleSensor leds;
         Drivetrain drivetrain;
         valor::Auto valorAuto;
         frc::AnalogTrigger feederBeamBreak;
