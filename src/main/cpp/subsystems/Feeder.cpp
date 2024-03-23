@@ -18,7 +18,7 @@
 #define INTAKE_REVERSE_POWER -1.0f
 
 #define FEEDER_FORWARD_POWER 0.5f
-#define FEEDER_INTAKE_POWER 0.3f
+#define FEEDER_INTAKE_POWER 0.2f
 #define FEEDER_REVERSE_POWER -0.5f
 #define FEEDER_UNJAM_POWER -0.2f
 
@@ -153,9 +153,7 @@ void Feeder::init()
     feederDebounceSensor.setGetter([this] { return (!feederBeamBreak->GetInWindow() || !feederBeamBreak2->GetInWindow()); });
     feederDebounceSensor.setRisingEdgeCallback([this] {
         state.beamTrip = true;
-        state.unjam = true;
-        feederMotor.setPower(FEEDER_UNJAM_POWER);
-        state.unjamStart = frc::Timer::GetFPGATimestamp();
+        feederMotor.setPower(FEEDER_INTAKE_POWER);
         intakeMotor.setPower(0);
         intakeBackMotor.setPower(0);
         driverGamepad->setRumble(true);
@@ -213,13 +211,11 @@ void Feeder::analyzeDashboard()
 
     if (state.feederState == ROLLER_STATE::SHOOT || state.feederState == ROLLER_STATE::OUTTAKE) {
         state.beamTrip = false;
+        state.bothFeederBeamBreakTripped = false;
         driverGamepad->setRumble(false);
     }
     leds->setColor(1, state.beamTrip ? valor::CANdleSensor::LIGHT_BLUE : valor::CANdleSensor::RED);
     blinkin.SetPulseTime(state.beamTrip ? LED_ON : LED_OFF);
-    if (state.unjam && (frc::Timer::GetFPGATimestamp() - state.unjamStart) > 0.06_s) {
-        state.unjam = false;
-    }
     if (driverGamepad != nullptr && driverGamepad->IsConnected() && !(frc::DriverStation::IsTeleop() && frc::DriverStation::IsEnabled()))
         driverGamepad->setRumble(false);
 
@@ -244,18 +240,15 @@ void Feeder::assignOutputs()
         intakeBackMotor.setPower(0);
     }
     
-    if (state.unjam && USE_UNJAM) {
-        feederMotor.setPower(FEEDER_UNJAM_POWER);
+    if (state.feederState == ROLLER_STATE::SHOOT) {
+        feederMotor.setPower(FEEDER_FORWARD_POWER);
+    } else if(state.feederState == ROLLER_STATE::INTAKE) {
+        //25 is optimal
+        feederMotor.setPower(state.bothFeederBeamBreakTripped ? 0 : (state.beamTrip ? (FEEDER_INTAKE_POWER) : FEEDER_FORWARD_POWER));
+    } else if(state.feederState == ROLLER_STATE::OUTTAKE) {
+        feederMotor.setPower(FEEDER_REVERSE_POWER);
     } else {
-        if (state.feederState == ROLLER_STATE::SHOOT) {
-            feederMotor.setPower(FEEDER_FORWARD_POWER);
-        } else if(state.feederState == ROLLER_STATE::INTAKE) {
-            feederMotor.setPower(state.bothFeederBeamBreakTripped ? 0 : (state.beamTrip ? (FEEDER_FORWARD_POWER*0.3) : FEEDER_FORWARD_POWER));
-        } else if(state.feederState == ROLLER_STATE::OUTTAKE) {
-            feederMotor.setPower(FEEDER_REVERSE_POWER);
-        } else {
-            feederMotor.setPower(0);
-        }
+        feederMotor.setPower(0);
     }
 }
 
