@@ -30,7 +30,7 @@ using namespace pathplanner;
 #define SPEAKER_BLUE_X 0.0_m
 #define SPEAKER_RED_X 16.4846_m
 
-#define SHOOTING_TIME 0.1f
+#define SHOOTING_TIME 0.5f // in seconds
 
 #define TXRANGE  30.0f
 #define KPIGEON 2.0f
@@ -452,6 +452,9 @@ void Drivetrain::analyzeDashboard()
 
     state.distanceFromSpeaker = getDistanceFromSpeaker();
 
+    state.chassisXSpeed = getRobotRelativeSpeeds().vx;
+    state.chassisYSpeed = getRobotRelativeSpeeds().vy;
+
     auto ppTable = nt::NetworkTableInstance::GetDefault().GetTable("PathPlanner");
     
     std::vector<double> bp = ppTable->GetNumberArray("currentPose", std::array<double, 3>{0, 0, 0});
@@ -468,6 +471,10 @@ void Drivetrain::analyzeDashboard()
         units::radian_t{tp[2]}
     }, frc::Timer::GetFPGATimestamp());
     unfilteredPoseTracker.addReading(getPose_m(), frc::Timer::GetFPGATimestamp());
+
+    units::meter_t futureRobotX = units::meter_t((0.5*state.accel.x.to<double>()*(pow(SHOOTING_TIME, 2))) + (state.chassisXSpeed.to<double>()*SHOOTING_TIME) + getCalculatedPose_m().X().to<double>());
+    units::meter_t futureRobotY = units::meter_t((0.5*state.accel.y.to<double>()*(pow(SHOOTING_TIME, 2))) + (state.chassisYSpeed.to<double>()*SHOOTING_TIME) + getCalculatedPose_m().Y().to<double>());
+    state.futurePose = frc::Pose2d(futureRobotX, futureRobotY, getCalculatedPose_m().Rotation());
 }
 
 void Drivetrain::assignOutputs()
@@ -555,20 +562,7 @@ units::radian_t Drivetrain::getSpeakerLockAngleFromPose(frc::Pose2d pose){
 }
 
 void Drivetrain::lockOnTheMove(){
-    double fixedShotTime = table->GetNumber("Shooting Time", SHOOTING_TIME);
-
-    frc::Pose2d robotOrigPose = getCalculatedPose_m();
-    units::meters_per_second_t robotVelocityX = state.xSpeedMPS;
-    units::meters_per_second_t robotVelocityY = state.ySpeedMPS;
-
-    units::meters_per_second_squared_t robotAccelX = state.accel.x;
-    units::meters_per_second_squared_t robotAccelY = state.accel.y;
-
-    units::meter_t futureRobotX = units::meter_t((0.5*robotAccelX.to<double>()*(pow(fixedShotTime, 2))) + (robotVelocityX.to<double>()*fixedShotTime) + robotOrigPose.X().to<double>());
-    units::meter_t futureRobotY = units::meter_t((0.5*robotAccelY.to<double>()*(pow(fixedShotTime, 2))) + (robotVelocityY.to<double>()*fixedShotTime) + robotOrigPose.Y().to<double>());
-    frc::Pose2d robotFuturePose = frc::Pose2d(futureRobotX, futureRobotY, robotOrigPose.Rotation());
-
-    state.targetAngle = getSpeakerLockAngleFromPose(robotFuturePose);
+    state.targetAngle = getSpeakerLockAngleFromPose(state.futurePose);
 }
 
 units::radian_t Drivetrain::getAngleError(){
