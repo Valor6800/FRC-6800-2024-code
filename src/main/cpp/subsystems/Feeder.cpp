@@ -18,7 +18,6 @@
 #define INTAKE_REVERSE_POWER -1.0f
 
 #define FEEDER_FORWARD_POWER 0.5f
-#define FEEDER_SPEED_DECREASE 0.3f
 #define FEEDER_INTAKE_POWER 0.3f
 #define FEEDER_REVERSE_POWER -0.5f
 #define FEEDER_UNJAM_POWER -0.2f
@@ -200,11 +199,17 @@ void Feeder::assessInputs()
 
 void Feeder::analyzeDashboard()
 {
+<<<<<<< HEAD
     state.tuningPower = table->PutNumber("Intake tuning speed", INTAKE_FORWARD_POWER);
     if (table->GetBoolean("Tuning", false)) {
         state.intakeState = ROLLER_STATE::TUNING;
     }
     state.bothFeederBeamBreakTripped = !feederBeamBreak->GetInWindow() && !feederBeamBreak2->GetInWindow();
+=======
+    if(!feederBeamBreak->GetInWindow() && !feederBeamBreak2->GetInWindow()){
+        state.bothFeederBeamBreakTripped = true;
+    }
+>>>>>>> 25ea0e6 (structure update)
 
     if (state.feederState == ROLLER_STATE::SHOOT || state.feederState == ROLLER_STATE::OUTTAKE) {
         state.beamTrip = false;
@@ -227,8 +232,8 @@ void Feeder::assignOutputs()
         intakeMotor.setPower(INTAKE_FORWARD_POWER);
         intakeBackMotor.setPower(INTAKE_FORWARD_POWER);
     } else if(state.intakeState == ROLLER_STATE::INTAKE) {
-        intakeMotor.setPower((state.beamTrip) ? 0 : INTAKE_FORWARD_POWER);
-        intakeBackMotor.setPower((state.beamTrip) ? 0 : INTAKE_FORWARD_POWER);
+        intakeMotor.setPower(state.beamTrip ? 0 : INTAKE_FORWARD_POWER);
+        intakeBackMotor.setPower(state.beamTrip ? 0 : INTAKE_FORWARD_POWER);
     } else if(state.intakeState == ROLLER_STATE::OUTTAKE) {
         intakeMotor.setPower(INTAKE_REVERSE_POWER);
         intakeBackMotor.setPower(INTAKE_REVERSE_POWER);
@@ -246,7 +251,7 @@ void Feeder::assignOutputs()
         if (state.feederState == ROLLER_STATE::SHOOT) {
             feederMotor.setPower(FEEDER_FORWARD_POWER);
         } else if(state.feederState == ROLLER_STATE::INTAKE) {
-            feederMotor.setPower((state.bothFeederBeamBreakTripped) ? 0 : (state.beamTrip ? FEEDER_SPEED_DECREASE : FEEDER_FORWARD_POWER));
+            feederMotor.setPower((state.bothFeederBeamBreakTripped) ? 0 : (state.beamTrip ? (FEEDER_FORWARD_POWER*0.3) : FEEDER_FORWARD_POWER));
         } else if(state.feederState == ROLLER_STATE::OUTTAKE) {
             feederMotor.setPower(FEEDER_REVERSE_POWER);
         } else {
