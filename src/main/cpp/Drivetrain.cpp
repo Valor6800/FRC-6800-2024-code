@@ -500,17 +500,17 @@ frc::Pose2d Drivetrain::getPoseFromSpeaker() {
     table->PutNumber("translation norm", tagSensor->getPoseFromAprilTag().Translation().Norm().to<double>());
     if (tagSensor->getPoseFromAprilTag().Translation().Norm() < 4.7_m) {
         if (frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue && (tagSensor->getTagID() == 7 || tagSensor->getTagID() == 8)) {
-            leds->setColor(0, 0x00FF00);
+            leds->setColor(0, valor::CANdleSensor::LIGHT_BLUE);
             table->PutBoolean("good to shoot", true);
             return tagSensor->getSensor().ToPose2d();
         } else if (frc::DriverStation::GetAlliance() == frc::DriverStation::kRed && (tagSensor->getTagID() == 4 || tagSensor->getTagID() == 3)) {
-            leds->setColor(0, 0x00FF00);
+            leds->setColor(0, valor::CANdleSensor::LIGHT_BLUE);
             table->PutBoolean("good to shoot", true);
             return tagSensor->getSensor().ToPose2d();
         }
         table->PutBoolean("good to shoot", false);
     }
-    leds->setColor(0, 0xFF0000);
+    leds->setColor(0, valor::CANdleSensor::RED);
     return calculatedEstimator->GetEstimatedPosition();
 }
 

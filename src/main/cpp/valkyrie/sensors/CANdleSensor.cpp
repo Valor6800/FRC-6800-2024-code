@@ -2,8 +2,6 @@
 
 #include <string>
 
-#define VALOR_GOLD 0xEEA800
-
 using namespace valor;
 
 CANdleSensor::CANdleSensor(frc::TimedRobot *_robot, int _ledCount, int _segments, int _canID, std::string _canbus) :

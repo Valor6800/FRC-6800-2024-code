@@ -202,7 +202,7 @@ void Feeder::analyzeDashboard()
         state.beamTrip = false;
         driverGamepad->setRumble(false);
     }
-    leds->setColor(1, state.beamTrip ? 0x00FF00: 0xFF0000);
+    leds->setColor(1, state.beamTrip ? valor::CANdleSensor::LIGHT_BLUE : valor::CANdleSensor::RED);
     blinkin.SetPulseTime(state.beamTrip ? LED_ON : LED_OFF);
     if (state.unjam && (frc::Timer::GetFPGATimestamp() - state.unjamStart) > 0.06_s) {
         state.unjam = false;
