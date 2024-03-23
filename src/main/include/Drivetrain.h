@@ -138,6 +138,7 @@ public:
           bool ampAlign;
 
           bool pitMode;
+          bool isLockAzimuth;
 
           int stage;
 
@@ -245,10 +246,12 @@ public:
      frc::Pose2d getPoseFromSpeaker();
 
      void setXMode();
+     void lockAzimuth();
 
      frc2::InstantCommand* getSetXMode();
 
      void setDriveMotorNeutralMode(valor::NeutralMode mode);
+     void setAzimuthMotorNeutralMode(valor::NeutralMode mode);
      double teleopStart;
 
      double doubtX, doubtY;

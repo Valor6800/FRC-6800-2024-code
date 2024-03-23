@@ -254,7 +254,7 @@ void Drivetrain::init()
 
     table->PutBoolean("Accepting Vision Measurements", true);
     table->PutBoolean("Pit Mode", false);
-
+    table->PutBoolean("Lock Azimuths", false);
 
     resetState();
 
@@ -400,6 +400,7 @@ void Drivetrain::calculateCarpetPose()
 void Drivetrain::analyzeDashboard()
 {
     table->PutBoolean("Calculated estimator?", state.useCalculatedEstimator);
+    state.isLockAzimuth = table->GetBoolean("Lock Azimuths", false);
     state.pitMode = table->GetBoolean("Pit Mode", false);
 
     if (state.pitMode){
@@ -488,6 +489,10 @@ void Drivetrain::assignOutputs()
         drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
     }
 
+    if (state.isLockAzimuth){
+        lockAzimuth();
+    }
+    
     if (frc::Timer::GetFPGATimestamp().to<double>() - teleopStart > TIME_TELEOP_VERT && frc::Timer::GetFPGATimestamp().to<double>() - teleopStart < TIME_TELEOP_VERT + 3) {
         operatorGamepad->setRumble(true);
     } else {
@@ -743,10 +748,26 @@ void Drivetrain::setXMode(){
     setDriveMotorNeutralMode(valor::NeutralMode::Brake);
 }
 
+void Drivetrain::lockAzimuth()
+{
+    azimuthControllers[0]->setPosition(0);
+    azimuthControllers[1]->setPosition(0);
+    azimuthControllers[2]->setPosition(0);
+    azimuthControllers[3]->setPosition(0);
+    setAzimuthMotorNeutralMode(valor::NeutralMode::Brake);
+}
+
 void Drivetrain::setDriveMotorNeutralMode(valor::NeutralMode mode) {
     for (int i = 0; i < SWERVE_COUNT; i++)
     {
         driveControllers[i]->setNeutralMode(mode);
+    }
+}
+
+void Drivetrain::setAzimuthMotorNeutralMode(valor::NeutralMode mode) {
+    for (int i = 0; i < SWERVE_COUNT; i++)
+    {
+        azimuthControllers[i]->setNeutralMode(mode);
     }
 }
 
