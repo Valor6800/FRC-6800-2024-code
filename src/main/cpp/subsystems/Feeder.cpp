@@ -227,8 +227,8 @@ void Feeder::assignOutputs()
         intakeMotor.setPower(INTAKE_FORWARD_POWER);
         intakeBackMotor.setPower(INTAKE_FORWARD_POWER);
     } else if(state.intakeState == ROLLER_STATE::INTAKE) {
-        intakeMotor.setPower((state.bothFeederBeamBreakTripped || state.beamTrip) ? 0 : INTAKE_FORWARD_POWER);
-        intakeBackMotor.setPower((state.bothFeederBeamBreakTripped || state.beamTrip) ? 0 : INTAKE_FORWARD_POWER);
+        intakeMotor.setPower((state.beamTrip) ? 0 : INTAKE_FORWARD_POWER);
+        intakeBackMotor.setPower((state.beamTrip) ? 0 : INTAKE_FORWARD_POWER);
     } else if(state.intakeState == ROLLER_STATE::OUTTAKE) {
         intakeMotor.setPower(INTAKE_REVERSE_POWER);
         intakeBackMotor.setPower(INTAKE_REVERSE_POWER);
