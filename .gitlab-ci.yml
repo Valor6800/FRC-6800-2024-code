@@ -25,6 +25,20 @@ doxygen:
     paths:
       - public
 
+format:
+  stage: build
+  script:
+    - apt-get install -y software-properties-common
+    - add-apt-repository ppa:deadsnakes/ppa
+    - add-apt-repository ppa:git-core/ppa
+    - apt-get update
+    - apt-get install -y python3.8 git
+    - pip install wpiformat
+    - git checkout -b pr
+    - git branch -f main origin/main
+    - wpiformat
+    - git --no-pager diff --exit-code HEAD
+
 pages:
   stage: deploy
   script:
