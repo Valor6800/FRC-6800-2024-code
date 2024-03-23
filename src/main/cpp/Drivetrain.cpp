@@ -497,12 +497,12 @@ void Drivetrain::assignOutputs()
     }
 
      if (frc::Timer::GetFPGATimestamp().to<double>() - teleopStart > 109.5 && frc::Timer::GetFPGATimestamp().to<double>() - teleopStart < TIME_TELEOP_VERT + 3) {
-            leds->setColor(valor::CANdleSensor::VALOR_GOLD);
+            leds->setAnimation(valor::CANdleSensor::AnimationType::Rainbow, valor::CANdleSensor::RGBColor(255,0,0));
 
 }
 
     if (frc::Timer::GetFPGATimestamp().to<double>() - teleopStart > 134.5) {
-            leds->setColor(valor::CANdleSensor::VALOR_GOLD);
+            leds->setAnimation(valor::CANdleSensor::AnimationType::Fire, valor::CANdleSensor::RGBColor(255,0,0));
 
 }
 
