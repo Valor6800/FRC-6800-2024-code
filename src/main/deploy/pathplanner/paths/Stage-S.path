@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.2276993378494865,
-        "y": 5.543495501559868
+        "x": 4.227878418864477,
+        "y": 5.37
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.6535493172824953,
-        "y": 5.543495501559868
+        "x": 3.6537283982974857,
+        "y": 5.37
       },
       "isLocked": false,
       "linkedName": "Score stage"
@@ -17,15 +17,15 @@
     {
       "anchor": {
         "x": 2.890018068152122,
-        "y": 5.572019226189894
+        "y": 5.37
       },
       "prevControl": {
         "x": 3.390018068152122,
-        "y": 5.572019226189894
+        "y": 5.37
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Rex"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
