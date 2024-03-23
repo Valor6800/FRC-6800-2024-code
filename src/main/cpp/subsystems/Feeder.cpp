@@ -167,11 +167,13 @@ void Feeder::init()
 
     intakeDebounceSensor.setGetter([this] { return !intakeBeamBreak->GetInWindow(); });
     intakeDebounceSensor.setRisingEdgeCallback([this] {
-        driverGamepad->setRumble(true);
         if (true) {
             intakeMotor.setPower(INTAKE_FORWARD_POWER * .75);
             intakeBackMotor.setPower(INTAKE_REVERSE_POWER * .75);
         }
+    });
+    intakeDebounceSensor.setFallingEdgeCallback([this] {
+        driverGamepad->setRumble(true);
     });
 
     table->PutNumber("Intake tuning speed", INTAKE_FORWARD_POWER);
