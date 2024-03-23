@@ -39,8 +39,6 @@ public:
         ROLLER_STATE intakeState;
         bool beamTrip;
         bool bothFeederBeamBreakTripped;
-        bool unjam;
-        units::second_t unjamStart;
         double tuningPower;
     } state;
 

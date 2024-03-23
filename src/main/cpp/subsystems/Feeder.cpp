@@ -20,9 +20,6 @@
 #define FEEDER_FORWARD_POWER 0.5f
 #define FEEDER_INTAKE_POWER 0.2f
 #define FEEDER_REVERSE_POWER -0.5f
-#define FEEDER_UNJAM_POWER -0.2f
-
-#define USE_UNJAM true
 
 Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _feederBeamBreak, frc::AnalogTrigger* _intakeBeamBreak, frc::AnalogTrigger* _feederBeamBreak2, valor::CANdleSensor* _leds) :
     valor::BaseSubsystem(_robot, "Feeder"),
@@ -135,7 +132,6 @@ void Feeder::resetState()
     blinkin.SetPulseTime(LED_OFF);
     state.intakeState = STAGNANT;
     state.feederState = STAGNANT;
-    state.unjam = false;
 }
 
 void Feeder::init()
@@ -202,8 +198,10 @@ void Feeder::analyzeDashboard()
         state.intakeState = ROLLER_STATE::TUNING;
     }
     
-    state.bothFeederBeamBreakTripped = !feederBeamBreak->GetInWindow() && !feederBeamBreak2->GetInWindow();
     if(!feederBeamBreak->GetInWindow() && !feederBeamBreak2->GetInWindow()){
+        state.bothFeederBeamBreakTripped = true;
+    }
+    else if(!feederBeamBreak2->GetInWindow()){
         state.bothFeederBeamBreakTripped = true;
     }
 
@@ -242,8 +240,7 @@ void Feeder::assignOutputs()
     if (state.feederState == ROLLER_STATE::SHOOT) {
         feederMotor.setPower(FEEDER_FORWARD_POWER);
     } else if(state.feederState == ROLLER_STATE::INTAKE) {
-        //25 is optimal
-        feederMotor.setPower(state.bothFeederBeamBreakTripped ? 0 : (state.beamTrip ? (FEEDER_INTAKE_POWER) : FEEDER_FORWARD_POWER));
+        feederMotor.setPower(state.bothFeederBeamBreakTripped ? 0 : (state.beamTrip ? FEEDER_INTAKE_POWER : FEEDER_FORWARD_POWER));
     } else if(state.feederState == ROLLER_STATE::OUTTAKE) {
         feederMotor.setPower(FEEDER_REVERSE_POWER);
     } else {
@@ -276,12 +273,6 @@ void Feeder::InitSendable(wpi::SendableBuilder& builder)
     builder.AddBooleanProperty(
         "Both Beam Breaks Tripped",
         [this]{return state.bothFeederBeamBreakTripped;},
-        nullptr
-    );
-
-    builder.AddBooleanProperty(
-        "Unjam",
-        [this]{return state.unjam;},
         nullptr
     );
 }
