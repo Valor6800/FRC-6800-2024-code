@@ -47,14 +47,16 @@
 #define LEFT_BLOOP_POWER 32.0f
 #define RIGHT_BLOOP_POWER 27.0f
 
-Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive, frc::AnalogTrigger* _feederBeamBreak, frc::AnalogTrigger* _feederBeamBreak2) :
+Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive, frc::AnalogTrigger* _feederBeamBreak, frc::AnalogTrigger* _feederBeamBreak2, valor::CANdleSensor* _leds) :
     valor::BaseSubsystem(_robot, "Shooter"),
     pivotMotors(nullptr),
     feederBeamBreak(_feederBeamBreak),
     feederBeamBreak2(_feederBeamBreak2),
     leftFlywheelMotor(CANIDs::LEFT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, true),
     rightFlywheelMotor(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false),
-    drivetrain(_drive)
+    drivetrain(_drive),
+    leds(_leds)
+
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -344,6 +346,15 @@ void Shooter::analyzeDashboard()
     }
     table->PutNumber("On other side", state.otherSide);
     calculatePivotAngle();
+
+
+    if(leftFlywheelMotor.getSpeed() > 53){
+        leds->setColor(2, valor::CANdleSensor::LIGHT_BLUE);
+
+    }else{
+        leds->setColor(2, valor::CANdleSensor::RED);
+    }
+
 }
 
 void Shooter::assignOutputs()

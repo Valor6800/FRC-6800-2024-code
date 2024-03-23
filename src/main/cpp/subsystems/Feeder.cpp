@@ -216,12 +216,7 @@ void Feeder::analyzeDashboard()
     if (driverGamepad != nullptr && driverGamepad->IsConnected() && !(frc::DriverStation::IsTeleop() && frc::DriverStation::IsEnabled()))
         driverGamepad->setRumble(false);
 
-    if (state.feederState == Feeder::ROLLER_STATE::INTAKE) {
-        leds->setColor(2, valor::CANdleSensor::LIGHT_BLUE);
-        
-    }else{
-        leds->setColor(2, valor::CANdleSensor::RED);
-    }
+    
 }
 
 void Feeder::assignOutputs()
