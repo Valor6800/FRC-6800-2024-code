@@ -59,6 +59,7 @@ class VisionSensor : public valor::BaseSensor<frc::Pose3d> {
 
         frc::Pose3d cameraPose;
         std::shared_ptr<nt::NetworkTable> limeTable;
+        std::vector<double> hw;
 
         void calculate() override;
 };

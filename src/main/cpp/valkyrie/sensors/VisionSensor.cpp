@@ -15,7 +15,7 @@ VisionSensor::VisionSensor(frc::TimedRobot* robot, const char *name, frc::Pose3d
 }
 
 bool VisionSensor::inExistence() {
-    return limeTable->GetInstance().IsConnected(); // test
+    return hw.size() > 0 && hw[1] > 0.0; // test
 }
 
 void VisionSensor::setCameraPose(frc::Pose3d camPose){
@@ -44,7 +44,7 @@ void VisionSensor::setPipe(PipeLines _pipe) {
 }
 
 bool VisionSensor::hasTarget() {
-    return limeTable != nullptr && tv == 1;
+    return limeTable != nullptr && inExistence() && tv == 1;
 }
 
 units::millisecond_t VisionSensor::getTotalLatency() {

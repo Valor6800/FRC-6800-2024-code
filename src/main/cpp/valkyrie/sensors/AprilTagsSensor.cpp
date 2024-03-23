@@ -114,7 +114,7 @@ void AprilTagsSensor::InitSendable(wpi::SendableBuilder& builder) {
     builder.AddDoubleProperty("tx", [this]{ return tx;}, nullptr);
     builder.AddDoubleProperty("ty", [this]{ return ty;}, nullptr);
     builder.AddBooleanProperty("hasTarget", [this]{ return hasTarget();}, nullptr);
-    builder.AddBooleanProperty("limeTableExist", [this] {return limeTable != nullptr;}, nullptr);
+    builder.AddBooleanProperty("limeTableExist", [this] {return inExistence();}, nullptr);
     builder.AddDoubleArrayProperty(
         "cameraPose",
         [this]
