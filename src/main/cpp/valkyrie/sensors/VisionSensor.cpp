@@ -73,6 +73,7 @@ void VisionSensor::calculate(){
         return;
     }
 
+
     tv = limeTable->GetNumber("tv", 0.0);
     tx = limeTable->GetNumber("tx", 0.0);
     ty = limeTable->GetNumber("ty", 0.0);
