@@ -85,6 +85,24 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "Stage-S"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Enable full feeder"
+          }
+        },
+        {
           "type": "wait",
           "data": {
             "waitTime": 0.2

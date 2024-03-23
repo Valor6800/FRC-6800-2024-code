@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 8.101284216189319,
-        "y": 7.408995884961123
+        "x": 8.079310712368532,
+        "y": 7.300023235607814
       },
       "prevControl": {
-        "x": 7.916094972289077,
-        "y": 7.404863202457073
+        "x": 7.89412146846829,
+        "y": 7.295890553103764
       },
       "nextControl": {
-        "x": 8.239389654271207,
-        "y": 7.4120778454230525
+        "x": 8.21741615045042,
+        "y": 7.303105196069743
       },
       "isLocked": false,
       "linkedName": "Northstar blue"
@@ -61,7 +61,19 @@
       "rotateFast": false
     }
   ],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 1.3,
+      "maxWaypointRelativePos": 2.0,
+      "constraints": {
+        "maxVelocity": 4.0,
+        "maxAcceleration": 3.5,
+        "maxAngularVelocity": 720.0,
+        "maxAngularAcceleration": 1600.0
+      }
+    }
+  ],
   "eventMarkers": [
     {
       "name": "Intake",
@@ -105,7 +117,7 @@
     },
     {
       "name": "Disable intake",
-      "waypointRelativePos": 1.15,
+      "waypointRelativePos": 1.3,
       "command": {
         "type": "sequential",
         "data": {
@@ -129,7 +141,7 @@
   ],
   "globalConstraints": {
     "maxVelocity": 4.0,
-    "maxAcceleration": 4.0,
+    "maxAcceleration": 5.0,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1600.0
   },

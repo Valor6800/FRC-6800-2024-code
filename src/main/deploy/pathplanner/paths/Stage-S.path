@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.6536797469211257,
-        "y": 4.087365499528453
+        "x": 4.2276993378494865,
+        "y": 5.543495501559868
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.046549287582863,
-        "y": 4.087365499528453
+        "x": 3.6535493172824953,
+        "y": 5.543495501559868
       },
       "isLocked": false,
-      "linkedName": "Powerloader"
+      "linkedName": "Score stage"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 5.572019226189894
       },
       "prevControl": {
-        "x": 1.5827146991956014,
-        "y": 5.550569558467452
+        "x": 3.390018068152122,
+        "y": 5.572019226189894
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,20 +30,38 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0.1,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Enable intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.0,
-    "maxAcceleration": 5.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1600.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0,
+    "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "FirstPick",
   "previewStartingState": null,
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
