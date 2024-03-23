@@ -167,6 +167,7 @@ public:
           int pitSequenceCommandIndex;
 
           double prevError;
+          double bonk = 0;
      } state;
      
      
