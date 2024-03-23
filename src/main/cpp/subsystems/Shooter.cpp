@@ -439,14 +439,16 @@ units::degree_t Shooter::calculatePivotAngleFromDistance(double distance){
 
 void Shooter::shootOnTheMove(){
     double fixedShotTime = table->GetNumber("Shooting Time", SHOOTING_TIME);
-    double currentTime = frc::Timer::GetFPGATimestamp().to<double>();
 
     frc::Pose2d robotOrigPose = drivetrain->getCalculatedPose_m();
     units::meters_per_second_t robotVelocityX = drivetrain->state.xSpeedMPS;
     units::meters_per_second_t robotVelocityY = drivetrain->state.ySpeedMPS;
 
-    units::meter_t futureRobotX = units::meter_t((robotVelocityX.to<double>()*fixedShotTime) + robotOrigPose.X().to<double>());
-    units::meter_t futureRobotY = units::meter_t((robotVelocityY.to<double>()*fixedShotTime) + robotOrigPose.Y().to<double>());
+    units::meters_per_second_squared_t robotAccelX = drivetrain->state.accel.x;
+    units::meters_per_second_squared_t robotAccelY = drivetrain->state.accel.y;
+
+    units::meter_t futureRobotX = units::meter_t((0.5*robotAccelX.to<double>()*(pow(fixedShotTime, 2))) + (robotVelocityX.to<double>()*fixedShotTime) + robotOrigPose.X().to<double>());
+    units::meter_t futureRobotY = units::meter_t((0.5*robotAccelY.to<double>()*(pow(fixedShotTime, 2))) + (robotVelocityY.to<double>()*fixedShotTime) + robotOrigPose.Y().to<double>());
     frc::Pose2d robotFuturePose = frc::Pose2d(futureRobotX, futureRobotY, robotOrigPose.Rotation());
 
     double distance = drivetrain->distanceToSpeakerFromPose(robotFuturePose).to<double>();

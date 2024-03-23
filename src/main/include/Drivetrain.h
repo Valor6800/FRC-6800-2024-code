@@ -239,6 +239,8 @@ public:
 
      void setAlignmentAngle(Drivetrain::Alignment align);
      void getSpeakerLockAngleRPS();
+     units::radian_t getSpeakerLockAngleFromPose(frc::Pose2d pose);
+     void lockOnTheMove();
      units::meter_t distanceToSpeakerFromPose(frc::Pose2d pose);
      units::radian_t getAngleError();
      double clampAngleRadianRange(units::radian_t angle, double max);
