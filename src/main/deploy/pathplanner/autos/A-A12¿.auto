@@ -36,9 +36,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Af-A1 BLUE"
+            "name": "Enable full feeder"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Af-A1 BLUE"
+                }
+              }
+            ]
           }
         },
         {
@@ -62,13 +75,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "A-A3 pt 1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Reschedule"
+            "pathName": "A-A3"
           }
         }
       ]
