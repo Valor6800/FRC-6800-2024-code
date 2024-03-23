@@ -1,0 +1,36 @@
+cppHeaderFileInclude {
+  \.h$
+  \.hpp$
+  \.inc$
+}
+
+cppSrcFileInclude {
+  \.cpp$
+}
+
+# Extra "/" used by unit tests
+generatedFileExclude {
+  /cpplint\.py$
+  doxygen-awesome-css/
+  vendordeps/
+  src/main/deploy/
+}
+
+modifiableFileExclude {
+  \.png$
+}
+
+licenseUpdateExclude {
+  Excluded\.h$
+}
+
+# Ordered this way to ensure tests find longest match
+includeGuardRoots {
+  wpiformat/
+  wpiformat/Test/
+}
+
+# Used by unit tests
+includeProject {
+  ^ctre/
+}
