@@ -9,6 +9,8 @@
 #include "networktables/NetworkTableInstance.h"
 #include "networktables/NetworkTableEntry.h"
 #include "networktables/NetworkTableInstance.h"
+#include <cstdint>
+#include <unordered_map>
 
 namespace valor
 {
@@ -39,12 +41,22 @@ namespace valor
 
         private:
             frc::Pose3d getGlobalPose() override;
-            units::meter_t distance{0_m};
-            double dp, vp;
-            double ambiguity, tagCount;
-            units::meter_t distanceToCamera, distanceToRobot;
 
-            void updateMiscValues();
+            double dp, vp;
+            units::meter_t distance{0_m};
+            int tagCount;
+
+            bool miscUpdate;
+
+            struct TagData {
+                double id, txnc, tync, ta;
+                units::meter_t distanceToCamera, distanceToRobot;
+                double ambiguity;
+            };
+            
+            std::unordered_map<int, TagData> tagsSeen;
+
+            bool updateMiscValues(std::vector<double> data);
     
             std::vector<double> botPose;
             std::vector<double> botToTargetPose;

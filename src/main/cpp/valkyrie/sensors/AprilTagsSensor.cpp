@@ -5,6 +5,9 @@
 #include "units/time.h"
 #include "units/velocity.h"
 #include <cmath>
+#include <cstddef>
+#include <iterator>
+#include <unordered_map>
 #include <vector>
 
 #define OUTLIER_EDGE 4.0f //meters
@@ -25,9 +28,14 @@ AprilTagsSensor::AprilTagsSensor(frc::TimedRobot* robot, const char *name, frc::
 
 frc::Pose3d AprilTagsSensor::getGlobalPose() {
     if (!hasTarget()) return frc::Pose3d();
-    botPose = limeTable->GetNumberArray("botpose_wpiblue", std::span<double>());
-    
+
+    std::vector<double> dataVector = limeTable->GetNumberArray("botpose_wpiblue", std::span<double>());
+    botPose = {dataVector[0], dataVector[1], dataVector[2], dataVector[3], dataVector[4], dataVector[5]};
+
+    miscUpdate = updateMiscValues(dataVector);
+
     botToTargetPose = limeTable->GetNumberArray("botpose_targetspace", std::span<const double>());
+
     if (botToTargetPose.size() == 6) distance = units::meter_t(sqrtf(powf(botToTargetPose[0], 2) + powf(botToTargetPose[1], 2) + powf(botToTargetPose[2], 2)));
     else distance = 0_m;
 
@@ -41,6 +49,28 @@ frc::Pose3d AprilTagsSensor::getGlobalPose() {
             (units::degree_t) botPose[5]
         )
     );
+}
+
+bool AprilTagsSensor::updateMiscValues(std::vector<double> data){
+    tagsSeen.clear();
+    if (data.size() < 11) return false;
+
+    tagCount = data[6];
+
+    for (size_t valueIndex = 11; valueIndex  < data.size(); valueIndex+=7) {
+        size_t currIndex = valueIndex;
+        tagsSeen[data[valueIndex]] = {
+            data[currIndex++],
+            data[currIndex++],
+            data[currIndex++],
+            data[currIndex++],
+            units::meter_t{data[currIndex++]},
+            units::meter_t{data[currIndex++]},
+            data[currIndex++]
+        };
+    }
+    return true;
+
 }
 
 frc::Pose3d AprilTagsSensor::getPoseFromAprilTag() {
@@ -94,8 +124,6 @@ int AprilTagsSensor::getTagID(){
     return limeTable->GetNumber("tid", -1);
 }
 
-void AprilTagsSensor::updateMiscValues() { return; }
-
 units::meter_t AprilTagsSensor::getDistanceToRobot() { return 0.0_m; }
 
 units::meter_t AprilTagsSensor::getDistanceToCamera() { return 0.0_m; }
@@ -144,4 +172,17 @@ void AprilTagsSensor::InitSendable(wpi::SendableBuilder& builder) {
     builder.AddDoubleProperty("totalLatency", [this] {return getTotalLatency().to<double>();}, nullptr);
     builder.AddDoubleProperty("distanceFromTarget", [this] {return distance.to<double>();}, nullptr);
     builder.AddDoubleProperty("Vision acceptance outlier", [this] {return normalVisionOutlier.to<double>();}, nullptr);
+    builder.AddBooleanProperty("Updated Misc Values", [this] {return miscUpdate;}, nullptr);
+    builder.AddDoubleArrayProperty(
+        "TagID From Misc Array",
+        [this]
+        {
+            std::vector<double> idArray;
+            for (auto tag : tagsSeen) {
+                idArray.push_back(tag.second.id);
+            }
+            return idArray;
+        },
+        nullptr
+    );
 }
