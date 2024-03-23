@@ -495,6 +495,18 @@ void Drivetrain::assignOutputs()
     } else {
         operatorGamepad->setRumble(false);
     }
+
+     if (frc::Timer::GetFPGATimestamp().to<double>() - teleopStart > 109.5 && frc::Timer::GetFPGATimestamp().to<double>() - teleopStart < TIME_TELEOP_VERT + 3) {
+            leds->setColor(valor::CANdleSensor::VALOR_GOLD);
+
+}
+
+    if (frc::Timer::GetFPGATimestamp().to<double>() - teleopStart > 134.5) {
+            leds->setColor(valor::CANdleSensor::VALOR_GOLD);
+
+}
+
+    
 }
 
 frc::Pose2d Drivetrain::getPoseFromSpeaker() {

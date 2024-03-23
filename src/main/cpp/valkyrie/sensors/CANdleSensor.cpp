@@ -77,14 +77,21 @@ void CANdleSensor::setColor(int segment, RGBColor rgb)
 }
 
 void CANdleSensor::setColor(RGBColor rgb)
-{
-    allSegments.recentlyChanged = true;
-    allSegments.currentColor = rgb;
+{    
+    for(int i = 0; i<segmentMap.size(); i++){
+        setColor(i, rgb);
+    }
+
 }
 
 void CANdleSensor::setColor(int segment, int color)
 {
     setColor(segment, toRGB(color));
+}
+
+void CANdleSensor::setColor(int color){
+    setColor(toRGB(color));
+
 }
 
 void CANdleSensor::setAnimation(AnimationType animation, RGBColor color, double speed) {
