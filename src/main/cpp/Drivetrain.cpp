@@ -483,10 +483,10 @@ void Drivetrain::assignOutputs()
 
     if(state.ampAlign || state.trapAlign || state.sourceAlign || state.isHeadingTrack || state.thetaLock){
         drive(state.xSpeedMPS, state.ySpeedMPS, state.angleRPS, true);
-    } 
-    else {
+    } else {
         drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
     }
+    //driveRobotRelative(frc::ChassisSpeeds{6_mps});
 
     if (frc::Timer::GetFPGATimestamp().to<double>() - teleopStart > TIME_TELEOP_VERT && frc::Timer::GetFPGATimestamp().to<double>() - teleopStart < TIME_TELEOP_VERT + 3) {
         operatorGamepad->setRumble(true);
