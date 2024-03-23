@@ -40,6 +40,7 @@ public:
         bool beamTrip;
         bool bothFeederBeamBreakTripped;
         bool unjam;
+        bool notein;
         units::second_t unjamStart;
         double tuningPower;
     } state;
