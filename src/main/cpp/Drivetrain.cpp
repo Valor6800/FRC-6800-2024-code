@@ -1030,8 +1030,8 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
             "Bonk!",
             [this] {
                 return units::acceleration::meters_per_second_squared_t{
-                sqrtf(powf(state.accel.x.to<double>(), 2) + powf(state.accel.y.to<double>(), 2) + powf(state.accel.z.to<double>(), 2))
-            } > 10.0_mps_sq; // ~60 kg bot -> 600 N, 5 measurements * 20ms = .1s, 
+                sqrtf(powf(state.accel.x.to<double>(), 2) + powf(state.accel.y.to<double>(), 2))
+            } > 20.0_mps_sq; // ~60 kg bot -> 600 N, 5 measurements * 20ms = .1s, 
                                                                                      // impulse = .1 * 600 = 60 Joules
             },
             nullptr
