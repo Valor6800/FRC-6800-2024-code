@@ -100,7 +100,7 @@ model {
 }
 
 doxygen  {
-    
+
     group = 'Custom 6800 Tasks'
     project_name 'Valor 6800'
     project_number 1.0
@@ -122,7 +122,7 @@ doxygen  {
     inherit_docs true
     html_extra_stylesheet new File(projectDir,'doxygen-awesome-css/doxygen-awesome.css')
     html_extra_files new File(projectDir, 'favicon.ico')
-                             
+
     source 'src/main/include'
     source 'README.md'
 
