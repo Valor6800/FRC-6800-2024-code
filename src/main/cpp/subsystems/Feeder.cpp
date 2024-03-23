@@ -213,7 +213,6 @@ void Feeder::analyzeDashboard()
 
     if (state.feederState == ROLLER_STATE::SHOOT || state.feederState == ROLLER_STATE::OUTTAKE) {
         state.beamTrip = false;
-        state.bothFeederBeamBreakTripped = false;
         driverGamepad->setRumble(false);
     }
     leds->setColor(1, state.beamTrip ? valor::CANdleSensor::LIGHT_BLUE : valor::CANdleSensor::RED);
@@ -251,7 +250,7 @@ void Feeder::assignOutputs()
         if (state.feederState == ROLLER_STATE::SHOOT) {
             feederMotor.setPower(FEEDER_FORWARD_POWER);
         } else if(state.feederState == ROLLER_STATE::INTAKE) {
-            feederMotor.setPower((state.bothFeederBeamBreakTripped) ? 0 : (state.beamTrip ? (FEEDER_FORWARD_POWER*0.3) : FEEDER_FORWARD_POWER));
+            feederMotor.setPower(state.bothFeederBeamBreakTripped ? 0 : (state.beamTrip ? (FEEDER_FORWARD_POWER*0.3) : FEEDER_FORWARD_POWER));
         } else if(state.feederState == ROLLER_STATE::OUTTAKE) {
             feederMotor.setPower(FEEDER_REVERSE_POWER);
         } else {
