@@ -744,6 +744,12 @@ void Drivetrain::setXMode(){
     setDriveMotorNeutralMode(valor::NeutralMode::Brake);
 }
 
+bool Drivetrain::isWheelSlip(int i)
+{
+    double tVel = sqrtf(powf(getRobotRelativeSpeeds().vx.to<double>(), 2) + powf(getRobotRelativeSpeeds().vy.to<double>(), 2));
+    return fabs(driveControllers[i]->getSpeed()) >= tVel * 1.25;
+}
+
 void Drivetrain::setDriveMotorNeutralMode(valor::NeutralMode mode) {
     for (int i = 0; i < SWERVE_COUNT; i++)
     {
@@ -1039,6 +1045,26 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
         builder.AddBooleanProperty(
             "Pit Mode",
             [this] {return state.pitMode;},
+            nullptr
+        );
+        builder.AddBooleanProperty(
+            "Swerve 0 Slip",
+            [this] {return isWheelSlip(0); },
+            nullptr
+        );
+        builder.AddBooleanProperty(
+            "Swerve 1 Slip",
+            [this] {return isWheelSlip(1); },
+            nullptr
+        );
+        builder.AddBooleanProperty(
+            "Swerve 2 Slip",
+            [this] {return isWheelSlip(2); },
+            nullptr
+        );
+        builder.AddBooleanProperty(
+            "Swerve 3 Slip",
+            [this] {return isWheelSlip(3); },
             nullptr
         );
     }
