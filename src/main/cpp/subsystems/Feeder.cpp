@@ -159,10 +159,10 @@ void Feeder::init()
         intakeMotor.setPower(0);
         intakeBackMotor.setPower(0);
         driverGamepad->setRumble(true);
-        // leds->setAnimation(1, valor::CANdleSensor::AnimationType::Fire, valor::CANdleSensor::RGBColor(255,0,0));
+        // leds->setAnimation(0, valor::CANdleSensor::AnimationType::Rainbow, valor::CANdleSensor::RGBColor(255,0,0));
     });
     feederDebounceSensor.setFallingEdgeCallback([this] {
-        // leds->clearAnimation(1);
+        // leds->clearAnimation(0);
     });
 
     intakeDebounceSensor.setGetter([this] { return !intakeBeamBreak->GetInWindow(); });
@@ -208,7 +208,13 @@ void Feeder::analyzeDashboard()
         state.beamTrip = false;
         driverGamepad->setRumble(false);
     }
-    leds->setColor(1, state.beamTrip ? valor::CANdleSensor::LIGHT_BLUE : valor::CANdleSensor::RED);
+    if (!feederBeamBreak->GetInWindow() || !feederBeamBreak2->GetInWindow()) {
+        driverGamepad->setRumble(true);
+        leds->setColor(0, valor::CANdleSensor::LIGHT_BLUE);
+    } else {
+        driverGamepad->setRumble(false);
+        leds->setColor(0, valor::CANdleSensor::RED);
+    }
     blinkin.SetPulseTime(state.beamTrip ? LED_ON : LED_OFF);
     if (state.unjam && (frc::Timer::GetFPGATimestamp() - state.unjamStart) > 0.06_s) {
         state.unjam = false;
