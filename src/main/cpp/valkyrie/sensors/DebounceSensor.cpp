@@ -1,36 +1,34 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 #include "valkyrie/sensors/DebounceSensor.h"
 
 using namespace valor;
 
-DebounceSensor::DebounceSensor(frc::TimedRobot *_robot, const char *_name) : BaseSensor(_robot, _name)
-{
+DebounceSensor::DebounceSensor(frc::TimedRobot* _robot, const char* _name) : BaseSensor(_robot, _name) {
     wpi::SendableRegistry::AddLW(this, "DebounceSensor", sensorName);
     reset();
 }
 
-void DebounceSensor::reset()
-{
+void DebounceSensor::reset() {
     prevState = false;
     currState = false;
 }
 
-void DebounceSensor::setEdgeCallback(std::function<void()> _lambda)
-{
+void DebounceSensor::setEdgeCallback(std::function<void()> _lambda) {
     edge = _lambda;
 }
 
-void DebounceSensor::setRisingEdgeCallback(std::function<void()> _lambda)
-{
+void DebounceSensor::setRisingEdgeCallback(std::function<void()> _lambda) {
     risingEdge = _lambda;
 }
 
-void DebounceSensor::setFallingEdgeCallback(std::function<void()> _lambda)
-{
+void DebounceSensor::setFallingEdgeCallback(std::function<void()> _lambda) {
     fallingEdge = _lambda;
 }
 
-void DebounceSensor::calculate()
-{
+void DebounceSensor::calculate() {
     prevState = currState;
     currState = getSensor();
     if (currState != prevState && edge)
@@ -41,15 +39,10 @@ void DebounceSensor::calculate()
         fallingEdge();
 }
 
-void DebounceSensor::InitSendable(wpi::SendableBuilder& builder)
-{
+void DebounceSensor::InitSendable(wpi::SendableBuilder& builder) {
     builder.SetSmartDashboardType("Subsystem");
     builder.AddBooleanProperty(
-        "Previous State", 
-        [this] { return prevState; },
-        nullptr);
+        "Previous State", [this] { return prevState; }, nullptr);
     builder.AddBooleanProperty(
-        "Current State", 
-        [this] { return currState; },
-        nullptr);
+        "Current State", [this] { return currState; }, nullptr);
 }

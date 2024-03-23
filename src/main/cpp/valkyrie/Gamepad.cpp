@@ -1,3 +1,7 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 #include "valkyrie/Gamepad.h"
 
 #include <cmath>
@@ -13,106 +17,81 @@
 
 using namespace valor;
 
-Gamepad::Gamepad(int id) :
-    frc::XboxController(id),
-    deadbandX(DEADBAND_X),
-    deadbandY(DEADBAND_Y)
-{
-}
+Gamepad::Gamepad(int id) : frc::XboxController(id), deadbandX(DEADBAND_X), deadbandY(DEADBAND_Y) {}
 
-void Gamepad::setDeadbandX(double deadband)
-{
+void Gamepad::setDeadbandX(double deadband) {
     deadbandX = deadband;
 }
 
-void Gamepad::setDeadbandY(double deadband)
-{
+void Gamepad::setDeadbandY(double deadband) {
     deadbandY = deadband;
 }
 
-double Gamepad::deadband(double input, double deadband, int polynomial)
-{
-    return std::fabs(input) > deadband ? copysign(std::pow(std::abs(input), polynomial), input) : 0;
+double Gamepad::deadband(double input, double deadband, int polynomial) {
+    return std::fabs(input) > deadband ? std::copysign(std::pow(std::abs(input), polynomial), input) : 0;
 }
 
-double Gamepad::leftStickX(int polynomial)
-{
+double Gamepad::leftStickX(int polynomial) {
     return -deadband(GetLeftX(), deadbandX, polynomial);
 }
 
-bool Gamepad::leftStickXActive(int polynomial)
-{
+bool Gamepad::leftStickXActive(int polynomial) {
     return leftStickX(polynomial) != 0;
 }
 
-double Gamepad::leftStickY(int polynomial)
-{
+double Gamepad::leftStickY(int polynomial) {
     return -deadband(GetLeftY(), deadbandY, polynomial);
 }
 
-bool Gamepad::leftStickYActive(int polynomial)
-{
+bool Gamepad::leftStickYActive(int polynomial) {
     return leftStickY(polynomial) != 0;
 }
 
-double Gamepad::rightStickX(int polynomial)
-{
+double Gamepad::rightStickX(int polynomial) {
     return -deadband(GetRightX(), deadbandX, polynomial);
 }
 
-bool Gamepad::rightStickXActive(int polynomial)
-{
+bool Gamepad::rightStickXActive(int polynomial) {
     return rightStickX(polynomial) != 0;
 }
 
-double Gamepad::rightStickY(int polynomial)
-{
+double Gamepad::rightStickY(int polynomial) {
     return -deadband(GetRightY(), deadbandY, polynomial);
 }
 
-bool Gamepad::rightStickYActive(int polynomial)
-{
+bool Gamepad::rightStickYActive(int polynomial) {
     return rightStickY(polynomial) != 0;
 }
 
-double Gamepad::leftTrigger()
-{
+double Gamepad::leftTrigger() {
     return GetLeftTriggerAxis() > DEADBAND_TRIGGER ? GetLeftTriggerAxis() : 0;
 }
 
-bool Gamepad::leftTriggerActive()
-{
+bool Gamepad::leftTriggerActive() {
     return leftTrigger() != 0;
 }
 
-double Gamepad::rightTrigger()
-{
+double Gamepad::rightTrigger() {
     return GetRightTriggerAxis() > DEADBAND_TRIGGER ? GetRightTriggerAxis() : 0;
 }
 
-bool Gamepad::rightTriggerActive()
-{
+bool Gamepad::rightTriggerActive() {
     return rightTrigger() != 0;
 }
 
-bool Gamepad::DPadUp()
-{
+bool Gamepad::DPadUp() {
     return GetPOV() == DPAD_UP;
 }
-bool Gamepad::DPadDown()
-{
+bool Gamepad::DPadDown() {
     return GetPOV() == DPAD_DOWN;
 }
-bool Gamepad::DPadLeft()
-{
+bool Gamepad::DPadLeft() {
     return GetPOV() == DPAD_LEFT;
 }
-bool Gamepad::DPadRight()
-{
+bool Gamepad::DPadRight() {
     return GetPOV() == DPAD_RIGHT;
 }
 
-void Gamepad::setRumble(bool turnOn)
-{
+void Gamepad::setRumble(bool turnOn) {
     SetRumble(RumbleType::kBothRumble, turnOn ? 0.25 : 0.0);
 }

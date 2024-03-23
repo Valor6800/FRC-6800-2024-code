@@ -1,3 +1,7 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 #include "valkyrie/sensors/CurrentSensor.h"
 
 #define DEFAULT_CACHE_SIZE 20
@@ -5,28 +9,22 @@
 
 using namespace valor;
 
-CurrentSensor::CurrentSensor(frc::TimedRobot *_robot, const char *_name) :
-    BaseSensor(_robot, _name),
-    spikedSetpoint(DEFAULT_SPIKE_VALUE),
-    cacheSize(DEFAULT_CACHE_SIZE / 20.0)
-{
+CurrentSensor::CurrentSensor(frc::TimedRobot* _robot, const char* _name)
+    : BaseSensor(_robot, _name), spikedSetpoint(DEFAULT_SPIKE_VALUE), cacheSize(DEFAULT_CACHE_SIZE / 20.0) {
     wpi::SendableRegistry::AddLW(this, "CurrentSensor", sensorName);
     reset();
 }
 
-void CurrentSensor::setSpikeSetpoint(double _setpoint)
-{
+void CurrentSensor::setSpikeSetpoint(double _setpoint) {
     spikedSetpoint = _setpoint;
 }
 
-void CurrentSensor::setCacheSize(int _size)
-{
+void CurrentSensor::setCacheSize(int _size) {
     cacheSize = _size / 20.0;
     reset();
 }
 
-void CurrentSensor::setSpikeCallback(std::function<void()> _lambda)
-{
+void CurrentSensor::setSpikeCallback(std::function<void()> _lambda) {
     spikeCallback = _lambda;
 }
 
@@ -55,27 +53,16 @@ void CurrentSensor::calculate() {
         spikeCallback();
 }
 
-void CurrentSensor::InitSendable(wpi::SendableBuilder& builder)
-{
+void CurrentSensor::InitSendable(wpi::SendableBuilder& builder) {
     builder.SetSmartDashboardType("Subsystem");
     builder.AddDoubleProperty(
-        "Previous State", 
-        [this] { return prevState; },
-        nullptr);
+        "Previous State", [this] { return prevState; }, nullptr);
     builder.AddDoubleProperty(
-        "Current State", 
-        [this] { return currState; },
-        nullptr);
+        "Current State", [this] { return currState; }, nullptr);
     builder.AddDoubleProperty(
-        "Spiked Setpoint", 
-        [this] { return spikedSetpoint; },
-        nullptr);
+        "Spiked Setpoint", [this] { return spikedSetpoint; }, nullptr);
     builder.AddDoubleProperty(
-        "Cache Size", 
-        [this] { return cacheSize; },
-        nullptr);
+        "Cache Size", [this] { return cacheSize; }, nullptr);
     builder.AddDoubleProperty(
-        "Raw Sensor Value", 
-        [this] { return getSensor(); },
-        nullptr);
+        "Raw Sensor Value", [this] { return getSensor(); }, nullptr);
 }

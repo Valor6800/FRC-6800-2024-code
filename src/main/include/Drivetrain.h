@@ -1,301 +1,293 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 #pragma once
 
-#include "frc/geometry/Pose3d.h"
-#include "units/acceleration.h"
-#include "units/length.h"
-#include "valkyrie/sensors/AprilTagsSensor.h"
-#include "valkyrie/BaseSubsystem.h"
-#include "Constants.h"
-#include "valkyrie/Swerve.h"
+#include <frc/DutyCycleEncoder.h>
+#include <frc/TimedRobot.h>
+#include <frc/Timer.h>
+#include <frc/controller/SimpleMotorFeedforward.h>
+#include <frc/estimator/SwerveDrivePoseEstimator.h>
+#include <frc/geometry/Pose2d.h>
+#include <frc/geometry/Rotation2d.h>
+#include <frc/geometry/Translation2d.h>
+#include <frc/kinematics/ChassisSpeeds.h>
+#include <frc/kinematics/DifferentialDriveKinematics.h>
+#include <frc/kinematics/DifferentialDriveWheelSpeeds.h>
+#include <frc/kinematics/SwerveDriveKinematics.h>
+#include <frc/smartdashboard/SendableChooser.h>
+#include <frc/smartdashboard/SmartDashboard.h>
+#include <frc/trajectory/Trajectory.h>
+#include <frc/trajectory/TrajectoryGenerator.h>
+#include <frc/trajectory/constraint/DifferentialDriveVoltageConstraint.h>
+#include <frc2/command/Command.h>
+#include <frc2/command/FunctionalCommand.h>
+#include <frc2/command/InstantCommand.h>
+#include <frc2/command/SequentialCommandGroup.h>
+#include <frc2/command/SwerveControllerCommand.h>
+#include <frc2/command/WaitCommand.h>
+#include <rev/CANSparkMax.h>
+
 #include <map>
 #include <string>
 #include <vector>
-#include "valkyrie/controllers/PhoenixController.h"
+
+#include "Constants.h"
+#include "PoseTracker.h"
+#include "ctre/phoenix6/Pigeon2.hpp"
+#include "frc/geometry/Pose3d.h"
+#include "units/acceleration.h"
+#include "units/length.h"
+#include "valkyrie/BaseSubsystem.h"
+#include "valkyrie/Swerve.h"
 #include "valkyrie/controllers/NeoController.h"
 #include "valkyrie/controllers/PIDF.h"
+#include "valkyrie/controllers/PhoenixController.h"
+#include "valkyrie/sensors/AprilTagsSensor.h"
 #include "valkyrie/sensors/CANdleSensor.h"
-
-#include "PoseTracker.h"
-
-#include <frc/kinematics/SwerveDriveKinematics.h>
-#include <frc/estimator/SwerveDrivePoseEstimator.h>
-#include <frc/kinematics/ChassisSpeeds.h>
-#include <frc/DutyCycleEncoder.h>
-#include <frc/Timer.h>
-
-#include <frc/geometry/Translation2d.h>
-#include <frc/geometry/Pose2d.h>
-#include <frc/geometry/Rotation2d.h>
-#include <frc/kinematics/DifferentialDriveWheelSpeeds.h>
-#include <frc/controller/SimpleMotorFeedforward.h>
-#include <frc/kinematics/DifferentialDriveKinematics.h>
-#include <frc/trajectory/constraint/DifferentialDriveVoltageConstraint.h>
-#include <frc/trajectory/Trajectory.h>
-#include <frc/trajectory/TrajectoryGenerator.h>
-#include <frc/smartdashboard/SendableChooser.h>
-#include <frc/smartdashboard/SmartDashboard.h>
-
-#include <frc2/command/SwerveControllerCommand.h>
-#include <frc2/command/Command.h>
-#include <frc2/command/InstantCommand.h>
-#include <frc2/command/SequentialCommandGroup.h>
-#include <frc2/command/WaitCommand.h>
-#include <frc/TimedRobot.h>
-#include <frc2/command/FunctionalCommand.h>
-
-#include <rev/CANSparkMax.h>
-#include <ctre/phoenix6/Pigeon2.hpp>
 
 #define SWERVE_COUNT 4
 
 /**
  * @brief Subsystem - Drivetrain
- * 
+ *
  * Subsystem responsible for driving the robot chassis, and housing all the logic to control the
  * 4 swerve modules on the robot.
  */
-class Drivetrain : public valor::BaseSubsystem
-{
-public:
+class Drivetrain : public valor::BaseSubsystem {
+   public:
+    /**
+     * @brief Quick way to select the drive motor controller
+     * To change what motor controller runs the drive motor, change this to either:
+     * * valor::PhoenixController
+     * * valor::NeoController
+     */
+    typedef valor::PhoenixController SwerveDriveMotor;
 
-     /**
-      * @brief Quick way to select the drive motor controller
-      * To change what motor controller runs the drive motor, change this to either:
-      * * valor::PhoenixController
-      * * valor::NeoController
-      */
-     typedef valor::PhoenixController SwerveDriveMotor;
+    /**
+     * @brief Quick way to select the azimuth motor controller
+     * To change what motor controller runs the azimuth motor, change this to either:
+     * * valor::PhoenixController
+     * * valor::NeoController
+     */
+    typedef valor::PhoenixController SwerveAzimuthMotor;
 
-     /**
-      * @brief Quick way to select the azimuth motor controller
-      * To change what motor controller runs the azimuth motor, change this to either:
-      * * valor::PhoenixController
-      * * valor::NeoController
-      */
-     typedef valor::PhoenixController SwerveAzimuthMotor;
+    /**
+     * @brief Construct a new Drivetrain object
+     *
+     * @param robot Top level robot object to parse out smart dashboard and table information
+     */
+    Drivetrain(frc::TimedRobot* robot, valor::CANdleSensor* _leds);
 
-     /**
-      * @brief Construct a new Drivetrain object
-      * 
-      * @param robot Top level robot object to parse out smart dashboard and table information
-      */
-     Drivetrain(frc::TimedRobot *robot, valor::CANdleSensor *_leds);
+    /**
+     * @brief Destroy the Drivetrain object
+     *
+     * Drivetrain objects have member objects on the heap - need a destructor to take care of memory on destruction
+     */
+    ~Drivetrain();
 
-     /**
-      * @brief Destroy the Drivetrain object
-      * 
-      * Drivetrain objects have member objects on the heap - need a destructor to take care of memory on destruction
-      */
-     ~Drivetrain();
+    /**
+     * @brief Initialize the drivetrain
+     *
+     * Includes:
+     * * Calibrating the pigeon
+     * * Configuring each swerve module (including controllers for azimuth and drive motors)
+     * * Setting the PID values for the Azimuth controller
+     * * Resetting the drivetrain state
+     */
+    void init();
 
-     /**
-      * @brief Initialize the drivetrain
-      * 
-      * Includes:
-      * * Calibrating the pigeon
-      * * Configuring each swerve module (including controllers for azimuth and drive motors)
-      * * Setting the PID values for the Azimuth controller
-      * * Resetting the drivetrain state
-      */
-     void init();
+    void assessInputs();
+    void analyzeDashboard();
+    void assignOutputs();
+    void resetState();
 
-     void assessInputs();
-     void analyzeDashboard();
-     void assignOutputs();
-     void resetState();
+    void InitSendable(wpi::SendableBuilder& builder);
 
-     void InitSendable(wpi::SendableBuilder& builder);
+    enum Alignment { SOURCE, TRAP, AMP, LOCK };
 
-     enum Alignment{
-          SOURCE,
-          TRAP,
-          AMP,
-          LOCK
-     };
+    struct x {
+        double xSpeed;
+        double ySpeed;
+        double rot;
 
-     struct x
-     {
-          double xSpeed;
-          double ySpeed;
-          double rot;
+        units::radian_t targetAngle;
+        units::angular_velocity::radians_per_second_t angleRPS;
 
-          units::radian_t targetAngle;
-          units::angular_velocity::radians_per_second_t angleRPS;
-  
-          bool adas;
-          bool lock;
-          
-          bool xPose;
+        bool adas;
+        bool lock;
 
-          bool isLeveled;
-          bool abovePitchThreshold;
+        bool xPose;
 
-          bool isAlign;
-          bool isHeadingTrack;
-          bool thetaLock;
-          bool sourceAlign;
-          bool trapAlign;
-          bool ampAlign;
+        bool isLeveled;
+        bool abovePitchThreshold;
 
-          bool pitMode;
+        bool isAlign;
+        bool isHeadingTrack;
+        bool thetaLock;
+        bool sourceAlign;
+        bool trapAlign;
+        bool ampAlign;
 
-          int stage;
+        bool pitMode;
 
-          int trackingID;
-          double visionOdomDiff;
+        int stage;
 
-          double matchStart;
+        int trackingID;
+        double visionOdomDiff;
 
-          units::meter_t distanceFromSpeaker;
+        double matchStart;
 
-          frc::Pose2d visionPose;
-          frc::Pose2d prevVisionPose;
+        units::meter_t distanceFromSpeaker;
 
-          units::velocity::meters_per_second_t xSpeedMPS;
-          units::velocity::meters_per_second_t ySpeedMPS;
-          units::angular_velocity::radians_per_second_t rotRPS;
+        frc::Pose2d visionPose;
+        frc::Pose2d prevVisionPose;
 
-          frc::Pose2d prevPose;
+        units::velocity::meters_per_second_t xSpeedMPS;
+        units::velocity::meters_per_second_t ySpeedMPS;
+        units::angular_velocity::radians_per_second_t rotRPS;
 
-          units::second_t startTimestamp; // generic
-          
-          bool useCalculatedEstimator; // only during auto
+        frc::Pose2d prevPose;
 
-          bool manualFlag;
-          
-          struct { units::acceleration::meters_per_second_squared_t x,y,z; } accel;
-          int pitSequenceCommandIndex;
+        units::second_t startTimestamp;  // generic
 
-          double prevError;
-     } state;
-     
-     
-     /**
-      * Drive the robot with given x, y and rotational velocities using open loop velocity control
-      * @param vx_mps the desired x velocity component in meters per second
-      * @param vy_mps the desired y velocity component in meters per second
-      * @param omega_radps the desired rotational velocity component in radians per second
-      * @param isFOC true if driving field oriented
-      */
-     void drive(units::velocity::meters_per_second_t vx_mps, units::velocity::meters_per_second_t vy_mps, units::angular_velocity::radians_per_second_t omega_radps, bool isFOC);
-     void driveRobotRelative(frc::ChassisSpeeds speeds);
+        bool useCalculatedEstimator;  // only during auto
 
-     void resetGyro();
+        bool manualFlag;
 
-     /**
-      * Reset the drive encoders to currently read a position of 0
-      */
-     void resetDriveEncoders();
+        struct {
+            units::acceleration::meters_per_second_squared_t x, y, z;
+        } accel;
+        int pitSequenceCommandIndex;
 
+        double prevError;
+    } state;
 
-     frc::Rotation2d getPigeon();
-     units::degree_t getGlobalPitch();
+    /**
+     * Drive the robot with given x, y and rotational velocities using open loop velocity control
+     * @param vx_mps the desired x velocity component in meters per second
+     * @param vy_mps the desired y velocity component in meters per second
+     * @param omega_radps the desired rotational velocity component in radians per second
+     * @param isFOC true if driving field oriented
+     */
+    void drive(units::velocity::meters_per_second_t vx_mps, units::velocity::meters_per_second_t vy_mps,
+               units::angular_velocity::radians_per_second_t omega_radps, bool isFOC);
+    void driveRobotRelative(frc::ChassisSpeeds speeds);
 
-     /**
-      * Reset the robot's position on the field. Any accumulted gyro drift will be noted and
-      *   accounted for in subsequent calls to getPoseMeters()
-      * @param pose The robot's actual position on the field
-      */
-     void resetOdometry(frc::Pose2d pose);
+    void resetGyro();
 
-     /**
-      * Get the configured swerve modules
-      * @return vector of swerve modules
-      */
-     std::vector<valor::Swerve<SwerveAzimuthMotor, SwerveDriveMotor> *> getSwerveModules();
+    /**
+     * Reset the drive encoders to currently read a position of 0
+     */
+    void resetDriveEncoders();
 
+    frc::Rotation2d getPigeon();
+    units::degree_t getGlobalPitch();
 
-     /**
-      * Returns the current gyro heading of the robot
-      * This will be affected by any gyro drift that may have accumulated since last recalibration
-      * The angle is continuous from 360 to 361 degrees
-      * This allows algorithms that wouldn't want to see a discontinuity in the gyro as it sweeps 
-      *   past from 360 to 0 on the second time around.
-      * The angle is expected to increase as the gyro turns clockwise
-      */
-     frc::Rotation2d getHeading(bool);
+    /**
+     * Reset the robot's position on the field. Any accumulted gyro drift will be noted and
+     *   accounted for in subsequent calls to getPoseMeters()
+     * @param pose The robot's actual position on the field
+     */
+    void resetOdometry(frc::Pose2d pose);
 
-     //returns angle within the range [-180, 180]
-     double angleWrap(double degrees);
+    /**
+     * Get the configured swerve modules
+     * @return vector of swerve modules
+     */
+    std::vector<valor::Swerve<SwerveAzimuthMotor, SwerveDriveMotor>*> getSwerveModules();
 
-     /**
-      * Returns the position of the robot on the field in meters
-      * @return the pose of the robot (x and y are in meters)
-      */
-     frc::Pose2d getPose_m();
-     frc::Pose2d getCalculatedPose_m();
+    /**
+     * Returns the current gyro heading of the robot
+     * This will be affected by any gyro drift that may have accumulated since last recalibration
+     * The angle is continuous from 360 to 361 degrees
+     * This allows algorithms that wouldn't want to see a discontinuity in the gyro as it sweeps
+     *   past from 360 to 0 on the second time around.
+     * The angle is expected to increase as the gyro turns clockwise
+     */
+    frc::Rotation2d getHeading(bool);
 
-     /**
-      * Returns the kinematics object in use by the swerve drive
-      * @return kinematics object
-      */
-     frc::SwerveDriveKinematics<SWERVE_COUNT>* getKinematics();
+    // returns angle within the range [-180, 180]
+    double angleWrap(double degrees);
 
-     void angleLock();
+    /**
+     * Returns the position of the robot on the field in meters
+     * @return the pose of the robot (x and y are in meters)
+     */
+    frc::Pose2d getPose_m();
+    frc::Pose2d getCalculatedPose_m();
 
-     frc2::FunctionalCommand* getResetOdom();
+    /**
+     * Returns the kinematics object in use by the swerve drive
+     * @return kinematics object
+     */
+    frc::SwerveDriveKinematics<SWERVE_COUNT>* getKinematics();
 
-     units::meters_per_second_t getRobotSpeeds();
+    void angleLock();
 
-     void setAlignmentAngle(Drivetrain::Alignment align);
-     void getSpeakerLockAngleRPS();
-     units::radian_t getAngleError();
-     double clampAngleRadianRange(units::radian_t angle, double max);
-     units::meter_t getDistanceFromSpeaker();
-     frc::Pose2d getPoseFromSpeaker();
+    frc2::FunctionalCommand* getResetOdom();
 
-     void setXMode();
+    units::meters_per_second_t getRobotSpeeds();
 
-     frc2::InstantCommand* getSetXMode();
+    void setAlignmentAngle(Drivetrain::Alignment align);
+    void getSpeakerLockAngleRPS();
+    units::radian_t getAngleError();
+    double clampAngleRadianRange(units::radian_t angle, double max);
+    units::meter_t getDistanceFromSpeaker();
+    frc::Pose2d getPoseFromSpeaker();
 
-     void setDriveMotorNeutralMode(valor::NeutralMode mode);
-     double teleopStart;
+    void setXMode();
 
-     double doubtX, doubtY;
+    frc2::InstantCommand* getSetXMode();
 
-private:
-     
-     double driveMaxSpeed;
-     double rotMaxSpeed;
-     ctre::phoenix6::hardware::Pigeon2 pigeon;
+    void setDriveMotorNeutralMode(valor::NeutralMode mode);
+    double teleopStart;
 
-     void setSwerveDesiredState(wpi::array<frc::SwerveModuleState, SWERVE_COUNT> desiredStates, bool isDriveOpenLoop);
-     
-     wpi::array<frc::SwerveModuleState, SWERVE_COUNT> getModuleStates(units::velocity::meters_per_second_t,
-                                                           units::velocity::meters_per_second_t,
-                                                           units::angular_velocity::radians_per_second_t,
-                                                           bool);
-     wpi::array<frc::SwerveModuleState, SWERVE_COUNT> getModuleStates(frc::ChassisSpeeds chassisSpeeds);
-     frc::ChassisSpeeds getRobotRelativeSpeeds();
+    double doubtX, doubtY;
 
-     void configSwerveModule(int);
-     void calculateCarpetPose();
+   private:
+    double driveMaxSpeed;
+    double rotMaxSpeed;
+    ctre::phoenix6::hardware::Pigeon2 pigeon;
 
-     std::vector<valor::Swerve<SwerveAzimuthMotor, SwerveDriveMotor> *> swerveModules;
-     std::vector<SwerveAzimuthMotor *> azimuthControllers;
-     std::vector<SwerveDriveMotor *> driveControllers;
+    void setSwerveDesiredState(wpi::array<frc::SwerveModuleState, SWERVE_COUNT> desiredStates, bool isDriveOpenLoop);
 
-     wpi::array<frc::Translation2d, SWERVE_COUNT> motorLocations;
+    wpi::array<frc::SwerveModuleState, SWERVE_COUNT> getModuleStates(units::velocity::meters_per_second_t,
+                                                                     units::velocity::meters_per_second_t,
+                                                                     units::angular_velocity::radians_per_second_t,
+                                                                     bool);
+    wpi::array<frc::SwerveModuleState, SWERVE_COUNT> getModuleStates(frc::ChassisSpeeds chassisSpeeds);
+    frc::ChassisSpeeds getRobotRelativeSpeeds();
 
-     wpi::array<frc::SwerveModulePosition, SWERVE_COUNT> getModuleStates();
+    void configSwerveModule(int);
+    void calculateCarpetPose();
 
-     frc::SwerveDriveKinematics<SWERVE_COUNT> * kinematics;
-     frc::SwerveDrivePoseEstimator<SWERVE_COUNT> * estimator;
-     frc::SwerveDrivePoseEstimator<SWERVE_COUNT> * calculatedEstimator;
-     frc::Pose2d previousPose;
+    std::vector<valor::Swerve<SwerveAzimuthMotor, SwerveDriveMotor>*> swerveModules;
+    std::vector<SwerveAzimuthMotor*> azimuthControllers;
+    std::vector<SwerveDriveMotor*> driveControllers;
 
-     valor::PIDF xPIDF;
-     valor::PIDF thetaPIDF;
+    wpi::array<frc::Translation2d, SWERVE_COUNT> motorLocations;
 
-     bool swerveNoError;
-     
-     std::vector<valor::AprilTagsSensor*> aprilTagSensors;
+    wpi::array<frc::SwerveModulePosition, SWERVE_COUNT> getModuleStates();
 
-     units::meter_t visionAcceptanceRadius;
+    frc::SwerveDriveKinematics<SWERVE_COUNT>* kinematics;
+    frc::SwerveDrivePoseEstimator<SWERVE_COUNT>* estimator;
+    frc::SwerveDrivePoseEstimator<SWERVE_COUNT>* calculatedEstimator;
+    frc::Pose2d previousPose;
 
-     PoseTracker currentPoseTracker;
-     PoseTracker targetPoseTracker;
-     PoseTracker unfilteredPoseTracker;
+    valor::PIDF xPIDF;
+    valor::PIDF thetaPIDF;
 
-     valor::CANdleSensor *leds;
+    bool swerveNoError;
+
+    std::vector<valor::AprilTagsSensor*> aprilTagSensors;
+
+    units::meter_t visionAcceptanceRadius;
+
+    PoseTracker currentPoseTracker;
+    PoseTracker targetPoseTracker;
+    PoseTracker unfilteredPoseTracker;
+
+    valor::CANdleSensor* leds;
 };

@@ -1,19 +1,23 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 #pragma once
 
-#include "valkyrie/controllers/BaseController.h"
-
-#include <ctre/phoenix6/TalonFX.hpp>
 #include <string>
-#include <ctre/phoenix6/CANcoder.hpp>
-#include <ctre/phoenix6/CANBus.hpp>
+
+#include "ctre/phoenix6/CANBus.hpp"
+#include "ctre/phoenix6/CANcoder.hpp"
+#include "ctre/phoenix6/TalonFX.hpp"
+#include "valkyrie/controllers/BaseController.h"
 
 namespace valor {
 
-class PhoenixController : public BaseController<ctre::phoenix6::hardware::TalonFX>
-{
-public:
+class PhoenixController : public BaseController<ctre::phoenix6::hardware::TalonFX> {
+   public:
     PhoenixController(int _canID, valor::NeutralMode _mode, bool _inverted, std::string _canbus = "");
-    PhoenixController(int _canID, valor::NeutralMode _mode, bool _inverted, double rotorToSensor, double sensorToMech, valor::PIDF pidf, double voltageComp, bool isKraken = false, std::string _canbus = "");
+    PhoenixController(int _canID, valor::NeutralMode _mode, bool _inverted, double rotorToSensor, double sensorToMech,
+                      valor::PIDF pidf, double voltageComp, bool isKraken = false, std::string _canbus = "");
 
     void init(double rotorToSensor, double sensorToMech, valor::PIDF pidf);
     void init();
@@ -31,21 +35,22 @@ public:
 
     void setEncoderPosition(double position);
     void setVoltageCompensation(double volts) override;
-    
+
     void setPosition(double);
     void enableFOC(bool enableFOC);
     void setSpeed(double);
     void setPower(double);
 
     void setupFollower(int, bool = false);
-    
+
     void setPIDF(valor::PIDF pidf, int slot);
-    void setPIDF(ctre::phoenix6::configs::Slot0Configs&, ctre::phoenix6::configs::MotionMagicConfigs&, valor::PIDF pidf);
+    void setPIDF(ctre::phoenix6::configs::Slot0Configs&, ctre::phoenix6::configs::MotionMagicConfigs&,
+                 valor::PIDF pidf);
 
     void setForwardLimit(double forward);
     void setReverseLimit(double reverse);
     void setRange(int slot, double min, double max);
-    
+
     void setConversion(double, double);
     void setConversion(ctre::phoenix6::configs::FeedbackConfigs&, double, double);
 
@@ -56,14 +61,15 @@ public:
     double getAbsEncoderPosition();
     void setupCANCoder(int deviceId, double offset, bool clockwise, std::string canbus = "") override;
     double getCANCoder() override;
-    
+
     float getRevBusUtil();
     float getCANivoreBusUtil();
-    
+
     void setOpenLoopRamp(double time);
 
     void InitSendable(wpi::SendableBuilder& builder);
-private:
+
+   private:
     valor::PIDF pidf;
     int currentProfile;
     double voltageCompenstation;
@@ -76,6 +82,6 @@ private:
     ctre::phoenix6::StatusSignal<units::turns_per_second_t>& res_velocity;
 
     ctre::phoenix::StatusCode status;
-    ctre::phoenix6::hardware::CANcoder *cancoder;
+    ctre::phoenix6::hardware::CANcoder* cancoder;
 };
-}
+}  // namespace valor

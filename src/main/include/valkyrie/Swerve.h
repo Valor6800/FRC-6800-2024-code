@@ -1,12 +1,15 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 #pragma once
 
+#include <frc/DutyCycleEncoder.h>
 #include <frc/Filesystem.h>
 #include <frc/geometry/Rotation2d.h>
 #include <frc/geometry/Translation2d.h>
-#include <frc/kinematics/SwerveModuleState.h>
 #include <frc/kinematics/SwerveModulePosition.h>
-#include <frc/DutyCycleEncoder.h>
-
+#include <frc/kinematics/SwerveModuleState.h>
 #include <wpi/sendable/Sendable.h>
 #include <wpi/sendable/SendableBuilder.h>
 #include <wpi/sendable/SendableHelper.h>
@@ -17,20 +20,16 @@ namespace valor {
  * @brief Swerve
  * @tparam AzimuthMotor Azimuth motor on the swerve module (Neo or Falcon)
  * @tparam DriveMotor Drive motor on the swerve module (Neo or Falcon)
- * 
+ *
  * Usage:
  * \code {.cpp}
  * Swerve<ValorNeoController, ValorFalconController> swerve;
  * \endcode
  */
-template<class AzimuthMotor, class DriveMotor>
-class Swerve: public wpi::Sendable, public wpi::SendableHelper<Swerve<AzimuthMotor, DriveMotor>>
-{
-public: 
-
-    Swerve(AzimuthMotor* _azimuthMotor,
-                DriveMotor* _driveMotor,
-                frc::Translation2d _wheelLocation);
+template <class AzimuthMotor, class DriveMotor>
+class Swerve : public wpi::Sendable, public wpi::SendableHelper<Swerve<AzimuthMotor, DriveMotor>> {
+   public:
+    Swerve(AzimuthMotor* _azimuthMotor, DriveMotor* _driveMotor, frc::Translation2d _wheelLocation);
 
     frc::SwerveModulePosition getModulePosition();
 
@@ -51,15 +50,9 @@ public:
      * Command the swerve module motors to the desired state using closed-loop drive speed control
      * @param desiredState the desired swerve module speed and angle
      */
-    void setDesiredState(frc::SwerveModuleState desiredState)
-    {
-        setDesiredState(desiredState, false);
-    }
+    void setDesiredState(frc::SwerveModuleState desiredState) { setDesiredState(desiredState, false); }
 
-    void setMaxSpeed(double _maxSpeed)
-    {
-        maxSpeed = _maxSpeed;
-    }
+    void setMaxSpeed(double _maxSpeed) { maxSpeed = _maxSpeed; }
 
     /**
      * Resets the drive encoders to currently read a position of 0
@@ -74,7 +67,7 @@ public:
 
     /**
      * Loads the current azimuth absolute encoder reference position and sets selected sensor encoder
-     * @return if the mag encoder was successfully 
+     * @return if the mag encoder was successfully
      */
     bool loadAndSetAzimuthZeroReference(std::vector<double> offsets);
 
@@ -84,8 +77,7 @@ public:
 
     void InitSendable(wpi::SendableBuilder& builder) override;
 
-private:
-
+   private:
     /**
      * Get the encoder position reported by the mag encoder
      * @return encoder position reported by the mag encoder
@@ -104,4 +96,4 @@ private:
     int wheelIdx;
     double initialMagEncoderValue;
 };
-}
+}  // namespace valor

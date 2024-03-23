@@ -1,3 +1,7 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 #pragma once
 
 namespace valor {
@@ -5,9 +9,5 @@ namespace valor {
 /**
  * @brief Neutral / Idle Modes for motorcontrollers. Either Brake or Coast.
  */
-enum NeutralMode
-{
-    Brake,
-    Coast
-};
-}
+enum NeutralMode { Brake, Coast };
+}  // namespace valor

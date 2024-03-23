@@ -1,66 +1,70 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 #pragma once
 
-#include "valkyrie/sensors/BaseSensor.h"
 #include <frc/TimedRobot.h>
+
 #include <deque>
+
+#include "valkyrie/sensors/BaseSensor.h"
 
 namespace valor {
 
 /**
  * @brief Sensor - identifying changes in current from a motor
- * 
+ *
  * This sensor is centered around detecting changes in output current of a motor.
  * It uses a circular buffer to maintain a rolling-average of previous current values.
  * When the average current in the window spikes above a desired amount, let the subsystem
  * know via the @link spiked @endlink function.
- * 
+ *
  * Let's say we want to monitor the last 100ms worth of current data from an intake motor.
  * When the average current over that last 100ms rises above a certain value (which we
  * specify with @link setSpikeSetpoint @endlink), then we should stop the intake to prevent
  * the intake from burning out, or let the LEDs know that we have a ball in the robot.
- * 
+ *
  * <b>What is a circular buffer?</b> A circular buffer is simply an array to store data.
  * We individually push data into the array and when the array fills up, we start to overwrite
  * data from the beginning. This allows us to keep track of the last X amount of data and see
  * the history of the array.
  */
-class CurrentSensor : public BaseSensor<double>
-{
-public:
-
+class CurrentSensor : public BaseSensor<double> {
+   public:
     /**
      * @brief Construct a new Valor Current Sensor object
-     * 
+     *
      * @param _robot Pass in the Robot reference so the calculate method can be auto-scheduled
      */
-    CurrentSensor(frc::TimedRobot *_robot, const char *_name);
+    CurrentSensor(frc::TimedRobot* _robot, const char* _name);
 
     void reset();
 
     /**
      * @brief Setup a lambda function to identify when the current has risen above a certain threshold
-     * 
+     *
      * @param _lambda Function to run when a current spike has been detected
      */
     void setSpikeCallback(std::function<void()> _lambda);
 
     /**
      * @brief Set the threshold to identify when current is spiked or not
-     * 
+     *
      * @param threshold The average current value that will trigger the spiked function
      */
     void setSpikeSetpoint(double _setpoint);
 
-     /**
+    /**
      * @brief Set the cache size to be averaged for determining spiked value
-     * 
+     *
      * @param size The size of the cache that stores current values
      */
     void setCacheSize(int _size);
 
     void InitSendable(wpi::SendableBuilder& builder) override;
 
-private:
+   private:
     std::function<void()> spikeCallback;
 
     void calculate();
@@ -70,4 +74,4 @@ private:
     double spikedSetpoint;
     int cacheSize;
 };
-}
+}  // namespace valor

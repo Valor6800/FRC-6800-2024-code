@@ -1,18 +1,17 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 #pragma once
 
 namespace valor {
 
-enum FeedForwardType
-{
-    LINEAR,
-    CIRCULAR
-};
+enum FeedForwardType { LINEAR, CIRCULAR };
 
 /**
  * @brief Container to hold PID and feed forward values for the motor controller
  */
-struct PIDF
-{
+struct PIDF {
     /// Proportion control of the feedback term
     double P = 0.0;
     /// Integral control of the feedback term
@@ -32,4 +31,4 @@ struct PIDF
     double aFFTarget = 90;
     FeedForwardType aFFType = FeedForwardType::LINEAR;
 };
-}
+}  // namespace valor

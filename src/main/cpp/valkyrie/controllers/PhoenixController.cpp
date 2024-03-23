@@ -1,3 +1,7 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 #include "valkyrie/controllers/PhoenixController.h"
 
 // Conversion guide: https://v6.docs.ctr-electronics.com/en/latest/docs/migration/migration-guide/closed-loop-guide.html
@@ -7,9 +11,9 @@
 #define FALCON_PIDF_KD 0.0f
 #define FALCON_PIDF_KS 0.19f
 
-#define FALCON_PIDF_KV 6.0f // RPS cruise velocity
-#define FALCON_PIDF_KA 130.0f // RPS/S acceleration (6.5/130 = 0.05 seconds to max speed)
-#define FALCON_PIDF_KJ 650.0f // RPS/S^2 jerk (4000/40000 = 0.1 seconds to max acceleration)
+#define FALCON_PIDF_KV 6.0f    // RPS cruise velocity
+#define FALCON_PIDF_KA 130.0f  // RPS/S acceleration (6.5/130 = 0.05 seconds to max speed)
+#define FALCON_PIDF_KJ 650.0f  // RPS/S^2 jerk (4000/40000 = 0.1 seconds to max acceleration)
 
 #define SUPPLY_CURRENT_THRESHOLD 60.0f
 #define STATOR_CURRENT_LIMIT 80.0f
@@ -21,47 +25,34 @@
 using namespace valor;
 using namespace ctre::phoenix6;
 
-PhoenixController::PhoenixController(int canID,
-                                             valor::NeutralMode _mode,
-                                             bool _inverted,
-                                             std::string canbus) :
-    BaseController(new hardware::TalonFX{canID, canbus}, _inverted, _mode, 6380),
-    status(),
-    req_position(units::turn_t{0}),
-    req_velocity(units::turns_per_second_t{0}),
-    req_voltage(units::volt_t{0}),
-    voltageCompenstation(12.0),
-    cancoder(nullptr),
-    res_position(motor->GetPosition()),
-    res_velocity(motor->GetVelocity())
-{
+PhoenixController::PhoenixController(int canID, valor::NeutralMode _mode, bool _inverted, std::string canbus)
+    : BaseController(new hardware::TalonFX{canID, canbus}, _inverted, _mode, 6380),
+      status(),
+      req_position(units::turn_t{0}),
+      req_velocity(units::turns_per_second_t{0}),
+      req_voltage(units::volt_t{0}),
+      voltageCompenstation(12.0),
+      cancoder(nullptr),
+      res_position(motor->GetPosition()),
+      res_velocity(motor->GetVelocity()) {
     init();
 }
 
-PhoenixController::PhoenixController(int canID,
-                                             valor::NeutralMode _mode,
-                                             bool _inverted,
-                                             double _rotorToSensor,
-                                             double _sensorToMech,
-                                             valor::PIDF pidf,
-                                             double voltageComp,
-                                             bool isKraken, 
-                                             std::string canbus) :
-    BaseController(new hardware::TalonFX{canID, canbus}, _inverted, _mode, isKraken ? 5800 : 6380),
-    status(),
-    req_position(units::turn_t{0}),
-    req_velocity(units::turns_per_second_t{0}),
-    req_voltage(units::volt_t{0}),
-    voltageCompenstation(voltageComp),
-    res_position(motor->GetPosition()),
-    res_velocity(motor->GetVelocity())
-{
+PhoenixController::PhoenixController(int canID, valor::NeutralMode _mode, bool _inverted, double _rotorToSensor,
+                                     double _sensorToMech, valor::PIDF pidf, double voltageComp, bool isKraken,
+                                     std::string canbus)
+    : BaseController(new hardware::TalonFX{canID, canbus}, _inverted, _mode, isKraken ? 5800 : 6380),
+      status(),
+      req_position(units::turn_t{0}),
+      req_velocity(units::turns_per_second_t{0}),
+      req_voltage(units::volt_t{0}),
+      voltageCompenstation(voltageComp),
+      res_position(motor->GetPosition()),
+      res_velocity(motor->GetVelocity()) {
     init(_rotorToSensor, _sensorToMech, pidf);
 }
 
-
-void PhoenixController::init()
-{
+void PhoenixController::init() {
     valor::PIDF motionPIDF;
     motionPIDF.P = FALCON_PIDF_KP;
     motionPIDF.I = FALCON_PIDF_KI;
@@ -73,13 +64,12 @@ void PhoenixController::init()
     init(1, 1, motionPIDF);
 }
 
-void PhoenixController::init(double _rotorToSensor, double _sensorToMech, valor::PIDF pidf)
-{
+void PhoenixController::init(double _rotorToSensor, double _sensorToMech, valor::PIDF pidf) {
     req_position.Slot = 0;
     req_position.UpdateFreqHz = 0_Hz;
     req_velocity.Slot = 0;
     req_velocity.UpdateFreqHz = 0_Hz;
-    
+
     configs::TalonFXConfiguration config;
 
     setNeutralMode(config.MotorOutput, neutralMode);
@@ -96,18 +86,18 @@ void PhoenixController::init(double _rotorToSensor, double _sensorToMech, valor:
     setPIDF(config.Slot0, config.MotionMagic, pidf);
 
     auto _status = motor->GetConfigurator().Apply(config, units::second_t{5});
-    if (_status.IsError()) status = _status;
+    if (_status.IsError())
+        status = _status;
 
     wpi::SendableRegistry::AddLW(this, "PhoenixController", "ID " + std::to_string(motor->GetDeviceID()));
 }
 
-void PhoenixController::setupCANCoder(int deviceId, double offset, bool clockwise, std::string canbus)
-{
+void PhoenixController::setupCANCoder(int deviceId, double offset, bool clockwise, std::string canbus) {
     cancoder = new ctre::phoenix6::hardware::CANcoder(deviceId, canbus);
     ctre::phoenix6::configs::MagnetSensorConfigs config;
     config.AbsoluteSensorRange = ctre::phoenix6::signals::AbsoluteSensorRangeValue::Unsigned_0To1;
-    config.SensorDirection = clockwise ? signals::SensorDirectionValue::Clockwise_Positive :
-                                         signals::SensorDirectionValue::CounterClockwise_Positive;
+    config.SensorDirection = clockwise ? signals::SensorDirectionValue::Clockwise_Positive
+                                       : signals::SensorDirectionValue::CounterClockwise_Positive;
     config.MagnetOffset = -offset;
     cancoder->GetConfigurator().Apply(config);
 
@@ -117,67 +107,63 @@ void PhoenixController::setupCANCoder(int deviceId, double offset, bool clockwis
     fx_cfg.SensorToMechanismRatio = sensorToMech;
     fx_cfg.RotorToSensorRatio = rotorToSensor;
     auto _status = motor->GetConfigurator().Apply(fx_cfg);
-    if (_status.IsError()) status = _status;
+    if (_status.IsError())
+        status = _status;
 }
 
-double PhoenixController::getCANCoder()
-{
+double PhoenixController::getCANCoder() {
     return cancoder ? cancoder->GetAbsolutePosition().GetValueAsDouble() : 0;
 }
 
-void PhoenixController::reset()
-{
+void PhoenixController::reset() {
     motor->SetPosition(0_tr);
 }
 
-void PhoenixController::setVoltageCompensation(double volts)
-{
+void PhoenixController::setVoltageCompensation(double volts) {
     voltageCompenstation = volts;
 }
 
-void PhoenixController::setEncoderPosition(double position)
-{
+void PhoenixController::setEncoderPosition(double position) {
     motor->SetPosition(units::make_unit<units::turn_t>(position));
 }
 
-void PhoenixController::setupFollower(int canID, bool followerInverted)
-{
+void PhoenixController::setupFollower(int canID, bool followerInverted) {
     followerMotor = new hardware::TalonFX(canID);
     followerMotor->SetControl(controls::Follower{motor->GetDeviceID(), followerInverted});
 }
 
-void PhoenixController::setForwardLimit(double forward)
-{
+void PhoenixController::setForwardLimit(double forward) {
     configs::SoftwareLimitSwitchConfigs config{};
     config.ForwardSoftLimitEnable = true;
     config.ForwardSoftLimitThreshold = forward;
     auto _status = motor->GetConfigurator().Apply(config);
-    if (_status.IsError()) status = _status;
+    if (_status.IsError())
+        status = _status;
 }
 
-void PhoenixController::setReverseLimit(double reverse)
-{
+void PhoenixController::setReverseLimit(double reverse) {
     configs::SoftwareLimitSwitchConfigs config{};
     config.ReverseSoftLimitEnable = true;
     config.ReverseSoftLimitThreshold = reverse;
     auto _status = motor->GetConfigurator().Apply(config);
-    if (_status.IsError()) status = _status;
+    if (_status.IsError())
+        status = _status;
 }
 
-
-void PhoenixController::setPIDF(valor::PIDF _pidf, int slot)
-{
+void PhoenixController::setPIDF(valor::PIDF _pidf, int slot) {
     configs::Slot0Configs slotConfig{};
     configs::MotionMagicConfigs motionMagicConfig{};
     setPIDF(slotConfig, motionMagicConfig, _pidf);
-    auto _status =  motor->GetConfigurator().Apply(slotConfig);
-    if (_status.IsError()) status = _status;
+    auto _status = motor->GetConfigurator().Apply(slotConfig);
+    if (_status.IsError())
+        status = _status;
     _status = motor->GetConfigurator().Apply(motionMagicConfig);
-    if (_status.IsError()) status = _status;
+    if (_status.IsError())
+        status = _status;
 }
 
-void PhoenixController::setPIDF(configs::Slot0Configs & slotConfig, configs::MotionMagicConfigs & motionMagicConfig, valor::PIDF _pidf)
-{
+void PhoenixController::setPIDF(configs::Slot0Configs& slotConfig, configs::MotionMagicConfigs& motionMagicConfig,
+                                valor::PIDF _pidf) {
     pidf = _pidf;
 
     // config.ClosedLoopGeneral.ContinuousWrap = true;
@@ -193,9 +179,9 @@ void PhoenixController::setPIDF(configs::Slot0Configs & slotConfig, configs::Mot
 
     // Feedforward gain configuration
     if (pidf.aFF != 0) {
-        slotConfig.GravityType = pidf.aFFType == valor::FeedForwardType::LINEAR ?
-            signals::GravityTypeValue::Elevator_Static :
-            signals::GravityTypeValue::Arm_Cosine;
+        slotConfig.GravityType = pidf.aFFType == valor::FeedForwardType::LINEAR
+                                     ? signals::GravityTypeValue::Elevator_Static
+                                     : signals::GravityTypeValue::Arm_Cosine;
         slotConfig.kG = pidf.aFF;
     }
 
@@ -205,40 +191,37 @@ void PhoenixController::setPIDF(configs::Slot0Configs & slotConfig, configs::Mot
     motionMagicConfig.MotionMagicJerk = pidf.maxJerk;
 }
 
-void PhoenixController::setConversion(double _rotorToSensor, double _sensorToMech)
-{
+void PhoenixController::setConversion(double _rotorToSensor, double _sensorToMech) {
     configs::FeedbackConfigs config{};
     setConversion(config, _rotorToSensor, _sensorToMech);
     auto _status = motor->GetConfigurator().Apply(config);
-    if (_status.IsError()) status = _status;
+    if (_status.IsError())
+        status = _status;
 }
 
-void PhoenixController::setConversion(configs::FeedbackConfigs & config, double _rotorToSensor, double _sensorToMech)
-{
+void PhoenixController::setConversion(configs::FeedbackConfigs& config, double _rotorToSensor, double _sensorToMech) {
     rotorToSensor = _rotorToSensor;
     sensorToMech = _sensorToMech;
     config.RotorToSensorRatio = rotorToSensor;
     config.SensorToMechanismRatio = sensorToMech;
 }
 
-void PhoenixController::setMotorInversion(bool invert){
+void PhoenixController::setMotorInversion(bool invert) {
     motor->SetInverted(invert);
 }
 
-bool PhoenixController::getMotorInversion(){
+bool PhoenixController::getMotorInversion() {
     return motor->GetInverted();
 }
 
-double PhoenixController::getCurrent()
-{
+double PhoenixController::getCurrent() {
     return motor->GetStatorCurrent().GetValueAsDouble();
 }
 
 /**
  * Output is in mechanism rotations!
-*/
-double PhoenixController::getPosition()
-{
+ */
+double PhoenixController::getPosition() {
     // @TODO Use FPGA - latency to identify timestamp of calculation
     // units::second_t latency = rotorPosSignal.GetTimestamp().GetLatency();
     return res_position.Refresh().GetValueAsDouble();
@@ -246,194 +229,144 @@ double PhoenixController::getPosition()
 
 /**
  * Output is in mechanism rotations!
-*/
-double PhoenixController::getSpeed()
-{
+ */
+double PhoenixController::getSpeed() {
     // @TODO Use FPGA - latency to identify timestamp of calculation
     // units::second_t latency = rotorPosSignal.GetTimestamp().GetLatency();
     return res_velocity.Refresh().GetValueAsDouble();
 }
 
 // Sets signal update rate for position
-void PhoenixController::setPositionUpdateFrequency(units::frequency::hertz_t hertz)
-{
+void PhoenixController::setPositionUpdateFrequency(units::frequency::hertz_t hertz) {
     res_position.SetUpdateFrequency(hertz);
 }
 
 // Sets signal update rate for speed
-void PhoenixController::setSpeedUpdateFrequency(units::frequency::hertz_t hertz)
-{
+void PhoenixController::setSpeedUpdateFrequency(units::frequency::hertz_t hertz) {
     res_velocity.SetUpdateFrequency(hertz);
 }
 
-void PhoenixController::setRange(int slot, double min, double max)
-{
+void PhoenixController::setRange(int slot, double min, double max) {
     configs::SoftwareLimitSwitchConfigs config{};
     config.ForwardSoftLimitEnable = true;
     config.ForwardSoftLimitThreshold = max;
     config.ReverseSoftLimitEnable = true;
     config.ReverseSoftLimitThreshold = min;
     auto _status = motor->GetConfigurator().Apply(config);
-    if (_status.IsError()) status = _status;
+    if (_status.IsError())
+        status = _status;
 }
 
 /**
  * Set a position in mechanism rotations
-*/
-void PhoenixController::setPosition(double position)
-{
-    req_position.Position = units::make_unit<units::turn_t>(position); // Mechanism rotations
+ */
+void PhoenixController::setPosition(double position) {
+    req_position.Position = units::make_unit<units::turn_t>(position);  // Mechanism rotations
     auto _status = motor->SetControl(req_position);
-    if (_status.IsError()) status = _status;
+    if (_status.IsError())
+        status = _status;
 }
 
-void PhoenixController::enableFOC(bool enableFOC)
-{
+void PhoenixController::enableFOC(bool enableFOC) {
     req_position.EnableFOC = enableFOC;
     req_velocity.EnableFOC = enableFOC;
     req_voltage.EnableFOC = enableFOC;
 }
 
-void PhoenixController::setSpeed(double speed)
-{
-    req_velocity.Velocity = units::make_unit<units::turns_per_second_t>(speed); // Mechanism rotations
+void PhoenixController::setSpeed(double speed) {
+    req_velocity.Velocity = units::make_unit<units::turns_per_second_t>(speed);  // Mechanism rotations
     auto _status = motor->SetControl(req_velocity);
-    if (_status.IsError()) status = _status;
+    if (_status.IsError())
+        status = _status;
 }
 
-void PhoenixController::setPower(double speed)
-{
+void PhoenixController::setPower(double speed) {
     req_voltage.Output = units::make_unit<units::volt_t>(speed * 12);
     auto _status = motor->SetControl(req_voltage);
-    if (_status.IsError()) status = _status;
+    if (_status.IsError())
+        status = _status;
 }
 
-void PhoenixController::setProfile(int profile)
-{
+void PhoenixController::setProfile(int profile) {
     currentProfile = profile;
 }
 
-double PhoenixController::getAbsEncoderPosition()
-{
+double PhoenixController::getAbsEncoderPosition() {
     return 0;
 }
 
-void PhoenixController::setNeutralMode(configs::MotorOutputConfigs & config, valor::NeutralMode mode)
-{
+void PhoenixController::setNeutralMode(configs::MotorOutputConfigs& config, valor::NeutralMode mode) {
     neutralMode = mode;
 
     // Deadband configuration
     config.DutyCycleNeutralDeadband = FALCON_DEADBAND;
     config.Inverted = inverted;
-    config.NeutralMode = neutralMode == valor::NeutralMode::Brake ?
-        signals::NeutralModeValue::Brake :
-        signals::NeutralModeValue::Coast;
+    config.NeutralMode =
+        neutralMode == valor::NeutralMode::Brake ? signals::NeutralModeValue::Brake : signals::NeutralModeValue::Coast;
 }
 
-void PhoenixController::setNeutralMode(valor::NeutralMode mode)
-{
+void PhoenixController::setNeutralMode(valor::NeutralMode mode) {
     configs::MotorOutputConfigs config{};
     setNeutralMode(config, mode);
     auto _status = motor->GetConfigurator().Apply(config);
-    if (_status.IsError()) status = _status;
+    if (_status.IsError())
+        status = _status;
 }
 
-void PhoenixController::setOpenLoopRamp(double time)
-{
+void PhoenixController::setOpenLoopRamp(double time) {
     configs::OpenLoopRampsConfigs config{};
     config.DutyCycleOpenLoopRampPeriod = time;
     auto _status = motor->GetConfigurator().Apply(config);
-    if (_status.IsError()) status = _status;
+    if (_status.IsError())
+        status = _status;
 }
 
-float PhoenixController::getRevBusUtil()
-{
+float PhoenixController::getRevBusUtil() {
     return CANBus::GetStatus("").BusUtilization;
 }
 
-float PhoenixController::getCANivoreBusUtil()
-{
+float PhoenixController::getCANivoreBusUtil() {
     return CANBus::GetStatus("baseCAN").BusUtilization;
 }
 
-void PhoenixController::InitSendable(wpi::SendableBuilder& builder)
-{
+void PhoenixController::InitSendable(wpi::SendableBuilder& builder) {
     builder.SetSmartDashboardType("Subsystem");
     builder.AddDoubleProperty(
-        "Stator Current", 
-        [this] { return motor->GetStatorCurrent().GetValueAsDouble(); },
-        nullptr);
+        "Stator Current", [this] { return motor->GetStatorCurrent().GetValueAsDouble(); }, nullptr);
     builder.AddDoubleProperty(
-        "Supply Current", 
-        [this] { return motor->GetSupplyCurrent().GetValueAsDouble(); },
-        nullptr);
+        "Supply Current", [this] { return motor->GetSupplyCurrent().GetValueAsDouble(); }, nullptr);
     builder.AddDoubleProperty(
-        "Device Temp", 
-        [this] { return motor->GetDeviceTemp().GetValueAsDouble(); },
-        nullptr);
+        "Device Temp", [this] { return motor->GetDeviceTemp().GetValueAsDouble(); }, nullptr);
     builder.AddDoubleProperty(
-        "Processor Temp", 
-        [this] { return motor->GetDeviceTemp().GetValueAsDouble(); },
-        nullptr);
+        "Processor Temp", [this] { return motor->GetDeviceTemp().GetValueAsDouble(); }, nullptr);
     builder.AddDoubleProperty(
-        "Position", 
-        [this] { return getPosition(); },
-        nullptr);
+        "Position", [this] { return getPosition(); }, nullptr);
     builder.AddDoubleProperty(
-        "Speed", 
-        [this] { return getSpeed(); },
-        nullptr);
+        "Speed", [this] { return getSpeed(); }, nullptr);
     builder.AddBooleanProperty(
-        "Inverted", 
-        [this] { return inverted; },
-        nullptr);
+        "Inverted", [this] { return inverted; }, nullptr);
 
     builder.AddDoubleProperty(
-        "Out Volt", 
-        [this] { return motor->GetMotorVoltage().GetValueAsDouble(); },
-        nullptr);
+        "Out Volt", [this] { return motor->GetMotorVoltage().GetValueAsDouble(); }, nullptr);
     builder.AddDoubleProperty(
-        "CANCoder", 
-        [this] { return getCANCoder(); },
-        nullptr);
+        "CANCoder", [this] { return getCANCoder(); }, nullptr);
     builder.AddDoubleProperty(
-        "reqPosition", 
-        [this] { return req_position.Position.to<double>(); },
-        nullptr);
+        "reqPosition", [this] { return req_position.Position.to<double>(); }, nullptr);
     builder.AddDoubleProperty(
-        "reqSpeed", 
-        [this] { return req_velocity.Velocity.to<double>(); },
-        nullptr);
+        "reqSpeed", [this] { return req_velocity.Velocity.to<double>(); }, nullptr);
     builder.AddDoubleProperty(
-        "rotorToSensor", 
-        [this] { return rotorToSensor; },
-        nullptr);
+        "rotorToSensor", [this] { return rotorToSensor; }, nullptr);
     builder.AddDoubleProperty(
-        "sensorToMech", 
-        [this] { return sensorToMech; },
-        nullptr);
+        "sensorToMech", [this] { return sensorToMech; }, nullptr);
 
     builder.AddIntegerProperty(
-        "Config Status Code", 
-        [this] { return status; },
-        nullptr);
+        "Config Status Code", [this] { return status; }, nullptr);
     builder.AddIntegerProperty(
-        "Magnet Health",
-        [this] { return cancoder ? cancoder->GetMagnetHealth().GetValue().value : -1; },
-        nullptr);
+        "Magnet Health", [this] { return cancoder ? cancoder->GetMagnetHealth().GetValue().value : -1; }, nullptr);
     builder.AddFloatProperty(
-        "Rev CAN Bus Utilization",
-        [this] { return getRevBusUtil(); },
-        nullptr
-    );
+        "Rev CAN Bus Utilization", [this] { return getRevBusUtil(); }, nullptr);
     builder.AddFloatProperty(
-        "CANivore Bus Utilization",
-        [this] { return getCANivoreBusUtil(); },
-        nullptr
-    );
+        "CANivore Bus Utilization", [this] { return getCANivoreBusUtil(); }, nullptr);
     builder.AddBooleanProperty(
-        "Undervolting",
-        [this] { return motor->GetFault_Undervoltage().GetValue(); },
-        nullptr);
-
+        "Undervolting", [this] { return motor->GetFault_Undervoltage().GetValue(); }, nullptr);
 }

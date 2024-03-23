@@ -1,15 +1,18 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 #include "valkyrie/sensors/CANdleSensor.h"
 
 #include <string>
 
 using namespace valor;
 
-CANdleSensor::CANdleSensor(frc::TimedRobot *_robot, int _ledCount, int _segments, int _canID, std::string _canbus) :
-    BaseSensor(_robot, std::string("ID ").append(std::to_string(_canID)).c_str()),
-    candle(_canID, _canbus),
-    ledCount(_ledCount),
-    segments(_segments)
-{
+CANdleSensor::CANdleSensor(frc::TimedRobot* _robot, int _ledCount, int _segments, int _canID, std::string _canbus)
+    : BaseSensor(_robot, std::string("ID ").append(std::to_string(_canID)).c_str()),
+      candle(_canID, _canbus),
+      ledCount(_ledCount),
+      segments(_segments) {
     wpi::SendableRegistry::AddLW(this, "CANdleSensor", sensorName);
 
     reset();
@@ -24,20 +27,19 @@ CANdleSensor::CANdleSensor(frc::TimedRobot *_robot, int _ledCount, int _segments
     config.vBatOutputMode = ctre::phoenix::led::VBatOutputMode::Off;
     candle.ConfigFactoryDefault(100);
     candle.ConfigAllSettings(config, 100);
-    int segmentLEDCount = (ledCount-8)/segments;
-    //286
-    for (int i = 0; i<segments + 1; i++){
+    int segmentLEDCount = (ledCount - 8) / segments;
+    // 286
+    for (int i = 0; i < segments + 1; i++) {
         SegmentSettings newSegment;
         newSegment.recentlyChanged = true;
         newSegment.currentColor = toRGB(VALOR_GOLD);
         newSegment.activeAnimation = NULL;
         newSegment.activeAnimationType = AnimationType::None;
-        if (i == 0){
+        if (i == 0) {
             newSegment.startLed = 0;
             newSegment.endLed = 8;
-        }
-        else{
-            newSegment.startLed = (segmentLEDCount*(i-1)) + 9;
+        } else {
+            newSegment.startLed = (segmentLEDCount * (i - 1)) + 9;
             newSegment.endLed = segmentLEDCount - 1;
         }
         segmentMap[i] = newSegment;
@@ -51,8 +53,7 @@ CANdleSensor::CANdleSensor(frc::TimedRobot *_robot, int _ledCount, int _segments
     setGetter([this] { return 0; });
 }
 
-CANdleSensor::RGBColor CANdleSensor::toRGB(int color)
-{
+CANdleSensor::RGBColor CANdleSensor::toRGB(int color) {
     RGBColor outColor;
     outColor.red = ((color & 0xFF0000) >> 16);
     outColor.green = ((color & 0x00FF00) >> 8);
@@ -60,30 +61,27 @@ CANdleSensor::RGBColor CANdleSensor::toRGB(int color)
     return outColor;
 }
 
-CANdleSensor::~CANdleSensor()
-{
-    for (int i = 0; i <= segments; i++){
+CANdleSensor::~CANdleSensor() {
+    for (int i = 0; i <= segments; i++) {
         clearAnimation(i);
     }
     delete allSegments.activeAnimation;
 }
 
-void CANdleSensor::setColor(int segment, RGBColor rgb)
-{
+void CANdleSensor::setColor(int segment, RGBColor rgb) {
     segment++;
-    if (segment >= segmentMap.size()) return;
+    if (segment >= segmentMap.size())
+        return;
     segmentMap[segment].recentlyChanged = true;
     segmentMap[segment].currentColor = rgb;
 }
 
-void CANdleSensor::setColor(RGBColor rgb)
-{
+void CANdleSensor::setColor(RGBColor rgb) {
     allSegments.recentlyChanged = true;
     allSegments.currentColor = rgb;
 }
 
-void CANdleSensor::setColor(int segment, int color)
-{
+void CANdleSensor::setColor(int segment, int color) {
     setColor(segment, toRGB(color));
 }
 
@@ -91,129 +89,69 @@ void CANdleSensor::setAnimation(AnimationType animation, RGBColor color, double 
     setAnimation(&allSegments, animation, color, speed);
 }
 
-void CANdleSensor::setAnimation(int segment, AnimationType animation,RGBColor color, double speed)
-{
+void CANdleSensor::setAnimation(int segment, AnimationType animation, RGBColor color, double speed) {
     segment++;
-    if (segment >= segmentMap.size()) return;
+    if (segment >= segmentMap.size())
+        return;
     setAnimation(&segmentMap[segment], animation, color, speed);
 }
 
-
-void CANdleSensor::setAnimation(CANdleSensor::SegmentSettings *segment, AnimationType animation,RGBColor color, double speed)
-{
+void CANdleSensor::setAnimation(CANdleSensor::SegmentSettings* segment, AnimationType animation, RGBColor color,
+                                double speed) {
     segment->recentlyChanged = true;
     int brightness = 1;
 
     segment->activeAnimationType = animation;
 
-    if (animation == AnimationType::ColorFlow){
+    if (animation == AnimationType::ColorFlow) {
         segment->activeAnimation = new ctre::phoenix::led::ColorFlowAnimation(
-            segment->currentColor.red,
-            segment->currentColor.green,
-            segment->currentColor.blue,
-            0,
-            speed,
-            segment->endLed,
-            ctre::phoenix::led::ColorFlowAnimation::Forward,
-            segment->startLed
-        );
-    } else if (animation == AnimationType::Fire){
-        segment->activeAnimation = new ctre::phoenix::led::FireAnimation(
-            brightness,
-            speed,
-            segment->endLed,
-            1,
-            1,
-            false,
-            segment->startLed
-        );
-    } else if (animation == AnimationType::Larson){
+            segment->currentColor.red, segment->currentColor.green, segment->currentColor.blue, 0, speed,
+            segment->endLed, ctre::phoenix::led::ColorFlowAnimation::Forward, segment->startLed);
+    } else if (animation == AnimationType::Fire) {
+        segment->activeAnimation =
+            new ctre::phoenix::led::FireAnimation(brightness, speed, segment->endLed, 1, 1, false, segment->startLed);
+    } else if (animation == AnimationType::Larson) {
         segment->activeAnimation = new ctre::phoenix::led::LarsonAnimation(
-            segment->currentColor.red,
-            segment->currentColor.green,
-            segment->currentColor.blue,
-            0,
-            speed,
-            segment->endLed,
-            ctre::phoenix::led::LarsonAnimation::Front,
-            5,
-            segment->startLed
-        );
-    } else if (animation == AnimationType::Rainbow){
-        segment->activeAnimation = new ctre::phoenix::led::RainbowAnimation(
-            brightness,
-            speed,
-            segment->endLed,
-            false,
-            segment->startLed
-        );
-    } else if (animation == AnimationType::RgbFade){
-        segment->activeAnimation = new ctre::phoenix::led::RgbFadeAnimation(
-            brightness,
-            speed,
-            segment->endLed,
-            segment->startLed
-        );
-    } else if (animation == AnimationType::SingleFade){
+            segment->currentColor.red, segment->currentColor.green, segment->currentColor.blue, 0, speed,
+            segment->endLed, ctre::phoenix::led::LarsonAnimation::Front, 5, segment->startLed);
+    } else if (animation == AnimationType::Rainbow) {
+        segment->activeAnimation =
+            new ctre::phoenix::led::RainbowAnimation(brightness, speed, segment->endLed, false, segment->startLed);
+    } else if (animation == AnimationType::RgbFade) {
+        segment->activeAnimation =
+            new ctre::phoenix::led::RgbFadeAnimation(brightness, speed, segment->endLed, segment->startLed);
+    } else if (animation == AnimationType::SingleFade) {
         segment->activeAnimation = new ctre::phoenix::led::SingleFadeAnimation(
-            segment->currentColor.red,
-            segment->currentColor.green,
-            segment->currentColor.blue,
-            0,
-            speed,
-            segment->endLed,
-            segment->startLed
-        );
-    } else if (animation == AnimationType::Strobe){
+            segment->currentColor.red, segment->currentColor.green, segment->currentColor.blue, 0, speed,
+            segment->endLed, segment->startLed);
+    } else if (animation == AnimationType::Strobe) {
         segment->activeAnimation = new ctre::phoenix::led::StrobeAnimation(
-            segment->currentColor.red,
-            segment->currentColor.green,
-            segment->currentColor.blue,
-            0,
-            speed,
-            segment->endLed,
-            segment->startLed
-        );
-    } else if (animation == AnimationType::Twinkle){
+            segment->currentColor.red, segment->currentColor.green, segment->currentColor.blue, 0, speed,
+            segment->endLed, segment->startLed);
+    } else if (animation == AnimationType::Twinkle) {
         segment->activeAnimation = new ctre::phoenix::led::TwinkleAnimation(
-            segment->currentColor.red,
-            segment->currentColor.green,
-            segment->currentColor.blue,
-            0,
-            speed,
-            segment->endLed,
-            ctre::phoenix::led::TwinkleAnimation::TwinklePercent::Percent100,
-            segment->startLed
-        );
-    } else if (animation == AnimationType::TwinkleOff){
+            segment->currentColor.red, segment->currentColor.green, segment->currentColor.blue, 0, speed,
+            segment->endLed, ctre::phoenix::led::TwinkleAnimation::TwinklePercent::Percent100, segment->startLed);
+    } else if (animation == AnimationType::TwinkleOff) {
         segment->activeAnimation = new ctre::phoenix::led::TwinkleOffAnimation(
-            segment->currentColor.red,
-            segment->currentColor.green,
-            segment->currentColor.blue,
-            0,
-            speed,
-            segment->endLed,
-            ctre::phoenix::led::TwinkleOffAnimation::TwinkleOffPercent::Percent100,
-            segment->startLed
-        );
+            segment->currentColor.red, segment->currentColor.green, segment->currentColor.blue, 0, speed,
+            segment->endLed, ctre::phoenix::led::TwinkleOffAnimation::TwinkleOffPercent::Percent100, segment->startLed);
     }
 }
 
-void CANdleSensor::clearAnimation(int segment)
-{
+void CANdleSensor::clearAnimation(int segment) {
     segment++;
-    if (segment >= segmentMap.size()) return;
+    if (segment >= segmentMap.size())
+        return;
     segmentMap[segment].activeAnimationType = AnimationType::None;
 
     if (segmentMap[segment].activeAnimation) {
         candle.ClearAnimation(segmentMap[segment].activeAnimation->GetAnimationIdx());
         delete segmentMap[segment].activeAnimation;
     }
-    
 }
 
-void CANdleSensor::clearAnimation()
-{
+void CANdleSensor::clearAnimation() {
     allSegments.activeAnimationType = AnimationType::None;
     if (allSegments.activeAnimation)
         candle.ClearAnimation(allSegments.activeAnimation->GetAnimationIdx());
@@ -222,28 +160,27 @@ void CANdleSensor::clearAnimation()
 
 CANdleSensor::AnimationType CANdleSensor::getActiveAnimationType(int segment) {
     segment++;
-    if (segment >= segmentMap.size()) segment = 0;
+    if (segment >= segmentMap.size())
+        segment = 0;
     return segmentMap[segment].activeAnimationType;
 }
 
 CANdleSensor::RGBColor CANdleSensor::getColor(int segment) {
     segment++;
-    if (segment >= segmentMap.size()) segment = 0;
+    if (segment >= segmentMap.size())
+        segment = 0;
     return segmentMap[segment].currentColor;
 }
 
-void CANdleSensor::reset()
-{
+void CANdleSensor::reset() {
     clearAnimation();
     prevState = 0xFFFFFF;
     currState = 0xFFFFFF;
 }
 
-void CANdleSensor::calculate()
-{
+void CANdleSensor::calculate() {
     for (auto segment : segmentMap) {
         if (segmentMap[segment.first].recentlyChanged) {
-
             if (segmentMap[segment.first].activeAnimationType != AnimationType::None) {
                 clearAnimation(segment.first);
                 if (segmentMap[segment.first].activeAnimation) {
@@ -252,32 +189,20 @@ void CANdleSensor::calculate()
                 segmentMap[segment.first].activeAnimationType = AnimationType::None;
             }
 
-            candle.SetLEDs(
-                segmentMap[segment.first].currentColor.red,
-                segmentMap[segment.first].currentColor.green,
-                segmentMap[segment.first].currentColor.blue,
-                0,
-                segmentMap[segment.first].startLed,
-                segmentMap[segment.first].endLed
-            );
+            candle.SetLEDs(segmentMap[segment.first].currentColor.red, segmentMap[segment.first].currentColor.green,
+                           segmentMap[segment.first].currentColor.blue, 0, segmentMap[segment.first].startLed,
+                           segmentMap[segment.first].endLed);
         }
         segmentMap[segment.first].recentlyChanged = false;
     }
 }
 
-void CANdleSensor::InitSendable(wpi::SendableBuilder& builder)
-{
+void CANdleSensor::InitSendable(wpi::SendableBuilder& builder) {
     builder.SetSmartDashboardType("Subsystem");
     builder.AddDoubleProperty(
-        "Current State", 
-        [this] { return prevState; },
-        nullptr);
+        "Current State", [this] { return prevState; }, nullptr);
     builder.AddDoubleProperty(
-        "Current State", 
-        [this] { return currState; },
-        nullptr);
+        "Current State", [this] { return currState; }, nullptr);
     builder.AddDoubleProperty(
-        "Max Animations",
-        [this] {return candle.GetMaxSimultaneousAnimationCount();},
-        nullptr);
+        "Max Animations", [this] { return candle.GetMaxSimultaneousAnimationCount(); }, nullptr);
 }

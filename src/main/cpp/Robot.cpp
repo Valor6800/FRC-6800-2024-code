@@ -1,14 +1,20 @@
-#include "Robot.h"
-#include "frc/AnalogTriggerType.h"
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
 
+#include "Robot.h"
+
+#include <frc/RobotController.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/CommandScheduler.h>
-#include <frc/RobotController.h>
-#include <Constants.h>
-
 #include <pathplanner/lib/auto/NamedCommands.h>
 
 #include <ctime>
+
+#include <Constants.h>
+
+#include "frc/AnalogTriggerType.h"
+
 #define AUTO_DOUBTX 3.0f;
 #define AUTO_DOUBTY 3.0f;
 #define TELE_DOUBTX 0.75f;
@@ -17,31 +23,28 @@
 #define LED_COUNT 65
 #define SEGMENTS 3
 
-Robot::Robot() : 
-    leds(this, LED_COUNT, SEGMENTS, CANIDs::CANDLE, ""),
-    drivetrain(this, &leds),
-    valorAuto(),
-    feederBeamBreak(AnalogPorts::FEEDER_BEAM_BREAK_PORT),
-    feederBeamBreak2(AnalogPorts::FEEDER_BEAM_BREAK2_PORT),
-    intakeBeamBreak(AnalogPorts::INTAKE_BEAM_BREAK_PORT),
-    shooter(this, &drivetrain, &feederBeamBreak, &feederBeamBreak2, &leds),
-    feeder(this, &feederBeamBreak, &intakeBeamBreak, &feederBeamBreak2, &leds)
-{
+Robot::Robot()
+    : leds(this, LED_COUNT, SEGMENTS, CANIDs::CANDLE, ""),
+      drivetrain(this, &leds),
+      valorAuto(),
+      feederBeamBreak(AnalogPorts::FEEDER_BEAM_BREAK_PORT),
+      feederBeamBreak2(AnalogPorts::FEEDER_BEAM_BREAK2_PORT),
+      intakeBeamBreak(AnalogPorts::INTAKE_BEAM_BREAK_PORT),
+      shooter(this, &drivetrain, &feederBeamBreak, &feederBeamBreak2, &leds),
+      feeder(this, &feederBeamBreak, &intakeBeamBreak, &feederBeamBreak2, &leds) {
     frc::TimedRobot();
     feederBeamBreak.SetLimitsVoltage(4, 14);
     feederBeamBreak2.SetLimitsVoltage(4, 14);
     intakeBeamBreak.SetLimitsVoltage(4, 14);
 
-    pathplanner::NamedCommands::registerCommand("Reschedule", std::move(
-        frc2::InstantCommand([this](){
-            autoCommand.Cancel();
-            if (feeder.state.beamTrip)
-                autoCommand = valorAuto.getAuto("3-3");
-            else
-                autoCommand = valorAuto.getAuto("3-4");
-            autoCommand.Schedule();
-        })
-    ).ToPtr());
+    pathplanner::NamedCommands::registerCommand("Reschedule", std::move(frc2::InstantCommand([this]() {
+                                                                  autoCommand.Cancel();
+                                                                  if (feeder.state.beamTrip)
+                                                                      autoCommand = valorAuto.getAuto("3-3");
+                                                                  else
+                                                                      autoCommand = valorAuto.getAuto("3-4");
+                                                                  autoCommand.Schedule();
+                                                              })).ToPtr());
 }
 
 void Robot::RobotInit() {
@@ -69,16 +72,18 @@ void Robot::RobotInit() {
  * <p> This runs after the mode specific periodic functions, but before
  * LiveWindow and SmartDashboard integrated updating.
  */
-void Robot::RobotPeriodic() { frc2::CommandScheduler::GetInstance().Run(); }
+void Robot::RobotPeriodic() {
+    frc2::CommandScheduler::GetInstance().Run();
+}
 
 /**
  * This function is called once each time the robot enters Disabled mode. You
  * can use it to reset any subsystem information you want to clear when the
  * robot is disabled.
  */
-void Robot::DisabledInit() { }
+void Robot::DisabledInit() {}
 
-void Robot::DisabledPeriodic() { 
+void Robot::DisabledPeriodic() {
     valorAuto.preloadSelectedAuto();
 }
 
@@ -104,8 +109,7 @@ void Robot::AutonomousExit() {
     drivetrain.state.xPose = true;
 }
 
-void Robot::AutonomousPeriodic() {
-}
+void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {
     drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Coast);
@@ -130,5 +134,7 @@ void Robot::TeleopPeriodic() {}
 void Robot::TestPeriodic() {}
 
 #ifndef RUNNING_FRC_TESTS
-int main() { return frc::StartRobot<Robot>(); }
+int main() {
+    return frc::StartRobot<Robot>();
+}
 #endif
