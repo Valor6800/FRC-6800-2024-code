@@ -197,17 +197,16 @@ void Feeder::assessInputs()
 
 void Feeder::analyzeDashboard()
 {
-<<<<<<< HEAD
     state.tuningPower = table->PutNumber("Intake tuning speed", INTAKE_FORWARD_POWER);
     if (table->GetBoolean("Tuning", false)) {
         state.intakeState = ROLLER_STATE::TUNING;
     }
+    
     state.bothFeederBeamBreakTripped = !feederBeamBreak->GetInWindow() && !feederBeamBreak2->GetInWindow();
-=======
     if(!feederBeamBreak->GetInWindow() && !feederBeamBreak2->GetInWindow()){
         state.bothFeederBeamBreakTripped = true;
     }
->>>>>>> 25ea0e6 (structure update)
+
 
     if (state.feederState == ROLLER_STATE::SHOOT || state.feederState == ROLLER_STATE::OUTTAKE) {
         state.beamTrip = false;
