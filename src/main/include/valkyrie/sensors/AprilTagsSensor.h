@@ -15,6 +15,7 @@
 namespace valor
 {
     class AprilTagsSensor : public VisionSensor {
+        
         public:
             /**
              * @brief Constructor for AprilTagsSensor
@@ -23,6 +24,12 @@ namespace valor
             * @param _name The name of the specific sensor for logging and reporting
             */
             AprilTagsSensor(frc::TimedRobot* robot, const char *name, frc::Pose3d _cameraPose);
+
+            struct TagData {
+                double id, txnc, tync, ta;
+                units::meter_t distanceToCamera, distanceToRobot;
+                double ambiguity;
+            };
 
             int getTagID();
 
@@ -33,12 +40,7 @@ namespace valor
 
             frc::Pose3d getPoseFromAprilTag();
 
-            units::meter_t getDistanceToRobot();
-            units::meter_t getDistanceToCamera();
-
-            double getTagCount();
-            double getTagAmbiguity();
-
+            TagData getTagData(int i);
         private:
             frc::Pose3d getGlobalPose() override;
 
@@ -46,17 +48,13 @@ namespace valor
             units::meter_t distance{0_m};
             int tagCount;
 
-            bool miscUpdate;
+            bool tagMapUpdate;
 
-            struct TagData {
-                double id, txnc, tync, ta;
-                units::meter_t distanceToCamera, distanceToRobot;
-                double ambiguity;
-            };
+            
             
             std::unordered_map<int, TagData> tagsSeen;
 
-            bool updateMiscValues(std::vector<double> data);
+            bool updateTagMap(std::vector<double> data);
     
             std::vector<double> botPose;
             std::vector<double> botToTargetPose;

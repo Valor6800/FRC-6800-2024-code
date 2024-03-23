@@ -6,7 +6,6 @@
 #include "units/velocity.h"
 #include <cmath>
 #include <cstddef>
-#include <iterator>
 #include <unordered_map>
 #include <vector>
 
@@ -32,7 +31,7 @@ frc::Pose3d AprilTagsSensor::getGlobalPose() {
     std::vector<double> dataVector = limeTable->GetNumberArray("botpose_wpiblue", std::span<double>());
     botPose = {dataVector[0], dataVector[1], dataVector[2], dataVector[3], dataVector[4], dataVector[5]};
 
-    miscUpdate = updateMiscValues(dataVector);
+    tagMapUpdate = updateTagMap(dataVector);
 
     botToTargetPose = limeTable->GetNumberArray("botpose_targetspace", std::span<const double>());
 
@@ -51,7 +50,7 @@ frc::Pose3d AprilTagsSensor::getGlobalPose() {
     );
 }
 
-bool AprilTagsSensor::updateMiscValues(std::vector<double> data){
+bool AprilTagsSensor::updateTagMap(std::vector<double> data){
     tagsSeen.clear();
     if (data.size() < 11) return false;
 
@@ -90,14 +89,13 @@ frc::Pose3d AprilTagsSensor::getPoseFromAprilTag() {
 
 void AprilTagsSensor::applyVisionMeasurement(frc::SwerveDrivePoseEstimator<4> *estimator, units::velocity::meters_per_second_t speed, bool accept, double doubtX, double doubtY, double doubtRot) {
     if (!hasTarget() || !accept) return;
+
     dp = limeTable->GetNumber("dp", dp);
     vp = limeTable->GetNumber("vp", vp);
  
-    //std::vector<double> botToTargetPose = limeTable->GetNumberArray("botpose_targetspace", std::span<const double>());
-    //if (botToTargetPose.size() == 6) distance = units::meter_t(sqrtf(powf(botToTargetPose[0], 2) + powf(botToTargetPose[1], 2)));
-    //else distance = 0_m; return;
     double newDoubtX = doubtX + (distance.to<double>() * dp) + (vp * speed.to<double>());
     double newDoubtY = doubtY + (distance.to<double>() * dp) + (vp * speed.to<double>());
+
     if (distance >= normalVisionOutlier) return;
     units::millisecond_t totalLatency = getTotalLatency();
 
@@ -124,13 +122,10 @@ int AprilTagsSensor::getTagID(){
     return limeTable->GetNumber("tid", -1);
 }
 
-units::meter_t AprilTagsSensor::getDistanceToRobot() { return 0.0_m; }
-
-units::meter_t AprilTagsSensor::getDistanceToCamera() { return 0.0_m; }
-
-double AprilTagsSensor::getTagCount() { return 0.0; }
-
-double AprilTagsSensor::getTagAmbiguity() { return 0.0; }
+AprilTagsSensor::TagData AprilTagsSensor::getTagData(int i) {
+    if (!tagsSeen.contains(i) || !hasTarget()) return {};
+    return tagsSeen[i];
+}
 
 void AprilTagsSensor::InitSendable(wpi::SendableBuilder& builder) {
     builder.SetSmartDashboardType("Subsystem");
@@ -170,11 +165,23 @@ void AprilTagsSensor::InitSendable(wpi::SendableBuilder& builder) {
         nullptr
     );
     builder.AddDoubleProperty("totalLatency", [this] {return getTotalLatency().to<double>();}, nullptr);
-    builder.AddDoubleProperty("distanceFromTarget", [this] {return distance.to<double>();}, nullptr);
+    builder.AddDoubleProperty("Current distanceFromTarget", [this] {return distance.to<double>();}, nullptr);
     builder.AddDoubleProperty("Vision acceptance outlier", [this] {return normalVisionOutlier.to<double>();}, nullptr);
-    builder.AddBooleanProperty("Updated Misc Values", [this] {return miscUpdate;}, nullptr);
+    builder.AddBooleanProperty("Updated Tag Map Values", [this] {return tagMapUpdate;}, nullptr);
     builder.AddDoubleArrayProperty(
-        "TagID From Misc Array",
+        "Distance From Tag Map",
+        [this]
+        {
+            std::vector<double> distanceArray;
+            for (auto tag : tagsSeen) {
+                distanceArray.push_back(tag.second.distanceToCamera.to<double>());
+            }
+            return distanceArray;
+        },
+        nullptr
+    );
+    builder.AddDoubleArrayProperty(
+        "TagID From Tag Map",
         [this]
         {
             std::vector<double> idArray;
