@@ -48,6 +48,7 @@ using namespace pathplanner;
 #define DRIVE_GEAR_RATIO 5.51f
 #define AZIMUTH_GEAR_RATIO 13.37f
 #define ROT_SPEED_MUL 1.3f
+#define SLIP_FACTOR 1.25f
 
 #define AUTO_VISION_THRESHOLD 4.0f //meters
 
@@ -747,7 +748,7 @@ void Drivetrain::setXMode(){
 bool Drivetrain::isWheelSlip(int i)
 {
     double tVel = sqrtf(powf(getRobotRelativeSpeeds().vx.to<double>(), 2) + powf(getRobotRelativeSpeeds().vy.to<double>(), 2));
-    return fabs(driveControllers[i]->getSpeed()) >= tVel * 1.25;
+    return fabs(driveControllers[i]->getSpeed()) > tVel * SLIP_FACTOR;
 }
 
 void Drivetrain::setDriveMotorNeutralMode(valor::NeutralMode mode) {
@@ -923,7 +924,7 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
             },
             nullptr
         );
-        builder.AddIntegerProperty(
+        builder.AddDoubleProperty(
             "xVelocity",
             [this]
             {
@@ -931,7 +932,7 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
             },
             nullptr
         );
-        builder.AddIntegerProperty(
+        builder.AddDoubleProperty(
             "yVelocity",
             [this]
             {
@@ -1049,22 +1050,22 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
         );
         builder.AddBooleanProperty(
             "Swerve 0 Slip",
-            [this] {return isWheelSlip(0); },
+            [this] {return isWheelSlip(0);},
             nullptr
         );
         builder.AddBooleanProperty(
             "Swerve 1 Slip",
-            [this] {return isWheelSlip(1); },
+            [this] {return isWheelSlip(1);},
             nullptr
         );
         builder.AddBooleanProperty(
             "Swerve 2 Slip",
-            [this] {return isWheelSlip(2); },
+            [this] {return isWheelSlip(2);},
             nullptr
         );
         builder.AddBooleanProperty(
             "Swerve 3 Slip",
-            [this] {return isWheelSlip(3); },
+            [this] {return isWheelSlip(3);},
             nullptr
         );
     }
