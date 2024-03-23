@@ -53,7 +53,8 @@ public:
         SingleFade,
         Strobe,
         Twinkle,
-        TwinkleOff
+        TwinkleOff,
+        Empty
     };
 
     /**
