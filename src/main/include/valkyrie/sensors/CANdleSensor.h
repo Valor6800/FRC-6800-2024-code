@@ -136,6 +136,22 @@ public:
      * @param color Color of the animation
      * @param speed The speed that the animation will go at
      */
+
+
+
+    void setColor (int color);
+    /**
+     * 
+     * @brief
+     * 
+     * @param rgb
+     * 
+     * 
+    */
+
+
+
+
     void setAnimation(int segment, AnimationType animation, RGBColor color, double speed=1.0);
 
     /**
