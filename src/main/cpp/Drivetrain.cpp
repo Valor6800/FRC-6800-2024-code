@@ -259,7 +259,6 @@ void Drivetrain::init()
 
 
     resetState();
-
     state.useCalculatedEstimator = true;
     AutoBuilder::configureHolonomic(
         [this](){ 
@@ -495,16 +494,20 @@ void Drivetrain::assignOutputs()
     } else {
         operatorGamepad->setRumble(false);
     }
+    
+    if (frc::Timer::GetFPGATimestamp().to<double>() - teleopStart > 109.5 && frc::Timer::GetFPGATimestamp().to<double>() - teleopStart < 109.5 + 3) {
 
-     if (frc::Timer::GetFPGATimestamp().to<double>() - teleopStart > 109.5 && frc::Timer::GetFPGATimestamp().to<double>() - teleopStart < TIME_TELEOP_VERT + 3) {
-            leds->setAnimation(valor::CANdleSensor::AnimationType::Rainbow, valor::CANdleSensor::RGBColor(255,0,0));
+        leds->setAnimation(valor::CANdleSensor::AnimationType::Rainbow, valor::CANdleSensor::RGBColor(255,0,0));
+    } else if (frc::Timer::GetFPGATimestamp().to<double>() - teleopStart > 109.5 + 3 && frc::Timer::GetFPGATimestamp().to<double>() - teleopStart < 109.5 + 3.5) {
+        leds->clearAnimation();
 
-}
+    }
 
     if (frc::Timer::GetFPGATimestamp().to<double>() - teleopStart > 134.5) {
-            leds->setAnimation(valor::CANdleSensor::AnimationType::Fire, valor::CANdleSensor::RGBColor(255,0,0));
-
-}
+        leds->setAnimation(valor::CANdleSensor::AnimationType::Fire, valor::CANdleSensor::RGBColor(255,0,0));
+    }else if(frc::Timer::GetFPGATimestamp().to<double>() - teleopStart > 134.5 && frc::Timer::GetFPGATimestamp().to<double>() - teleopStart < 134.5 + 5){
+        leds->clearAnimation();
+    }
 
     
 }
