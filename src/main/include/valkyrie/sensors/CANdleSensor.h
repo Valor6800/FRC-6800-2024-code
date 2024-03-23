@@ -39,6 +39,7 @@ public:
     static const int VALOR_PURPLE = 0xAC41FF;
     static const int RED = 0xFF0000;
     static const int LIGHT_BLUE = 0x00FFF9;
+    static const int GREEN = 0x00FF00;
 
     /**
      * @brief Declares the type of animation to apply.

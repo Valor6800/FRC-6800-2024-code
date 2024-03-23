@@ -35,7 +35,7 @@
 #define PREAMP_ANG 77.5_deg
 #define PODIUM_ANG 37.0_deg
 #define WING_ANG 26.5_deg
-#define POOP_ANG 48.0_deg
+#define ORBIT_ANG 48.0_deg
 #define AUTO_NEAR_ANG 32.5_deg
 #define AUTO_FAR_LOW_ANG 27.75_deg
 #define AUTO_FAR_HIGH_ANG 27.75_deg
@@ -121,6 +121,7 @@ Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive, frc::AnalogTrigger
             [this]() {
                 // shooter->state.isShooting = true;
                 state.pivotState = Shooter::PIVOT_STATE::SUBWOOFER;
+                setAutoLEDs(SUBWOOFER_ANG.to<double>());
             }
         )
     ).ToPtr());
@@ -129,6 +130,7 @@ Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive, frc::AnalogTrigger
             [this]() {
                 // shooter->state.isShooting = true;
                 state.pivotState = Shooter::PIVOT_STATE::LOAD;
+                setAutoLEDs(INTAKE_ANG.to<double>());
             }
         )
     ).ToPtr());
@@ -153,6 +155,7 @@ Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive, frc::AnalogTrigger
             [this]() {
                 // shooter->state.isShooting = true;
                 state.pivotState = Shooter::PIVOT_STATE::ORBIT;
+                setAutoLEDs(ORBIT_ANG.to<double>());
             }
         )
     ).ToPtr());
@@ -160,6 +163,7 @@ Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive, frc::AnalogTrigger
         frc2::InstantCommand(
             [this]() {
                 state.pivotState = Shooter::PIVOT_STATE::AMP; // WARNING: Rename to AMP after robot_v2 gets merged in
+                setAutoLEDs(AMP_ANG.to<double>());
             }
         )
     ).ToPtr());
@@ -263,7 +267,6 @@ void Shooter::init()
     table->PutNumber("Speed Setpoint", AMP_POWER);
     table->PutNumber("Speed Offset Pct", 0.5);
     table->PutBoolean("Tuning", false);
-    state.pivotOffset = 0.0;
 
     resetState();
 }
@@ -299,17 +302,6 @@ void Shooter::assessInputs()
         state.pivotState = PIVOT_STATE::ORBIT;
     } else {
         state.pivotState = PIVOT_STATE::LOAD;
-    }
-
-    //PIVOT OFFSET
-    if (operatorGamepad->leftTriggerActive()){
-        if (operatorGamepad->DPadUp()){
-            state.pivotOffset += 0.25;
-        } else if (operatorGamepad->DPadDown()){
-            state.pivotOffset -= 0.25;
-        } 
-    } else {
-        state.pivotOffset = 0.0;
     }
 }
 
@@ -388,19 +380,19 @@ void Shooter::assignOutputs()
     if (state.pivotState == PIVOT_STATE::TUNING) {
         pivotMotors->setPosition(state.tuningSetpoint);
     } else if(state.pivotState == PIVOT_STATE::SUBWOOFER){
-        pivotMotors->setPosition(SUBWOOFER_ANG.to<double>() + state.pivotOffset);
+        pivotMotors->setPosition(SUBWOOFER_ANG.to<double>());
     } else if(state.pivotState == PIVOT_STATE::LOAD && !state.ignoreLoad){
         pivotMotors->setPosition(INTAKE_ANG.to<double>());
     } else if(state.pivotState == PIVOT_STATE::PODIUM){
-        pivotMotors->setPosition(PODIUM_ANG.to<double>() + state.pivotOffset);
+        pivotMotors->setPosition(PODIUM_ANG.to<double>());
     } else if(state.pivotState == PIVOT_STATE::WING){
-        pivotMotors->setPosition(WING_ANG.to<double>() + state.pivotOffset);
+        pivotMotors->setPosition(WING_ANG.to<double>());
     } else if (state.pivotState == PIVOT_STATE::ORBIT || (state.ignoreLoad && state.otherSide)){
-        pivotMotors->setPosition(POOP_ANG.to<double>());
+        pivotMotors->setPosition(ORBIT_ANG.to<double>());
     } else if(state.pivotState == PIVOT_STATE::TRACKING || (state.ignoreLoad && !state.otherSide)){
-        pivotMotors->setPosition(state.calculatingPivotingAngle.to<double>() + state.pivotOffset);
+        pivotMotors->setPosition(state.calculatingPivotingAngle.to<double>());
     } else if(state.pivotState == PIVOT_STATE::AMP){
-        pivotMotors->setPosition(AMP_ANG.to<double>() + state.pivotOffset);
+        pivotMotors->setPosition(AMP_ANG.to<double>());
     } else if (state.pivotState == PIVOT_STATE::AUTO_FAR_LOW) {
         pivotMotors->setPosition(AUTO_FAR_LOW_ANG.to<double>());
     } else if (state.pivotState == PIVOT_STATE::AUTO_FAR_HIGH) {
@@ -412,7 +404,7 @@ void Shooter::assignOutputs()
     } else if(state.pivotState == PIVOT_STATE::FORCE_INTAKE){
         pivotMotors->setPosition(INTAKE_ANG.to<double>());
     } else {
-        pivotMotors->setPosition(SUBWOOFER_ANG.to<double>() + state.pivotOffset);
+        pivotMotors->setPosition(SUBWOOFER_ANG.to<double>());
     }
 }
  
@@ -426,6 +418,21 @@ void Shooter::calculatePivotAngle(){
     double D = 89.4; // 78.5;
     double bestPivot = D + (C * distance) + (B * pow(distance, 2)) + (A * pow(distance, 3));
     state.calculatingPivotingAngle = units::degree_t(bestPivot);
+}
+
+void Shooter::setAutoLEDs(double angle)
+{
+    if (pivotInRange(angle)){
+            leds->setColor(leds->toRGB(valor::CANdleSensor::GREEN));
+    } else{
+            leds->setColor(leds->toRGB(valor::CANdleSensor::RED));
+    }
+}
+
+bool Shooter::pivotInRange(double angle)
+{
+    return (pivotMotors->getPosition() < angle + 2 && 
+            pivotMotors->getPosition() > angle - 2);
 }
 
 void Shooter::InitSendable(wpi::SendableBuilder& builder){
@@ -449,5 +456,10 @@ void Shooter::InitSendable(wpi::SendableBuilder& builder){
         [this] {return state.calculatingPivotingAngle.to<double>();},
         nullptr
     );
-    
+
+    builder.AddBooleanProperty(
+        "Tracking Pivot in Range",
+        [this] {return pivotInRange(state.calculatingPivotingAngle.to<double>());},
+        nullptr
+    );
 }

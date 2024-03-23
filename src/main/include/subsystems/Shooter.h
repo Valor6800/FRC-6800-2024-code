@@ -38,6 +38,8 @@ public:
     void assignOutputs();
 
     void calculatePivotAngle();
+    void setAutoLEDs(double angle);
+    bool pivotInRange(double angle);
     
     void InitSendable(wpi::SendableBuilder& builder);
 
@@ -69,7 +71,6 @@ public:
     {
         double tuningSetpoint;
         double tuningSpeed;
-        double pivotOffset;
         double tuningOffset;
 
         PIVOT_STATE pivotState;
