@@ -30,6 +30,8 @@ using namespace pathplanner;
 #define SPEAKER_BLUE_X 0.0_m
 #define SPEAKER_RED_X 16.4846_m
 
+#define SHOOTING_TIME 0.1f
+
 #define TXRANGE  30.0f
 #define KPIGEON 2.0f
 #define KLIMELIGHT -29.8f
@@ -539,6 +541,34 @@ void Drivetrain::getSpeakerLockAngleRPS(){
         (roboYPos.to<double>() - (SPEAKER_Y.to<double>() + speakerYOffset)),
         (roboXPos.to<double>() - (speakerX + speakerXOffset))
     ));
+}
+
+units::radian_t Drivetrain::getSpeakerLockAngleFromPose(frc::Pose2d pose){
+    double speakerX = (frc::DriverStation::GetAlliance() == frc::DriverStation::kRed ? SPEAKER_RED_X : SPEAKER_BLUE_X).to<double>();
+    double redMultiplier = frc::DriverStation::GetAlliance() == frc::DriverStation::kRed ? -1.0 : 1.0;
+    double speakerXOffset = table->GetNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET) * redMultiplier;
+    double speakerYOffset = table->GetNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET);
+    state.targetAngle = units::radian_t(atan2(
+        (pose.X().to<double>() - (SPEAKER_Y.to<double>() + speakerYOffset)),
+        (pose.Y().to<double>() - (speakerX + speakerXOffset))
+    ));
+}
+
+void Drivetrain::lockOnTheMove(){
+    double fixedShotTime = table->GetNumber("Shooting Time", SHOOTING_TIME);
+
+    frc::Pose2d robotOrigPose = getCalculatedPose_m();
+    units::meters_per_second_t robotVelocityX = state.xSpeedMPS;
+    units::meters_per_second_t robotVelocityY = state.ySpeedMPS;
+
+    units::meters_per_second_squared_t robotAccelX = state.accel.x;
+    units::meters_per_second_squared_t robotAccelY = state.accel.y;
+
+    units::meter_t futureRobotX = units::meter_t((0.5*robotAccelX.to<double>()*(pow(fixedShotTime, 2))) + (robotVelocityX.to<double>()*fixedShotTime) + robotOrigPose.X().to<double>());
+    units::meter_t futureRobotY = units::meter_t((0.5*robotAccelY.to<double>()*(pow(fixedShotTime, 2))) + (robotVelocityY.to<double>()*fixedShotTime) + robotOrigPose.Y().to<double>());
+    frc::Pose2d robotFuturePose = frc::Pose2d(futureRobotX, futureRobotY, robotOrigPose.Rotation());
+
+    state.targetAngle = getSpeakerLockAngleFromPose(robotFuturePose);
 }
 
 units::radian_t Drivetrain::getAngleError(){
