@@ -215,6 +215,7 @@ void Feeder::analyzeDashboard()
         driverGamepad->setRumble(false);
         leds->setColor(0, valor::CANdleSensor::RED);
     }
+
     blinkin.SetPulseTime(state.beamTrip ? LED_ON : LED_OFF);
     if (state.unjam && (frc::Timer::GetFPGATimestamp() - state.unjamStart) > 0.06_s) {
         state.unjam = false;
@@ -222,12 +223,7 @@ void Feeder::analyzeDashboard()
     if (driverGamepad != nullptr && driverGamepad->IsConnected() && !(frc::DriverStation::IsTeleop() && frc::DriverStation::IsEnabled()))
         driverGamepad->setRumble(false);
 
-    if(state.beamTrip){
-         leds->setColor(0, valor::CANdleSensor::LIGHT_BLUE);
-    }else{
-        leds->setColor(0, valor::CANdleSensor::RED);
-
-    }
+    
 
 }
 
