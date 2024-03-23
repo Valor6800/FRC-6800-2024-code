@@ -3,73 +3,73 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.967061330245346,
-        "y": 3.783113350225544
+        "x": 3.0323771731889533,
+        "y": 2.8221933880933743
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6378457297209716,
-        "y": 3.231624533623641
+        "x": 4.3397493082663665,
+        "y": 3.3220177797430033
       },
       "isLocked": false,
       "linkedName": "Score wall"
     },
     {
       "anchor": {
-        "x": 5.059782378361579,
-        "y": 3.6822173984870097
+        "x": 5.272270547368452,
+        "y": 3.7828155004559214
       },
       "prevControl": {
-        "x": 2.7479077848216096,
-        "y": 2.484699623415947
+        "x": 4.611486566812742,
+        "y": 3.4458192931205245
       },
       "nextControl": {
-        "x": 6.364624216195085,
-        "y": 4.3581066957820624
+        "x": 6.049100793369411,
+        "y": 4.1789946669447735
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.007410702678792,
-        "y": 4.11403556064782
+        "x": 8.126370048313012,
+        "y": 3.84
       },
       "prevControl": {
-        "x": 7.219160916184702,
-        "y": 4.11403556064782
+        "x": 7.338120261818922,
+        "y": 3.839999999999975
       },
       "nextControl": {
-        "x": 8.954522064082244,
-        "y": 4.11403556064782
+        "x": 9.073481409716463,
+        "y": 3.839999999999975
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.059782378361579,
-        "y": 3.6822173984870097
+        "x": 5.272270547368452,
+        "y": 3.7828155004559214
       },
       "prevControl": {
-        "x": 6.545589529620211,
-        "y": 4.489977635480793
+        "x": 6.076257658267557,
+        "y": 4.171307629669395
       },
       "nextControl": {
-        "x": 2.694169837828893,
-        "y": 2.3961502633561444
+        "x": 4.258916963074088,
+        "y": 3.293156044139056
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.967061330245346,
-        "y": 3.783113350225544
+        "x": 3.0323771731889533,
+        "y": 2.8221933880933743
       },
       "prevControl": {
-        "x": 2.666007783774932,
-        "y": 3.3536601011908034
+        "x": 4.0638949541126355,
+        "y": 3.3209006111313513
       },
       "nextControl": null,
       "isLocked": false,
@@ -79,11 +79,23 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 1.8,
-      "rotationDegrees": -1.4810333934392357,
+      "rotationDegrees": 0.8174599590453951,
       "rotateFast": false
     }
   ],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Account for flywheels",
+      "minWaypointRelativePos": 3.1,
+      "maxWaypointRelativePos": 4.0,
+      "constraints": {
+        "maxVelocity": 4.0,
+        "maxAcceleration": 4.0,
+        "maxAngularVelocity": 720.0,
+        "maxAngularAcceleration": 1600.0
+      }
+    }
+  ],
   "eventMarkers": [
     {
       "name": "Intake",
@@ -127,7 +139,7 @@
     },
     {
       "name": "Disable intake",
-      "waypointRelativePos": 2.45,
+      "waypointRelativePos": 2.5,
       "command": {
         "type": "sequential",
         "data": {
@@ -137,7 +149,18 @@
               "data": {
                 "name": "Disable intake"
               }
-            },
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Enable shooter",
+      "waypointRelativePos": 2.8,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
             {
               "type": "named",
               "data": {
@@ -157,13 +180,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -40.0,
+    "rotation": -45.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Pick chain",
   "previewStartingState": {
-    "rotation": -40.0,
+    "rotation": -45.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

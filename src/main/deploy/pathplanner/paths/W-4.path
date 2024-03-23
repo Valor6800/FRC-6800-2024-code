@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.967061330245346,
-        "y": 3.783113350225544
+        "x": 3.0323771731889533,
+        "y": 2.8221933880933743
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6378457297209716,
-        "y": 3.231624533623641
+        "x": 3.703161572664579,
+        "y": 2.2707045714914713
       },
       "isLocked": false,
       "linkedName": "Score wall"
@@ -36,40 +36,40 @@
         "y": 2.4149249660587855
       },
       "prevControl": {
-        "x": 7.43506999726239,
-        "y": 2.4149249660587855
+        "x": 7.473656862047873,
+        "y": 2.171320307393788
       },
       "nextControl": {
-        "x": 9.170431145159933,
-        "y": 2.4149249660587855
+        "x": 8.905058839776245,
+        "y": 2.636457611239876
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.890810054037815,
+        "x": 5.989491868161977,
         "y": 1.776585074169013
       },
       "prevControl": {
-        "x": 6.570384670506524,
-        "y": 1.4107796659611456
+        "x": 7.009194013613721,
+        "y": 1.781174106691385
       },
       "nextControl": {
-        "x": 3.2112354375691066,
-        "y": 2.1423904823768805
+        "x": 4.270560617046407,
+        "y": 1.7688492549886028
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.967061330245346,
-        "y": 3.783113350225544
+        "x": 3.0323771731889533,
+        "y": 2.8221933880933743
       },
       "prevControl": {
-        "x": 2.666007783774932,
-        "y": 3.3536601011908034
+        "x": 3.7313236267185395,
+        "y": 2.392740139058634
       },
       "nextControl": null,
       "isLocked": false,
@@ -79,11 +79,23 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 1.8,
-      "rotationDegrees": 9.054655122746574,
+      "rotationDegrees": 16.79741173066853,
       "rotateFast": false
     }
   ],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Account for flywheels",
+      "minWaypointRelativePos": 3.3,
+      "maxWaypointRelativePos": 4.0,
+      "constraints": {
+        "maxVelocity": 4.0,
+        "maxAcceleration": 4.0,
+        "maxAngularVelocity": 720.0,
+        "maxAngularAcceleration": 1600.0
+      }
+    }
+  ],
   "eventMarkers": [
     {
       "name": "Intake",
@@ -137,7 +149,18 @@
               "data": {
                 "name": "Disable intake"
               }
-            },
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Enable shooter",
+      "waypointRelativePos": 2.9,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
             {
               "type": "named",
               "data": {
@@ -157,13 +180,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -40.0,
+    "rotation": -45.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Pick chain",
   "previewStartingState": {
-    "rotation": -40.0,
+    "rotation": -45.0,
     "velocity": 0
   },
   "useDefaultConstraints": true
