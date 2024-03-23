@@ -46,7 +46,7 @@ using namespace pathplanner;
 #define WHEEL_DIAMETER_M 0.0973f //0.1016
 #define DRIVE_GEAR_RATIO 5.51f
 #define AZIMUTH_GEAR_RATIO 13.37f
-#define ROT_SPEED_MUL 2.0f
+#define ROT_SPEED_MUL 1.3f
 
 #define AUTO_VISION_THRESHOLD 4.0f //meters
 
