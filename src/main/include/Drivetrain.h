@@ -119,6 +119,9 @@ public:
           double ySpeed;
           double rot;
 
+          units::meters_per_second_t chassisXSpeed;
+          units::meters_per_second_t chassisYSpeed;
+
           units::radian_t targetAngle;
           units::angular_velocity::radians_per_second_t angleRPS;
   
@@ -167,6 +170,8 @@ public:
           int pitSequenceCommandIndex;
 
           double prevError;
+
+          frc::Pose2d futurePose;
      } state;
      
      
