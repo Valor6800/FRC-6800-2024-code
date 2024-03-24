@@ -14,6 +14,12 @@
         {
           "type": "named",
           "data": {
+            "name": "Reverse flywheels"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Set pivot load"
           }
         },
@@ -48,7 +54,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Af-A1 BLUE"
+                  "pathName": "Af-A1 RED"
                 }
               }
             ]
@@ -75,7 +81,61 @@
         {
           "type": "path",
           "data": {
-            "pathName": "A-A3 pt 1"
+            "pathName": "A-A3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Enable full feeder"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Stage-S"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Enable full feeder"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Normal flywheels"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Disable full feeder"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Disable shooter"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Set pivot load"
           }
         }
       ]

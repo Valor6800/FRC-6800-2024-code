@@ -1,0 +1,25 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.3019725342474415,
+      "y": 6.504740222009379
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Straight spring + pick"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Testing",
+  "choreoAuto": false
+}
