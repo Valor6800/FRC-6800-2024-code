@@ -28,11 +28,8 @@ public:
 
     Shooter(frc::TimedRobot *robot, Drivetrain *drivetrain, frc::AnalogTrigger*, frc::AnalogTrigger*,valor::CANdleSensor*);
     
-
     void resetState();
-
     void init();
-
     void assessInputs();
     void analyzeDashboard();
     void assignOutputs();
@@ -94,5 +91,4 @@ private:
     valor::NeoController leftFlywheelMotor;
     valor::NeoController rightFlywheelMotor;
     valor::CANdleSensor *leds;
-
 };

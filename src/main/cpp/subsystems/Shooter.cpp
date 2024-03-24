@@ -49,14 +49,13 @@
 
 Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive, frc::AnalogTrigger* _feederBeamBreak, frc::AnalogTrigger* _feederBeamBreak2, valor::CANdleSensor* _leds) :
     valor::BaseSubsystem(_robot, "Shooter"),
+    drivetrain(_drive),
     pivotMotors(nullptr),
     feederBeamBreak(_feederBeamBreak),
     feederBeamBreak2(_feederBeamBreak2),
     leftFlywheelMotor(CANIDs::LEFT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, true),
     rightFlywheelMotor(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false),
-    drivetrain(_drive),
     leds(_leds)
-
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
