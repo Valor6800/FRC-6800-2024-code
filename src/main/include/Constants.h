@@ -85,6 +85,7 @@ namespace CANIDs {
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-function"
+#pragma GCC diagnostic ignored "-Wunused-variable"
 
 // Constants that stay the same across bots should not go here
 namespace Constants { 
