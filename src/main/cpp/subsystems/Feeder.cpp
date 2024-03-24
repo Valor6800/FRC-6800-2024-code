@@ -132,7 +132,6 @@ Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _feederBeamBreak, fr
 
 void Feeder::resetState()
 {
-    blinkin.SetPulseTime(LED_OFF);
     state.intakeState = STAGNANT;
     state.feederState = STAGNANT;
     state.unjam = false;
@@ -195,7 +194,6 @@ void Feeder::assessInputs()
         state.intakeState = ROLLER_STATE::STAGNANT;
         state.feederState = ROLLER_STATE::STAGNANT;
     }
-
 }
 
 void Feeder::analyzeDashboard()
@@ -215,14 +213,12 @@ void Feeder::analyzeDashboard()
         driverGamepad->setRumble(false);
         leds->setColor(0, valor::CANdleSensor::RED);
     }
-    blinkin.SetPulseTime(state.beamTrip ? LED_ON : LED_OFF);
     if (state.unjam && (frc::Timer::GetFPGATimestamp() - state.unjamStart) > 0.06_s) {
         state.unjam = false;
     }
-    if (driverGamepad != nullptr && driverGamepad->IsConnected() && !(frc::DriverStation::IsTeleop() && frc::DriverStation::IsEnabled()))
+    if (driverGamepad != nullptr && driverGamepad->IsConnected() && !(frc::DriverStation::IsTeleop() && frc::DriverStation::IsEnabled())) {
         driverGamepad->setRumble(false);
-
-    
+    }
 }
 
 void Feeder::assignOutputs()

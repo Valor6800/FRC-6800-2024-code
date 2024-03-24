@@ -43,19 +43,15 @@ public:
         double tuningPower;
     } state;
 
-private:
-    units::microsecond_t LED_OFF = 1815.0_us;
-    units::microsecond_t LED_ON = 1455.0_us;
-    frc::PWM blinkin{DIOPorts::BLINKIN};
-
-    valor::NeoController feederMotor;
+private:   
     valor::NeoController intakeMotor;
     valor::NeoController intakeBackMotor;
+    valor::NeoController feederMotor;
     frc::AnalogTrigger* feederBeamBreak;
-    frc::AnalogTrigger* feederBeamBreak2;
     valor::DebounceSensor feederDebounceSensor;
+    frc::AnalogTrigger* feederBeamBreak2;    
     frc::AnalogTrigger* intakeBeamBreak;
     valor::DebounceSensor intakeDebounceSensor;
 
-     valor::CANdleSensor *leds;
+    valor::CANdleSensor *leds;
 };
