@@ -66,16 +66,16 @@ public:
 private:
     valor::PIDF pidf;
     int currentProfile;
-    double voltageCompenstation;
-
+        
+    ctre::phoenix::StatusCode status;
     ctre::phoenix6::controls::MotionMagicVoltage req_position;
     ctre::phoenix6::controls::VelocityVoltage req_velocity;
     ctre::phoenix6::controls::VoltageOut req_voltage;
 
+    double voltageCompenstation;
+    ctre::phoenix6::hardware::CANcoder *cancoder;
+
     ctre::phoenix6::StatusSignal<units::turn_t>& res_position;
     ctre::phoenix6::StatusSignal<units::turns_per_second_t>& res_velocity;
-
-    ctre::phoenix::StatusCode status;
-    ctre::phoenix6::hardware::CANcoder *cancoder;
 };
 }
