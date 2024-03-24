@@ -7,6 +7,7 @@
 #include <memory>
 #include <networktables/NetworkTable.h>
 #include <frc/geometry/Pose3d.h>
+#include <vector>
 
 namespace valor{
 
@@ -59,7 +60,7 @@ class VisionSensor : public valor::BaseSensor<frc::Pose3d> {
 
         frc::Pose3d cameraPose;
         std::shared_ptr<nt::NetworkTable> limeTable;
-        std::vector<double> hw;
+        std::vector<double> hw{};
 
         void calculate() override;
 };
