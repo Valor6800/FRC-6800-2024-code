@@ -1,7 +1,9 @@
-#include "valkyrie/sensors/VisionSensor.h"
+#include "valkyrie/sensors/VisionSensor.h" 
 #include "units/angle.h"
 #include "units/time.h"
 #include "valkyrie/sensors/BaseSensor.h"
+#include <span>
+#include <vector>
 
 using namespace valor;
 
@@ -15,7 +17,10 @@ VisionSensor::VisionSensor(frc::TimedRobot* robot, const char *name, frc::Pose3d
 }
 
 bool VisionSensor::inExistence() {
-    return hw.size() > 0 && hw[1] > 0.0; // test
+    std::vector<double> prev = hw;
+    hw = limeTable->GetNumberArray("hw", std::span<double>());
+    if (hw.size() < 4) return false;
+    return hw[1] != prev[1]; // test
 }
 
 void VisionSensor::setCameraPose(frc::Pose3d camPose){
