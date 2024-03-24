@@ -59,10 +59,10 @@
   "constraintZones": [
     {
       "name": "Slow",
-      "minWaypointRelativePos": 0.0,
+      "minWaypointRelativePos": 0.1,
       "maxWaypointRelativePos": 0.1,
       "constraints": {
-        "maxVelocity": 1.0,
+        "maxVelocity": 0.25,
         "maxAcceleration": 5.0,
         "maxAngularVelocity": 720.0,
         "maxAngularAcceleration": 1600.0
@@ -71,7 +71,7 @@
   ],
   "eventMarkers": [
     {
-      "name": "Feed",
+      "name": "Enable shooter 1",
       "waypointRelativePos": 0.0,
       "command": {
         "type": "sequential",
@@ -82,43 +82,13 @@
               "data": {
                 "name": "Enable shooter"
               }
-            },
-            {
-              "type": "wait",
-              "data": {
-                "waitTime": 0.65
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "Enable full feeder"
-              }
-            },
-            {
-              "type": "wait",
-              "data": {
-                "waitTime": 0.1
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "Disable shooter"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "Disable full feeder"
-              }
             }
           ]
         }
       }
     },
     {
-      "name": "Enable shooter",
+      "name": "Enable shooter 2",
       "waypointRelativePos": 1.6,
       "command": {
         "type": "parallel",
@@ -151,6 +121,41 @@
               "type": "named",
               "data": {
                 "name": "Enable intake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Feed",
+      "waypointRelativePos": 0.1,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Enable full feeder"
+              }
+            },
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 0.2
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Disable full feeder"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Disable shooter"
               }
             }
           ]
