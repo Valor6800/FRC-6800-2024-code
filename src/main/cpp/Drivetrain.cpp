@@ -76,16 +76,16 @@ using namespace pathplanner;
 #define TIME_TELEOP_VERT 105.0f
 
 Drivetrain::Drivetrain(frc::TimedRobot *_robot, valor::CANdleSensor *_leds) : valor::BaseSubsystem(_robot, "Drivetrain"),
-                        leds(_leds),
                         rotMaxSpeed(ROT_SPEED_MUL * 2 * M_PI),
                         pigeon(CANIDs::PIGEON_CAN, PIGEON_CAN_BUS),
                         motorLocations(wpi::empty_array),
                         kinematics(NULL),
                         estimator(NULL),
                         calculatedEstimator(NULL),
-                        swerveNoError(true),
                         teleopStart(999999999999),
-                        unfilteredPoseTracker(5)
+                        unfilteredPoseTracker(5),
+                        swerveNoError(true),
+                        leds(_leds)
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -106,14 +106,14 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot, valor::CANdleSensor *_leds) : va
     pathplanner::NamedCommands::registerCommand("Wait for A button", std::move(
         frc2::FunctionalCommand(
             [this, pitSequenceNames](){
-                int i = state.pitSequenceCommandIndex;
+                size_t i = state.pitSequenceCommandIndex;
                 if (i <= pitSequenceNames.size() - 1)
                     table->PutString("Next command", pitSequenceNames[i]);
                 state.pitSequenceCommandIndex += 1;
             }, 
             [](){}, 
             [this, pitSequenceNames](bool _b){
-                int i = state.pitSequenceCommandIndex;
+                size_t i = state.pitSequenceCommandIndex;
                 if (i <= pitSequenceNames.size() - 1)
                     table->PutString("Current command", pitSequenceNames[i]);
                 if (i < pitSequenceNames.size() - 1)

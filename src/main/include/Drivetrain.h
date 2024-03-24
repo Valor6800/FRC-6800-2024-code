@@ -288,8 +288,6 @@ private:
 
      valor::PIDF xPIDF;
      valor::PIDF thetaPIDF;
-
-     bool swerveNoError;
      
      std::vector<valor::AprilTagsSensor*> aprilTagSensors;
 
@@ -299,5 +297,6 @@ private:
      PoseTracker targetPoseTracker;
      PoseTracker unfilteredPoseTracker;
 
+     bool swerveNoError;
      valor::CANdleSensor *leds;
 };
