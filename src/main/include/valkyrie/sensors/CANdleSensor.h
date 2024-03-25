@@ -153,6 +153,15 @@ public:
 
 
 
+
+    
+   void setLed(int ledNum, RGBColor rgb);
+   /**
+    * @brief 
+    * 
+    * @param rgb
+   */
+
     void setAnimation(int segment, AnimationType animation, RGBColor color, double speed=1.0);
 
     /**
@@ -205,6 +214,7 @@ private:
     ctre::phoenix::led::CANdle candle;
     int ledCount;
     int segments;
+    
 
     std::unordered_map<int, SegmentSettings> segmentMap;
     SegmentSettings allSegments;
