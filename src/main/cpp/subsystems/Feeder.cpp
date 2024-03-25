@@ -210,10 +210,10 @@ void Feeder::analyzeDashboard()
     }
     if (!feederBeamBreak->GetInWindow() || !feederBeamBreak2->GetInWindow()) {
         driverGamepad->setRumble(true);
-        leds->setColor(0, valor::CANdleSensor::LIGHT_BLUE);
+        leds->setColor(valor::CANdleSensor::Layer::NORMAL, 0, valor::CANdleSensor::LIGHT_BLUE);
     } else {
         driverGamepad->setRumble(false);
-        leds->setColor(0, valor::CANdleSensor::RED);
+        leds->setColor(valor::CANdleSensor::Layer::NORMAL, 0, valor::CANdleSensor::RED);
     }
     blinkin.SetPulseTime(state.beamTrip ? LED_ON : LED_OFF);
     if (state.unjam && (frc::Timer::GetFPGATimestamp() - state.unjamStart) > 0.06_s) {

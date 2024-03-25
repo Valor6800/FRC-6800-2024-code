@@ -349,10 +349,10 @@ void Shooter::analyzeDashboard()
 
 
     if(leftFlywheelMotor.getSpeed() > 53){
-        leds->setColor(2, valor::CANdleSensor::LIGHT_BLUE);
+        leds->setColor(valor::CANdleSensor::Layer::NORMAL, 2, valor::CANdleSensor::LIGHT_BLUE);
 
     }else{
-        leds->setColor(2, valor::CANdleSensor::RED);
+        leds->setColor(valor::CANdleSensor::Layer::NORMAL, 2, valor::CANdleSensor::RED);
     }
 
 }
