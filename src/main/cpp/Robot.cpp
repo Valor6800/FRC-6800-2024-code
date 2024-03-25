@@ -60,6 +60,10 @@ void Robot::RobotInit() {
     frc::DataLogManager::Start();
 
     valorAuto.fillAutoList();
+
+    valorAuto.preloadAuto("1-1");
+    valorAuto.preloadAuto("1-2");
+
     valorAuto.preloadAuto("3-3");
     valorAuto.preloadAuto("3-4");
 }
