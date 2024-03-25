@@ -38,6 +38,7 @@ public:
     void assignOutputs();
 
     void calculatePivotAngle();
+    void setFlyweelSpeeds(double leftPower, double rightPower);
     
     void InitSendable(wpi::SendableBuilder& builder);
 
@@ -69,7 +70,6 @@ public:
     {
         double tuningSetpoint;
         double tuningSpeed;
-        double pivotOffset;
         double tuningOffset;
 
         PIVOT_STATE pivotState;
@@ -92,7 +92,9 @@ private:
     frc::AnalogTrigger* feederBeamBreak2;
 
     valor::NeoController leftFlywheelMotor;
+    valor::NeoController leftFlywheelMotor2;
     valor::NeoController rightFlywheelMotor;
+    valor::NeoController rightFlywheelMotor2;
     valor::CANdleSensor *leds;
 
 };
