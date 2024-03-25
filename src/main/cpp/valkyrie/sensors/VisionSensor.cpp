@@ -20,7 +20,7 @@ bool VisionSensor::inExistence() {
     std::vector<double> prev = hw;
     hw = limeTable->GetNumberArray("hw", std::span<double>());
     if (hw.size() < 4) return false;
-    return hw[1] != prev[1]; // test
+    return hw[1] != 0 && hw[1] != prev[1];
 }
 
 void VisionSensor::setCameraPose(frc::Pose3d camPose){
