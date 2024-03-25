@@ -57,6 +57,15 @@ public:
     };
 
     /**
+     * @brief Declares the layer to interact with LEDs on.
+     * Lower values are lower priority layers
+     */
+    enum Layer {
+        NORMAL = 0,
+        DEBUG = 1
+    };
+
+    /**
      * @brief Represents an RGB hex code in 3 separate integers
      * Example: Hex 0xFF00AA
      * Red: 255
@@ -67,6 +76,9 @@ public:
         int red;
         int green;
         int blue;
+        bool operator ==(const RGBColor& other) const {
+            return red == other.red && green == other.green && blue == other.blue;
+        }
     };
 
     
@@ -96,10 +108,11 @@ public:
      * 
      * @param _robot Pointer to main robot
      * @param _ledCount How many external LEDs are connected to the CANdle
+     * @param _segmentCounts number of segments in each layer
      * @param _canID the CAN ID the CANdle is assigned to
      * @param _canbus the CAN bus the CANdle is attached to
      */
-    CANdleSensor(frc::TimedRobot *_robot, int _ledCount, int _segments, int _canID, std::string _canbus = "");
+    CANdleSensor(frc::TimedRobot *_robot, int _ledCount, std::vector<int> _segmentCounts, int _canID, std::string _canbus = "");
 
     /**
      * @brief Destroy the Valor CANdle Sensor object
@@ -115,21 +128,21 @@ public:
      * @param segment The segment that will be changed
      * @param color The color to change all the LEDs in the segment to.
      */
-    void setColor(int segment, int color);
+    void setColor(uint layer, uint segment, int color); // TODO:
 
-        /**
+    /**
      * @brief Set the color of the CANdle LEDs and attached LEDs
      * 
      * @param segment The segment that will be changed
      * @param rgb The RGB code to change all the LEDs in the segment to.
      */
-    void setColor(int segment, RGBColor rgb);
+    void setColor(uint layer, uint segment, RGBColor rgb); // TODO:
     /**
      * @brief Sets the color of the entire strip of LEDs
      * 
      * @param rgb The RGB code to change all the LEDs in the strip to.
     */
-    void setColor(RGBColor rgb);
+    void setColor(uint layer, RGBColor rgb); // TODO:
     /**
      * @brief Set the animation the LEDs should follow
      * 
@@ -138,7 +151,7 @@ public:
      * @param color Color of the animation
      * @param speed The speed that the animation will go at
      */
-    void setAnimation(int segment, AnimationType animation, RGBColor color, double speed=1.0);
+    void setAnimation(uint layer, uint segment, AnimationType animation, RGBColor color, double speed=1.0); // TODO:
 
     /**
      * @brief Sets the animation for all segments
@@ -147,20 +160,30 @@ public:
      * @param color Color of the animation
      * @param speed The speed that the animation will go at
     */
-    void setAnimation(AnimationType animation, RGBColor, double speed=1.0);
+    void setAnimation(uint layer, AnimationType animation, RGBColor, double speed=1.0); // TODO:
 
     /**
-     * @brief Clears any active animation
+     * @brief Clears an active animation
      * 
      * Also responsible for clearing the appropriate memory associated with the animation
      * @param segment The segment that will be cleared
      */
-    void clearAnimation(int segment);
+    void clearAnimation(uint layer, uint segment);
+                                               
     /**
      * @brief Clears all active animations
+     *
+     * @param The layer to clear the animation on
+    */
+    void clearAnimation(uint layer);
+
+    /**
+     * @brief Clears all active animations
+     *
+     * @param The layer to clear the animation on
     */
     void clearAnimation();
-    
+                                  
     /**
      * @brief Resets the CANdle and its' configuration
      */
@@ -174,7 +197,7 @@ public:
      * @param segment the segment to get the animation type from
      * @return The active animation type
     */
-    CANdleSensor::AnimationType getActiveAnimationType(int segment);
+    CANdleSensor::AnimationType getActiveAnimationType(uint layer, uint segment);
 
     /**
      * @brief Gets the color of the segment
@@ -182,17 +205,15 @@ public:
      * @param segment The segment to get the color from
      * @return The color of the segment
     */
-    CANdleSensor::RGBColor getColor(int segment);
+    CANdleSensor::RGBColor getColor(uint layer, uint segment);
 
 private:
     void setAnimation(SegmentSettings *segment, AnimationType animation, RGBColor color, double speed=1.0);
 
     ctre::phoenix::led::CANdle candle;
-    int ledCount;
-    int segments;
 
-    std::unordered_map<int, SegmentSettings> segmentMap;
-    SegmentSettings allSegments;
+    std::vector<std::vector<SegmentSettings>> segmentMatrix;
+    std::vector<SegmentSettings> allSegments;
 
     void calculate();
 

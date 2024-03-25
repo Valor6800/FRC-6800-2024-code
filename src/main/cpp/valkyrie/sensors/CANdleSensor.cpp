@@ -4,11 +4,9 @@
 
 using namespace valor;
 
-CANdleSensor::CANdleSensor(frc::TimedRobot *_robot, int _ledCount, int _segments, int _canID, std::string _canbus) :
+CANdleSensor::CANdleSensor(frc::TimedRobot *_robot, int ledCount, std::vector<int> segmentCounts, int _canID, std::string _canbus) :
     BaseSensor(_robot, std::string("ID ").append(std::to_string(_canID)).c_str()),
-    candle(_canID, _canbus),
-    ledCount(_ledCount),
-    segments(_segments)
+    candle(_canID, _canbus)
 {
     wpi::SendableRegistry::AddLW(this, "CANdleSensor", sensorName);
 
@@ -24,31 +22,37 @@ CANdleSensor::CANdleSensor(frc::TimedRobot *_robot, int _ledCount, int _segments
     config.vBatOutputMode = ctre::phoenix::led::VBatOutputMode::Off;
     candle.ConfigFactoryDefault(100);
     candle.ConfigAllSettings(config, 100);
-    int segmentLEDCount = (ledCount-8)/segments;
-    //286
-    for (int i = 0; i<segments + 1; i++){
-        SegmentSettings newSegment;
-        newSegment.recentlyChanged = true;
-        newSegment.currentColor = toRGB(VALOR_GOLD);
-        newSegment.activeAnimation = NULL;
-        newSegment.activeAnimationType = AnimationType::None;
-        if (i == 0){
-            newSegment.startLed = 0;
-            newSegment.endLed = 8;
+
+    for (int segments : segmentCounts) {
+        segmentMatrix.push_back({});
+        int segmentLEDCount = (ledCount-8)/segments;
+        //286
+        for (int i = 0; i<segments + 1; i++){
+            SegmentSettings newSegment;
+            newSegment.recentlyChanged = true;
+            newSegment.currentColor = toRGB(VALOR_GOLD);
+            newSegment.activeAnimation = NULL;
+            newSegment.activeAnimationType = AnimationType::None;
+            if (i == 0){
+                newSegment.startLed = 0;
+                newSegment.endLed = 8;
+            }
+            else{
+                newSegment.startLed = (segmentLEDCount*(i-1)) + 9;
+                newSegment.endLed = segmentLEDCount - 1;
+            }
+            segmentMatrix.back().push_back(newSegment);
         }
-        else{
-            newSegment.startLed = (segmentLEDCount*(i-1)) + 9;
-            newSegment.endLed = segmentLEDCount - 1;
-        }
-        segmentMap[i] = newSegment;
+        SegmentSettings allSegment;
+        allSegment.startLed = 0;
+        allSegment.endLed = ledCount;
+        allSegment.activeAnimation = NULL;
+        allSegment.currentColor = toRGB(VALOR_GOLD);
+        allSegment.recentlyChanged = false;
+        allSegment.activeAnimationType = AnimationType::None;
+        allSegments.push_back(allSegment);
     }
-    allSegments.startLed = 0;
-    allSegments.endLed = ledCount;
-    allSegments.activeAnimation = NULL;
-    allSegments.currentColor = toRGB(VALOR_GOLD);
-    allSegments.recentlyChanged = false;
-    allSegments.activeAnimationType = AnimationType::None;
-    setGetter([this] { return 0; });
+    setGetter([] { return 0; });
 }
 
 CANdleSensor::RGBColor CANdleSensor::toRGB(int color)
@@ -62,10 +66,14 @@ CANdleSensor::RGBColor CANdleSensor::toRGB(int color)
 
 CANdleSensor::~CANdleSensor()
 {
-    for (int i = 0; i <= segments; i++){
-        clearAnimation(i);
+    for (uint i = 0; i < segmentMatrix.size(); i++) {
+        for (uint j = 0; j <= segmentMatrix[i].size(); j++){
+            clearAnimation(i, j);
+        }
     }
-    delete allSegments.activeAnimation;
+    for (SegmentSettings allSegment : allSegments) {
+        delete allSegment.activeAnimation;
+    }
 }
 
 void CANdleSensor::setLED(uint led, RGBColor rgb) {
@@ -83,36 +91,38 @@ void CANdleSensor::setLED(uint led, int color) {
     setLED(led, toRGB(color));
 }
 
-void CANdleSensor::setColor(int segment, RGBColor rgb)
+void CANdleSensor::setColor(uint layer, uint segment, RGBColor rgb)
 {
+    if (layer >= segmentMatrix.size()) return;
     segment++;
-    if (segment >= segmentMap.size()) return;
-    segmentMap[segment].recentlyChanged = true;
-    segmentMap[segment].currentColor = rgb;
+    if (segment >= segmentMatrix[layer].size()) return;
+    segmentMatrix[layer][segment].recentlyChanged = true;
+    segmentMatrix[layer][segment].currentColor = rgb;
 }
 
-void CANdleSensor::setColor(RGBColor rgb)
+void CANdleSensor::setColor(uint layer, RGBColor rgb)
 {
-    allSegments.recentlyChanged = true;
-    allSegments.currentColor = rgb;
+    allSegments[layer].recentlyChanged = true;
+    allSegments[layer].currentColor = rgb;
 }
 
-void CANdleSensor::setColor(int segment, int color)
+void CANdleSensor::setColor(uint layer, uint segment, int color)
 {
-    setColor(segment, toRGB(color));
+    setColor(layer, segment, toRGB(color));
 }
 
-void CANdleSensor::setAnimation(AnimationType animation, RGBColor color, double speed) {
+void CANdleSensor::setAnimation(uint layer, AnimationType animation, RGBColor color, double speed) {
     clearAnimation(0);
-    setAnimation(&allSegments, animation, color, speed);
+    setAnimation(&allSegments[layer], animation, color, speed);
 }
 
-void CANdleSensor::setAnimation(int segment, AnimationType animation,RGBColor color, double speed)
+void CANdleSensor::setAnimation(uint layer, uint segment, AnimationType animation,RGBColor color, double speed)
 {
+    if (layer >= segmentMatrix.size()) return;
     segment++;
-    if (segment >= segmentMap.size()) return;
+    if (segment >= segmentMatrix[layer].size()) return;
     clearAnimation(segment);
-    setAnimation(&segmentMap[segment], animation, color, speed);
+    setAnimation(&segmentMatrix[layer][segment], animation, color, speed);
 }
 
 
@@ -217,32 +227,42 @@ void CANdleSensor::setAnimation(CANdleSensor::SegmentSettings *segment, Animatio
     }
 }
 
-void CANdleSensor::clearAnimation(int segment)
+void CANdleSensor::clearAnimation(uint layer, uint segment)
 {
+    if (layer >= segmentMatrix.size()) return;
     segment++;
-    if (segment >= segmentMap.size()) return;
-    if (segmentMap[segment].activeAnimation != nullptr) {
+    if (segment >= segmentMatrix[layer].size()) return;
+    if (segmentMatrix[layer][segment].activeAnimation != nullptr) {
         candle.ClearAnimation(0);
-        delete segmentMap[segment].activeAnimation;
+        delete segmentMatrix[layer][segment].activeAnimation;
     }
-    segmentMap[segment].activeAnimationType = AnimationType::None;
+    segmentMatrix[layer][segment].activeAnimationType = AnimationType::None;
+}
+
+void CANdleSensor::clearAnimation(uint layer)
+{
+    if (layer >= segmentMatrix.size()) return;
+    clearAnimation(layer, -1);
 }
 
 void CANdleSensor::clearAnimation()
 {
-    clearAnimation(-1);
+    for (uint i = 0; i < segmentMatrix.size(); i++)
+        clearAnimation(i, -1);
 }
 
-CANdleSensor::AnimationType CANdleSensor::getActiveAnimationType(int segment) {
+CANdleSensor::AnimationType CANdleSensor::getActiveAnimationType(uint layer, uint segment) {
+    if (layer >= segmentMatrix.size()) segment = 0;
     segment++;
-    if (segment >= segmentMap.size()) segment = 0;
-    return segmentMap[segment].activeAnimationType;
+    if (segment >= segmentMatrix[layer].size()) segment = 0;
+    return segmentMatrix[layer][segment].activeAnimationType;
 }
 
-CANdleSensor::RGBColor CANdleSensor::getColor(int segment) {
+CANdleSensor::RGBColor CANdleSensor::getColor(uint layer, uint segment) {
+    if (layer >= segmentMatrix.size()) segment = 0;
     segment++;
-    if (segment >= segmentMap.size()) segment = 0;
-    return segmentMap[segment].currentColor;
+    if (segment >= segmentMatrix[layer].size()) segment = 0;
+    return segmentMatrix[layer][segment].currentColor;
 }
 
 void CANdleSensor::reset()
@@ -254,23 +274,35 @@ void CANdleSensor::reset()
 
 void CANdleSensor::calculate()
 {
-    for (auto segment : segmentMap) {
-        if (segmentMap[segment.first].activeAnimationType != AnimationType::None) {
-            if (segmentMap[segment.first].activeAnimation) {
-                candle.Animate(*(segmentMap[segment.first].activeAnimation));
+    if (segmentMatrix.size() == 0) return ;
+    std::vector<SegmentSettings> & segmentMap = segmentMatrix[0];
+    for (int i = segmentMatrix.size() - 1; i >= 0; i--) {
+        for (SegmentSettings segment : segmentMatrix[i]) {
+            if (segment.activeAnimation != nullptr || segment.currentColor != RGBColor{0, 0, 0}) {
+                segmentMap = segmentMatrix[i];
+                goto loop_end;
             }
-            segmentMap[segment.first].activeAnimationType = AnimationType::None;
         }
-        if (segmentMap[segment.first].recentlyChanged) {
+    }
+    loop_end:
+
+    for (SegmentSettings& segment : segmentMap) {
+        if (segment.activeAnimationType != AnimationType::None) {
+            if (segment.activeAnimation) {
+                candle.Animate(*(segment.activeAnimation));
+            }
+            segment.activeAnimationType = AnimationType::None;
+        }
+        if (segment.recentlyChanged) {
             candle.SetLEDs(
-                segmentMap[segment.first].currentColor.red,
-                segmentMap[segment.first].currentColor.green,
-                segmentMap[segment.first].currentColor.blue,
+                segment.currentColor.red,
+                segment.currentColor.green,
+                segment.currentColor.blue,
                 0,
-                segmentMap[segment.first].startLed,
-                segmentMap[segment.first].endLed
+                segment.startLed,
+                segment.endLed
             );
-            segmentMap[segment.first].recentlyChanged = false;
+            segment.recentlyChanged = false;
         }
     }
 }
