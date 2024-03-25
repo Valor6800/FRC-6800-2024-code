@@ -125,47 +125,54 @@ public:
     /**
      * @brief Set the color of the CANdle LEDs and attached LEDs
      * 
+     * @param layer The layer to put the color on
      * @param segment The segment that will be changed
      * @param color The color to change all the LEDs in the segment to.
      */
-    void setColor(uint layer, uint segment, int color); // TODO:
+    void setColor(uint layer, uint segment, int color);
 
     /**
      * @brief Set the color of the CANdle LEDs and attached LEDs
      * 
+     * @param layer The layer to put the color on
      * @param segment The segment that will be changed
      * @param rgb The RGB code to change all the LEDs in the segment to.
      */
-    void setColor(uint layer, uint segment, RGBColor rgb); // TODO:
+    void setColor(uint layer, uint segment, RGBColor rgb);
     /**
      * @brief Sets the color of the entire strip of LEDs
      * 
+     * @param layer The layer to put the color on
      * @param rgb The RGB code to change all the LEDs in the strip to.
     */
-    void setColor(uint layer, RGBColor rgb); // TODO:
+    void setColor(uint layer, RGBColor rgb);
     /**
      * @brief Set the animation the LEDs should follow
      * 
+     * @param layer The layer to set the animation on
      * @param segment The segment that will get animated
      * @param animation Animation to set. Will clear the previous color
      * @param color Color of the animation
      * @param speed The speed that the animation will go at
      */
-    void setAnimation(uint layer, uint segment, AnimationType animation, RGBColor color, double speed=1.0); // TODO:
+    void setAnimation(uint layer, uint segment, AnimationType animation, RGBColor color, double speed=1.0);
 
     /**
      * @brief Sets the animation for all segments
      * 
+     * @param layer The layer to set the animation on
      * @param animation Animation to set
      * @param color Color of the animation
      * @param speed The speed that the animation will go at
     */
-    void setAnimation(uint layer, AnimationType animation, RGBColor, double speed=1.0); // TODO:
+    void setAnimation(uint layer, AnimationType animation, RGBColor, double speed=1.0);
 
     /**
      * @brief Clears an active animation
      * 
      * Also responsible for clearing the appropriate memory associated with the animation
+     *
+     * @param The layer to clear the animation on
      * @param segment The segment that will be cleared
      */
     void clearAnimation(uint layer, uint segment);
@@ -180,7 +187,6 @@ public:
     /**
      * @brief Clears all active animations
      *
-     * @param The layer to clear the animation on
     */
     void clearAnimation();
                                   
@@ -194,6 +200,7 @@ public:
     /**
      * @brief Gets the animation type of the segment
      * 
+     * @param The layer to get the animation type from
      * @param segment the segment to get the animation type from
      * @return The active animation type
     */
@@ -202,6 +209,7 @@ public:
     /**
      * @brief Gets the color of the segment
      * 
+     * @param The layer to get the color from
      * @param segment The segment to get the color from
      * @return The color of the segment
     */
