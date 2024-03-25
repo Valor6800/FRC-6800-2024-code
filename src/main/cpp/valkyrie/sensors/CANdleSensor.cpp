@@ -68,6 +68,15 @@ CANdleSensor::~CANdleSensor()
     delete allSegments.activeAnimation;
 }
 
+void CANdleSensor::setLed(int ledNum, RGBColor rgb){
+    for (std::pair<const int, valor::CANdleSensor::SegmentSettings> segment : segmentMap) {
+        if (segment.first ==-1){   
+            candle.SetLEDs(rgb.red, rgb.blue, rgb.green, 0, ledNum, 1);
+    }
+}
+
+}
+
 void CANdleSensor::setColor(int segment, RGBColor rgb)
 {
     segment++;
@@ -83,6 +92,7 @@ void CANdleSensor::setColor(RGBColor rgb)
     }
 
 }
+
 
 void CANdleSensor::setColor(int segment, int color)
 {
