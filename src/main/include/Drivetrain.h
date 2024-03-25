@@ -245,6 +245,7 @@ public:
      frc::Pose2d getPoseFromSpeaker();
 
      void setXMode();
+     bool isWheelSlip(int i);
 
      frc2::InstantCommand* getSetXMode();
 
@@ -252,6 +253,7 @@ public:
      double teleopStart;
 
      double doubtX, doubtY;
+     
 
 private:
      

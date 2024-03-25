@@ -48,6 +48,7 @@ using namespace pathplanner;
 #define DRIVE_GEAR_RATIO 5.51f
 #define AZIMUTH_GEAR_RATIO 13.37f
 #define ROT_SPEED_MUL 1.3f
+#define SLIP_FACTOR 1.25f
 
 #define AUTO_VISION_THRESHOLD 4.0f //meters
 
@@ -483,10 +484,10 @@ void Drivetrain::assignOutputs()
 
     if(state.ampAlign || state.trapAlign || state.sourceAlign || state.isHeadingTrack || state.thetaLock){
         drive(state.xSpeedMPS, state.ySpeedMPS, state.angleRPS, true);
-    } 
-    else {
+    } else {
         drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
     }
+    //driveRobotRelative(frc::ChassisSpeeds{6_mps});
 
     if (frc::Timer::GetFPGATimestamp().to<double>() - teleopStart > TIME_TELEOP_VERT && frc::Timer::GetFPGATimestamp().to<double>() - teleopStart < TIME_TELEOP_VERT + 3) {
         operatorGamepad->setRumble(true);
@@ -759,6 +760,12 @@ void Drivetrain::setXMode(){
     setDriveMotorNeutralMode(valor::NeutralMode::Brake);
 }
 
+bool Drivetrain::isWheelSlip(int i)
+{
+    double tVel = sqrtf(powf(getRobotRelativeSpeeds().vx.to<double>(), 2) + powf(getRobotRelativeSpeeds().vy.to<double>(), 2));
+    return fabs(driveControllers[i]->getSpeed()) > tVel * SLIP_FACTOR;
+}
+
 void Drivetrain::setDriveMotorNeutralMode(valor::NeutralMode mode) {
     for (int i = 0; i < SWERVE_COUNT; i++)
     {
@@ -932,7 +939,7 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
             },
             nullptr
         );
-        builder.AddIntegerProperty(
+        builder.AddDoubleProperty(
             "xVelocity",
             [this]
             {
@@ -940,7 +947,7 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
             },
             nullptr
         );
-        builder.AddIntegerProperty(
+        builder.AddDoubleProperty(
             "yVelocity",
             [this]
             {
@@ -1054,6 +1061,26 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
         builder.AddBooleanProperty(
             "Pit Mode",
             [this] {return state.pitMode;},
+            nullptr
+        );
+        builder.AddBooleanProperty(
+            "Swerve 0 Slip",
+            [this] {return isWheelSlip(0);},
+            nullptr
+        );
+        builder.AddBooleanProperty(
+            "Swerve 1 Slip",
+            [this] {return isWheelSlip(1);},
+            nullptr
+        );
+        builder.AddBooleanProperty(
+            "Swerve 2 Slip",
+            [this] {return isWheelSlip(2);},
+            nullptr
+        );
+        builder.AddBooleanProperty(
+            "Swerve 3 Slip",
+            [this] {return isWheelSlip(3);},
             nullptr
         );
     }
