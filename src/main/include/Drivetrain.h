@@ -243,6 +243,7 @@ public:
      units::meters_per_second_t getRobotSpeeds();
 
      void setAlignmentAngle(Drivetrain::Alignment align);
+     void calculateFuturePose();
      void getSpeakerLockAngleRPS();
      units::radian_t getSpeakerLockAngleFromPose(frc::Pose2d pose);
      void lockOnTheMove();

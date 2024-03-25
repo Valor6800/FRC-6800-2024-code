@@ -455,9 +455,6 @@ void Drivetrain::analyzeDashboard()
 
     state.distanceFromSpeaker = getDistanceFromSpeaker();
 
-    state.chassisXSpeed = getRobotRelativeSpeeds().vx;
-    state.chassisYSpeed = getRobotRelativeSpeeds().vy;
-
     auto ppTable = nt::NetworkTableInstance::GetDefault().GetTable("PathPlanner");
     
     std::vector<double> bp = ppTable->GetNumberArray("currentPose", std::array<double, 3>{0, 0, 0});
@@ -475,18 +472,7 @@ void Drivetrain::analyzeDashboard()
     }, frc::Timer::GetFPGATimestamp());
     unfilteredPoseTracker.addReading(getPose_m(), frc::Timer::GetFPGATimestamp());
 
-
-    units::acceleration::meters_per_second_squared_t accelY = state.accel.y;
-    units::acceleration::meters_per_second_squared_t accelX = state.accel.x;
-    if(state.accel.y.to<double>() < ACCELERATION_BOUND_MAX && state.accel.y.to<double>() > ACCELERATION_BOUND_MIN){
-        accelY = units::acceleration::meters_per_second_squared_t(0);
-    }
-    if(state.accel.x.to<double>() < ACCELERATION_BOUND_MAX && state.accel.x.to<double>() > ACCELERATION_BOUND_MIN){
-        accelX = units::acceleration::meters_per_second_squared_t(0);
-    }
-    units::meter_t futureRobotX = units::meter_t((0.5*accelX.to<double>()*(pow(SHOOTING_TIME, 2))) + (state.chassisXSpeed.to<double>()*SHOOTING_TIME) + getCalculatedPose_m().X().to<double>());
-    units::meter_t futureRobotY = units::meter_t((0.5*accelY.to<double>()*(pow(SHOOTING_TIME, 2))) + (state.chassisYSpeed.to<double>()*SHOOTING_TIME) + getCalculatedPose_m().Y().to<double>());
-    state.futurePose = frc::Pose2d(futureRobotX, futureRobotY, getCalculatedPose_m().Rotation());
+    calculateFuturePose();
 }
 
 void Drivetrain::assignOutputs()
@@ -546,6 +532,23 @@ units::meter_t Drivetrain::getDistanceFromSpeaker() {
 
 units::meters_per_second_t Drivetrain::getRobotSpeeds(){
     return units::meters_per_second_t{sqrtf(powf(getRobotRelativeSpeeds().vx.to<double>(), 2) + powf(getRobotRelativeSpeeds().vy.to<double>(), 2))};
+}
+
+void Drivetrain::calculateFuturePose(){
+    state.chassisXSpeed = getRobotRelativeSpeeds().vx;
+    state.chassisYSpeed = getRobotRelativeSpeeds().vy;
+
+    units::acceleration::meters_per_second_squared_t accelY = state.accel.y;
+    units::acceleration::meters_per_second_squared_t accelX = state.accel.x;
+    if(state.accel.y.to<double>() < ACCELERATION_BOUND_MAX && state.accel.y.to<double>() > ACCELERATION_BOUND_MIN){
+        accelY = units::acceleration::meters_per_second_squared_t(0);
+    }
+    if(state.accel.x.to<double>() < ACCELERATION_BOUND_MAX && state.accel.x.to<double>() > ACCELERATION_BOUND_MIN){
+        accelX = units::acceleration::meters_per_second_squared_t(0);
+    }
+    units::meter_t futureRobotX = units::meter_t((0.5*accelX.to<double>()*(pow(SHOOTING_TIME, 2))) + (state.chassisXSpeed.to<double>()*SHOOTING_TIME) + getCalculatedPose_m().X().to<double>());
+    units::meter_t futureRobotY = units::meter_t((0.5*accelY.to<double>()*(pow(SHOOTING_TIME, 2))) + (state.chassisYSpeed.to<double>()*SHOOTING_TIME) + getCalculatedPose_m().Y().to<double>());
+    state.futurePose = frc::Pose2d(futureRobotX, futureRobotY, getCalculatedPose_m().Rotation());   
 }
 
 void Drivetrain::getSpeakerLockAngleRPS(){
@@ -1110,6 +1113,19 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
         builder.AddBooleanProperty(
             "Swerve 3 Slip",
             [this] {return isWheelSlip(3);},
+            nullptr
+        );
+        builder.AddDoubleArrayProperty(
+            "Calculated Future Pose",
+            [this] 
+            {
+                std::vector<double> pose;
+                frc::Pose2d myPos = state.futurePose;
+                pose.push_back(myPos.X().to<double>());
+                pose.push_back(myPos.Y().to<double>());
+                pose.push_back(myPos.Rotation().Radians().to<double>());
+                return pose;
+            },
             nullptr
         );
     }
