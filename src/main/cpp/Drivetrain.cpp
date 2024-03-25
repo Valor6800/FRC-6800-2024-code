@@ -199,6 +199,7 @@ void Drivetrain::resetState()
     resetOdometry(frc::Pose2d{0_m, 0_m, 0_rad});
     state.manualFlag = false;
     state.pitMode = false;
+    state.tuningDrives = false;
 }
 
 void Drivetrain::init()
@@ -257,6 +258,8 @@ void Drivetrain::init()
     table->PutBoolean("Accepting Vision Measurements", true);
     table->PutBoolean("Pit Mode", false);
 
+    table->PutBoolean("Tuning drives", false);
+    table->PutNumber("Tuning drives speed", 0);
 
     resetState();
 
@@ -404,6 +407,9 @@ void Drivetrain::analyzeDashboard()
     table->PutBoolean("Calculated estimator?", state.useCalculatedEstimator);
     state.pitMode = table->GetBoolean("Pit Mode", false);
 
+    state.tuningDrives = table->GetBoolean("Tuning drives", false);
+    state.tuningDrivesSpeed = units::meters_per_second_t{table->GetNumber("Tuning drives speeed", 0)};
+
     if (state.pitMode){
         state.ampAlign = false;
         state.isHeadingTrack = false;
@@ -483,13 +489,15 @@ void Drivetrain::assignOutputs()
     }
     state.rotRPS = units::angular_velocity::radians_per_second_t{state.rot * rotMaxSpeed};
 
-    if(state.ampAlign || state.trapAlign || state.sourceAlign || state.isHeadingTrack || state.thetaLock){
-        drive(state.xSpeedMPS, state.ySpeedMPS, state.angleRPS, true);
+    if (!state.tuningDrives) {
+        if(state.ampAlign || state.trapAlign || state.sourceAlign || state.isHeadingTrack || state.thetaLock){
+            drive(state.xSpeedMPS, state.ySpeedMPS, state.angleRPS, true);
+        } else {
+            drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
+        }
     } else {
-        drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
+        driveRobotRelative(frc::ChassisSpeeds{state.tuningDrivesSpeed});
     }
-    //driveRobotRelative(frc::ChassisSpeeds{6_mps});
-
     if (frc::Timer::GetFPGATimestamp().to<double>() - teleopStart > TIME_TELEOP_VERT && frc::Timer::GetFPGATimestamp().to<double>() - teleopStart < TIME_TELEOP_VERT + 3) {
         operatorGamepad->setRumble(true);
     } else {
