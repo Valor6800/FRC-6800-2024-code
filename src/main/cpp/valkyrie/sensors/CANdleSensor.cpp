@@ -76,6 +76,21 @@ CANdleSensor::~CANdleSensor()
     }
 }
 
+void CANdleSensor::setLED(uint led, RGBColor rgb) {
+    candle.SetLEDs(
+        rgb.red,
+        rgb.green,
+        rgb.blue,
+        0,
+        led,
+        led
+    );
+}
+
+void CANdleSensor::setLED(uint led, int color) {
+    setLED(led, toRGB(color));
+}
+
 void CANdleSensor::setColor(uint layer, uint segment, RGBColor rgb)
 {
     if (layer >= segmentMatrix.size()) return;
