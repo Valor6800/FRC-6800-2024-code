@@ -167,6 +167,9 @@ public:
           int pitSequenceCommandIndex;
 
           double prevError;
+
+          bool tuningDrives;
+          units::meters_per_second_t tuningDrivesSpeed;
      } state;
      
      
