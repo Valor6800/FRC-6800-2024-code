@@ -77,6 +77,12 @@
           "data": {
             "pathName": "A-A3 pt 1"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Reschedule 3-3 3-4"
+          }
         }
       ]
     }

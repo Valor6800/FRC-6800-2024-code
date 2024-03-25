@@ -32,13 +32,24 @@ Robot::Robot() :
     feederBeamBreak2.SetLimitsVoltage(4, 14);
     intakeBeamBreak.SetLimitsVoltage(4, 14);
 
-    pathplanner::NamedCommands::registerCommand("Reschedule", std::move(
+    pathplanner::NamedCommands::registerCommand("Reschedule 3-3 3-4", std::move(
         frc2::InstantCommand([this](){
             autoCommand.Cancel();
             if (feeder.state.beamTrip)
                 autoCommand = valorAuto.getAuto("3-3");
             else
                 autoCommand = valorAuto.getAuto("3-4");
+            autoCommand.Schedule();
+        })
+    ).ToPtr());
+
+    pathplanner::NamedCommands::registerCommand("Reschedule 1-1 1-2", std::move(
+        frc2::InstantCommand([this](){
+            autoCommand.Cancel();
+            if (feeder.state.beamTrip)
+                autoCommand = valorAuto.getAuto("1-1");
+            else
+                autoCommand = valorAuto.getAuto("1-2");
             autoCommand.Schedule();
         })
     ).ToPtr());
@@ -58,6 +69,10 @@ void Robot::RobotInit() {
     frc::DataLogManager::Start();
 
     valorAuto.fillAutoList();
+
+    valorAuto.preloadAuto("1-1");
+    valorAuto.preloadAuto("1-2");
+
     valorAuto.preloadAuto("3-3");
     valorAuto.preloadAuto("3-4");
 }
