@@ -32,6 +32,9 @@ using namespace pathplanner;
 
 #define SHOOTING_TIME 0.5f // in seconds
 
+#define ACCELERATION_BOUND_MAX 0.2f
+#define ACCELERATION_BOUND_MIN -0.4f
+
 #define TXRANGE  30.0f
 #define KPIGEON 2.0f
 #define KLIMELIGHT -29.8f
@@ -472,8 +475,17 @@ void Drivetrain::analyzeDashboard()
     }, frc::Timer::GetFPGATimestamp());
     unfilteredPoseTracker.addReading(getPose_m(), frc::Timer::GetFPGATimestamp());
 
-    units::meter_t futureRobotX = units::meter_t((0.5*state.accel.x.to<double>()*(pow(SHOOTING_TIME, 2))) + (state.chassisXSpeed.to<double>()*SHOOTING_TIME) + getCalculatedPose_m().X().to<double>());
-    units::meter_t futureRobotY = units::meter_t((0.5*state.accel.y.to<double>()*(pow(SHOOTING_TIME, 2))) + (state.chassisYSpeed.to<double>()*SHOOTING_TIME) + getCalculatedPose_m().Y().to<double>());
+
+    units::acceleration::meters_per_second_squared_t accelY = state.accel.y;
+    units::acceleration::meters_per_second_squared_t accelX = state.accel.x;
+    if(state.accel.y.to<double>() < ACCELERATION_BOUND_MAX && state.accel.y.to<double>() > ACCELERATION_BOUND_MIN){
+        accelY = units::acceleration::meters_per_second_squared_t(0);
+    }
+    if(state.accel.x.to<double>() < ACCELERATION_BOUND_MAX && state.accel.x.to<double>() > ACCELERATION_BOUND_MIN){
+        accelX = units::acceleration::meters_per_second_squared_t(0);
+    }
+    units::meter_t futureRobotX = units::meter_t((0.5*accelX.to<double>()*(pow(SHOOTING_TIME, 2))) + (state.chassisXSpeed.to<double>()*SHOOTING_TIME) + getCalculatedPose_m().X().to<double>());
+    units::meter_t futureRobotY = units::meter_t((0.5*accelY.to<double>()*(pow(SHOOTING_TIME, 2))) + (state.chassisYSpeed.to<double>()*SHOOTING_TIME) + getCalculatedPose_m().Y().to<double>());
     state.futurePose = frc::Pose2d(futureRobotX, futureRobotY, getCalculatedPose_m().Rotation());
 }
 
@@ -555,7 +567,7 @@ units::radian_t Drivetrain::getSpeakerLockAngleFromPose(frc::Pose2d pose){
     double redMultiplier = frc::DriverStation::GetAlliance() == frc::DriverStation::kRed ? -1.0 : 1.0;
     double speakerXOffset = table->GetNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET) * redMultiplier;
     double speakerYOffset = table->GetNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET);
-    state.targetAngle = units::radian_t(atan2(
+    return units::radian_t(atan2(
         (pose.X().to<double>() - (SPEAKER_Y.to<double>() + speakerYOffset)),
         (pose.Y().to<double>() - (speakerX + speakerXOffset))
     ));
