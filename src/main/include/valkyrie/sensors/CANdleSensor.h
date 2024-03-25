@@ -123,6 +123,26 @@ public:
     void setLED(uint led, RGBColor rgb);
     void setLED(uint led, int color);
     /**
+     * @brief Sets a specific LED
+     *
+     * This will be overriden and not restored when the segment that the LED belongs to is written to
+     *
+     * @param uint led LED index to set it on
+     * @parm color The color to change the LED to
+     */
+    void setLED(uint led, int color);
+
+    /**
+     * @brief Sets a specific LED
+     * 
+     * This will be overriden and not restored when the segment that the LED belongs to is written to
+     *
+     * @param uint led LED index to set it on
+     * @parm rgb The color to change the LED to
+     */
+    void setLED(uint led, RGBColor rgb);
+
+    /**
      * @brief Set the color of the CANdle LEDs and attached LEDs
      * 
      * @param layer The layer to put the color on
