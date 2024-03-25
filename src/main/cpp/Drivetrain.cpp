@@ -9,6 +9,7 @@
 #include <pathplanner/lib/util/ReplanningConfig.h>
 #include <string>
 #include "Constants.h"
+#include "frc/geometry/Pose2d.h"
 #include "frc2/command/FunctionalCommand.h"
 #include "frc2/command/SequentialCommandGroup.h"
 #include "units/acceleration.h"
@@ -531,13 +532,36 @@ frc::Pose2d Drivetrain::getPoseFromSpeaker() {
     leds->setColor(0, valor::CANdleSensor::RED);
     return calculatedEstimator->GetEstimatedPosition();
 }
+frc::Pose2d Drivetrain::getPoseFromOtherTags() {
+    valor::AprilTagsSensor* sensorWithLeastDistance;
+    units::meter_t distance = 99999.9_m;
+    for (valor::AprilTagsSensor* tagSensor : aprilTagSensors) {
+        if (tagSensor->inExistence() &&
+            tagSensor->getPoseFromAprilTag().Translation().Norm() < 4.5_m &&
+            tagSensor->getPoseFromAprilTag().Translation().Norm() < distance) {
+            sensorWithLeastDistance = tagSensor;
+            distance = tagSensor->getPoseFromAprilTag().Translation().Norm();
+        }
+    }
+    return sensorWithLeastDistance->getSensor().ToPose2d();
+}
 
 units::meter_t Drivetrain::getDistanceFromSpeaker() {
-    units::meter_t x = frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue ? getPoseFromSpeaker().X() - SPEAKER_BLUE_X : getPoseFromSpeaker().X() - SPEAKER_RED_X;
-    units::meter_t y = getPoseFromSpeaker().Y() - SPEAKER_Y;
+    units::meter_t x, trueX;
+    units::meter_t y, trueY;
+    if (!aprilTagSensors[0]->inExistence()) {
+        trueX = getPoseFromOtherTags().X();
+        trueY = getPoseFromOtherTags().Y();
+    } else {
+        trueX = getPoseFromSpeaker().X();
+        trueY = getPoseFromSpeaker().Y();
+    }
+    x = frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue ? trueX - SPEAKER_BLUE_X : trueX - SPEAKER_RED_X;
+    y = trueY - SPEAKER_Y;
 
     return units::meter_t{sqrtf(powf(x.to<double>(), 2) + powf(y.to<double>(), 2))};
 }
+
 
 units::meters_per_second_t Drivetrain::getRobotSpeeds(){
     return units::meters_per_second_t{sqrtf(powf(getRobotRelativeSpeeds().vx.to<double>(), 2) + powf(getRobotRelativeSpeeds().vy.to<double>(), 2))};

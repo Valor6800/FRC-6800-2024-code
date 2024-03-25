@@ -241,8 +241,10 @@ public:
      void getSpeakerLockAngleRPS();
      units::radian_t getAngleError();
      double clampAngleRadianRange(units::radian_t angle, double max);
+
      units::meter_t getDistanceFromSpeaker();
      frc::Pose2d getPoseFromSpeaker();
+     frc::Pose2d getPoseFromOtherTags(); 
 
      void setXMode();
      bool isWheelSlip(int i);
