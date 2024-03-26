@@ -12,6 +12,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Tick pit sequence leds"
+          }
+        },
+        {
           "type": "wait",
           "data": {
             "waitTime": 1.0
@@ -24,6 +30,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Tick pit sequence leds"
+          }
+        },
+        {
           "type": "wait",
           "data": {
             "waitTime": 4.0
@@ -33,6 +45,12 @@
           "type": "named",
           "data": {
             "name": "Disable full feeder"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Tick pit sequence leds"
           }
         },
         {
@@ -54,6 +72,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Tick pit sequence leds"
+          }
+        },
+        {
           "type": "wait",
           "data": {
             "waitTime": 1.0
@@ -63,6 +87,12 @@
           "type": "named",
           "data": {
             "name": "Enable full feeder"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Tick pit sequence leds"
           }
         },
         {
@@ -84,6 +114,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Tick pit sequence leds"
+          }
+        },
+        {
           "type": "wait",
           "data": {
             "waitTime": 1.0
@@ -96,9 +132,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Tick pit sequence leds"
+          }
+        },
+        {
           "type": "wait",
           "data": {
             "waitTime": 7.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Tick pit sequence leds"
           }
         },
         {
