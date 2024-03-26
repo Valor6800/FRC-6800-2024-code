@@ -83,7 +83,7 @@ void CANdleSensor::setLED(uint led, RGBColor rgb) {
         rgb.blue,
         0,
         led,
-        led
+        1
     );
 }
 
