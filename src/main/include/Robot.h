@@ -57,4 +57,6 @@ class Robot : public frc::TimedRobot {
         Shooter shooter;
         Feeder feeder;
         Climber climber;
+
+        int pitSequenceStep;
 };

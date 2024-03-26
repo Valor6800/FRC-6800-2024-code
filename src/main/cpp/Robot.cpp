@@ -16,9 +16,10 @@
 
 #define LED_COUNT 110
 #define SEGMENTS 2
+#define PIT_SEQUENCE_SEGMENTS 7
 
 Robot::Robot() : 
-    leds(this, LED_COUNT, {SEGMENTS}, CANIDs::CANDLE, ""),
+    leds(this, LED_COUNT, {SEGMENTS, PIT_SEQUENCE_SEGMENTS}, CANIDs::CANDLE, ""),
     drivetrain(this, &leds),
     valorAuto(),
     feederBeamBreak(AnalogPorts::FEEDER_BEAM_BREAK_PORT),
@@ -41,6 +42,20 @@ Robot::Robot() :
     //         autoCommand.Schedule();
     //     })
     // ).ToPtr());
+
+    pathplanner::NamedCommands::registerCommand("Tick pit sequence leds", std::move(
+        frc2::InstantCommand([this](){
+            leds.setColor(valor::CANdleSensor::Layer::DEBUG, pitSequenceStep, 0x00FF00);
+            pitSequenceStep ++;
+        })
+    ).ToPtr());
+
+    pathplanner::NamedCommands::registerCommand("Reset pit sequence leds", std::move(
+        frc2::InstantCommand([this](){
+            leds.setColor(valor::CANdleSensor::Layer::DEBUG, valor::CANdleSensor::RGBColor{0, 0, 0});
+            pitSequenceStep = 0;
+        })
+    ).ToPtr());
 }
 
 void Robot::RobotInit() {
