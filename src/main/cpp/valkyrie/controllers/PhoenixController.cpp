@@ -356,6 +356,10 @@ float PhoenixController::getCANivoreBusUtil()
     return CANBus::GetStatus("baseCAN").BusUtilization;
 }
 
+ctre::phoenix6::signals::MagnetHealthValue PhoenixController::getMagnetHealth() {
+    return cancoder->GetMagnetHealth().GetValue();
+}
+
 void PhoenixController::InitSendable(wpi::SendableBuilder& builder)
 {
     builder.SetSmartDashboardType("Subsystem");

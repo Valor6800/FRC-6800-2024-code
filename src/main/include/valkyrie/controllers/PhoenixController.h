@@ -59,6 +59,8 @@ public:
     
     float getRevBusUtil();
     float getCANivoreBusUtil();
+
+    ctre::phoenix6::signals::MagnetHealthValue getMagnetHealth();
     
     void setOpenLoopRamp(double time);
 
