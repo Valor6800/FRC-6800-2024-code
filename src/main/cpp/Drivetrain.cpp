@@ -185,13 +185,7 @@ void Drivetrain::configSwerveModule(int i)
     driveControllers.push_back(new SwerveDriveMotor(CANIDs::DRIVE_CANS[i],
                                                     valor::NeutralMode::Coast,
                                                     Constants::swerveDrivesReversals()[i],
-                                                    1.0,
-                                                    conversion,
-                                                    drivePID,
-                                                    12.0,
-                                                    true,
                                                     PIGEON_CAN_BUS));
-    driveControllers[i]->enableFOC(true);
     driveControllers[i]->setOpenLoopRamp(1.0);
 
     driveMaxSpeed = driveControllers[i]->getMaxMotorSpeed() / 60.0 / conversion;
