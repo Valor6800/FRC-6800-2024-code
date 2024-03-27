@@ -66,7 +66,7 @@ public:
       * * valor::PhoenixController
       * * valor::NeoController
       */
-     typedef valor::NeoController SwerveDriveMotor;
+     typedef valor::PhoenixController SwerveDriveMotor;
 
      /**
       * @brief Quick way to select the azimuth motor controller
@@ -302,6 +302,4 @@ private:
      PoseTracker currentPoseTracker;
      PoseTracker targetPoseTracker;
      PoseTracker unfilteredPoseTracker;
-
-     valor::CANdleSensor *leds;
 };

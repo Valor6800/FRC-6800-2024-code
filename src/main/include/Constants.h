@@ -250,10 +250,10 @@ namespace Constants {
             case ALPHA_TEAM_NUMBER: return frc::Pose3d{
                 -0.0635_m,
                 0.3175_m,
-                0.6731_m,
+                12.8125_in,
                 frc::Rotation3d{
                     0_deg,
-                    28_deg,
+                    -9.55_deg,
                     0_deg
                 }
             };
@@ -281,11 +281,12 @@ namespace Constants {
 
         static std::vector<std::pair<const char*, frc::Pose3d>> aprilCameras{
                     std::pair("limelight-mint", mintCameraPosition()),
-                    std::pair("limelight-lemon", lemonCameraPosition()),
+                    std::pair("limelight-vanilla", vanillaCameraPosition()),
                     std::pair("limelight-choco", chocolateCameraPosition()),
         };
         static std::pair<const char*, frc::Pose3d> gamePieceCam{
-            "limelight-vanilla", vanillaCameraPosition()
+
+            "limelight-lemon", lemonCameraPosition()
         };
 }
 #pragma GCC diagnostic pop
