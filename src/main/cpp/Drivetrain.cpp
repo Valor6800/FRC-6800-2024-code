@@ -75,8 +75,8 @@ using namespace pathplanner;
 
 #define TIME_TELEOP_VERT 105.0f
 
-Drivetrain::Drivetrain(frc::TimedRobot *_robot, valor::CANdleSensor *_leds) : valor::BaseSubsystem(_robot, "Drivetrain"),
-                        leds(_leds),
+Drivetrain::Drivetrain(frc::TimedRobot *_robot/*, valor::CANdleSensor *_//leds*/) : valor::BaseSubsystem(_robot, "Drivetrain"),
+                        ////leds(_leds),
                         rotMaxSpeed(ROT_SPEED_MUL * 2 * M_PI),
                         pigeon(CANIDs::PIGEON_CAN, PIGEON_CAN_BUS),
                         motorLocations(wpi::empty_array),
@@ -502,17 +502,17 @@ frc::Pose2d Drivetrain::getPoseFromSpeaker() {
     table->PutNumber("translation norm", tagSensor->getPoseFromAprilTag().Translation().Norm().to<double>());
     if (tagSensor->getPoseFromAprilTag().Translation().Norm() < 4.7_m) {
         if (frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue && (tagSensor->getTagID() == 7 || tagSensor->getTagID() == 8)) {
-            leds->setColor(1, valor::CANdleSensor::LIGHT_BLUE);
+            //leds->setColor(1, valor::CANdleSensor::LIGHT_BLUE);
             table->PutBoolean("good to shoot", true);
             return tagSensor->getSensor().ToPose2d();
         } else if (frc::DriverStation::GetAlliance() == frc::DriverStation::kRed && (tagSensor->getTagID() == 4 || tagSensor->getTagID() == 3)) {
-            leds->setColor(1, valor::CANdleSensor::LIGHT_BLUE);
+            //leds->setColor(1, valor::CANdleSensor::LIGHT_BLUE);
             table->PutBoolean("good to shoot", true);
             return tagSensor->getSensor().ToPose2d();
         }
         table->PutBoolean("good to shoot", false);
     }
-    leds->setColor(1, valor::CANdleSensor::RED);
+    //leds->setColor(1, valor::CANdleSensor::RED);
     return calculatedEstimator->GetEstimatedPosition();
 }
 

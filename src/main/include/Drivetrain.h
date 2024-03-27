@@ -79,7 +79,7 @@ public:
       * 
       * @param robot Top level robot object to parse out smart dashboard and table information
       */
-     Drivetrain(frc::TimedRobot *robot, valor::CANdleSensor *_leds);
+     Drivetrain(frc::TimedRobot *robot/*, valor::CANdleSensor *_leds*/);
 
      /**
       * @brief Destroy the Drivetrain object
