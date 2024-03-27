@@ -19,27 +19,27 @@ frc::Pose3d GamePieceSensor::getGlobalPose() {
     updateRelative();
 
     return frc::Pose3d();
-    //if (!hasTarget() || estimator->GetEstimatedPosition().X() == 0.0_m || estimator->GetEstimatedPosition().Y() == 0.0_m) return frc::Pose3d();
-    //
+    if (!hasTarget() || estimator->GetEstimatedPosition().X() == 0.0_m || estimator->GetEstimatedPosition().Y() == 0.0_m) return frc::Pose3d();
+    
 
-    //units::degree_t robotTheta = estimator->GetEstimatedPosition().Rotation().Degrees(); //Get robot theta from pigeon
-    //units::degree_t theta = 0_deg;
+    units::degree_t robotTheta = estimator->GetEstimatedPosition().Rotation().Degrees(); //Get robot theta from pigeon
+    units::degree_t theta = 0_deg;
 
-    //if (robotTheta < 0_deg) theta = robotTheta + 360_deg;
-    //else if (robotTheta > 0_deg) theta = robotTheta - 360_deg;
+    if (robotTheta < 0_deg) theta = robotTheta + 360_deg;
+    else if (robotTheta > 0_deg) theta = robotTheta - 360_deg;
 
-    //units::meter_t currentRobotX = estimator->GetEstimatedPosition().X(); //Get robot X from odom
-    //units::meter_t currentRobotY = estimator->GetEstimatedPosition().Y(); //Get robot Y from odom
+    units::meter_t currentRobotX = estimator->GetEstimatedPosition().X(); //Get robot X from odom
+    units::meter_t currentRobotY = estimator->GetEstimatedPosition().Y(); //Get robot Y from odom
 
-    //units::meter_t globalX = units::meter_t(cos(theta.convert<units::degree>().to<double>() * relativePose.x.to<double>()) - (sin(theta.convert<units::degree>().to<double>() * relativePose.y.to<double>()))) + currentRobotX;
-    //units::meter_t globalY = units::meter_t(sin(theta.convert<units::degree>().to<double>() * relativePose.x.to<double>()) + (cos(theta.convert<units::angle::degree>().to<double>() * relativePose.y.to<double>()))) + currentRobotY;
+    units::meter_t globalX = units::meter_t(cos(theta.convert<units::degree>().to<double>() * relativePose.x.to<double>()) - (sin(theta.convert<units::degree>().to<double>() * relativePose.y.to<double>()))) + currentRobotX;
+    units::meter_t globalY = units::meter_t(sin(theta.convert<units::degree>().to<double>() * relativePose.x.to<double>()) + (cos(theta.convert<units::angle::degree>().to<double>() * relativePose.y.to<double>()))) + currentRobotY;
 
-    //return frc::Pose3d(
-    //    globalX,
-    //    globalY,
-    //    0_m,
-    //    frc::Rotation3d()
-    //);
+    return frc::Pose3d(
+       globalX,
+       globalY,
+       0_m,
+       frc::Rotation3d()
+    );
 }
 
 void GamePieceSensor::updateRelative() {
