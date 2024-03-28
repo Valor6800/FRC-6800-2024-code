@@ -84,12 +84,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": null
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "Enable full feeder"

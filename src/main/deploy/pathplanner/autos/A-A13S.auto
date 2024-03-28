@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7885143244968206,
-      "y": 6.62422483818492
+      "x": 1.3471626541054011,
+      "y": 6.467440337441439
     },
-    "rotation": 60.0
+    "rotation": 0.0
   },
   "command": {
     "type": "sequential",
@@ -18,15 +18,40 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Af"
+            "name": "Set Estimator"
           }
         },
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-            "waitTime": 0.5
+            "pathName": "Af BLUE"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Set Camera Estimator"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Enable full feeder"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Af-A1 BLUE"
+                }
+              }
+            ]
           }
         },
         {
@@ -38,13 +63,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Af-A1 BLUE"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.2
+            "pathName": "A-A3"
           }
         },
         {
@@ -54,21 +73,15 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "Stage-S"
+          }
+        },
+        {
           "type": "wait",
           "data": {
             "waitTime": 0.2
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "A-A2 BLUE"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": null
           }
         },
         {
@@ -87,6 +100,12 @@
           "type": "named",
           "data": {
             "name": "Disable full feeder"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Disable shooter"
           }
         },
         {
