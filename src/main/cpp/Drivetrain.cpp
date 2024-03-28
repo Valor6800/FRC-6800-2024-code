@@ -75,7 +75,8 @@ using namespace pathplanner;
 
 #define TIME_TELEOP_VERT 105.0f
 
-Drivetrain::Drivetrain(frc::TimedRobot *_robot, valor::CANdleSensor *_leds) : valor::BaseSubsystem(_robot, "Drivetrain"),
+Drivetrain::Drivetrain(frc::TimedRobot *_robot) //, valor::CANdleSensor *_leds)
+: valor::BaseSubsystem(_robot, "Drivetrain"),
                         rotMaxSpeed(ROT_SPEED_MUL * 2 * M_PI),
                         pigeon(CANIDs::PIGEON_CAN, PIGEON_CAN_BUS),
                         motorLocations(wpi::empty_array),
@@ -84,8 +85,8 @@ Drivetrain::Drivetrain(frc::TimedRobot *_robot, valor::CANdleSensor *_leds) : va
                         calculatedEstimator(NULL),
                         teleopStart(999999999999),
                         unfilteredPoseTracker(5),
-                        swerveNoError(true),
-                        leds(_leds)
+                        swerveNoError(true)
+                        //leds(_leds)
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -177,13 +178,8 @@ void Drivetrain::configSwerveModule(int i)
     driveControllers.push_back(new SwerveDriveMotor(CANIDs::DRIVE_CANS[i],
                                                     valor::NeutralMode::Coast,
                                                     Constants::swerveDrivesReversals()[i],
-                                                    1.0,
-                                                    conversion,
-                                                    drivePID,
-                                                    12.0,
-                                                    true,
                                                     PIGEON_CAN_BUS));
-    driveControllers[i]->enableFOC(true);
+    //driveControllers[i]->enableFOC(true);
     driveControllers[i]->setOpenLoopRamp(1.0);
 
     driveMaxSpeed = driveControllers[i]->getMaxMotorSpeed() / 60.0 / conversion;
@@ -257,6 +253,8 @@ void Drivetrain::init()
     table->PutBoolean("Accepting Vision Measurements", true);
     table->PutBoolean("Pit Mode", false);
 
+    servo = new frc::PWM(9, true);
+    servo->SetBounds(2_ms, 2_ms, 1.5_ms, 0.9_ms, 1_ms);
 
     resetState();
 
@@ -495,26 +493,28 @@ void Drivetrain::assignOutputs()
     } else {
         operatorGamepad->setRumble(false);
     }
+
+    servo->SetSpeed(0.6);
 }
 
-frc::Pose2d Drivetrain::getPoseFromSpeaker() {
-    valor::AprilTagsSensor* tagSensor = aprilTagSensors[0];
-    table->PutNumber("translation norm", tagSensor->getPoseFromAprilTag().Translation().Norm().to<double>());
-    if (tagSensor->getPoseFromAprilTag().Translation().Norm() < 4.7_m) {
-        if (frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue && (tagSensor->getTagID() == 7 || tagSensor->getTagID() == 8)) {
-            leds->setColor(1, valor::CANdleSensor::LIGHT_BLUE);
-            table->PutBoolean("good to shoot", true);
-            return tagSensor->getSensor().ToPose2d();
-        } else if (frc::DriverStation::GetAlliance() == frc::DriverStation::kRed && (tagSensor->getTagID() == 4 || tagSensor->getTagID() == 3)) {
-            leds->setColor(1, valor::CANdleSensor::LIGHT_BLUE);
-            table->PutBoolean("good to shoot", true);
-            return tagSensor->getSensor().ToPose2d();
-        }
-        table->PutBoolean("good to shoot", false);
-    }
-    leds->setColor(1, valor::CANdleSensor::RED);
-    return calculatedEstimator->GetEstimatedPosition();
-}
+// frc::Pose2d Drivetrain::getPoseFromSpeaker() {
+//     valor::AprilTagsSensor* tagSensor = aprilTagSensors[0];
+//     table->PutNumber("translation norm", tagSensor->getPoseFromAprilTag().Translation().Norm().to<double>());
+//     if (tagSensor->getPoseFromAprilTag().Translation().Norm() < 4.7_m) {
+//         if (frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue && (tagSensor->getTagID() == 7 || tagSensor->getTagID() == 8)) {
+//             leds->setColor(1, valor::CANdleSensor::LIGHT_BLUE);
+//             table->PutBoolean("good to shoot", true);
+//             return tagSensor->getSensor().ToPose2d();
+//         } else if (frc::DriverStation::GetAlliance() == frc::DriverStation::kRed && (tagSensor->getTagID() == 4 || tagSensor->getTagID() == 3)) {
+//             leds->setColor(1, valor::CANdleSensor::LIGHT_BLUE);
+//             table->PutBoolean("good to shoot", true);
+//             return tagSensor->getSensor().ToPose2d();
+//         }
+//         table->PutBoolean("good to shoot", false);
+//     }
+//     leds->setColor(1, valor::CANdleSensor::RED);
+//     return calculatedEstimator->GetEstimatedPosition();
+// }
 
 units::meter_t Drivetrain::getDistanceFromSpeaker() {
     units::meter_t x = frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue ? getPoseFromSpeaker().X() - SPEAKER_BLUE_X : getPoseFromSpeaker().X() - SPEAKER_RED_X;
@@ -1068,4 +1068,10 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
             [this] {return isWheelSlip(3);},
             nullptr
         );
+        // builder.AddDoubleArrayProperty(
+        //     "Servo",
+        //     [this] {return std::vector<double>{servo->GetPulseTime().to<double>(), servo->GetSpeed(), servo->GetPosition()};},
+        //     nullptr
+        // );
     }
+

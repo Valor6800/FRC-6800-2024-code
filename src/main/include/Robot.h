@@ -47,13 +47,13 @@ class Robot : public frc::TimedRobot {
 
         frc2::CommandPtr autoCommand = frc2::cmd::Sequence();
 
-        valor::CANdleSensor leds;
+        //valor::CANdleSensor leds;
         Drivetrain drivetrain;
-        valor::Auto valorAuto;
-        frc::AnalogTrigger feederBeamBreak;
-        frc::AnalogTrigger feederBeamBreak2;
-        frc::AnalogTrigger intakeBeamBreak;
+        //valor::Auto valorAuto;
+        // frc::AnalogTrigger feederBeamBreak;
+        // frc::AnalogTrigger feederBeamBreak2;
+        // frc::AnalogTrigger intakeBeamBreak;
         
-        Shooter shooter;
-        Feeder feeder;
+        // Shooter shooter;
+        // Feeder feeder;
 };

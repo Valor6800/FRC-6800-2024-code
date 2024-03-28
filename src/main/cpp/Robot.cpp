@@ -18,48 +18,48 @@
 #define SEGMENTS 3
 
 Robot::Robot() : 
-    leds(this, LED_COUNT, SEGMENTS, CANIDs::CANDLE, ""),
-    drivetrain(this, &leds),
-    valorAuto(),
-    feederBeamBreak(AnalogPorts::FEEDER_BEAM_BREAK_PORT),
-    feederBeamBreak2(AnalogPorts::FEEDER_BEAM_BREAK2_PORT),
-    intakeBeamBreak(AnalogPorts::INTAKE_BEAM_BREAK_PORT),
-    shooter(this, &drivetrain, &feederBeamBreak, &feederBeamBreak2, &leds),
-    feeder(this, &feederBeamBreak, &intakeBeamBreak, &feederBeamBreak2, &leds)
+    //leds(this, LED_COUNT, SEGMENTS, CANIDs::CANDLE, ""),
+    drivetrain(this)//, &leds),
+    //valorAuto(),
+    //feederBeamBreak(AnalogPorts::FEEDER_BEAM_BREAK_PORT),
+    //feederBeamBreak2(AnalogPorts::FEEDER_BEAM_BREAK2_PORT),
+    //intakeBeamBreak(AnalogPorts::INTAKE_BEAM_BREAK_PORT),
+    //shooter(this, &drivetrain, &feederBeamBreak, &feederBeamBreak2, &leds),
+    //feeder(this, &feederBeamBreak, &intakeBeamBreak, &feederBeamBreak2, &leds)
 {
     frc::TimedRobot();
-    feederBeamBreak.SetLimitsVoltage(4, 14);
+    /*feederBeamBreak.SetLimitsVoltage(4, 14);
     feederBeamBreak2.SetLimitsVoltage(4, 14);
-    intakeBeamBreak.SetLimitsVoltage(4, 14);
+    intakeBeamBreak.SetLimitsVoltage(4, 14);*/
 
-    pathplanner::NamedCommands::registerCommand("Reschedule", std::move(
-        frc2::InstantCommand([this](){
-            autoCommand.Cancel();
-            if (feeder.state.beamTrip)
-                autoCommand = valorAuto.getAuto("3-3");
-            else
-                autoCommand = valorAuto.getAuto("3-4");
-            autoCommand.Schedule();
-        })
-    ).ToPtr());
+    // pathplanner::NamedCommands::registerCommand("Reschedule", std::move(
+    //     frc2::InstantCommand([this](){
+    //         autoCommand.Cancel();
+    //         if (feeder.state.beamTrip)
+    //             autoCommand = valorAuto.getAuto("3-3");
+    //         else
+    //             autoCommand = valorAuto.getAuto("3-4");
+    //         autoCommand.Schedule();
+    //     })
+    // ).ToPtr());
 }
 
 void Robot::RobotInit() {
     drivetrain.setGamepads(&gamepadOperator, &gamepadDriver);
     drivetrain.resetState();
 
-    shooter.setGamepads(&gamepadOperator, &gamepadDriver);
-    shooter.resetState();
+    // shooter.setGamepads(&gamepadOperator, &gamepadDriver);
+    // shooter.resetState();
 
-    feeder.setGamepads(&gamepadOperator, &gamepadDriver);
-    feeder.resetState();
+    // feeder.setGamepads(&gamepadOperator, &gamepadDriver);
+    // feeder.resetState();
 
     frc::LiveWindow::EnableAllTelemetry();
     frc::DataLogManager::Start();
 
-    valorAuto.fillAutoList();
-    valorAuto.preloadAuto("3-3");
-    valorAuto.preloadAuto("3-4");
+    // valorAuto.fillAutoList();
+    // valorAuto.preloadAuto("3-3");
+    // valorAuto.preloadAuto("3-4");
 }
 /**
  * This function is called every robot packet, no matter the mode. Use
@@ -79,7 +79,7 @@ void Robot::RobotPeriodic() { frc2::CommandScheduler::GetInstance().Run(); }
 void Robot::DisabledInit() { }
 
 void Robot::DisabledPeriodic() { 
-    valorAuto.preloadSelectedAuto();
+    //valorAuto.preloadSelectedAuto();
 }
 
 /**
@@ -93,15 +93,15 @@ void Robot::AutonomousInit() {
     drivetrain.doubtX = AUTO_DOUBTX;
     drivetrain.doubtY = AUTO_DOUBTY;
 
-    feeder.resetState();
-    shooter.resetState();
+    // feeder.resetState();
+    // shooter.resetState();
 
-    autoCommand = valorAuto.getSelectedAuto();
-    autoCommand.Schedule();
+    // autoCommand = valorAuto.getSelectedAuto();
+    // autoCommand.Schedule();
 }
 
 void Robot::AutonomousExit() {
-    drivetrain.state.xPose = true;
+    //drivetrain.state.xPose = true;
 }
 
 void Robot::AutonomousPeriodic() {
@@ -113,10 +113,10 @@ void Robot::TeleopInit() {
     drivetrain.doubtX = TELE_DOUBTX;
     drivetrain.doubtY = TELE_DOUBTY;
 
-    shooter.resetState();
-    feeder.resetState();
+    // shooter.resetState();
+    // feeder.resetState();
 
-    autoCommand.Cancel();
+    // autoCommand.Cancel();
 }
 
 /**

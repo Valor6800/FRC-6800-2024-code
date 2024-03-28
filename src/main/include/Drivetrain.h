@@ -45,6 +45,7 @@
 
 #include <rev/CANSparkMax.h>
 #include <ctre/phoenix6/Pigeon2.hpp>
+#include <frc/PWM.h>
 
 #define SWERVE_COUNT 4
 
@@ -64,7 +65,7 @@ public:
       * * valor::PhoenixController
       * * valor::NeoController
       */
-     typedef valor::PhoenixController SwerveDriveMotor;
+     typedef valor::NeoController SwerveDriveMotor;
 
      /**
       * @brief Quick way to select the azimuth motor controller
@@ -79,7 +80,7 @@ public:
       * 
       * @param robot Top level robot object to parse out smart dashboard and table information
       */
-     Drivetrain(frc::TimedRobot *robot, valor::CANdleSensor *_leds);
+     Drivetrain(frc::TimedRobot *robot);//, valor::CANdleSensor *_leds);
 
      /**
       * @brief Destroy the Drivetrain object
@@ -242,7 +243,7 @@ public:
      units::radian_t getAngleError();
      double clampAngleRadianRange(units::radian_t angle, double max);
      units::meter_t getDistanceFromSpeaker();
-     frc::Pose2d getPoseFromSpeaker();
+     frc::Pose2d getPoseFromSpeaker() { return frc::Pose2d();};
 
      void setXMode();
      bool isWheelSlip(int i);
@@ -298,5 +299,7 @@ private:
      PoseTracker unfilteredPoseTracker;
 
      bool swerveNoError;
-     valor::CANdleSensor *leds;
+     //valor::CANdleSensor *leds;
+
+     frc::PWM *servo;
 };
