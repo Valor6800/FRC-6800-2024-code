@@ -31,16 +31,15 @@ Robot::Robot() :
     feederBeamBreak.SetLimitsVoltage(4, 14);
     stageBeamBreak.SetLimitsVoltage(4, 14);
 
-    // pathplanner::NamedCommands::registerCommand("Reschedule", std::move(
-    //     frc2::InstantCommand([this](){
-    //         autoCommand.Cancel();
-    //         if (feeder.state.beamTrip)
-    //             autoCommand = valorAuto.getAuto("3-3");
-    //         else
-    //             autoCommand = valorAuto.getAuto("3-4");
-    //         autoCommand.Schedule();
-    //     })
-    // ).ToPtr());
+    pathplanner::NamedCommands::registerCommand("Reschedule 1-1 1-2", std::move(
+        frc2::InstantCommand([this](){
+            if (feeder.state.beamTrip)
+                autoCommands.push_back(valorAuto.getAuto("1-2"));
+            else
+                autoCommands.push_back(valorAuto.getAuto("1-1"));
+            autoCommands.back().Schedule();
+        })
+    ).ToPtr());
 }
 
 void Robot::RobotInit() {
@@ -103,8 +102,8 @@ void Robot::AutonomousInit() {
     shooter.resetState();
     climber.resetState();
 
-    autoCommand = valorAuto.getSelectedAuto();
-    autoCommand.Schedule();
+    autoCommands.push_back(valorAuto.getSelectedAuto());
+    autoCommands.back().Schedule();
 }
 
 void Robot::AutonomousExit() {
@@ -124,7 +123,8 @@ void Robot::TeleopInit() {
     feeder.resetState();
     climber.resetState();
 
-    autoCommand.Cancel();
+    if (autoCommands.size() > 0)
+        autoCommands.back().Cancel();
 }
 
 /**

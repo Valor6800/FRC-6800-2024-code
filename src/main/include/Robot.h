@@ -46,7 +46,8 @@ class Robot : public frc::TimedRobot {
         valor::Gamepad gamepadOperator{OIConstants::GAMEPAD_OPERATOR_LOCATION};
         valor::Gamepad gamepadDriver{OIConstants::GAMEPAD_BASE_LOCATION};
 
-        frc2::CommandPtr autoCommand = frc2::cmd::Sequence();
+        std::vector<frc2::CommandPtr> autoCommands = {}; // WPIlib doesn't like it when an existing CommandPtr gets reused, so
+                                                         // we store all our CommandPtrs. On the other hand, this is awful
 
         valor::CANdleSensor leds;
         Drivetrain drivetrain;
