@@ -489,14 +489,12 @@ void Drivetrain::assignOutputs()
     }
     state.rotRPS = units::angular_velocity::radians_per_second_t{state.rot * rotMaxSpeed};
 
-    if (!state.tuningDrives) {
-        if(state.ampAlign || state.trapAlign || state.sourceAlign || state.isHeadingTrack || state.thetaLock){
-            drive(state.xSpeedMPS, state.ySpeedMPS, state.angleRPS, true);
-        } else {
-            drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
-        }
-    } else {
+    if (state.tuningDrives) {
         driveRobotRelative(frc::ChassisSpeeds{state.tuningDrivesSpeed});
+    } else if(state.ampAlign || state.trapAlign || state.sourceAlign || state.isHeadingTrack || state.thetaLock){
+        drive(state.xSpeedMPS, state.ySpeedMPS, state.angleRPS, true);
+    } else {
+        drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
     }
     if (frc::Timer::GetFPGATimestamp().to<double>() - teleopStart > TIME_TELEOP_VERT && frc::Timer::GetFPGATimestamp().to<double>() - teleopStart < TIME_TELEOP_VERT + 3) {
         operatorGamepad->setRumble(true);
