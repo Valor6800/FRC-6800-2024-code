@@ -253,8 +253,14 @@ void Drivetrain::init()
     table->PutBoolean("Accepting Vision Measurements", true);
     table->PutBoolean("Pit Mode", false);
 
+    table->PutNumber("Pulse time", 1.5);
+    //table->PutNumber("Speed", 0.5);
+    table->PutNumber("Servo Pos", 1);
+    //table->PutNumber("Set Servo Angle", 0);
+
     servo = new frc::PWM(9, true);
-    servo->SetBounds(2_ms, 2_ms, 1.5_ms, 0.9_ms, 1_ms);
+    //servo->SetBounds(2590_us, 2_us, 1500_us, 0_us, 350_us);
+    servo->SetBounds(2000_us, 3_us, 1000_us, 3_us, 500_us);
 
     resetState();
 
@@ -494,7 +500,13 @@ void Drivetrain::assignOutputs()
         operatorGamepad->setRumble(false);
     }
 
-    servo->SetSpeed(0.6);
+    //servo->SetPosition(table->GetNumber("Servo Pos", 1));
+    //servo->SetPulseTime((units::millisecond_t) table->GetNumber("Pulse time", 1.5));
+    if(state.pitMode){
+        servo->SetPulseTime(2.5_ms);
+    } else{
+        servo->SetPulseTime(1.6_ms);
+    }
 }
 
 // frc::Pose2d Drivetrain::getPoseFromSpeaker() {
@@ -1068,10 +1080,20 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
             [this] {return isWheelSlip(3);},
             nullptr
         );
-        // builder.AddDoubleArrayProperty(
-        //     "Servo",
-        //     [this] {return std::vector<double>{servo->GetPulseTime().to<double>(), servo->GetSpeed(), servo->GetPosition()};},
-        //     nullptr
-        // );
+        builder.AddDoubleProperty(
+            "Servo Pos",
+            [this] {return servo->GetPosition();},
+            nullptr
+        );
+        builder.AddDoubleProperty(
+            "Servo Pulse Time",
+            [this] {return servo->GetPulseTime().to<double>();},
+            nullptr
+        );
+        builder.AddDoubleProperty(
+            "Servo Speed",
+            [this] {return servo->GetSpeed();},
+            nullptr
+        );
     }
 
