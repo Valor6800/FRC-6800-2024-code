@@ -73,9 +73,12 @@ namespace CANIDs {
     constexpr static int PIGEON_CAN = 61;
     constexpr static int INTERNAL_INTAKE = 8;
     constexpr static int INTERNAL_INTAKE_V2 = 9;
-    constexpr static int PIVOT = 30;
-    constexpr static int RIGHT_SHOOTER_WHEEL_CONTROLLER = 12;
-    constexpr static int LEFT_SHOOTER_WHEEL_CONTROLLER = 11; // Relative to shooter being forward
+    constexpr static int PIVOT_LEAD = 30;
+    constexpr static int PIVOT_FOLLOW = 31;
+    constexpr static int RIGHT_SHOOTER_WHEEL= 12;
+    constexpr static int RIGHT_SHOOTER_WHEEL2 = 25;
+    constexpr static int LEFT_SHOOTER_WHEEL = 11; // Relative to shooter being forward
+    constexpr static int LEFT_SHOOTER_WHEEL2 = 26;
     constexpr static int FEEDER = 14;
     constexpr static int RIGHT_CLIMBER = 15;
     constexpr static int LEFT_CLIMBER = 16;

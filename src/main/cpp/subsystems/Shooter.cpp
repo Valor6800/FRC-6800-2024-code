@@ -53,8 +53,10 @@ Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive, frc::AnalogTrigger
     pivotMotors(nullptr),
     feederBeamBreak(_feederBeamBreak),
     feederBeamBreak2(_feederBeamBreak2),
-    leftFlywheelMotor(CANIDs::LEFT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, true),
-    rightFlywheelMotor(CANIDs::RIGHT_SHOOTER_WHEEL_CONTROLLER, valor::NeutralMode::Coast, false),
+    leftFlywheelMotor(CANIDs::LEFT_SHOOTER_WHEEL, valor::NeutralMode::Coast, true),
+    leftFlywheelMotor2(CANIDs::LEFT_SHOOTER_WHEEL2, valor::NeutralMode::Coast, true),
+    rightFlywheelMotor(CANIDs::RIGHT_SHOOTER_WHEEL, valor::NeutralMode::Coast, false),
+    rightFlywheelMotor2(CANIDs::RIGHT_SHOOTER_WHEEL2, valor::NeutralMode::Coast, false),
     leds(_leds)
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
@@ -241,11 +243,16 @@ void Shooter::init()
     
     leftFlywheelMotor.setConversion(1, 1);
     leftFlywheelMotor.setPIDF(flywheelPID, 0);
+    leftFlywheelMotor2.setConversion(1, 1);
+    leftFlywheelMotor2.setPIDF(flywheelPID, 0);
+
     rightFlywheelMotor.setConversion(1, 1);
     rightFlywheelMotor.setPIDF(flywheelPID, 0);
+    rightFlywheelMotor2.setConversion(1, 1);
+    rightFlywheelMotor2.setPIDF(flywheelPID, 0);
 
     pivotMotors = new valor::PhoenixController(
-        CANIDs::PIVOT,
+        CANIDs::PIVOT_LEAD,
         valor::NeutralMode::Brake,
         false,
         PIVOT_GEAR_RATIO / PIVOT_CANCODER_GEAR_RATIO,
@@ -255,6 +262,7 @@ void Shooter::init()
         false,
         "baseCAN"
     );
+    pivotMotors->setupFollower(CANIDs::PIVOT_FOLLOW, false);
     pivotMotors->setupCANCoder(CANIDs::SHOOTER_CANCODER, PIVOT_MAGNET_OFFSET, true, "baseCAN");
     pivotMotors->setRange(0, PIVOT_FORWARD_LIMIT, PIVOT_REVERSE_LIMIT);
 
@@ -262,7 +270,6 @@ void Shooter::init()
     table->PutNumber("Speed Setpoint", AMP_POWER);
     table->PutNumber("Speed Offset Pct", 0.5);
     table->PutBoolean("Tuning", false);
-    state.pivotOffset = 0.0;
 
     resetState();
 }
@@ -298,17 +305,6 @@ void Shooter::assessInputs()
         state.pivotState = PIVOT_STATE::ORBIT;
     } else {
         state.pivotState = PIVOT_STATE::LOAD;
-    }
-
-    //PIVOT OFFSET
-    if (operatorGamepad->leftTriggerActive()){
-        if (operatorGamepad->DPadUp()){
-            state.pivotOffset += 0.25;
-        } else if (operatorGamepad->DPadDown()){
-            state.pivotOffset -= 0.25;
-        } 
-    } else {
-        state.pivotOffset = 0.0;
     }
 }
 
@@ -360,46 +356,39 @@ void Shooter::assignOutputs()
 {
     // Do nothing
     if (state.flywheelState == NOT_SHOOTING) {
-        leftFlywheelMotor.setPower(0.0);
-        rightFlywheelMotor.setPower(0.0);
+        setFlyweelSpeeds(0.0, 0.0);
     } else if (state.pivotState == PIVOT_STATE::TUNING) {
-        leftFlywheelMotor.setSpeed(state.tuningSpeed * state.tuningOffset);
-        rightFlywheelMotor.setSpeed(state.tuningSpeed);
+        setFlyweelSpeeds(state.tuningSpeed * state.tuningOffset, state.tuningSpeed);
     } else if (state.pivotState == PIVOT_STATE::AMP) {
-        leftFlywheelMotor.setSpeed(AMP_POWER);
-        rightFlywheelMotor.setSpeed(AMP_POWER);
+        setFlyweelSpeeds(AMP_POWER, AMP_POWER);
     } else if (state.pivotState == PIVOT_STATE::SUBWOOFER || state.pivotState == PIVOT_STATE::DISABLED) {
-        leftFlywheelMotor.setSpeed(LEFT_SHOOT_POWER * 0.85);
-        rightFlywheelMotor.setSpeed(RIGHT_SHOOT_POWER * 0.85);
+        setFlyweelSpeeds(LEFT_SHOOT_POWER * 0.85, RIGHT_SHOOT_POWER * 0.85);
     } else if (state.pivotState == PIVOT_STATE::ORBIT) {
-        leftFlywheelMotor.setSpeed(LEFT_BLOOP_POWER);
-        rightFlywheelMotor.setSpeed(RIGHT_BLOOP_POWER);
+        setFlyweelSpeeds(LEFT_BLOOP_POWER, RIGHT_BLOOP_POWER);
     } else {
         if (state.reverseFlywheels) {
-            leftFlywheelMotor.setSpeed(RIGHT_SHOOT_POWER);
-            rightFlywheelMotor.setSpeed(LEFT_SHOOT_POWER);
+            setFlyweelSpeeds(RIGHT_SHOOT_POWER, LEFT_SHOOT_POWER);
         } else {
-            leftFlywheelMotor.setSpeed(LEFT_SHOOT_POWER);
-            rightFlywheelMotor.setSpeed(RIGHT_SHOOT_POWER);
+            setFlyweelSpeeds(LEFT_SHOOT_POWER, RIGHT_SHOOT_POWER);
         }
     }
 
     if (state.pivotState == PIVOT_STATE::TUNING) {
         pivotMotors->setPosition(state.tuningSetpoint);
     } else if(state.pivotState == PIVOT_STATE::SUBWOOFER){
-        pivotMotors->setPosition(SUBWOOFER_ANG.to<double>() + state.pivotOffset);
+        pivotMotors->setPosition(SUBWOOFER_ANG.to<double>());
     } else if(state.pivotState == PIVOT_STATE::LOAD && !state.ignoreLoad){
         pivotMotors->setPosition(INTAKE_ANG.to<double>());
     } else if(state.pivotState == PIVOT_STATE::PODIUM){
-        pivotMotors->setPosition(PODIUM_ANG.to<double>() + state.pivotOffset);
+        pivotMotors->setPosition(PODIUM_ANG.to<double>());
     } else if(state.pivotState == PIVOT_STATE::WING){
-        pivotMotors->setPosition(WING_ANG.to<double>() + state.pivotOffset);
+        pivotMotors->setPosition(WING_ANG.to<double>());
     } else if (state.pivotState == PIVOT_STATE::ORBIT || (state.ignoreLoad && state.otherSide)){
         pivotMotors->setPosition(POOP_ANG.to<double>());
     } else if(state.pivotState == PIVOT_STATE::TRACKING || (state.ignoreLoad && !state.otherSide)){
-        pivotMotors->setPosition(state.calculatingPivotingAngle.to<double>() + state.pivotOffset);
+        pivotMotors->setPosition(state.calculatingPivotingAngle.to<double>());
     } else if(state.pivotState == PIVOT_STATE::AMP){
-        pivotMotors->setPosition(AMP_ANG.to<double>() + state.pivotOffset);
+        pivotMotors->setPosition(AMP_ANG.to<double>());
     } else if (state.pivotState == PIVOT_STATE::AUTO_FAR_LOW) {
         pivotMotors->setPosition(AUTO_FAR_LOW_ANG.to<double>());
     } else if (state.pivotState == PIVOT_STATE::AUTO_FAR_HIGH) {
@@ -411,7 +400,7 @@ void Shooter::assignOutputs()
     } else if(state.pivotState == PIVOT_STATE::FORCE_INTAKE){
         pivotMotors->setPosition(INTAKE_ANG.to<double>());
     } else {
-        pivotMotors->setPosition(SUBWOOFER_ANG.to<double>() + state.pivotOffset);
+        pivotMotors->setPosition(SUBWOOFER_ANG.to<double>());
     }
 }
  
@@ -425,6 +414,14 @@ void Shooter::calculatePivotAngle(){
     double D = 89.4; // 78.5;
     double bestPivot = D + (C * distance) + (B * pow(distance, 2)) + (A * pow(distance, 3));
     state.calculatingPivotingAngle = units::degree_t(bestPivot);
+}
+
+void Shooter::setFlyweelSpeeds(double leftPower, double rightPower)
+{
+    leftFlywheelMotor.setSpeed(leftPower);
+    leftFlywheelMotor2.setSpeed(leftPower);
+    rightFlywheelMotor.setSpeed(rightPower);
+    rightFlywheelMotor2.setSpeed(rightPower);
 }
 
 void Shooter::InitSendable(wpi::SendableBuilder& builder){
