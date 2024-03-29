@@ -75,10 +75,10 @@ namespace CANIDs {
     constexpr static int INTERNAL_INTAKE_V2 = 9;
     constexpr static int PIVOT_LEAD = 30;
     constexpr static int PIVOT_FOLLOW = 31;
-    constexpr static int RIGHT_SHOOTER_WHEEL= 12;
-    constexpr static int RIGHT_SHOOTER_WHEEL2 = 25;
-    constexpr static int LEFT_SHOOTER_WHEEL = 11; // Relative to shooter being forward
-    constexpr static int LEFT_SHOOTER_WHEEL2 = 26;
+    constexpr static int RIGHT_SHOOTER_WHEEL= 16;
+    constexpr static int RIGHT_SHOOTER_WHEEL2 = 18;
+    constexpr static int LEFT_SHOOTER_WHEEL = 15; // Relative to shooter being forward
+    constexpr static int LEFT_SHOOTER_WHEEL2 = 17;
     constexpr static int FEEDER = 14;
     constexpr static int RIGHT_CLIMBER = 15;
     constexpr static int LEFT_CLIMBER = 16;
