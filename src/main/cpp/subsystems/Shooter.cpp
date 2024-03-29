@@ -54,9 +54,9 @@ Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive, frc::AnalogTrigger
     feederBeamBreak(_feederBeamBreak),
     feederBeamBreak2(_feederBeamBreak2),
     leftFlywheelMotor(CANIDs::LEFT_SHOOTER_WHEEL, valor::NeutralMode::Coast, true),
-    leftFlywheelMotor2(CANIDs::LEFT_SHOOTER_WHEEL2, valor::NeutralMode::Coast, true),
+    leftFlywheelMotor2(CANIDs::LEFT_SHOOTER_WHEEL2, valor::NeutralMode::Coast, false),
     rightFlywheelMotor(CANIDs::RIGHT_SHOOTER_WHEEL, valor::NeutralMode::Coast, false),
-    rightFlywheelMotor2(CANIDs::RIGHT_SHOOTER_WHEEL2, valor::NeutralMode::Coast, false),
+    rightFlywheelMotor2(CANIDs::RIGHT_SHOOTER_WHEEL2, valor::NeutralMode::Coast, true),
     leds(_leds)
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
