@@ -219,6 +219,11 @@ void Feeder::analyzeDashboard()
     if (driverGamepad != nullptr && driverGamepad->IsConnected() && !(frc::DriverStation::IsTeleop() && frc::DriverStation::IsEnabled())) {
         driverGamepad->setRumble(false);
     }
+    if(!(frc::DriverStation::IsEnabled())){
+        leds->setColor(valor::CANdleSensor::RED);
+    }
+    
+
 }
 
 void Feeder::assignOutputs()
