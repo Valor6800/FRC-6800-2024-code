@@ -20,10 +20,10 @@
 #define RETRACTED_POS 0.0f
 #define RESTING_POS 0.0f
 
-#define MAX_SPEED 0.0f
+#define MAX_CLIMB_SPEED 0.0f
 
-#define LATCH_PULSE_TIME 1.6_ms
 #define UNLATCH_PULSE_TIME 2.5_ms
+#define LATCH_PULSE_TIME 1.6_ms
 
 #define LATCH_POS 0.55f
 #define UNLATCH_POS 1.0f
@@ -51,6 +51,9 @@ void Climber::init()
 
     servo = new frc::PWM(9, true);
     servo->SetBounds(2000_us, 3_us, 1000_us, 3_us, 500_us);
+
+    state.climbState = DISABLE;
+    state.latchState = LATCH;
 }
 
 void Climber::resetState()
@@ -120,13 +123,13 @@ void Climber::assignOutputs()
         }
 
         if (state.latchState == UNLATCH){
-            servo->SetPulseTime(LATCH_PULSE_TIME);
-        } else if(state.latchState == LATCH){
             servo->SetPulseTime(UNLATCH_PULSE_TIME);
+        } else if(state.latchState == LATCH){
+            servo->SetPulseTime(LATCH_PULSE_TIME);
         }
 
         if (state.climbState == MANUAL && (servo->GetPosition() == LATCH_POS || servo->GetPosition() == UNLATCH_POS)){
-            climbMotors.setPosition(MAX_SPEED * operatorGamepad->rightStickY(2));
+            climbMotors.setPosition(MAX_CLIMB_SPEED * operatorGamepad->rightStickY(2));
         }
     }
 }
