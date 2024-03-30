@@ -52,6 +52,9 @@ void Robot::RobotInit() {
     feeder.setGamepads(&gamepadOperator, &gamepadDriver);
     feeder.resetState();
 
+    climber.setGamepads(&gamepadOperator, &gamepadDriver);
+    climber.resetState();
+
     frc::LiveWindow::EnableAllTelemetry();
     frc::DataLogManager::Start();
 
@@ -93,6 +96,7 @@ void Robot::AutonomousInit() {
 
     feeder.resetState();
     shooter.resetState();
+    climber.resetState();
 
     autoCommand = valorAuto.getSelectedAuto();
     autoCommand.Schedule();
@@ -113,6 +117,7 @@ void Robot::TeleopInit() {
 
     shooter.resetState();
     feeder.resetState();
+    climber.resetState();
 
     autoCommand.Cancel();
 }
