@@ -142,8 +142,9 @@ void PhoenixController::setEncoderPosition(double position)
 
 void PhoenixController::setupFollower(int canID, bool followerInverted)
 {
-    followerMotor = new hardware::TalonFX(canID);
-    followerMotor->SetControl(controls::Follower{motor->GetDeviceID(), followerInverted});
+    followerMotor = new hardware::TalonFX(canID, "baseCAN");
+    followerMotor->SetInverted(followerInverted);
+    followerMotor->SetControl(controls::StrictFollower{motor->GetDeviceID()});
 }
 
 void PhoenixController::setForwardLimit(double forward)
@@ -303,9 +304,11 @@ void PhoenixController::setSpeed(double speed)
 
 void PhoenixController::setPower(double speed)
 {
-    req_voltage.Output = units::make_unit<units::volt_t>(speed * 12);
-    auto _status = motor->SetControl(req_voltage);
-    if (_status.IsError()) status = _status;
+    // req_voltage.Output = units::make_unit<units::volt_t>(speed * 12);
+    // auto _status = motor->SetControl(req_voltage);
+    // if (_status.IsError()) status = _status;
+    motor->SetVoltage(units::volt_t{speed});
+    // followerMotor->SetVoltage(units::volt_t{speed});
 }
 
 void PhoenixController::setProfile(int profile)
@@ -354,6 +357,11 @@ float PhoenixController::getRevBusUtil()
 float PhoenixController::getCANivoreBusUtil()
 {
     return CANBus::GetStatus("baseCAN").BusUtilization;
+}
+
+ctre::phoenix6::signals::MagnetHealthValue PhoenixController::getMagnetHealth()
+{
+    return cancoder->GetMagnetHealth().GetValue();
 }
 
 void PhoenixController::InitSendable(wpi::SendableBuilder& builder)
