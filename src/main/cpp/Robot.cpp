@@ -14,7 +14,7 @@
 #define TELE_DOUBTX 0.75f;
 #define TELE_DOUBTY 0.75f;
 
-#define LED_COUNT 65
+#define LED_COUNT 110
 #define SEGMENTS 3
 
 Robot::Robot() : 

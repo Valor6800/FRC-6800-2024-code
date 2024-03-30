@@ -143,8 +143,16 @@ void PhoenixController::setEncoderPosition(double position)
 void PhoenixController::setupFollower(int canID, bool followerInverted)
 {
     followerMotor = new hardware::TalonFX(canID, "baseCAN");
+    configs::TalonFXConfiguration config;
+
+    setNeutralMode(config.MotorOutput, valor::NeutralMode::Coast);
+
+    setConversion(config.Feedback, rotorToSensor, sensorToMech);
+
+    auto _status = followerMotor->GetConfigurator().Apply(config, units::second_t{5});
     followerMotor->SetInverted(followerInverted);
-    followerMotor->SetControl(controls::StrictFollower{motor->GetDeviceID()});
+    followerMotor->SetNeutralMode(signals::NeutralModeValue::Coast);
+    followerMotor->SetControl(controls::StrictFollower{motor->GetDeviceID()}.WithUpdateFreqHz(1000_Hz));
 }
 
 void PhoenixController::setForwardLimit(double forward)
@@ -304,11 +312,9 @@ void PhoenixController::setSpeed(double speed)
 
 void PhoenixController::setPower(double speed)
 {
-    // req_voltage.Output = units::make_unit<units::volt_t>(speed * 12);
-    // auto _status = motor->SetControl(req_voltage);
-    // if (_status.IsError()) status = _status;
-    motor->SetVoltage(units::volt_t{speed});
-    // followerMotor->SetVoltage(units::volt_t{speed});
+    req_voltage.Output = units::make_unit<units::volt_t>(speed * 12);
+    auto _status = motor->SetControl(req_voltage);
+    if (_status.IsError()) status = _status;
 }
 
 void PhoenixController::setProfile(int profile)
@@ -443,5 +449,9 @@ void PhoenixController::InitSendable(wpi::SendableBuilder& builder)
         "Undervolting",
         [this] { return motor->GetFault_Undervoltage().GetValue(); },
         nullptr);
-
+    builder.AddIntegerProperty(
+        "Device ID",
+        [this] { return motor->GetDeviceID(); },
+        nullptr
+        );
 }
