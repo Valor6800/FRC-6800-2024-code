@@ -68,6 +68,21 @@ CANdleSensor::~CANdleSensor()
     delete allSegments.activeAnimation;
 }
 
+void CANdleSensor::setLED(uint led, RGBColor rgb) {
+    candle.SetLEDs(
+        rgb.red,
+        rgb.green,
+        rgb.blue,
+        0,
+        led,
+        1
+    );
+}
+
+void CANdleSensor::setLED(uint led, int color) {
+    setLED(led, toRGB(color));
+}
+
 void CANdleSensor::setColor(int segment, RGBColor rgb)
 {
     segment++;
@@ -149,6 +164,7 @@ void CANdleSensor::setAnimation(CANdleSensor::SegmentSettings *segment, Animatio
             false,
             segment->startLed
         );
+
     } else if (animation == AnimationType::RgbFade){
         segment->activeAnimation = new ctre::phoenix::led::RgbFadeAnimation(
             brightness,

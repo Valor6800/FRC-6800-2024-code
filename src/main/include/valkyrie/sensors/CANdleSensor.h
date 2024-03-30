@@ -107,6 +107,8 @@ public:
      */
     ~CANdleSensor();
 
+    void setLED(uint led, RGBColor rgb);
+    void setLED(uint led, int color);
     /**
      * @brief Set the color of the CANdle LEDs and attached LEDs
      * 
