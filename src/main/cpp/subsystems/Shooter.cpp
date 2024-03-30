@@ -268,6 +268,7 @@ void Shooter::init()
     // pivotMotors->setPositionUpdateFrequency(1000_Hz);
     // pivotMotors->setSpeedUpdateFrequency(1000_Hz);
     pivotMotors->enableFOC(true);
+    pivotMotors->setPositionUpdateFrequency(250_Hz);
 
     table->PutNumber("Pivot Setpoint", AMP_ANG.to<double>());
     table->PutNumber("Pivot Power Setpoint", 0);
