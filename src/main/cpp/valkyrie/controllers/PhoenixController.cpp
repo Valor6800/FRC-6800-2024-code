@@ -5,7 +5,7 @@
 #define FALCON_PIDF_KP 10.0f
 #define FALCON_PIDF_KI 0.0f
 #define FALCON_PIDF_KD 0.0f
-#define FALCON_PIDF_KS 0.19f
+#define FALCON_PIDF_KS 0.0f
 
 #define FALCON_PIDF_KV 6.0f // RPS cruise velocity
 #define FALCON_PIDF_KA 130.0f // RPS/S acceleration (6.5/130 = 0.05 seconds to max speed)
@@ -101,11 +101,11 @@ void PhoenixController::init(double _rotorToSensor, double _sensorToMech, valor:
     wpi::SendableRegistry::AddLW(this, "PhoenixController", "ID " + std::to_string(motor->GetDeviceID()));
 }
 
-void PhoenixController::setupCANCoder(int deviceId, double offset, bool clockwise, std::string canbus)
+void PhoenixController::setupCANCoder(int deviceId, double offset, bool clockwise, std::string canbus, ctre::phoenix6::signals::AbsoluteSensorRangeValue absoluteRange)
 {
     cancoder = new ctre::phoenix6::hardware::CANcoder(deviceId, canbus);
     ctre::phoenix6::configs::MagnetSensorConfigs config;
-    config.AbsoluteSensorRange = ctre::phoenix6::signals::AbsoluteSensorRangeValue::Unsigned_0To1;
+    config.AbsoluteSensorRange = absoluteRange;
     config.SensorDirection = clockwise ? signals::SensorDirectionValue::Clockwise_Positive :
                                          signals::SensorDirectionValue::CounterClockwise_Positive;
     config.MagnetOffset = -offset;
@@ -143,16 +143,16 @@ void PhoenixController::setEncoderPosition(double position)
 void PhoenixController::setupFollower(int canID, bool followerInverted)
 {
     followerMotor = new hardware::TalonFX(canID, "baseCAN");
-    configs::TalonFXConfiguration config;
-
-    setNeutralMode(config.MotorOutput, valor::NeutralMode::Coast);
-
-    setConversion(config.Feedback, rotorToSensor, sensorToMech);
-
-    auto _status = followerMotor->GetConfigurator().Apply(config, units::second_t{5});
+    // configs::TalonFXConfiguration config;
+    //
+    // setNeutralMode(config.MotorOutput, valor::NeutralMode::Coast);
+    //
+    // setConversion(config.Feedback, rotorToSensor, sensorToMech);
+    //
+    // auto _status = followerMotor->GetConfigurator().Apply(config, units::second_t{5});
     followerMotor->SetInverted(followerInverted);
     followerMotor->SetNeutralMode(signals::NeutralModeValue::Coast);
-    followerMotor->SetControl(controls::StrictFollower{motor->GetDeviceID()}.WithUpdateFreqHz(1000_Hz));
+    followerMotor->SetControl(controls::StrictFollower{motor->GetDeviceID()});
 }
 
 void PhoenixController::setForwardLimit(double forward)
@@ -312,9 +312,10 @@ void PhoenixController::setSpeed(double speed)
 
 void PhoenixController::setPower(double speed)
 {
-    req_voltage.Output = units::make_unit<units::volt_t>(speed * 12);
-    auto _status = motor->SetControl(req_voltage);
-    if (_status.IsError()) status = _status;
+    // req_voltage.Output = units::make_unit<units::volt_t>(speed * 12);
+    // auto _status = motor->SetControl(req_voltage);
+    // if (_status.IsError()) status = _status;
+    motor->SetVoltage(units::volt_t{speed});
 }
 
 void PhoenixController::setProfile(int profile)

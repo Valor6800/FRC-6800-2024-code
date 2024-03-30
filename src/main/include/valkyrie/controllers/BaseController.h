@@ -8,6 +8,10 @@
 #include <wpi/sendable/Sendable.h>
 #include <wpi/sendable/SendableBuilder.h>
 #include <wpi/sendable/SendableHelper.h>
+#include <ctre/phoenix6/TalonFX.hpp>
+#include <string>
+#include <ctre/phoenix6/CANcoder.hpp>
+#include <ctre/phoenix6/CANBus.hpp>
 
 namespace valor {
 
@@ -291,7 +295,7 @@ public:
 
     virtual double getAbsEncoderPosition() = 0;
 
-    virtual void setupCANCoder(int deviceId, double offset, bool clockwise = false, std::string canbus = "") = 0;
+    virtual void setupCANCoder(int deviceId, double offset, bool clockwise = false, std::string canbus = "", ctre::phoenix6::signals::AbsoluteSensorRangeValue absoluteRange=ctre::phoenix6::signals::AbsoluteSensorRangeValue::Unsigned_0To1) = 0;
     virtual double getCANCoder() = 0;
 
 protected:

@@ -12,15 +12,15 @@
 
 #include <frc/DriverStation.h>
 
-#define PIVOT_ROTATE_K_VEL 50.0f // 216.24f
-#define PIVOT_ROTATE_K_ACC 500.0f// 3720.0f
-#define PIVOT_ROTATE_K_P 0.0f //1.25f
+#define PIVOT_ROTATE_K_VEL 216.24f
+#define PIVOT_ROTATE_K_ACC 3720.0f
+#define PIVOT_ROTATE_K_P 0.25f //1.25f
 #define PIVOT_ROTATE_K_ERROR 0.0f
-#define PIVOT_ROTATE_K_AFF 0.42f
-#define PIVOT_ROTATE_K_JERK 0.0f // 9999.9f
+#define PIVOT_ROTATE_K_AFF 0.40f
+#define PIVOT_ROTATE_K_JERK 9999.9f
 
 #define PIVOT_CANCODER_GEAR_RATIO 1.0f
-#define PIVOT_MAGNET_OFFSET 0.371277
+#define PIVOT_MAGNET_OFFSET -0.628723f
 #define PIVOT_GEAR_RATIO 160.9321f 
 #define PIVOT_REVERSE_LIMIT 90.00f // 
 #define PIVOT_FORWARD_LIMIT -72.0f // 17.6
@@ -263,10 +263,11 @@ void Shooter::init()
         "baseCAN"
     );
     pivotMotors->setupFollower(CANIDs::PIVOT_FOLLOW, false);
-    pivotMotors->setupCANCoder(CANIDs::SHOOTER_CANCODER, PIVOT_MAGNET_OFFSET, false, "baseCAN");
+    pivotMotors->setupCANCoder(CANIDs::SHOOTER_CANCODER, PIVOT_MAGNET_OFFSET, false, "baseCAN", ctre::phoenix6::signals::AbsoluteSensorRangeValue::Signed_PlusMinusHalf);
     pivotMotors->setRange(0, PIVOT_FORWARD_LIMIT, PIVOT_REVERSE_LIMIT);
-    pivotMotors->setPositionUpdateFrequency(1000_Hz);
-    pivotMotors->setSpeedUpdateFrequency(1000_Hz);
+    // pivotMotors->setPositionUpdateFrequency(1000_Hz);
+    // pivotMotors->setSpeedUpdateFrequency(1000_Hz);
+    pivotMotors->enableFOC(true);
 
     table->PutNumber("Pivot Setpoint", AMP_ANG.to<double>());
     table->PutNumber("Pivot Power Setpoint", 0);

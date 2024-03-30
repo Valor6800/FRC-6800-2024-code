@@ -76,7 +76,7 @@ void NeoController::setPIDF(valor::PIDF pidf, int slot)
     pidController.SetSmartMotionAllowedClosedLoopError(pidf.error, slot);
 }
 
-void NeoController::setupCANCoder(int deviceId, double offset, bool clockwise, std::string canbus)
+void NeoController::setupCANCoder(int deviceId, double offset, bool clockwise, std::string canbus, ctre::phoenix6::signals::AbsoluteSensorRangeValue absoluteRange)
 {
 }
 

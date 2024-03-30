@@ -54,7 +54,7 @@ public:
 
     void setProfile(int slot);
     double getAbsEncoderPosition();
-    void setupCANCoder(int deviceId, double offset, bool clockwise, std::string canbus = "") override;
+    void setupCANCoder(int deviceId, double offset, bool clockwise, std::string canbus = "", ctre::phoenix6::signals::AbsoluteSensorRangeValue absoluteRange=ctre::phoenix6::signals::AbsoluteSensorRangeValue::Unsigned_0To1) override;
     double getCANCoder() override;
     
     float getRevBusUtil();
