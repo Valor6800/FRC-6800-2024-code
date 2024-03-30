@@ -209,9 +209,13 @@ void Feeder::analyzeDashboard()
     if (!feederBeamBreak->GetInWindow() || !feederBeamBreak2->GetInWindow()) {
         driverGamepad->setRumble(true);
         leds->setColor(0, valor::CANdleSensor::LIGHT_BLUE);
+        leds->setColor(3, valor::CANdleSensor::LIGHT_BLUE);
+        leds->setColor(6, valor::CANdleSensor::LIGHT_BLUE);
     } else {
         driverGamepad->setRumble(false);
         leds->setColor(0, valor::CANdleSensor::RED);
+        leds->setColor(3, valor::CANdleSensor::RED);
+        leds->setColor(6, valor::CANdleSensor::RED);
     }
     if (state.unjam && (frc::Timer::GetFPGATimestamp() - state.unjamStart) > 0.06_s) {
         state.unjam = false;

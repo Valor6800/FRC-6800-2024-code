@@ -14,8 +14,8 @@
 #define TELE_DOUBTX 0.75f;
 #define TELE_DOUBTY 0.75f;
 
-#define LED_COUNT 65
-#define SEGMENTS 3
+#define LED_COUNT 155
+#define SEGMENTS 9
 
 Robot::Robot() : 
     leds(this, LED_COUNT, SEGMENTS, CANIDs::CANDLE, ""),

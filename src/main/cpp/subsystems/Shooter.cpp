@@ -346,12 +346,16 @@ void Shooter::analyzeDashboard()
     table->PutNumber("On other side", state.otherSide);
     calculatePivotAngle();
 
-
     if(leftFlywheelMotor.getSpeed() > 53){
         leds->setColor(2, valor::CANdleSensor::LIGHT_BLUE);
+        leds->setColor(5, valor::CANdleSensor::LIGHT_BLUE);
+        leds->setColor(8, valor::CANdleSensor::LIGHT_BLUE);
 
     }else{
         leds->setColor(2, valor::CANdleSensor::RED);
+        leds->setColor(5, valor::CANdleSensor::RED);
+        leds->setColor(8, valor::CANdleSensor::RED);
+        
     }
 
 }
