@@ -33,8 +33,7 @@ public:
     void analyzeDashboard();
     void assignOutputs();
 
-    frc2::SequentialCommandGroup UpClimb();
-    frc2::SequentialCommandGroup DownClimb();
+    bool inPosition();
 
     void InitSendable(wpi::SendableBuilder& builder);
 
@@ -56,6 +55,7 @@ public:
     {
         CLIMB_STATE climbState;
         LATCH_STATE latchState;
+        double targetPos;
 
     }state;
 
@@ -63,7 +63,5 @@ public:
 private:
     valor::PhoenixController climbMotors;
     frc::PWM *servo;
-    frc2::CommandPtr climbUp = frc2::cmd::Sequence();
-    frc2::CommandPtr climbDown = frc2::cmd::Sequence();
     Drivetrain *drive;
 };

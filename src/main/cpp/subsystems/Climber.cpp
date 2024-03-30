@@ -40,53 +40,40 @@ Climber::~Climber()
 
 }
 
+void Climber::resetState()
+{
+    state.climbState = DISABLE;
+    state.latchState = LATCH;
+    state.targetPos = 1.6;
+}
+
 void Climber::init()
 {
     climbMotors.setupFollower(CANIDs::CLIMBER_FOLLOW, true);
     climbMotors.setForwardLimit(FORWARD_LIMIT);
     climbMotors.setReverseLimit(REVERSE_LIMIT);
 
-    climbUp = std::move(UpClimb().ToPtr());
-    climbDown = std::move(DownClimb().ToPtr());
-
     servo = new frc::PWM(9, true);
     servo->SetBounds(2000_us, 3_us, 1000_us, 3_us, 500_us);
 
     state.climbState = DISABLE;
     state.latchState = LATCH;
-}
+    state.targetPos = 1.6;
 
-void Climber::resetState()
-{
-
+    resetState();
 }
 
 void Climber::assessInputs()
 {
     if (driverGamepad == nullptr || !driverGamepad->IsConnected()) return;
-    if (operatorGamepad == nullptr || !operatorGamepad->IsConnected()) return;
 
-    if (driverGamepad->DPadDown()) {
-        if (climbDown.IsScheduled()){
-            climbDown.Cancel();
-        } else if (!climbDown.IsScheduled()){
-            climbDown.Schedule();
-        }
+    if (driverGamepad->DPadUp()) {
+        state.climbState = EXTEND;
+    } else if (driverGamepad->DPadDown()){
+        state.climbState = RETRACT;
     }
-    if (driverGamepad->DPadUp()){
-        if (climbUp.IsScheduled()){
-        climbUp.Cancel();
-        } else if(!climbUp.IsScheduled()){
-        climbUp.Schedule();
-        }
-    }
-    if (operatorGamepad->rightStickYActive() || operatorGamepad->DPadUp() || operatorGamepad->DPadDown()){
-        if (climbUp.IsScheduled()){
-            climbUp.Cancel();
-        } else if (climbDown.IsScheduled()){
-            climbDown.Cancel();
-        }
-    }
+
+    if (operatorGamepad == nullptr || !operatorGamepad->IsConnected()) return;
 
     if (operatorGamepad->DPadUp()){
         state.latchState = UNLATCH;
@@ -100,7 +87,11 @@ void Climber::assessInputs()
 
 void Climber::analyzeDashboard()
 {
-
+    if (state.climbState == EXTEND || state.latchState == UNLATCH){
+        state.targetPos = UNLATCH_POS;
+    } else if (state.climbState == RETRACT || state.latchState == LATCH){
+        state.targetPos = LATCH_POS;
+    }
 }
 
 void Climber::assignOutputs()
@@ -108,12 +99,12 @@ void Climber::assignOutputs()
     if (!drive->state.pitMode){
         if (state.climbState == EXTEND){
             servo->SetPulseTime(LATCH_PULSE_TIME); //unlatch
-                if (servo->GetPosition() == LATCH_POS){
+                if (inPosition()){
                     climbMotors.setPosition(EXTENDED_POS);
                 }
         } else if(state.climbState == RETRACT){
             servo->SetPulseTime(UNLATCH_PULSE_TIME); //re-latch
-                if (servo->GetPosition() == UNLATCH_POS){
+                if (inPosition()){
                     climbMotors.setPosition(RETRACTED_POS);
                 }
         } else if(state.climbState == DISABLE){
@@ -121,39 +112,23 @@ void Climber::assignOutputs()
         } else {
             climbMotors.setPosition(RESTING_POS);
         }
+    }
 
-        if (state.latchState == UNLATCH){
-            servo->SetPulseTime(UNLATCH_PULSE_TIME);
-        } else if(state.latchState == LATCH){
-            servo->SetPulseTime(LATCH_PULSE_TIME);
-        }
+    // TODO: Set position with state.targetPos when valor::Servo gets implemented
+    if (state.latchState == UNLATCH){
+        servo->SetPulseTime(UNLATCH_PULSE_TIME);
+    } else if(state.latchState == LATCH){
+        servo->SetPulseTime(LATCH_PULSE_TIME);
+    }
 
-        if (state.climbState == MANUAL && (servo->GetPosition() == LATCH_POS || servo->GetPosition() == UNLATCH_POS)){
-            climbMotors.setPosition(MAX_CLIMB_SPEED * operatorGamepad->rightStickY(2));
-        }
+    if (state.climbState == MANUAL && inPosition()){
+        climbMotors.setPosition(MAX_CLIMB_SPEED * operatorGamepad->rightStickY(2));
     }
 }
 
-frc2::SequentialCommandGroup Climber::UpClimb()
+bool Climber::inPosition()
 {
-    return frc2::SequentialCommandGroup(
-            frc2::InstantCommand(
-                [this]() {
-                    state.climbState = EXTEND;
-                }
-            )
-    );
-}
-
-frc2::SequentialCommandGroup Climber::DownClimb()
-{
-    return frc2::SequentialCommandGroup(
-            frc2::InstantCommand(
-                [this]() {
-                    state.climbState = RETRACT;
-                }
-            )
-    );
+    return fabs(servo->GetPosition() - state.targetPos) <= 0.05;
 }
 
 void Climber::InitSendable(wpi::SendableBuilder& builder)
