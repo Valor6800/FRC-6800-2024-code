@@ -20,7 +20,12 @@
 #define RETRACTED_POS 0.0f
 #define RESTING_POS 0.0f
 
-#define MAX_CLIMB_SPEED 0.0f
+#define CLIMB_MAX_SPEED 0.0f
+#define CLIMB_MAX_ACCEL 0.0f
+#define CLIMB_K_P 0.0f
+#define CLIMB_K_ERROR 0.00f
+#define CLIMB_K_AFF 0.00f
+#define CONVERSION 14.72f
 
 #define UNLATCH_PULSE_TIME 2.5_ms
 #define LATCH_PULSE_TIME 1.6_ms
@@ -29,7 +34,7 @@
 #define UNLATCH_POS 1.0f
 
 Climber::Climber(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Climber"),
-    climbMotors(CANIDs::CLIMBER_LEAD, valor::NeutralMode::Brake, true)
+    climbMotors(nullptr)
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -49,16 +54,31 @@ void Climber::resetState()
 
 void Climber::init()
 {
-    climbMotors.setupFollower(CANIDs::CLIMBER_FOLLOW, true);
-    climbMotors.setForwardLimit(FORWARD_LIMIT);
-    climbMotors.setReverseLimit(REVERSE_LIMIT);
+    valor::PIDF climbPID;
+    climbPID.maxVelocity = CLIMB_MAX_SPEED;
+    climbPID.maxAcceleration = CLIMB_MAX_ACCEL;
+    climbPID.P = CLIMB_K_P;
+    climbPID.error = CLIMB_K_ERROR;
+    climbPID.aFF = CLIMB_K_AFF;
+
+    climbPID.aFFType = valor::FeedForwardType::LINEAR;
+
+    climbMotors = new valor::PhoenixController(
+        CANIDs::CLIMBER_LEAD,
+        valor::NeutralMode::Brake,
+        false,
+        "baseCAN"
+    );
+    climbMotors->setupFollower(CANIDs::CLIMBER_FOLLOW, false);
+    climbMotors->setForwardLimit(FORWARD_LIMIT);
+    climbMotors->setReverseLimit(REVERSE_LIMIT);
 
     servo = new frc::PWM(9, true);
     servo->SetBounds(2000_us, 3_us, 1000_us, 3_us, 500_us);
 
     state.climbState = DISABLE;
     state.latchState = LATCH;
-    state.targetPos = 1.6;
+    state.targetPos = 0.55;
 
     resetState();
 }
@@ -100,17 +120,17 @@ void Climber::assignOutputs()
         if (state.climbState == EXTEND){
             servo->SetPulseTime(LATCH_PULSE_TIME); //unlatch
                 if (inPosition()){
-                    climbMotors.setPosition(EXTENDED_POS);
+                    climbMotors->setPosition(EXTENDED_POS);
                 }
         } else if(state.climbState == RETRACT){
             servo->SetPulseTime(UNLATCH_PULSE_TIME); //re-latch
                 if (inPosition()){
-                    climbMotors.setPosition(RETRACTED_POS);
+                    climbMotors->setPosition(RETRACTED_POS);
                 }
         } else if(state.climbState == DISABLE){
-            climbMotors.setPosition(RESTING_POS);
+            climbMotors->setPosition(RESTING_POS);
         } else {
-            climbMotors.setPosition(RESTING_POS);
+            climbMotors->setPosition(RESTING_POS);
         }
     }
 
@@ -122,7 +142,7 @@ void Climber::assignOutputs()
     }
 
     if (state.climbState == MANUAL && inPosition()){
-        climbMotors.setPosition(MAX_CLIMB_SPEED * operatorGamepad->rightStickY(2));
+        climbMotors->setPower(operatorGamepad->rightStickY(2));
     }
 }
 

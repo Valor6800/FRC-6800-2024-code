@@ -33,6 +33,7 @@ public:
     void analyzeDashboard();
     void assignOutputs();
 
+    void setClimbPID();
     bool inPosition();
 
     void InitSendable(wpi::SendableBuilder& builder);
@@ -61,7 +62,7 @@ public:
 
 
 private:
-    valor::PhoenixController climbMotors;
+    valor::PhoenixController *climbMotors;
     frc::PWM *servo;
     Drivetrain *drive;
 };
