@@ -29,8 +29,8 @@
 #define FLYWHEEL_ROTATE_K_ACC 75.0f
 #define FLYWHEEL_ROTATE_K_P 0.00005f
 
-#define AMP_ANG 45.0_deg
-#define SUBWOOFER_ANG -34.0_deg
+#define AMP_ANG 57.0_deg
+#define SUBWOOFER_ANG -30.0_deg
 #define INTAKE_ANG -68.0_deg
 #define PREAMP_ANG -12.5_deg // TODO: kill
 #define PODIUM_ANG -53.0_deg
@@ -41,7 +41,7 @@
 #define AUTO_FAR_HIGH_ANG -62.25_deg
 #define AUTO_SUBWOOFER_ANG -32.0_deg
 
-#define AMP_POWER 10.0f // rps
+#define AMP_POWER 0.0f // rps
 #define LEFT_SHOOT_POWER 60.0f // rps
 #define RIGHT_SHOOT_POWER 30.0f // rps
 #define LEFT_BLOOP_POWER 32.0f
@@ -232,9 +232,9 @@ void Shooter::init()
     pivotPID.error = PIVOT_ROTATE_K_ERROR;
     pivotPID.aFF = PIVOT_ROTATE_K_AFF;
     pivotPID.maxJerk = PIVOT_ROTATE_K_JERK;
-
-    pivotPID.aFF = PIVOT_ROTATE_K_AFF;
     pivotPID.aFFType = valor::FeedForwardType::CIRCULAR;
+    pivotPID.maxJerk = PIVOT_ROTATE_K_JERK;
+    pivotPID.S = 0;
 
     valor::PIDF flywheelPID;
     flywheelPID.maxVelocity = FLYWHEEL_ROTATE_K_VEL;
@@ -349,10 +349,10 @@ void Shooter::analyzeDashboard()
 
 
     if(leftFlywheelMotor.getSpeed() > 53){
-        leds->setColor(2, valor::CANdleSensor::LIGHT_BLUE);
+        leds->setColor(1, valor::CANdleSensor::LIGHT_BLUE);
 
     }else{
-        leds->setColor(2, valor::CANdleSensor::RED);
+        leds->setColor(1, valor::CANdleSensor::RED);
     }
 
     int color = 0x000000;
@@ -439,17 +439,29 @@ void Shooter::calculatePivotAngle(){
     double A = -0.433; // 0;
     double B = 6.42; // 2.23;
     double C = -33.5; // -21.3;
-    double D = 89.4; // 78.5;
+    double D = 91.4; // 78.5;
     double bestPivot = D + (C * distance) + (B * pow(distance, 2)) + (A * pow(distance, 3));
     state.calculatingPivotingAngle = units::degree_t(bestPivot) - 90.0_deg;
 }
 
 void Shooter::setFlyweelSpeeds(double leftPower, double rightPower)
 {
-    leftFlywheelMotor.setSpeed(leftPower);
-    leftFlywheelMotor2.setSpeed(leftPower);
-    rightFlywheelMotor.setSpeed(rightPower);
-    rightFlywheelMotor2.setSpeed(rightPower);
+    if (leftPower == 0.0) {
+
+        leftFlywheelMotor.setPower(0);
+        leftFlywheelMotor2.setPower(0);
+    } else {
+        leftFlywheelMotor.setSpeed(leftPower);
+        leftFlywheelMotor2.setSpeed(leftPower);
+    }
+    if (rightPower == 0.0) {
+        rightFlywheelMotor.setPower(0);
+        rightFlywheelMotor2.setPower(0);
+    } else {
+        rightFlywheelMotor.setSpeed(rightPower);
+        rightFlywheelMotor2.setSpeed(rightPower);
+    }
+
 }
 
 void Shooter::InitSendable(wpi::SendableBuilder& builder){

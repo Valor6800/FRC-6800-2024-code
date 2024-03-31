@@ -15,33 +15,31 @@
 #define TELE_DOUBTY 0.75f;
 
 #define LED_COUNT 110
-#define SEGMENTS 3
+#define SEGMENTS 2
 
 Robot::Robot() : 
     leds(this, LED_COUNT, SEGMENTS, CANIDs::CANDLE, ""),
     drivetrain(this, &leds),
     valorAuto(),
     feederBeamBreak(AnalogPorts::FEEDER_BEAM_BREAK_PORT),
-    feederBeamBreak2(AnalogPorts::FEEDER_BEAM_BREAK2_PORT),
-    intakeBeamBreak(AnalogPorts::INTAKE_BEAM_BREAK_PORT),
-    shooter(this, &drivetrain, &feederBeamBreak, &feederBeamBreak2, &leds),
-    feeder(this, &feederBeamBreak, &intakeBeamBreak, &feederBeamBreak2, &leds)
+    stageBeamBreak(AnalogPorts::STAGE_BEAM_BREAK_PORT),  
+    shooter(this, &drivetrain, &feederBeamBreak, &stageBeamBreak, &leds),
+    feeder(this, &feederBeamBreak, &stageBeamBreak, &leds)
 {
     frc::TimedRobot();
     feederBeamBreak.SetLimitsVoltage(4, 14);
-    feederBeamBreak2.SetLimitsVoltage(4, 14);
-    intakeBeamBreak.SetLimitsVoltage(4, 14);
+    stageBeamBreak.SetLimitsVoltage(4, 14);
 
-    pathplanner::NamedCommands::registerCommand("Reschedule", std::move(
-        frc2::InstantCommand([this](){
-            autoCommand.Cancel();
-            if (feeder.state.beamTrip)
-                autoCommand = valorAuto.getAuto("3-3");
-            else
-                autoCommand = valorAuto.getAuto("3-4");
-            autoCommand.Schedule();
-        })
-    ).ToPtr());
+    // pathplanner::NamedCommands::registerCommand("Reschedule", std::move(
+    //     frc2::InstantCommand([this](){
+    //         autoCommand.Cancel();
+    //         if (feeder.state.beamTrip)
+    //             autoCommand = valorAuto.getAuto("3-3");
+    //         else
+    //             autoCommand = valorAuto.getAuto("3-4");
+    //         autoCommand.Schedule();
+    //     })
+    // ).ToPtr());
 }
 
 void Robot::RobotInit() {

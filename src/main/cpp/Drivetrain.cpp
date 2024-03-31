@@ -67,7 +67,7 @@ using namespace pathplanner;
 
 #define VISION_ACCEPTANCE 3.5_m // meters
 
-#define BLUE_AMP_ROT_ANGLE 90.0_deg
+#define BLUE_AMP_ROT_ANGLE -90.0_deg
 #define BLUE_SOURCE_ROT_ANGLE -30_deg
 #define RED_SOURCE_ROT_ANGLE -150_deg
 #define BLUE_LOCK_ANGLE 0_deg
@@ -518,17 +518,17 @@ frc::Pose2d Drivetrain::getPoseFromSpeaker() {
     table->PutNumber("translation norm", tagSensor->getPoseFromAprilTag().Translation().Norm().to<double>());
     if (tagSensor->getPoseFromAprilTag().Translation().Norm() < 4.7_m) {
         if (frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue && (tagSensor->getTagID() == 7 || tagSensor->getTagID() == 8)) {
-            leds->setColor(1, valor::CANdleSensor::LIGHT_BLUE);
+            leds->setColor(0, valor::CANdleSensor::LIGHT_BLUE);
             table->PutBoolean("good to shoot", true);
             return tagSensor->getSensor().ToPose2d();
         } else if (frc::DriverStation::GetAlliance() == frc::DriverStation::kRed && (tagSensor->getTagID() == 4 || tagSensor->getTagID() == 3)) {
-            leds->setColor(1, valor::CANdleSensor::LIGHT_BLUE);
+            leds->setColor(0, valor::CANdleSensor::LIGHT_BLUE);
             table->PutBoolean("good to shoot", true);
             return tagSensor->getSensor().ToPose2d();
         }
         table->PutBoolean("good to shoot", false);
     }
-    leds->setColor(1, valor::CANdleSensor::RED);
+    leds->setColor(0, valor::CANdleSensor::RED);
     return calculatedEstimator->GetEstimatedPosition();
 }
 

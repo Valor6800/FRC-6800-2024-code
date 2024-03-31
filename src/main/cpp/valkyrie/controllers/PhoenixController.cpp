@@ -5,7 +5,6 @@
 #define FALCON_PIDF_KP 10.0f
 #define FALCON_PIDF_KI 0.0f
 #define FALCON_PIDF_KD 0.0f
-#define FALCON_PIDF_KS 0.0f
 
 #define FALCON_PIDF_KV 6.0f // RPS cruise velocity
 #define FALCON_PIDF_KA 130.0f // RPS/S acceleration (6.5/130 = 0.05 seconds to max speed)
@@ -198,7 +197,7 @@ void PhoenixController::setPIDF(configs::Slot0Configs & slotConfig, configs::Mot
     slotConfig.kI = pidf.I;
     slotConfig.kD = pidf.D;
     slotConfig.kV = voltageCompenstation / (maxMotorSpeed / 60.0 / (rotorToSensor * sensorToMech));
-    slotConfig.kS = FALCON_PIDF_KS;
+    slotConfig.kS = pidf.S;
 
     // Feedforward gain configuration
     if (pidf.aFF != 0) {
@@ -312,10 +311,9 @@ void PhoenixController::setSpeed(double speed)
 
 void PhoenixController::setPower(double speed)
 {
-    // req_voltage.Output = units::make_unit<units::volt_t>(speed * 12);
-    // auto _status = motor->SetControl(req_voltage);
-    // if (_status.IsError()) status = _status;
-    motor->SetVoltage(units::volt_t{speed});
+    req_voltage.Output = units::make_unit<units::volt_t>(speed * 12);
+    auto _status = motor->SetControl(req_voltage);
+    if (_status.IsError()) status = _status;
 }
 
 void PhoenixController::setProfile(int profile)

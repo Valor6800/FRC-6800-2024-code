@@ -13,7 +13,7 @@ class Feeder : public valor::BaseSubsystem
 {
 public:
 
-    Feeder(frc::TimedRobot *, frc::AnalogTrigger*, frc::AnalogTrigger*, frc::AnalogTrigger*, valor::CANdleSensor*);
+    Feeder(frc::TimedRobot *, frc::AnalogTrigger*, frc::AnalogTrigger*, valor::CANdleSensor*);
 
     void resetState();
     void init();
@@ -37,10 +37,8 @@ public:
     {
         ROLLER_STATE feederState;
         ROLLER_STATE intakeState;
-        bool beamTrip;
-        bool bothFeederBeamBreakTripped;
-        bool unjam;
-        units::second_t unjamStart;
+        bool stageTrip;
+        bool feedTrip;
         double tuningPower;
     } state;
 
@@ -50,9 +48,8 @@ private:
     valor::NeoController feederMotor;
     frc::AnalogTrigger* feederBeamBreak;
     valor::DebounceSensor feederDebounceSensor;
-    frc::AnalogTrigger* feederBeamBreak2;    
-    frc::AnalogTrigger* intakeBeamBreak;
-    valor::DebounceSensor intakeDebounceSensor;
+    frc::AnalogTrigger* stageBeamBreak;    
+    valor::DebounceSensor stageDebounceSensor;
 
     valor::CANdleSensor *leds;
 };

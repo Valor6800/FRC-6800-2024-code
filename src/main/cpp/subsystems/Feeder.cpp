@@ -17,23 +17,22 @@
 #define INTAKE_FORWARD_POWER 1.0f
 #define INTAKE_REVERSE_POWER -1.0f
 
-#define FEEDER_FORWARD_POWER 0.35f
-#define FEEDER_INTAKE_POWER 0.2f
+#define FEEDER_FORWARD_POWER 0.2f
+#define FEEDER_INTAKE_POWER 0.15f
 #define FEEDER_REVERSE_POWER -0.5f
 #define FEEDER_UNJAM_POWER -0.2f
 
 #define USE_UNJAM true
 
-Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _feederBeamBreak, frc::AnalogTrigger* _intakeBeamBreak, frc::AnalogTrigger* _feederBeamBreak2, valor::CANdleSensor* _leds) :
+Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _feederBeamBreak, frc::AnalogTrigger* _feederBeamBreak2, valor::CANdleSensor* _leds) :
     valor::BaseSubsystem(_robot, "Feeder"),
     intakeMotor(CANIDs::INTERNAL_INTAKE, valor::NeutralMode::Coast, true),
     intakeBackMotor(CANIDs::INTERNAL_INTAKE_V2, valor::NeutralMode::Coast, true),
     feederMotor(CANIDs::FEEDER, valor::NeutralMode::Brake, true),
     feederBeamBreak(_feederBeamBreak),
     feederDebounceSensor(_robot, "FeederBanner"),
-    feederBeamBreak2(_feederBeamBreak2),
-    intakeBeamBreak(_intakeBeamBreak),
-    intakeDebounceSensor(_robot, "IntakeBanner"),
+    stageBeamBreak(_feederBeamBreak2),
+    stageDebounceSensor(_robot, "StageBanner"),
     leds(_leds)
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
@@ -134,7 +133,6 @@ void Feeder::resetState()
 {
     state.intakeState = STAGNANT;
     state.feederState = STAGNANT;
-    state.unjam = false;
 }
 
 void Feeder::init()
@@ -149,27 +147,31 @@ void Feeder::init()
 
     feederMotor.setVoltageCompensation(10);
 
-    feederDebounceSensor.setGetter([this] { return (!feederBeamBreak->GetInWindow() || !feederBeamBreak2->GetInWindow()); });
+    feederDebounceSensor.setGetter([this] { return (!feederBeamBreak->GetInWindow()); });
     feederDebounceSensor.setRisingEdgeCallback([this] {
-        state.beamTrip = true;
-        feederMotor.setPower(FEEDER_INTAKE_POWER);
+        state.feedTrip = true;
+        feederMotor.setPower(0);
         intakeMotor.setPower(0);
         intakeBackMotor.setPower(0);
         driverGamepad->setRumble(true);
         // leds->setAnimation(0, valor::CANdleSensor::AnimationType::Rainbow, valor::CANdleSensor::RGBColor(255,0,0));
     });
-    feederDebounceSensor.setFallingEdgeCallback([this] {
-        // leds->clearAnimation(0);
+    stageDebounceSensor.setGetter([this] { return (!stageBeamBreak->GetInWindow()); });
+    stageDebounceSensor.setRisingEdgeCallback([this] {
+        state.stageTrip = true;
+        feederMotor.setPower(FEEDER_INTAKE_POWER);
+        intakeMotor.setPower(INTAKE_FORWARD_POWER * .5);
+        intakeBackMotor.setPower(INTAKE_FORWARD_POWER * .5);
     });
 
-    intakeDebounceSensor.setGetter([this] { return !intakeBeamBreak->GetInWindow(); });
-    intakeDebounceSensor.setRisingEdgeCallback([this] {
-        driverGamepad->setRumble(true);
-        if (true) {
-            intakeMotor.setPower(INTAKE_FORWARD_POWER * .75);
-            intakeBackMotor.setPower(INTAKE_REVERSE_POWER * .75);
-        }
-    });
+    // intakeDebounceSensor.setGetter([this] { return !intakeBeamBreak->GetInWindow(); });
+    // intakeDebounceSensor.setRisingEdgeCallback([this] {
+    //     driverGamepad->setRumble(true);
+    //     if (true) {
+    //         intakeMotor.setPower(INTAKE_FORWARD_POWER * .75);
+    //         intakeBackMotor.setPower(INTAKE_REVERSE_POWER * .75);
+    //     }
+    // });
 
     table->PutNumber("Intake tuning speed", INTAKE_FORWARD_POWER);
 }
@@ -180,7 +182,10 @@ void Feeder::assessInputs()
         return;
     if (driverGamepad->rightTriggerActive()) {
         state.intakeState = ROLLER_STATE::SHOOT;
-        state.feederState = ROLLER_STATE::SHOOT;
+        if (driverGamepad->GetBButton())
+            state.feederState = ROLLER_STATE::OUTTAKE;
+        else
+            state.feederState = ROLLER_STATE::SHOOT;
     } else if (driverGamepad->GetRightBumper()) {
         state.intakeState = ROLLER_STATE::INTAKE;
         state.feederState = ROLLER_STATE::INTAKE;
@@ -200,19 +205,18 @@ void Feeder::analyzeDashboard()
         state.intakeState = ROLLER_STATE::TUNING;
     }
     
-    state.bothFeederBeamBreakTripped = !feederBeamBreak->GetInWindow() && !feederBeamBreak2->GetInWindow();
 
     if (state.feederState == ROLLER_STATE::SHOOT || state.feederState == ROLLER_STATE::OUTTAKE) {
-        state.beamTrip = false;
-        state.bothFeederBeamBreakTripped = false;
+        state.stageTrip = false;
+        state.feedTrip = false;
         driverGamepad->setRumble(false);
     }
-    if (!feederBeamBreak->GetInWindow() || !feederBeamBreak2->GetInWindow()) {
+    if (!feederBeamBreak->GetInWindow()) {
         driverGamepad->setRumble(true);
-        leds->setColor(0, valor::CANdleSensor::LIGHT_BLUE);
+        // leds->setColor(0, valor::CANdleSensor::LIGHT_BLUE);
     } else {
         driverGamepad->setRumble(false);
-        leds->setColor(0, valor::CANdleSensor::RED);
+        // leds->setColor(0, valor::CANdleSensor::RED);
     }
     if (driverGamepad != nullptr && driverGamepad->IsConnected() && !(frc::DriverStation::IsTeleop() && frc::DriverStation::IsEnabled())) {
         driverGamepad->setRumble(false);
@@ -225,8 +229,16 @@ void Feeder::assignOutputs()
         intakeMotor.setPower(INTAKE_FORWARD_POWER);
         intakeBackMotor.setPower(INTAKE_FORWARD_POWER);
     } else if(state.intakeState == ROLLER_STATE::INTAKE) {
-        intakeMotor.setPower(state.beamTrip ? 0 : INTAKE_FORWARD_POWER);
-        intakeBackMotor.setPower(state.beamTrip ? 0 : INTAKE_FORWARD_POWER);
+        if (state.stageTrip) {
+            intakeMotor.setPower(INTAKE_FORWARD_POWER * .5);
+            intakeBackMotor.setPower(INTAKE_FORWARD_POWER * .5);
+        } else if (state.feedTrip) {
+            intakeMotor.setPower(0);
+            intakeBackMotor.setPower(0);
+        } else {
+            intakeMotor.setPower(INTAKE_FORWARD_POWER);
+            intakeBackMotor.setPower(INTAKE_FORWARD_POWER);
+        }
     } else if(state.intakeState == ROLLER_STATE::OUTTAKE) {
         intakeMotor.setPower(INTAKE_REVERSE_POWER);
         intakeBackMotor.setPower(INTAKE_REVERSE_POWER);
@@ -241,8 +253,13 @@ void Feeder::assignOutputs()
     if (state.feederState == ROLLER_STATE::SHOOT) {
         feederMotor.setPower(FEEDER_FORWARD_POWER);
     } else if(state.feederState == ROLLER_STATE::INTAKE) {
-        //25 is optimal
-        feederMotor.setPower(state.bothFeederBeamBreakTripped ? 0 : (state.beamTrip ? (FEEDER_INTAKE_POWER) : FEEDER_FORWARD_POWER));
+        if (state.feedTrip) {
+            feederMotor.setPower(0);
+        } else if (state.stageTrip) {
+            feederMotor.setPower(FEEDER_INTAKE_POWER);
+        } else {
+            feederMotor.setPower(FEEDER_FORWARD_POWER);
+        }
     } else if(state.feederState == ROLLER_STATE::OUTTAKE) {
         feederMotor.setPower(FEEDER_REVERSE_POWER);
     } else {
@@ -267,20 +284,20 @@ void Feeder::InitSendable(wpi::SendableBuilder& builder)
     );
 
     builder.AddBooleanProperty(
-        "Beam Trip",
-        [this]{return state.beamTrip;},
+        "Stage Trip",
+        [this]{return state.stageTrip;},
         nullptr
     );
 
     builder.AddBooleanProperty(
-        "Both Beam Breaks Tripped",
-        [this]{return state.bothFeederBeamBreakTripped;},
+        "Feed Trip",
+        [this]{return state.feedTrip;},
         nullptr
     );
-
-    builder.AddBooleanProperty(
-        "Unjam",
-        [this]{return state.unjam;},
-        nullptr
-    );
+    //
+    // builder.AddBooleanProperty(
+    //     "Unjam",
+    //     [this]{return state.unjam;},
+    //     nullptr
+    // );
 }

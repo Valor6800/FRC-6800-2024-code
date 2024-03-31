@@ -51,8 +51,7 @@ class Robot : public frc::TimedRobot {
         Drivetrain drivetrain;
         valor::Auto valorAuto;
         frc::AnalogTrigger feederBeamBreak;
-        frc::AnalogTrigger feederBeamBreak2;
-        frc::AnalogTrigger intakeBeamBreak;
+        frc::AnalogTrigger stageBeamBreak;
         
         Shooter shooter;
         Feeder feeder;

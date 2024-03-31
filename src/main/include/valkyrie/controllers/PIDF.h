@@ -28,6 +28,8 @@ struct PIDF
     /// Minimum error threshold
     double error = 0.0;
 
+    double S = 0.19;
+
     double aFF = 0;
     double aFFTarget = 90;
     FeedForwardType aFFType = FeedForwardType::LINEAR;
