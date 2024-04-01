@@ -14,7 +14,7 @@
 #include <frc2/command/WaitCommand.h>
 #include <frc/PWM.h>
 
-#define FORWARD_LIMIT 0.0f
+#define FORWARD_LIMIT 18.0f
 #define REVERSE_LIMIT 0.0f
 #define EXTENDED_POS 0.0f
 #define RETRACTED_POS 0.0f
@@ -27,8 +27,8 @@
 #define CLIMB_K_AFF 0.00f
 #define CONVERSION 14.72f
 
-#define UNLATCH_PULSE_TIME 2.5_ms
-#define LATCH_PULSE_TIME 1.6_ms
+#define UNLATCH_PULSE_TIME 1000_us
+#define LATCH_PULSE_TIME 2200_us
 
 #define LATCH_POS 0.55f
 #define UNLATCH_POS 1.0f
@@ -47,9 +47,9 @@ Climber::~Climber()
 
 void Climber::resetState()
 {
+    climbMotors->setEncoderPosition(0);
     state.climbState = DISABLE;
     state.latchState = LATCH;
-    state.targetPos = 1.6;
 }
 
 void Climber::init()
@@ -62,23 +62,27 @@ void Climber::init()
     climbPID.aFF = CLIMB_K_AFF;
 
     climbPID.aFFType = valor::FeedForwardType::LINEAR;
-
+    bool climberI = false;
     climbMotors = new valor::PhoenixController(
         CANIDs::CLIMBER_LEAD,
         valor::NeutralMode::Brake,
-        false,
+        climberI,
+        CONVERSION,
+        1.225 * M_PI,
+        climbPID,
+        12.0,
+        true,
         "baseCAN"
     );
-    climbMotors->setupFollower(CANIDs::CLIMBER_FOLLOW, false);
+    climbMotors->setupFollower(CANIDs::CLIMBER_FOLLOW, climberI);
     climbMotors->setForwardLimit(FORWARD_LIMIT);
-    climbMotors->setReverseLimit(REVERSE_LIMIT);
+    climbMotors->enableFOC(true);
 
-    servo = new frc::PWM(9, true);
+    servo = new frc::PWM(0, true);
     servo->SetBounds(2000_us, 3_us, 1000_us, 3_us, 500_us);
-
+    table->PutNumber("Servo Pos", 500);
     state.climbState = DISABLE;
     state.latchState = LATCH;
-    state.targetPos = 0.55;
 
     resetState();
 }
@@ -107,48 +111,40 @@ void Climber::assessInputs()
 
 void Climber::analyzeDashboard()
 {
-    if (state.climbState == EXTEND || state.latchState == UNLATCH){
-        state.targetPos = UNLATCH_POS;
-    } else if (state.climbState == RETRACT || state.latchState == LATCH){
-        state.targetPos = LATCH_POS;
-    }
+
 }
 
 void Climber::assignOutputs()
 {
-    if (!drive->state.pitMode){
-        if (state.climbState == EXTEND){
+    /*if (!drive->state.pitMode){
+        if (state.climbState == CLIMB_STATE::EXTEND){
             servo->SetPulseTime(LATCH_PULSE_TIME); //unlatch
                 if (inPosition()){
                     climbMotors->setPosition(EXTENDED_POS);
                 }
-        } else if(state.climbState == RETRACT){
+        } else if(state.climbState == CLIMB_STATE::RETRACT){
             servo->SetPulseTime(UNLATCH_PULSE_TIME); //re-latch
                 if (inPosition()){
                     climbMotors->setPosition(RETRACTED_POS);
                 }
-        } else if(state.climbState == DISABLE){
+        } else if(state.climbState == CLIMB_STATE::DISABLE){
             climbMotors->setPosition(RESTING_POS);
         } else {
             climbMotors->setPosition(RESTING_POS);
         }
-    }
+    }*/
 
     // TODO: Set position with state.targetPos when valor::Servo gets implemented
-    if (state.latchState == UNLATCH){
+    if (state.latchState == LATCH_STATE::UNLATCH){
         servo->SetPulseTime(UNLATCH_PULSE_TIME);
-    } else if(state.latchState == LATCH){
+    } else if(state.latchState == LATCH_STATE::LATCH){
         servo->SetPulseTime(LATCH_PULSE_TIME);
     }
 
-    if (state.climbState == MANUAL && inPosition()){
+    if (state.climbState == MANUAL){
         climbMotors->setPower(operatorGamepad->rightStickY(2));
     }
-}
-
-bool Climber::inPosition()
-{
-    return fabs(servo->GetPosition() - state.targetPos) <= 0.05;
+    //servo->SetPulseTime((units::microsecond_t) table->GetNumber("Servo Pos", 500));
 }
 
 void Climber::InitSendable(wpi::SendableBuilder& builder)

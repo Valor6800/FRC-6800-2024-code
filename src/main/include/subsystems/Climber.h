@@ -34,7 +34,6 @@ public:
     void assignOutputs();
 
     void setClimbPID();
-    bool inPosition();
 
     void InitSendable(wpi::SendableBuilder& builder);
 
@@ -56,7 +55,6 @@ public:
     {
         CLIMB_STATE climbState;
         LATCH_STATE latchState;
-        double targetPos;
 
     }state;
 

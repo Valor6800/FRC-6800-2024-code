@@ -259,10 +259,9 @@ void Shooter::init()
         PIVOT_CANCODER_GEAR_RATIO / 360.0,
         pivotPID,
         10.0,
-        false,
+        true,
         "baseCAN"
     );
-    pivotMotors->setupFollower(CANIDs::PIVOT_FOLLOW, false);
     pivotMotors->setupCANCoder(CANIDs::SHOOTER_CANCODER, PIVOT_MAGNET_OFFSET, false, "baseCAN", ctre::phoenix6::signals::AbsoluteSensorRangeValue::Signed_PlusMinusHalf);
     pivotMotors->setRange(0, PIVOT_FORWARD_LIMIT, PIVOT_REVERSE_LIMIT);
     // pivotMotors->setPositionUpdateFrequency(1000_Hz);
@@ -296,11 +295,8 @@ void Shooter::assessInputs()
     } 
 
     //PIVOT LOGIC
-    if (driverGamepad->GetAButton()) {
-        if (driverGamepad->GetRightBumper())
-            state.pivotState = PIVOT_STATE::FORCE_INTAKE;
-        else
-            state.pivotState = PIVOT_STATE::SUBWOOFER;
+    if (driverGamepad->GetAButton() && driverGamepad->leftTriggerActive()) {
+        state.pivotState = PIVOT_STATE::SUBWOOFER;
     } else if (driverGamepad->GetBButton()) {
         if (driverGamepad->GetRightBumper())
             state.pivotState = PIVOT_STATE::FORCE_INTAKE;
@@ -405,13 +401,13 @@ void Shooter::assignOutputs()
         pivotMotors->setPosition(state.tuningSetpoint);
     } else if(state.pivotState == PIVOT_STATE::SUBWOOFER){
         pivotMotors->setPosition(SUBWOOFER_ANG.to<double>());
-    } else if(state.pivotState == PIVOT_STATE::LOAD && !state.ignoreLoad){
+    } else if((state.pivotState == PIVOT_STATE::LOAD || state.otherSide) && !state.ignoreLoad){
         pivotMotors->setPosition(INTAKE_ANG.to<double>());
     } else if(state.pivotState == PIVOT_STATE::PODIUM){
         pivotMotors->setPosition(PODIUM_ANG.to<double>());
     } else if(state.pivotState == PIVOT_STATE::WING){
         pivotMotors->setPosition(WING_ANG.to<double>());
-    } else if (state.pivotState == PIVOT_STATE::ORBIT || (state.ignoreLoad && state.otherSide)){
+    } else if (state.pivotState == PIVOT_STATE::ORBIT){
         pivotMotors->setPosition(POOP_ANG.to<double>());
     } else if(state.pivotState == PIVOT_STATE::TRACKING || (state.ignoreLoad && !state.otherSide)){
         pivotMotors->setPosition(state.calculatingPivotingAngle.to<double>());
@@ -436,10 +432,10 @@ void Shooter::calculatePivotAngle(){
     double distance = drivetrain->state.distanceFromSpeaker.to<double>();
     distance = fmin(distance, 9.0); // Since the parabola has a positive x^2 term, it'll eventually curve up
 
-    double A = -0.433; // 0;
-    double B = 6.42; // 2.23;
-    double C = -33.5; // -21.3;
-    double D = 91.4; // 78.5;
+    double A = -0.466; // 0;
+    double B = 7.54; // 2.23;
+    double C = -42.1; // -21.3;
+    double D = 18.5; // 78.5;
     double bestPivot = D + (C * distance) + (B * pow(distance, 2)) + (A * pow(distance, 3));
     state.calculatingPivotingAngle = units::degree_t(bestPivot) - 90.0_deg;
 }
