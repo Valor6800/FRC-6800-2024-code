@@ -211,6 +211,26 @@ namespace Constants {
             };
         }};
 
+        /* Back Front Camera Mount
+         * 
+         * x: -1.125_in
+         * y: 0_in
+         * z: 21.75_in
+         * yaw: -180_deg
+         * pitch: 32.3_deg
+         * roll: 0_deg
+         */
+
+        /* Top Front Camera Mount
+         * 
+         * x: 4_in
+         * y: -3.5_in
+         * z: 21.75_in
+         * yaw: 0_deg
+         * pitch: 32.7_deg
+         * roll: 0_deg
+         */
+
         static frc::Pose3d vanillaCameraPosition(){ switch (teamNumber) {
             case ALPHA_TEAM_NUMBER: return frc::Pose3d();
             case SIDE_SWIPE_TEAM_NUMBER: return frc::Pose3d(
