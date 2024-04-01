@@ -5,6 +5,7 @@
 #include <math.h>
 #include <pathplanner/lib/auto/AutoBuilder.h>
 #include <pathplanner/lib/util/HolonomicPathFollowerConfig.h>
+#include <pathplanner/lib/controllers/PPHolonomicDriveController.h>
 #include <pathplanner/lib/util/PIDConstants.h>
 #include <pathplanner/lib/util/ReplanningConfig.h>
 #include <string>
@@ -296,6 +297,7 @@ void Drivetrain::init()
         },
         this // Reference to this subsystem to set requirements
     );
+    PPHolonomicDriveController::setRotationTargetOverride([this](){return getRotationTargetOverride();});
 
     pathplanner::NamedCommands::registerCommand("Set Camera Estimator", std::move(
         frc2::SequentialCommandGroup(
@@ -324,6 +326,30 @@ void Drivetrain::init()
             }
         )
     ).ToPtr());
+
+    pathplanner::NamedCommands::registerCommand("Enable speaker track", std::move(
+        frc2::InstantCommand(
+            [this]() {
+                state.isHeadingTrack = true;
+            }
+        )
+    ).ToPtr());
+
+    pathplanner::NamedCommands::registerCommand("Disable speaker track", std::move(
+        frc2::InstantCommand(
+            [this]() {
+                state.isHeadingTrack = false;
+            }
+        )
+    ).ToPtr());
+}
+
+std::optional<frc::Rotation2d> Drivetrain::getRotationTargetOverride(){
+    if (state.isHeadingTrack) {
+        return frc::Rotation2d(state.targetAngle);
+    } else {
+        return std::nullopt;
+    }
 }
 
 std::vector<valor::Swerve<Drivetrain::SwerveAzimuthMotor, Drivetrain::SwerveDriveMotor> *> Drivetrain::getSwerveModules()

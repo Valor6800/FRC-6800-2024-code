@@ -253,7 +253,7 @@ public:
      double teleopStart;
 
      double doubtX, doubtY;
-     
+     std::optional<frc::Rotation2d> getRotationTargetOverride();
 
 private:
      
