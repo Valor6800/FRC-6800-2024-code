@@ -33,7 +33,7 @@ Robot::Robot() :
 
     pathplanner::NamedCommands::registerCommand("Reschedule 1-1 1-2", std::move(
         frc2::InstantCommand([this](){
-            if (feeder.state.beamTrip)
+            if (feeder.state.feedTrip)
                 autoCommands.push_back(valorAuto.getAuto("1-2"));
             else
                 autoCommands.push_back(valorAuto.getAuto("1-1"));
