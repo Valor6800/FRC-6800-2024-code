@@ -17,7 +17,7 @@ CANdleSensor::CANdleSensor(frc::TimedRobot *_robot, int _ledCount, int _segments
     ctre::phoenix::led::CANdleConfiguration config;
     // Should match the type of LED strip connected to the CANdle
     config.stripType = ctre::phoenix::led::LEDStripType::GRB;
-    config.brightnessScalar = 0.5;
+    config.brightnessScalar = 0.25;
     config.statusLedOffWhenActive = true;
     config.disableWhenLOS = false;
     // If the 12V line should be on, off, or modulated (for single LED colors)
