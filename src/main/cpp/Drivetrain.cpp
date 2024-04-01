@@ -549,7 +549,7 @@ frc::Pose2d Drivetrain::getPoseFromOtherTags() {
 units::meter_t Drivetrain::getDistanceFromSpeaker() {
     units::meter_t x, trueX;
     units::meter_t y, trueY;
-    if (!aprilTagSensors[0]->inExistence()) {
+    if (!aprilTagSensors[0]->inExistence() || aprilTagSensors[0]->getSensor().Translation().Norm() > 4.7_m) {
         trueX = getPoseFromOtherTags().X();
         trueY = getPoseFromOtherTags().Y();
     } else {
