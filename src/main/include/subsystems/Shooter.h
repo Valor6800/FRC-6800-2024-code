@@ -83,6 +83,8 @@ public:
     } state;
 
 private:
+    void setPivotPosition(double);
+
     Drivetrain *drivetrain;
     valor::PhoenixController* pivotMotors;
     frc::AnalogTrigger* feederBeamBreak;

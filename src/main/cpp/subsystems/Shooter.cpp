@@ -12,24 +12,25 @@
 
 #include <frc/DriverStation.h>
 
-#define PIVOT_ROTATE_K_VEL 216.24f
-#define PIVOT_ROTATE_K_ACC 3720.0f
-#define PIVOT_ROTATE_K_P 0.25f //1.25f
+#define PIVOT_ROTATE_K_VEL 0.6f
+#define PIVOT_ROTATE_K_ACC 50.0f
+#define PIVOT_ROTATE_K_P 125.0f //1.25f
 #define PIVOT_ROTATE_K_ERROR 0.0f
 #define PIVOT_ROTATE_K_AFF 0.40f
-#define PIVOT_ROTATE_K_JERK 9999.9f
+#define PIVOT_ROTATE_K_S 0.35f
+#define PIVOT_ROTATE_K_JERK 180.0f
 
 #define PIVOT_CANCODER_GEAR_RATIO 1.0f
 #define PIVOT_MAGNET_OFFSET -0.628723f
 #define PIVOT_GEAR_RATIO 160.9321f 
-#define PIVOT_REVERSE_LIMIT 90.00f // 
-#define PIVOT_FORWARD_LIMIT -72.0f // 17.6
+#define PIVOT_REVERSE_LIMIT 0.25f
+#define PIVOT_FORWARD_LIMIT -0.2f
 
 #define FLYWHEEL_ROTATE_K_VEL 75.0f
 #define FLYWHEEL_ROTATE_K_ACC 75.0f
 #define FLYWHEEL_ROTATE_K_P 0.00005f
 
-#define AMP_ANG 57.0_deg
+#define AMP_ANG 60.0_deg
 #define SUBWOOFER_ANG -30.0_deg
 #define INTAKE_ANG -72.0_deg
 #define PREAMP_ANG -12.5_deg // TODO: kill
@@ -233,8 +234,7 @@ void Shooter::init()
     pivotPID.aFF = PIVOT_ROTATE_K_AFF;
     pivotPID.maxJerk = PIVOT_ROTATE_K_JERK;
     pivotPID.aFFType = valor::FeedForwardType::CIRCULAR;
-    pivotPID.maxJerk = PIVOT_ROTATE_K_JERK;
-    pivotPID.S = 0;
+    pivotPID.S = PIVOT_ROTATE_K_S;
 
     valor::PIDF flywheelPID;
     flywheelPID.maxVelocity = FLYWHEEL_ROTATE_K_VEL;
@@ -256,7 +256,7 @@ void Shooter::init()
         valor::NeutralMode::Brake,
         true,
         PIVOT_GEAR_RATIO / PIVOT_CANCODER_GEAR_RATIO,
-        PIVOT_CANCODER_GEAR_RATIO / 360.0,
+        PIVOT_CANCODER_GEAR_RATIO,
         pivotPID,
         10.0,
         true,
@@ -311,7 +311,7 @@ void Shooter::assessInputs()
 
 void Shooter::analyzeDashboard()
 {
-    state.tuningSetpoint = table->GetNumber("Pivot Setpoint", AMP_ANG.to<double>());
+    state.tuningSetpoint = table->GetNumber("Pivot Setpoint", AMP_ANG.to<double>()) / 360.0;
     state.tuningSpeed = table->GetNumber("Speed Setpoint", AMP_POWER);
     state.tuningOffset = table->GetNumber("Speed Offset Pct", 0.5);
 
@@ -367,6 +367,11 @@ void Shooter::analyzeDashboard()
 
 }
 
+void Shooter::setPivotPosition(double angle)
+{
+    pivotMotors->setPosition(angle / 360.0);
+}
+
 void Shooter::assignOutputs()
 {
     // if (table->GetBoolean("Set Break Mode", false)) {
@@ -398,33 +403,33 @@ void Shooter::assignOutputs()
     // }
 
     if (state.pivotState == PIVOT_STATE::TUNING) {
-        pivotMotors->setPosition(state.tuningSetpoint);
+        setPivotPosition(state.tuningSetpoint);
     } else if(state.pivotState == PIVOT_STATE::SUBWOOFER){
-        pivotMotors->setPosition(SUBWOOFER_ANG.to<double>());
+        setPivotPosition(SUBWOOFER_ANG.to<double>());
     } else if((state.pivotState == PIVOT_STATE::LOAD || state.otherSide) && !state.ignoreLoad){
-        pivotMotors->setPosition(INTAKE_ANG.to<double>());
+        setPivotPosition(INTAKE_ANG.to<double>());
     } else if(state.pivotState == PIVOT_STATE::PODIUM){
-        pivotMotors->setPosition(PODIUM_ANG.to<double>());
+        setPivotPosition(PODIUM_ANG.to<double>());
     } else if(state.pivotState == PIVOT_STATE::WING){
-        pivotMotors->setPosition(WING_ANG.to<double>());
+        setPivotPosition(WING_ANG.to<double>());
     } else if (state.pivotState == PIVOT_STATE::ORBIT){
-        pivotMotors->setPosition(POOP_ANG.to<double>());
+        setPivotPosition(POOP_ANG.to<double>());
     } else if(state.pivotState == PIVOT_STATE::TRACKING || (state.ignoreLoad && !state.otherSide)){
-        pivotMotors->setPosition(state.calculatingPivotingAngle.to<double>());
+        setPivotPosition(state.calculatingPivotingAngle.to<double>());
     } else if(state.pivotState == PIVOT_STATE::AMP){
-        pivotMotors->setPosition(AMP_ANG.to<double>());
+        setPivotPosition(AMP_ANG.to<double>());
     } else if (state.pivotState == PIVOT_STATE::AUTO_FAR_LOW) {
-        pivotMotors->setPosition(AUTO_FAR_LOW_ANG.to<double>());
+        setPivotPosition(AUTO_FAR_LOW_ANG.to<double>());
     } else if (state.pivotState == PIVOT_STATE::AUTO_FAR_HIGH) {
-        pivotMotors->setPosition(AUTO_FAR_HIGH_ANG.to<double>());
+        setPivotPosition(AUTO_FAR_HIGH_ANG.to<double>());
     } else if (state.pivotState == PIVOT_STATE::AUTO_NEAR) {
-        pivotMotors->setPosition(AUTO_NEAR_ANG.to<double>());
+        setPivotPosition(AUTO_NEAR_ANG.to<double>());
     } else if (state.pivotState == PIVOT_STATE::AUTO_SUBWOOFER) {
-        pivotMotors->setPosition(AUTO_SUBWOOFER_ANG.to<double>());
+        setPivotPosition(AUTO_SUBWOOFER_ANG.to<double>());
     } else if(state.pivotState == PIVOT_STATE::FORCE_INTAKE){
-        pivotMotors->setPosition(INTAKE_ANG.to<double>());
+        setPivotPosition(INTAKE_ANG.to<double>());
     } else {
-        pivotMotors->setPosition(SUBWOOFER_ANG.to<double>());
+        setPivotPosition(SUBWOOFER_ANG.to<double>());
     }
 }
  
@@ -477,8 +482,14 @@ void Shooter::InitSendable(wpi::SendableBuilder& builder){
     );
 
     builder.AddDoubleProperty(
-        "pivot setpoint",
+        "pivot setpoint (deg)",
         [this] {return state.calculatingPivotingAngle.to<double>();},
+        nullptr
+    );
+
+    builder.AddDoubleProperty(
+        "pivot setpoint (rot)",
+        [this] {return state.calculatingPivotingAngle.to<double>() / 360.0;},
         nullptr
     );
     
