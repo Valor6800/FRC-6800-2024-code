@@ -101,7 +101,7 @@ public:
      */
     CANdleSensor(frc::TimedRobot *_robot, int _ledCount, int _segments, int _canID, std::string _canbus = "");
 
-    CANdleSensor(frc::TimedRobot *_robot, int _ledCount, int _segments,  std::vector<int> _segmentSizes, int _canID, std::string _canbus = "");
+    CANdleSensor(frc::TimedRobot *_robot, int _ledCount, std::vector<int> _segmentSizes, int _canID, std::string _canbus = "");
 
 
     /**
@@ -194,7 +194,7 @@ private:
     void init();
 
     ctre::phoenix::led::CANdle candle;
-    std::vector<int> segmentSizes;
+    std::vector<int> segmentSizes{};
     int ledCount;
     int segments;
     

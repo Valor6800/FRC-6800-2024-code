@@ -21,7 +21,7 @@
 
 
 Robot::Robot() : 
-    leds(this, LED_COUNT, SEGMENTS, SEGMENT_SIZES, CANIDs::CANDLE, ""),
+    leds(this, LED_COUNT, SEGMENT_SIZES, CANIDs::CANDLE, ""),
     drivetrain(this, &leds),
     valorAuto(),
     feederBeamBreak(AnalogPorts::FEEDER_BEAM_BREAK_PORT),

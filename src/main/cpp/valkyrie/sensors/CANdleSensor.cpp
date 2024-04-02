@@ -19,11 +19,10 @@ CANdleSensor::CANdleSensor(frc::TimedRobot *_robot, int _ledCount, int _segments
     setGetter([this] { return 0; });
 }
 
-CANdleSensor::CANdleSensor(frc::TimedRobot *_robot, int _ledCount, int _segments, std::vector<int> _segmentSizes, int _canID, std::string _canbus) :
+CANdleSensor::CANdleSensor(frc::TimedRobot *_robot, int _ledCount, std::vector<int> _segmentSizes, int _canID, std::string _canbus) :
     BaseSensor(_robot, std::string("ID ").append(std::to_string(_canID)).c_str()),
     candle(_canID, _canbus),
     segmentSizes(_segmentSizes),//{20,20,20,20,20,20,13,13,13,13,13,13}
-    segments(_segments),
     ledCount(_ledCount)
 {
     wpi::SendableRegistry::AddLW(this, "CANdleSensor", sensorName);
@@ -86,9 +85,9 @@ void CANdleSensor::setSpecifiedSegments() {
             newSegment.endLed = 8;
         }
         else{
-            newSegment.startLed = (newSegment.endLed);
-            newSegment.endLed = currentLed+segmentSizes[i] - 1;
-            currentLed=newSegment.endLed+1;
+            newSegment.startLed = currentLed;
+            newSegment.endLed = currentLed + segmentSizes[i] - 1;
+            currentLed = newSegment.endLed + 1;
         }
         segmentMap[i] = newSegment;
     }
