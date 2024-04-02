@@ -47,7 +47,8 @@ Climber::~Climber()
 
 void Climber::resetState()
 {
-    climbMotors->setEncoderPosition(0);
+    if (climbMotors != nullptr)
+        climbMotors->setEncoderPosition(0);
     state.climbState = DISABLE;
     state.latchState = LATCH;
 }
