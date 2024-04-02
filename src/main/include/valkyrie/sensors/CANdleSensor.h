@@ -101,6 +101,9 @@ public:
      */
     CANdleSensor(frc::TimedRobot *_robot, int _ledCount, int _segments, int _canID, std::string _canbus = "");
 
+    CANdleSensor(frc::TimedRobot *_robot, int _ledCount, int _segments,  std::vector<int> _segmentSizes, int _canID, std::string _canbus = "");
+
+
     /**
      * @brief Destroy the Valor CANdle Sensor object
      * 
@@ -186,13 +189,20 @@ public:
 
 private:
     void setAnimation(SegmentSettings *segment, AnimationType animation, RGBColor color, double speed=1.0);
+    void setAllSegments();
+    void setSpecifiedSegments();
+    void init();
 
     ctre::phoenix::led::CANdle candle;
+    std::vector<int> segmentSizes;
     int ledCount;
     int segments;
+    
 
     std::unordered_map<int, SegmentSettings> segmentMap;
     SegmentSettings allSegments;
+    
+
 
     void calculate();
 

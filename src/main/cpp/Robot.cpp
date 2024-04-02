@@ -16,9 +16,12 @@
 
 #define LED_COUNT 110
 #define SEGMENTS 2
+#define SEGMENT_SIZES {60, 60, 39, 39}
+
+
 
 Robot::Robot() : 
-    leds(this, LED_COUNT, SEGMENTS, CANIDs::CANDLE, ""),
+    leds(this, LED_COUNT, SEGMENTS, SEGMENT_SIZES, CANIDs::CANDLE, ""),
     drivetrain(this, &leds),
     valorAuto(),
     feederBeamBreak(AnalogPorts::FEEDER_BEAM_BREAK_PORT),

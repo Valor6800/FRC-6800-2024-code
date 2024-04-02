@@ -13,9 +13,29 @@ CANdleSensor::CANdleSensor(frc::TimedRobot *_robot, int _ledCount, int _segments
     wpi::SendableRegistry::AddLW(this, "CANdleSensor", sensorName);
 
     reset();
+    init();
+    //286
+    setAllSegments();
+    setGetter([this] { return 0; });
+}
 
+CANdleSensor::CANdleSensor(frc::TimedRobot *_robot, int _ledCount, int _segments, std::vector<int> _segmentSizes, int _canID, std::string _canbus) :
+    BaseSensor(_robot, std::string("ID ").append(std::to_string(_canID)).c_str()),
+    candle(_canID, _canbus),
+    segmentSizes(_segmentSizes),//{60, 60, 39, 39}
+    segments(_segments),
+    ledCount(_ledCount)
+{
+    wpi::SendableRegistry::AddLW(this, "CANdleSensor", sensorName);
+    reset();
+    init(); 
+    setSpecifiedSegments();
+    setGetter([this] {return 0;});
+}
+
+void CANdleSensor::init() {
     ctre::phoenix::led::CANdleConfiguration config;
-    // Should match the type of LED strip connected to the CANdle
+
     config.stripType = ctre::phoenix::led::LEDStripType::GRB;
     config.brightnessScalar = 0.5;
     config.statusLedOffWhenActive = true;
@@ -24,8 +44,10 @@ CANdleSensor::CANdleSensor(frc::TimedRobot *_robot, int _ledCount, int _segments
     config.vBatOutputMode = ctre::phoenix::led::VBatOutputMode::Off;
     candle.ConfigFactoryDefault(100);
     candle.ConfigAllSettings(config, 100);
-    int segmentLEDCount = (ledCount-8)/segments;
-    //286
+}
+
+void CANdleSensor::setAllSegments() {
+    u_int segmentLEDCount = (ledCount-8)/segments;
     for (int i = 0; i<segments + 1; i++){
         SegmentSettings newSegment;
         newSegment.recentlyChanged = true;
@@ -42,13 +64,41 @@ CANdleSensor::CANdleSensor(frc::TimedRobot *_robot, int _ledCount, int _segments
         }
         segmentMap[i] = newSegment;
     }
+    
     allSegments.startLed = 0;
     allSegments.endLed = ledCount;
     allSegments.activeAnimation = NULL;
     allSegments.currentColor = toRGB(VALOR_GOLD);
     allSegments.recentlyChanged = false;
     allSegments.activeAnimationType = AnimationType::None;
-    setGetter([this] { return 0; });
+}
+
+void CANdleSensor::setSpecifiedSegments() {
+   int currentLed=0;
+    for (int i = 0; i<segments + 1; i++){
+        SegmentSettings newSegment;
+        newSegment.recentlyChanged = true;
+        newSegment.currentColor = toRGB(VALOR_GOLD);
+        newSegment.activeAnimation = NULL;
+        newSegment.activeAnimationType = AnimationType::None;
+        if (i == 0){
+            newSegment.startLed = 0;
+            newSegment.endLed = 8;
+        }
+        else{
+            newSegment.startLed = (currentLed+9);
+            newSegment.endLed = currentLed+segmentSizes[i] - 1;
+            currentLed=newSegment.endLed+1;
+        }
+        segmentMap[i] = newSegment;
+    }
+    
+    allSegments.startLed = 0;
+    allSegments.endLed = ledCount;
+    allSegments.activeAnimation = NULL;
+    allSegments.currentColor = toRGB(VALOR_GOLD);
+    allSegments.recentlyChanged = false;
+    allSegments.activeAnimationType = AnimationType::None;
 }
 
 CANdleSensor::RGBColor CANdleSensor::toRGB(int color)
