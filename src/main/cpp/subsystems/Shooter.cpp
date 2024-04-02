@@ -31,7 +31,7 @@
 
 #define AMP_ANG 57.0_deg
 #define SUBWOOFER_ANG -30.0_deg
-#define INTAKE_ANG -68.0_deg
+#define INTAKE_ANG -72.0_deg
 #define PREAMP_ANG -12.5_deg // TODO: kill
 #define PODIUM_ANG -53.0_deg
 #define WING_ANG -63.5_deg
@@ -432,12 +432,12 @@ void Shooter::calculatePivotAngle(){
     double distance = drivetrain->state.distanceFromSpeaker.to<double>();
     distance = fmin(distance, 9.0); // Since the parabola has a positive x^2 term, it'll eventually curve up
 
-    double A = -0.466; // 0;
-    double B = 7.54; // 2.23;
-    double C = -42.1; // -21.3;
-    double D = 18.5; // 78.5;
+    double A = -0.608; // 0;
+    double B = 9.03; // 2.23;
+    double C = -46.5; // -21.3;
+    double D = 21.1; // 78.5;
     double bestPivot = D + (C * distance) + (B * pow(distance, 2)) + (A * pow(distance, 3));
-    state.calculatingPivotingAngle = units::degree_t(bestPivot) - 90.0_deg;
+    state.calculatingPivotingAngle = units::degree_t(bestPivot);
 }
 
 void Shooter::setFlyweelSpeeds(double leftPower, double rightPower)

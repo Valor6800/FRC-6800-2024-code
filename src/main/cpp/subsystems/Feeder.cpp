@@ -14,11 +14,11 @@
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/WaitCommand.h>
 
-#define INTAKE_FORWARD_POWER 1.0f
+#define INTAKE_FORWARD_POWER 0.8f
 #define INTAKE_REVERSE_POWER -1.0f
 
-#define FEEDER_FORWARD_POWER 0.2f
-#define FEEDER_INTAKE_POWER 0.15f
+#define FEEDER_FORWARD_POWER 0.3f
+#define FEEDER_INTAKE_POWER 0.1f
 #define FEEDER_REVERSE_POWER -0.5f
 #define FEEDER_UNJAM_POWER -0.2f
 
@@ -204,11 +204,11 @@ void Feeder::analyzeDashboard()
     if (table->GetBoolean("Tuning", false)) {
         state.intakeState = ROLLER_STATE::TUNING;
     }
+    state.stageTrip = !stageBeamBreak->GetInWindow();
+    state.feedTrip = !feederBeamBreak->GetInWindow();
     
 
     if (state.feederState == ROLLER_STATE::SHOOT || state.feederState == ROLLER_STATE::OUTTAKE) {
-        state.stageTrip = false;
-        state.feedTrip = false;
         driverGamepad->setRumble(false);
     }
     if (!feederBeamBreak->GetInWindow()) {
