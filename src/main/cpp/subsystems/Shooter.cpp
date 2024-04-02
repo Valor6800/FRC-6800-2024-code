@@ -37,9 +37,9 @@
 #define PODIUM_ANG -53.0_deg
 #define WING_ANG -63.5_deg
 #define POOP_ANG -42.0_deg
-#define AUTO_NEAR_ANG -57.5_deg
-#define AUTO_FAR_LOW_ANG -62.25_deg
-#define AUTO_FAR_HIGH_ANG -62.25_deg
+#define AUTO_NEAR_ANG -46.0_deg
+#define AUTO_FAR_LOW_ANG -62.00_deg
+#define AUTO_FAR_HIGH_ANG -58.0_deg
 #define AUTO_SUBWOOFER_ANG -32.0_deg
 
 #define AMP_POWER 0.0f // rps
@@ -408,7 +408,7 @@ void Shooter::assignOutputs()
         setPivotPosition(SUBWOOFER_ANG.to<double>());
     } else if (state.pivotState == PIVOT_STATE::ORBIT){
         setPivotPosition(POOP_ANG.to<double>());
-    } else if((state.pivotState == PIVOT_STATE::LOAD || state.otherSide) && !state.ignoreLoad){
+    } else if((state.pivotState == PIVOT_STATE::LOAD && !state.ignoreLoad) || state.otherSide){
         setPivotPosition(INTAKE_ANG.to<double>());
     } else if(state.pivotState == PIVOT_STATE::PODIUM){
         setPivotPosition(PODIUM_ANG.to<double>());

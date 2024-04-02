@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.2276993378494865,
-        "y": 5.543495501559868
+        "x": 4.084255444841909,
+        "y": 5.572019226189894
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.6535493172824953,
-        "y": 5.543495501559868
+        "x": 3.5101054242749177,
+        "y": 5.572019226189894
       },
       "isLocked": false,
       "linkedName": "Score stage"
@@ -25,7 +25,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Rex"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -42,6 +42,12 @@
               "type": "named",
               "data": {
                 "name": "Enable intake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Set pivot load"
               }
             }
           ]

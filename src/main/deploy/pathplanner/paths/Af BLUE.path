@@ -88,6 +88,12 @@
               "data": {
                 "name": "Enable shooter"
               }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Set pivot near"
+              }
             }
           ]
         }
@@ -117,6 +123,12 @@
               "data": {
                 "name": "Enable intake"
               }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Set pivot load"
+              }
             }
           ]
         }
@@ -124,8 +136,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 5.0,
+    "maxVelocity": 3.5,
+    "maxAcceleration": 3.8,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1600.0
   },

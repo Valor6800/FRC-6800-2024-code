@@ -8,29 +8,103 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.662195768980659,
-        "y": 5.252998722758152
+        "x": 8.469162658956106,
+        "y": 3.8820607143529102
       },
       "isLocked": false,
       "linkedName": "Mid"
     },
     {
       "anchor": {
-        "x": 4.995921632685279,
-        "y": 6.454890284238034
+        "x": 5.775968841795901,
+        "y": 4.025089844595199
       },
       "prevControl": {
-        "x": 6.488702002649954,
-        "y": 6.638901594426453
+        "x": 6.4602560736787416,
+        "y": 3.787296295345448
+      },
+      "nextControl": {
+        "x": 5.091681609913061,
+        "y": 4.262883393844948
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.084255444841909,
+        "y": 5.572019226189894
+      },
+      "prevControl": {
+        "x": 4.390234380512164,
+        "y": 4.7437713876195655
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Score amp"
+      "linkedName": "Score stage"
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Slow",
+      "minWaypointRelativePos": 0.7,
+      "maxWaypointRelativePos": 2.0,
+      "constraints": {
+        "maxVelocity": 4.0,
+        "maxAcceleration": 4.0,
+        "maxAngularVelocity": 720.0,
+        "maxAngularAcceleration": 1600.0
+      }
+    }
+  ],
   "eventMarkers": [
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Enable intake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Stop shooting",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Disable full feeder"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Disable shooter"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Set pivot load"
+              }
+            }
+          ]
+        }
+      }
+    },
     {
       "name": "Disable intake",
       "waypointRelativePos": 0.5,
@@ -50,7 +124,7 @@
     },
     {
       "name": "Enable shooter",
-      "waypointRelativePos": 0.35,
+      "waypointRelativePos": 0.7,
       "command": {
         "type": "parallel",
         "data": {
@@ -67,20 +141,20 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 5.0,
+    "maxVelocity": 3.5,
+    "maxAcceleration": 3.8,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1600.0
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 10.3,
+    "velocity": 0.0,
+    "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Pick chain",
   "previewStartingState": {
-    "rotation": -59.0,
+    "rotation": -53.84000000000003,
     "velocity": 0
   },
   "useDefaultConstraints": true

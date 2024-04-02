@@ -48,12 +48,12 @@
     },
     {
       "anchor": {
-        "x": 4.2276993378494865,
-        "y": 5.543495501559868
+        "x": 4.084255444841909,
+        "y": 5.572019226189894
       },
       "prevControl": {
-        "x": 4.533678273519742,
-        "y": 4.7152476629895395
+        "x": 4.390234380512164,
+        "y": 4.7437713876195655
       },
       "nextControl": null,
       "isLocked": false,
@@ -72,19 +72,7 @@
       "rotateFast": false
     }
   ],
-  "constraintZones": [
-    {
-      "name": "Slow",
-      "minWaypointRelativePos": 1.7,
-      "maxWaypointRelativePos": 3.0,
-      "constraints": {
-        "maxVelocity": 4.0,
-        "maxAcceleration": 4.0,
-        "maxAngularVelocity": 720.0,
-        "maxAngularAcceleration": 1600.0
-      }
-    }
-  ],
+  "constraintZones": [],
   "eventMarkers": [
     {
       "name": "Intake",
@@ -161,6 +149,12 @@
               "data": {
                 "name": "Enable shooter"
               }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Set pivot far high"
+              }
             }
           ]
         }
@@ -168,8 +162,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 5.0,
+    "maxVelocity": 3.5,
+    "maxAcceleration": 3.8,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1600.0
   },
