@@ -15,8 +15,8 @@
 #define TELE_DOUBTY 0.75f;
 
 #define LED_COUNT 110
-#define SEGMENTS 2
-#define SEGMENT_SIZES {60, 60, 39, 39}
+#define SEGMENTS 12
+#define SEGMENT_SIZES {20,20,20,20,20,20,13,13,13,13,13,13}
 
 
 

@@ -22,7 +22,7 @@ CANdleSensor::CANdleSensor(frc::TimedRobot *_robot, int _ledCount, int _segments
 CANdleSensor::CANdleSensor(frc::TimedRobot *_robot, int _ledCount, int _segments, std::vector<int> _segmentSizes, int _canID, std::string _canbus) :
     BaseSensor(_robot, std::string("ID ").append(std::to_string(_canID)).c_str()),
     candle(_canID, _canbus),
-    segmentSizes(_segmentSizes),//{60, 60, 39, 39}
+    segmentSizes(_segmentSizes),//{20,20,20,20,20,20,13,13,13,13,13,13}
     segments(_segments),
     ledCount(_ledCount)
 {
