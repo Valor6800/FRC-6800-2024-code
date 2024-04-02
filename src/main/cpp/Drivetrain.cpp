@@ -267,6 +267,10 @@ void Drivetrain::init()
     resetState();
 
     state.useCalculatedEstimator = true;
+
+    /*
+     * 3.8m/s, 5m/s^2, ~125lbs Apr. 2
+     */
     AutoBuilder::configureHolonomic(
         [this](){ 
             if (state.useCalculatedEstimator) {
@@ -511,7 +515,7 @@ void Drivetrain::assignOutputs()
     } else {
         drive(state.xSpeedMPS, state.ySpeedMPS, state.rotRPS, true);
     }
-    //driveRobotRelative(frc::ChassisSpeeds{6_mps});
+    // driveRobotRelative(frc::ChassisSpeeds{6_mps});
 
     if (frc::Timer::GetFPGATimestamp().to<double>() - teleopStart > TIME_TELEOP_VERT && frc::Timer::GetFPGATimestamp().to<double>() - teleopStart < TIME_TELEOP_VERT + 3) {
         operatorGamepad->setRumble(true);

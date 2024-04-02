@@ -57,7 +57,7 @@
       "minWaypointRelativePos": 1.4,
       "maxWaypointRelativePos": 2.0,
       "constraints": {
-        "maxVelocity": 4.0,
+        "maxVelocity": 2.5,
         "maxAcceleration": 3.5,
         "maxAngularVelocity": 720.0,
         "maxAngularAcceleration": 1600.0
@@ -150,11 +150,45 @@
           ]
         }
       }
+    },
+    {
+      "name": "Disable vision",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Set Estimator"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Enable vision",
+      "waypointRelativePos": 1.6,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Set Camera Estimator"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.5,
-    "maxAcceleration": 3.8,
+    "maxVelocity": 3.8,
+    "maxAcceleration": 5.0,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1600.0
   },
