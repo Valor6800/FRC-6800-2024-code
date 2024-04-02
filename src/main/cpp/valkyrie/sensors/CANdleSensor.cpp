@@ -74,7 +74,7 @@ void CANdleSensor::setAllSegments() {
 }
 
 void CANdleSensor::setSpecifiedSegments() {
-   int currentLed=0;
+   int currentLed=9;
     for (int i = 0; i<segments + 1; i++){
         SegmentSettings newSegment;
         newSegment.recentlyChanged = true;
@@ -86,7 +86,7 @@ void CANdleSensor::setSpecifiedSegments() {
             newSegment.endLed = 8;
         }
         else{
-            newSegment.startLed = (currentLed+9);
+            newSegment.startLed = (newSegment.endLed);
             newSegment.endLed = currentLed+segmentSizes[i] - 1;
             currentLed=newSegment.endLed+1;
         }
