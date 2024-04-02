@@ -15,6 +15,7 @@
 #include <frc2/command/WaitCommand.h>
 
 #define INTAKE_FORWARD_POWER 0.8f
+#define INTAKE_EXTRA_FORWARD_POWER 0.9f
 #define INTAKE_REVERSE_POWER -1.0f
 
 #define FEEDER_FORWARD_POWER 0.3f
@@ -139,7 +140,7 @@ void Feeder::init()
 {
     resetState();
 
-    intakeMotor.setMaxCurrent(60);
+    intakeMotor.setMaxCurrent(80);
     intakeMotor.setVoltageCompensation(10);
 
     intakeBackMotor.setMaxCurrent(60);
@@ -236,7 +237,7 @@ void Feeder::assignOutputs()
             intakeMotor.setPower(0);
             intakeBackMotor.setPower(0);
         } else {
-            intakeMotor.setPower(INTAKE_FORWARD_POWER);
+            intakeMotor.setPower(INTAKE_EXTRA_FORWARD_POWER);
             intakeBackMotor.setPower(INTAKE_FORWARD_POWER);
         }
     } else if(state.intakeState == ROLLER_STATE::OUTTAKE) {

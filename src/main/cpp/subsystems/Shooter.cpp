@@ -45,8 +45,8 @@
 #define AMP_POWER 0.0f // rps
 #define LEFT_SHOOT_POWER 72.0f // rps
 #define RIGHT_SHOOT_POWER 36.0f // rps
-#define LEFT_BLOOP_POWER 32.0f
-#define RIGHT_BLOOP_POWER 27.0f
+#define LEFT_BLOOP_POWER 45.0f
+#define RIGHT_BLOOP_POWER 35.0f
 
 Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive, frc::AnalogTrigger* _feederBeamBreak, frc::AnalogTrigger* _feederBeamBreak2, valor::CANdleSensor* _leds) :
     valor::BaseSubsystem(_robot, "Shooter"),
