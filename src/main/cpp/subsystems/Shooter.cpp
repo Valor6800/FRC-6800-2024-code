@@ -43,8 +43,8 @@
 #define AUTO_SUBWOOFER_ANG -32.0_deg
 
 #define AMP_POWER 0.0f // rps
-#define LEFT_SHOOT_POWER 60.0f // rps
-#define RIGHT_SHOOT_POWER 30.0f // rps
+#define LEFT_SHOOT_POWER 72.0f // rps
+#define RIGHT_SHOOT_POWER 36.0f // rps
 #define LEFT_BLOOP_POWER 32.0f
 #define RIGHT_BLOOP_POWER 27.0f
 
@@ -406,14 +406,14 @@ void Shooter::assignOutputs()
         setPivotPosition(state.tuningSetpoint);
     } else if(state.pivotState == PIVOT_STATE::SUBWOOFER){
         setPivotPosition(SUBWOOFER_ANG.to<double>());
+    } else if (state.pivotState == PIVOT_STATE::ORBIT){
+        setPivotPosition(POOP_ANG.to<double>());
     } else if((state.pivotState == PIVOT_STATE::LOAD || state.otherSide) && !state.ignoreLoad){
         setPivotPosition(INTAKE_ANG.to<double>());
     } else if(state.pivotState == PIVOT_STATE::PODIUM){
         setPivotPosition(PODIUM_ANG.to<double>());
     } else if(state.pivotState == PIVOT_STATE::WING){
         setPivotPosition(WING_ANG.to<double>());
-    } else if (state.pivotState == PIVOT_STATE::ORBIT){
-        setPivotPosition(POOP_ANG.to<double>());
     } else if(state.pivotState == PIVOT_STATE::TRACKING || (state.ignoreLoad && !state.otherSide)){
         setPivotPosition(state.calculatingPivotingAngle.to<double>());
     } else if(state.pivotState == PIVOT_STATE::AMP){
