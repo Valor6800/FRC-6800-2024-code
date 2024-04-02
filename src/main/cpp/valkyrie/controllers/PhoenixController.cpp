@@ -393,6 +393,10 @@ void PhoenixController::InitSendable(wpi::SendableBuilder& builder)
         [this] { return getPosition(); },
         nullptr);
     builder.AddDoubleProperty(
+        "Position (degrees)", 
+        [this] { return getPosition() * 360.0; },
+        nullptr);
+    builder.AddDoubleProperty(
         "Speed", 
         [this] { return getSpeed(); },
         nullptr);

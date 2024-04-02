@@ -36,7 +36,7 @@
 #define PREAMP_ANG -12.5_deg // TODO: kill
 #define PODIUM_ANG -53.0_deg
 #define WING_ANG -63.5_deg
-#define POOP_ANG -42.0_deg
+#define POOP_ANG -46.0_deg
 #define AUTO_NEAR_ANG -46.0_deg
 #define AUTO_FAR_LOW_ANG -62.00_deg
 #define AUTO_FAR_HIGH_ANG -58.0_deg
@@ -45,8 +45,8 @@
 #define AMP_POWER 0.0f // rps
 #define LEFT_SHOOT_POWER 72.0f // rps
 #define RIGHT_SHOOT_POWER 36.0f // rps
-#define LEFT_BLOOP_POWER 45.0f
-#define RIGHT_BLOOP_POWER 35.0f
+#define LEFT_BLOOP_POWER 35.0f
+#define RIGHT_BLOOP_POWER 30.0f
 
 Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive, frc::AnalogTrigger* _feederBeamBreak, frc::AnalogTrigger* _feederBeamBreak2, valor::CANdleSensor* _leds) :
     valor::BaseSubsystem(_robot, "Shooter"),
