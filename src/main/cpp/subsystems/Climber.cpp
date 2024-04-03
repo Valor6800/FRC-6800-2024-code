@@ -14,8 +14,8 @@
 #include <frc2/command/WaitCommand.h>
 #include <frc/PWM.h>
 
-#define FORWARD_LIMIT 18.0f
-#define REVERSE_LIMIT 0.0f
+#define FORWARD_LIMIT 16.5f
+#define REVERSE_LIMIT 1.0f
 #define EXTENDED_POS 0.0f
 #define RETRACTED_POS 0.0f
 #define RESTING_POS 0.0f
@@ -33,11 +33,13 @@
 #define LATCH_POS 0.55f
 #define UNLATCH_POS 1.0f
 
-Climber::Climber(frc::TimedRobot *_robot) : valor::BaseSubsystem(_robot, "Climber"),
-    climbMotors(nullptr)
+Climber::Climber(frc::TimedRobot *_robot, valor::CANdleSensor *_leds) : valor::BaseSubsystem(_robot, "Climber"),
+    climbMotors(nullptr),
+    leds(_leds)
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
+    table->PutBoolean("Climber overriding leds", false);
 }
 
 Climber::~Climber()
@@ -74,7 +76,7 @@ void Climber::init()
         "baseCAN"
     );
     climbMotors->setupFollower(CANIDs::CLIMBER_FOLLOW, climberI);
-    climbMotors->setForwardLimit(FORWARD_LIMIT);
+    climbMotors->setRange(0, REVERSE_LIMIT, FORWARD_LIMIT);
     climbMotors->enableFOC(true);
 
     servo = new frc::PWM(0, true);
@@ -105,12 +107,21 @@ void Climber::assessInputs()
     }
     if (operatorGamepad->rightStickYActive()){
         state.climbState = MANUAL;
-    }    
+        leds->setAnimation(valor::CANdleSensor::AnimationType::Rainbow, valor::CANdleSensor::RGBColor{0, 0, 0});
+    } else {
+        leds->clearAnimation();
+    }
 }
 
 void Climber::analyzeDashboard()
 {
-
+    if (climbMotors->getPosition() > 1.0) {
+        table->PutBoolean("Climber overriding leds", true);
+        leds->setColor(0, valor::CANdleSensor::VALOR_PURPLE);
+        leds->setColor(1, valor::CANdleSensor::VALOR_PURPLE);
+    } else {
+        table->PutBoolean("Climber overriding leds", false);
+    }
 }
 
 void Climber::assignOutputs()

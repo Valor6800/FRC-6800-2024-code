@@ -23,7 +23,7 @@ class Climber : public valor::BaseSubsystem
 {
 public:
 
-    Climber(frc::TimedRobot *robot);
+    Climber(frc::TimedRobot *robot, valor::CANdleSensor *_leds);
 
     ~Climber();
 
@@ -63,4 +63,5 @@ private:
     valor::PhoenixController *climbMotors;
     frc::PWM *servo;
     Drivetrain *drive;
+    valor::CANdleSensor *leds;
 };

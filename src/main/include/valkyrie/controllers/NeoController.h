@@ -62,6 +62,8 @@ private:
     rev::SparkRelativeEncoder encoder;
     rev::SparkAbsoluteEncoder extEncoder;
 
+    rev::REVLibError lastError;
+
     int currentPidSlot;
 };
 }

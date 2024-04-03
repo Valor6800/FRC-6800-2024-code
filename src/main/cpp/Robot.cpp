@@ -14,7 +14,7 @@
 #define TELE_DOUBTX 0.75f;
 #define TELE_DOUBTY 0.75f;
 
-#define LED_COUNT 110
+#define LED_COUNT 86
 #define SEGMENTS 2
 
 Robot::Robot() : 
@@ -25,7 +25,7 @@ Robot::Robot() :
     stageBeamBreak(AnalogPorts::STAGE_BEAM_BREAK_PORT),  
     shooter(this, &drivetrain, &feederBeamBreak, &stageBeamBreak, &leds),
     feeder(this, &feederBeamBreak, &stageBeamBreak, &leds),
-    climber(this)
+    climber(this, &leds)
 {
     frc::TimedRobot();
     feederBeamBreak.SetLimitsVoltage(4, 14);

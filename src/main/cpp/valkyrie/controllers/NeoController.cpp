@@ -162,7 +162,7 @@ double NeoController::getAbsEncoderPosition()
  */
 void NeoController::setPosition(double position)
 {
-    pidController.SetReference(position, rev::CANSparkMax::ControlType::kSmartMotion, currentPidSlot);
+    lastError = pidController.SetReference(position, rev::CANSparkMax::ControlType::kSmartMotion, currentPidSlot);
 }
 
 void NeoController::setProfile(int profile)
@@ -175,7 +175,7 @@ void NeoController::setProfile(int profile)
  */
 void NeoController::setSpeed(double speed)
 {
-    pidController.SetReference(speed / sensorToMech * 60.0, rev::CANSparkMax::ControlType::kVelocity, currentPidSlot);
+    lastError = pidController.SetReference(speed / sensorToMech * 60.0, rev::CANSparkMax::ControlType::kVelocity, currentPidSlot);
 }
 
 void NeoController::setPower(double power)
@@ -185,7 +185,7 @@ void NeoController::setPower(double power)
 
 void NeoController::setVoltage(double voltage)
 {
-    pidController.SetReference(voltage, rev::CANSparkMax::ControlType::kVoltage, currentPidSlot);
+    lastError = pidController.SetReference(voltage, rev::CANSparkMax::ControlType::kVoltage, currentPidSlot);
 }
 
 void NeoController::setNeutralMode(valor::NeutralMode mode){  
@@ -231,6 +231,11 @@ void NeoController::InitSendable(wpi::SendableBuilder& builder)
     builder.AddStringProperty(
         "NeutralMode",
         [this] { return motor->GetIdleMode() == rev::CANSparkMax::IdleMode::kBrake ? "Brake" : "Coast";},
+        nullptr
+    );
+    builder.AddIntegerProperty(
+        "Last error",
+        [this] { return (int)lastError; },
         nullptr
     );
     // TODO: Find a method to track undervoltage in rev

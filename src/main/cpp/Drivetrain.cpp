@@ -526,20 +526,25 @@ void Drivetrain::assignOutputs()
 
 frc::Pose2d Drivetrain::getPoseFromSpeaker() {
     valor::AprilTagsSensor* tagSensor = aprilTagSensors[0];
+    auto climberTable = nt::NetworkTableInstance::GetDefault().GetTable("Climber");
+    bool ledsAvailable = !climberTable->GetBoolean("Climber overriding leds", false);
     table->PutNumber("translation norm", tagSensor->getPoseFromAprilTag().Translation().Norm().to<double>());
     if (tagSensor->getPoseFromAprilTag().Translation().Norm() < 4.7_m) {
         if (frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue && (tagSensor->getTagID() == 7 || tagSensor->getTagID() == 8)) {
-            leds->setColor(0, valor::CANdleSensor::LIGHT_BLUE);
+            if (ledsAvailable)
+                leds->setColor(0, valor::CANdleSensor::LIGHT_BLUE);
             table->PutBoolean("good to shoot", true);
             return tagSensor->getSensor().ToPose2d();
         } else if (frc::DriverStation::GetAlliance() == frc::DriverStation::kRed && (tagSensor->getTagID() == 4 || tagSensor->getTagID() == 3)) {
-            leds->setColor(0, valor::CANdleSensor::LIGHT_BLUE);
+            if (ledsAvailable)
+                leds->setColor(0, valor::CANdleSensor::LIGHT_BLUE);
             table->PutBoolean("good to shoot", true);
             return tagSensor->getSensor().ToPose2d();
         }
         table->PutBoolean("good to shoot", false);
     }
-    leds->setColor(0, valor::CANdleSensor::RED);
+    if (ledsAvailable)
+        leds->setColor(0, valor::CANdleSensor::RED);
     return calculatedEstimator->GetEstimatedPosition();
 }
 

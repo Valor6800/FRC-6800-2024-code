@@ -344,11 +344,15 @@ void Shooter::analyzeDashboard()
     calculatePivotAngle();
 
 
-    if(leftFlywheelMotor.getSpeed() > 53){
-        leds->setColor(1, valor::CANdleSensor::LIGHT_BLUE);
+    auto climberTable = nt::NetworkTableInstance::GetDefault().GetTable("Climber");
+    bool ledsAvailable = !climberTable->GetBoolean("Climber overriding leds", false);
+    if (ledsAvailable) {
+        if(leftFlywheelMotor.getSpeed() > 53){
+            leds->setColor(1, valor::CANdleSensor::LIGHT_BLUE);
 
-    }else{
-        leds->setColor(1, valor::CANdleSensor::RED);
+        }else{
+            leds->setColor(1, valor::CANdleSensor::RED);
+        }
     }
 
     int color = 0x000000;

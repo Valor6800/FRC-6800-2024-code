@@ -60,12 +60,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": null
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "Enable full feeder"
@@ -81,12 +75,6 @@
           "type": "path",
           "data": {
             "pathName": "A-A3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": null
           }
         },
         {
