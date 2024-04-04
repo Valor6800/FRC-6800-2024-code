@@ -14,7 +14,8 @@
 
 #define PIVOT_ROTATE_K_VEL 0.6f
 #define PIVOT_ROTATE_K_ACC 50.0f
-#define PIVOT_ROTATE_K_P 125.0f //1.25f
+#define PIVOT_ROTATE_K_P 110.0f //125f
+#define PIVOT_ROTATE_K_D 0.1f 
 #define PIVOT_ROTATE_K_ERROR 0.0f
 #define PIVOT_ROTATE_K_AFF 0.40f
 #define PIVOT_ROTATE_K_S 0.35f
@@ -239,6 +240,7 @@ void Shooter::init()
     pivotPID.maxVelocity = PIVOT_ROTATE_K_VEL;
     pivotPID.maxAcceleration = PIVOT_ROTATE_K_ACC;
     pivotPID.P = PIVOT_ROTATE_K_P;
+    pivotPID.D = PIVOT_ROTATE_K_D;
     pivotPID.error = PIVOT_ROTATE_K_ERROR;
     pivotPID.aFF = PIVOT_ROTATE_K_AFF;
     pivotPID.maxJerk = PIVOT_ROTATE_K_JERK;
