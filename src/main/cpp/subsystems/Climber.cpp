@@ -153,7 +153,10 @@ void Climber::assignOutputs()
     }
 
     if (state.climbState == MANUAL){
-        climbMotors->setPower(operatorGamepad->rightStickY(2));
+        double opIn = operatorGamepad->rightStickY(2);
+        if (state.latchState == UNLATCH || opIn < 0) {
+            climbMotors->setPower(opIn);
+        }
     }
     if (table->GetBoolean("Climber tuning", false)) { 
         double st = table->GetNumber("Servo Pos", 500) / 1000000;
