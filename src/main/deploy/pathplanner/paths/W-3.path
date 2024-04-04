@@ -48,32 +48,16 @@
     },
     {
       "anchor": {
-        "x": 5.272270547368452,
-        "y": 3.9937117712073262
+        "x": 4.550031246619206,
+        "y": 4.879724760389915
       },
       "prevControl": {
-        "x": 6.0530923930175105,
-        "y": 4.426884547717928
-      },
-      "nextControl": {
-        "x": 4.572375270876667,
-        "y": 3.605434237895503
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 3.4907449995080166,
-        "y": 2.3111757935227595
-      },
-      "prevControl": {
-        "x": 4.156363628042571,
-        "y": 2.976794422057313
+        "x": 4.804161125104658,
+        "y": 3.6320710404731003
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Score wall"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
@@ -86,8 +70,8 @@
   "constraintZones": [
     {
       "name": "Account for flywheels",
-      "minWaypointRelativePos": 3.1,
-      "maxWaypointRelativePos": 4.0,
+      "minWaypointRelativePos": 2.55,
+      "maxWaypointRelativePos": 3.0,
       "constraints": {
         "maxVelocity": 4.0,
         "maxAcceleration": 4.0,
@@ -139,7 +123,7 @@
     },
     {
       "name": "Disable intake",
-      "waypointRelativePos": 2.5,
+      "waypointRelativePos": 2.25,
       "command": {
         "type": "sequential",
         "data": {
@@ -156,7 +140,7 @@
     },
     {
       "name": "Enable shooter",
-      "waypointRelativePos": 2.8,
+      "waypointRelativePos": 2.4,
       "command": {
         "type": "parallel",
         "data": {
@@ -180,7 +164,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -48.5,
+    "rotation": -9.149999999999977,
     "rotateFast": false
   },
   "reversed": false,
