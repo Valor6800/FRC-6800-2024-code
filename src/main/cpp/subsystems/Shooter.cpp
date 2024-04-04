@@ -37,6 +37,7 @@
 #define PODIUM_ANG -53.0_deg
 #define WING_ANG -63.5_deg
 #define POOP_ANG -46.0_deg
+#define BACKSHOT_ANG 69.0_deg
 #define AUTO_NEAR_ANG -46.0_deg
 #define AUTO_FAR_LOW_ANG -62.00_deg
 #define AUTO_FAR_WALL_ANG -61.2_deg
@@ -312,7 +313,10 @@ void Shooter::assessInputs()
             state.pivotState = PIVOT_STATE::AMP;
     } else if (driverGamepad->GetXButton()) {
         state.pivotState = PIVOT_STATE::ORBIT;
-    } else {
+    } else if (driverGamepad->GetStartButton()) {
+        state.pivotState = PIVOT_STATE::BACKSHOT;
+    } 
+    else {
         state.pivotState = PIVOT_STATE::LOAD;
     }
 }
@@ -430,6 +434,8 @@ void Shooter::assignOutputs()
         setPivotPosition(state.calculatingPivotingAngle.to<double>());
     } else if(state.pivotState == PIVOT_STATE::AMP){
         setPivotPosition(AMP_ANG.to<double>());
+    } else if (state.pivotState == PIVOT_STATE::BACKSHOT) {
+        setPivotPosition(BACKSHOT_ANG.to<double>()); 
     } else if (state.pivotState == PIVOT_STATE::AUTO_FAR_LOW) {
         setPivotPosition(AUTO_FAR_LOW_ANG.to<double>());
     } else if (state.pivotState == PIVOT_STATE::AUTO_FAR_WALL) {

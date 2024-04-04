@@ -56,6 +56,7 @@ public:
         ORBIT,
         TUNING,
         LOAD,
+        BACKSHOT,
         AUTO_FAR_LOW,
         AUTO_FAR_HIGH,
         AUTO_FAR_WALL,

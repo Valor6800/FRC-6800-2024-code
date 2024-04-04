@@ -369,6 +369,8 @@ void Drivetrain::assessInputs()
     } else {
         state.manualFlag = false;
     }
+    
+    state.backshot = driverGamepad->GetStartButton();
 
     state.ampAlign = driverGamepad->GetBButton();
     state.isHeadingTrack = (driverGamepad->leftTriggerActive() && !driverGamepad->GetAButton());
@@ -567,10 +569,13 @@ void Drivetrain::getSpeakerLockAngleRPS(){
     double redMultiplier = frc::DriverStation::GetAlliance() == frc::DriverStation::kRed ? -1.0 : 1.0;
     double speakerXOffset = table->GetNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET) * redMultiplier;
     double speakerYOffset = table->GetNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET);
+
     state.targetAngle = units::radian_t(atan2(
         (roboYPos.to<double>() - (SPEAKER_Y.to<double>() + speakerYOffset)),
         (roboXPos.to<double>() - (speakerX + speakerXOffset))
     ));
+    if (state.backshot)
+        state.targetAngle += 180_deg;
 }
 
 void Drivetrain::getAmpLockAngle(){

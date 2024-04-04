@@ -168,6 +168,8 @@ public:
           int pitSequenceCommandIndex;
 
           double prevError;
+
+          bool backshot;
      } state;
      
      
