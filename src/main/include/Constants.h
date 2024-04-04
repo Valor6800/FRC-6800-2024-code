@@ -282,11 +282,45 @@ namespace Constants {
             }; // Temp value; TODO: Change it
         }};
 
+        static frc::Pose3d mangoCameraPosition(){ switch (teamNumber){
+            case ALPHA_TEAM_NUMBER: return frc::Pose3d{
+                4_in,
+                -3.5_in,
+                21.75_in,
+                frc::Rotation3d{
+                    0_deg,
+                    32.7_deg,
+                    0_deg
+                }
+            }; // Temp value; TODO: Change it
+            case SIDE_SWIPE_TEAM_NUMBER: return frc::Pose3d{
+                4_in,
+                -3.5_in,
+                21.75_in,
+                frc::Rotation3d{
+                    0_deg,
+                    32.7_deg,
+                    0_deg
+                }
+            }; // Temp value; TODO: Change it
+            default: return frc::Pose3d{
+                4_in,
+                -3.5_in,
+                21.75_in,
+                frc::Rotation3d{
+                    0_deg,
+                    32.7_deg,
+                    0_deg
+                }
+            };
+        }};
+
         static std::vector<std::pair<const char*, frc::Pose3d>> aprilCameras{
                     std::pair("limelight-mint", mintCameraPosition()),
                     std::pair("limelight-lemon", lemonCameraPosition()),
                     std::pair("limelight-choco", chocolateCameraPosition()),
-                    std::pair("limelight-vanilla", vanillaCameraPosition())
+                    std::pair("limelight-vanilla", vanillaCameraPosition()),
+                    std::pair("limelight-mango", mangoCameraPosition())
         };
 }
 #pragma GCC diagnostic pop
