@@ -39,6 +39,7 @@
 #define POOP_ANG -46.0_deg
 #define AUTO_NEAR_ANG -46.0_deg
 #define AUTO_FAR_LOW_ANG -62.00_deg
+#define AUTO_FAR_WALL_ANG -61.2_deg
 #define AUTO_FAR_HIGH_ANG -58.0_deg
 #define AUTO_SUBWOOFER_ANG -32.0_deg
 
@@ -170,6 +171,13 @@ Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive, frc::AnalogTrigger
             [this]() {
                 // shooter->state.isShooting = true;
                 state.pivotState = Shooter::PIVOT_STATE::AUTO_FAR_LOW;
+            }
+        )
+    ).ToPtr());
+    pathplanner::NamedCommands::registerCommand("Set pivot far wall", std::move(
+        frc2::InstantCommand(
+            [this]() {
+                state.pivotState = Shooter::PIVOT_STATE::AUTO_FAR_WALL;
             }
         )
     ).ToPtr());
@@ -424,6 +432,8 @@ void Shooter::assignOutputs()
         setPivotPosition(AMP_ANG.to<double>());
     } else if (state.pivotState == PIVOT_STATE::AUTO_FAR_LOW) {
         setPivotPosition(AUTO_FAR_LOW_ANG.to<double>());
+    } else if (state.pivotState == PIVOT_STATE::AUTO_FAR_WALL) {
+        setPivotPosition(AUTO_FAR_WALL_ANG.to<double>());
     } else if (state.pivotState == PIVOT_STATE::AUTO_FAR_HIGH) {
         setPivotPosition(AUTO_FAR_HIGH_ANG.to<double>());
     } else if (state.pivotState == PIVOT_STATE::AUTO_NEAR) {

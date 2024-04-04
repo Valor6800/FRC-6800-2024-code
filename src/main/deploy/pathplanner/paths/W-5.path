@@ -20,24 +20,24 @@
         "y": 0.66
       },
       "prevControl": {
-        "x": 7.931545677978508,
-        "y": 0.714953746698582
+        "x": 7.49368184705694,
+        "y": 0.7843019958418668
       },
       "nextControl": {
-        "x": 8.359660420569945,
-        "y": 0.5928746513468716
+        "x": 8.658534073824903,
+        "y": 0.554682190445463
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.03,
-        "y": 2.8221933880933743
+        "x": 3.4907449995080166,
+        "y": 2.3111757935227595
       },
       "prevControl": {
-        "x": 4.734672181696794,
-        "y": 1.9992632349992712
+        "x": 5.195417181204811,
+        "y": 1.4882456404286564
       },
       "nextControl": null,
       "isLocked": false,
@@ -131,7 +131,7 @@
       "name": "Feed",
       "waypointRelativePos": 0.1,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {
@@ -171,7 +171,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -45.0,
+    "rotation": -47.0,
     "rotateFast": false
   },
   "reversed": false,

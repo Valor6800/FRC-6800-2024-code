@@ -58,6 +58,7 @@ public:
         LOAD,
         AUTO_FAR_LOW,
         AUTO_FAR_HIGH,
+        AUTO_FAR_WALL,
         AUTO_NEAR,
         FORCE_INTAKE,
         AUTO_SUBWOOFER,
