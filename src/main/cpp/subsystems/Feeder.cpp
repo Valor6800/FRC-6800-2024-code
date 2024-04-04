@@ -28,7 +28,7 @@
 
 #define USE_UNJAM true
 
-Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _feederBeamBreak, frc::AnalogTrigger* _feederBeamBreak2, valor::CANdleSensor* _leds) :
+Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _feederBeamBreak, frc::AnalogTrigger* _feederBeamBreak2, valor::CANdleSensor* _leds, Shooter *_shooter) :
     valor::BaseSubsystem(_robot, "Feeder"),
     intakeMotor(CANIDs::INTERNAL_INTAKE, valor::NeutralMode::Coast, true),
     intakeBackMotor(CANIDs::INTERNAL_INTAKE_V2, valor::NeutralMode::Coast, true),
@@ -37,7 +37,8 @@ Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _feederBeamBreak, fr
     feederDebounceSensor(_robot, "FeederBanner"),
     stageBeamBreak(_feederBeamBreak2),
     stageDebounceSensor(_robot, "StageBanner"),
-    leds(_leds)
+    leds(_leds),
+    shooter(_shooter)
 {
     frc2::CommandScheduler::GetInstance().RegisterSubsystem(this);
     init();
@@ -246,8 +247,10 @@ void Feeder::assignOutputs()
             intakeMotor.setPower(0);
             intakeBackMotor.setPower(0);
         } else {
-            intakeMotor.setPower(INTAKE_EXTRA_FORWARD_POWER);
-            intakeBackMotor.setPower(INTAKE_FORWARD_POWER);
+            if (shooter->state.pivotLowered) {
+                intakeMotor.setPower(INTAKE_EXTRA_FORWARD_POWER);
+                intakeBackMotor.setPower(INTAKE_FORWARD_POWER);
+            }
         }
     } else if(state.intakeState == ROLLER_STATE::OUTTAKE) {
         intakeMotor.setPower(INTAKE_REVERSE_POWER);

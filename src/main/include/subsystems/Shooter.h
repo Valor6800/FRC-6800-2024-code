@@ -82,6 +82,7 @@ public:
         bool insideWing;
 
         bool reverseFlywheels;
+        bool pivotLowered;
     } state;
 
 private:

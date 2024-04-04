@@ -45,6 +45,8 @@
 #define AUTO_FAR_HIGH_ANG -58.0_deg
 #define AUTO_SUBWOOFER_ANG -32.0_deg
 
+#define INTAKE_PIVOT_THRESHOLD -64.0_deg
+
 #define AMP_POWER 0.0f // rps
 #define LEFT_SHOOT_POWER 72.0f // rps
 #define RIGHT_SHOOT_POWER 46.0f // rps
@@ -383,6 +385,7 @@ void Shooter::analyzeDashboard()
     }
     leds->setLED(4, color);
 
+    state.pivotLowered = pivotMotors->getPosition() * 360 < INTAKE_PIVOT_THRESHOLD.to<double>();
 }
 
 void Shooter::setPivotPosition(double angle)
