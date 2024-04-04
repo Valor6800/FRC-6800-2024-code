@@ -132,6 +132,12 @@
               "data": {
                 "name": "Disable shooter"
               }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Set pivot load"
+              }
             }
           ]
         }
