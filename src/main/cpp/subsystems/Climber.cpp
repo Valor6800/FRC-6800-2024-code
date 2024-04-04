@@ -154,7 +154,7 @@ void Climber::assignOutputs()
     if (state.climbState == MANUAL){
         climbMotors->setPower(operatorGamepad->rightStickY(2));
     }
-    //servo->SetPulseTime((units::microsecond_t) table->GetNumber("Servo Pos", 500));
+    servo->SetPulseTime(units::second_t{table->GetNumber("Servo Pos", 500) / 1000}); // Can't cast straight to microseconds
 }
 
 void Climber::InitSendable(wpi::SendableBuilder& builder)
