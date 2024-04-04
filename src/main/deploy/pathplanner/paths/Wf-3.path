@@ -3,73 +3,73 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.6571496566416553,
-        "y": 2.5422933728750343
+        "x": 0.7522949572447178,
+        "y": 4.417067566339995
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.3279340561172805,
-        "y": 1.9908045562731314
+        "x": 1.106274100098837,
+        "y": 3.3826863449444495
       },
       "isLocked": false,
-      "linkedName": "Score wall"
+      "linkedName": "Start wall"
     },
     {
       "anchor": {
-        "x": 5.989491868161977,
-        "y": 1.776585074169013
+        "x": 3.66,
+        "y": 2.54
       },
       "prevControl": {
-        "x": 4.8471347877383835,
-        "y": 1.602459184729517
+        "x": 3.241138013807559,
+        "y": 2.782655655401401
       },
       "nextControl": {
-        "x": 6.828082845354879,
-        "y": 1.9044088538627535
+        "x": 3.703264298354907,
+        "y": 2.514936071978687
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.956983533035354,
-        "y": 2.3111757935227595
+        "x": 5.136302164496221,
+        "y": 4.002956474381418
       },
       "prevControl": {
-        "x": 7.207320611326747,
-        "y": 2.067571134857762
+        "x": 4.667370959512892,
+        "y": 3.7122191272917537
       },
       "nextControl": {
-        "x": 8.638722589055117,
-        "y": 2.53270843870385
-      },
-      "isLocked": false,
-      "linkedName": "A4"
-    },
-    {
-      "anchor": {
-        "x": 5.989491868161977,
-        "y": 1.776585074169013
-      },
-      "prevControl": {
-        "x": 7.009194013613721,
-        "y": 1.781174106691385
-      },
-      "nextControl": {
-        "x": 4.270560617046407,
-        "y": 1.7688492549886028
+        "x": 5.598537323200772,
+        "y": 4.28954227277824
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.6571496566416553,
-        "y": 2.5422933728750343
+        "x": 7.743308459589892,
+        "y": 3.892020036292325
       },
       "prevControl": {
-        "x": 4.356096110171242,
-        "y": 2.112840123840294
+        "x": 6.79100989036328,
+        "y": 3.9006585323000014
+      },
+      "nextControl": {
+        "x": 8.287840539313205,
+        "y": 3.88708047390218
+      },
+      "isLocked": false,
+      "linkedName": "Mid"
+    },
+    {
+      "anchor": {
+        "x": 3.66,
+        "y": 2.54
+      },
+      "prevControl": {
+        "x": 5.237993899411222,
+        "y": 5.214012590187343
       },
       "nextControl": null,
       "isLocked": false,
@@ -78,15 +78,31 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.8,
-      "rotationDegrees": 16.79741173066853,
+      "waypointRelativePos": 2.8,
+      "rotationDegrees": -0.10938542079881429,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 0.2,
+      "rotationDegrees": -64.58721747420853,
       "rotateFast": false
     }
   ],
   "constraintZones": [
     {
+      "name": "Slow",
+      "minWaypointRelativePos": 0.2,
+      "maxWaypointRelativePos": 0.2,
+      "constraints": {
+        "maxVelocity": 0.25,
+        "maxAcceleration": 5.0,
+        "maxAngularVelocity": 720.0,
+        "maxAngularAcceleration": 1600.0
+      }
+    },
+    {
       "name": "Account for flywheels",
-      "minWaypointRelativePos": 3.3,
+      "minWaypointRelativePos": 3.85,
       "maxWaypointRelativePos": 4.0,
       "constraints": {
         "maxVelocity": 2.0,
@@ -98,8 +114,8 @@
   ],
   "eventMarkers": [
     {
-      "name": "Intake",
-      "waypointRelativePos": 0.8,
+      "name": "Enable shooter 1",
+      "waypointRelativePos": 0.0,
       "command": {
         "type": "sequential",
         "data": {
@@ -107,7 +123,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Enable intake"
+                "name": "Enable shooter"
               }
             }
           ]
@@ -115,48 +131,8 @@
       }
     },
     {
-      "name": "Stop shooting",
-      "waypointRelativePos": 0.3,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Disable full feeder"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "Disable shooter"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Disable intake",
-      "waypointRelativePos": 2.45,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Disable intake"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Enable shooter",
-      "waypointRelativePos": 2.9,
+      "name": "Enable shooter 2",
+      "waypointRelativePos": 3.6,
       "command": {
         "type": "parallel",
         "data": {
@@ -170,7 +146,65 @@
             {
               "type": "named",
               "data": {
+                "name": "Disable intake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
                 "name": "Set pivot far wall"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Enable intake",
+      "waypointRelativePos": 1.2,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Enable intake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Feed",
+      "waypointRelativePos": 0.2,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Enable full feeder"
+              }
+            },
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 0.2
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Disable full feeder"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Disable shooter"
               }
             }
           ]
@@ -190,9 +224,9 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Pick chain",
+  "folder": "SecondPick",
   "previewStartingState": {
-    "rotation": -42.0,
+    "rotation": -60.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

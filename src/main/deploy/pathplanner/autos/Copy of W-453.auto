@@ -20,13 +20,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Wf-5"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.2
+            "pathName": "Wf-4"
           }
         },
         {
@@ -38,7 +32,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "W-4"
+            "pathName": "W-5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Enable full feeder"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "W-3"
           }
         },
         {
