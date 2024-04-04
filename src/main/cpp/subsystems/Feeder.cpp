@@ -23,6 +23,9 @@
 #define FEEDER_REVERSE_POWER -0.5f
 #define FEEDER_UNJAM_POWER -0.2f
 
+#define FEEDER_FORWARD_VELOCITY 9.0f
+#define FEEDER_INTAKE_VELOCITY 3.0f
+
 #define USE_UNJAM true
 
 Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _feederBeamBreak, frc::AnalogTrigger* _feederBeamBreak2, valor::CANdleSensor* _leds) :
@@ -147,6 +150,12 @@ void Feeder::init()
     intakeBackMotor.setVoltageCompensation(10);
 
     feederMotor.setVoltageCompensation(10);
+    valor::PIDF pid = valor::PIDF();
+    pid.P = 0.0006;
+    pid.maxVelocity = 32;
+    pid.maxAcceleration = 100;
+    feederMotor.setPIDF(pid, 0);
+    feederMotor.setConversion(1.0, 1.0);
 
     feederDebounceSensor.setGetter([this] { return (!feederBeamBreak->GetInWindow()); });
     feederDebounceSensor.setRisingEdgeCallback([this] {
@@ -252,14 +261,14 @@ void Feeder::assignOutputs()
     }
     
     if (state.feederState == ROLLER_STATE::SHOOT) {
-        feederMotor.setPower(FEEDER_FORWARD_POWER);
+        feederMotor.setSpeed(FEEDER_FORWARD_VELOCITY);
     } else if(state.feederState == ROLLER_STATE::INTAKE) {
         if (state.feedTrip) {
-            feederMotor.setPower(0);
+            feederMotor.setSpeed(0);
         } else if (state.stageTrip) {
-            feederMotor.setPower(FEEDER_INTAKE_POWER);
+            feederMotor.setSpeed(FEEDER_INTAKE_VELOCITY);
         } else {
-            feederMotor.setPower(FEEDER_FORWARD_POWER);
+            feederMotor.setSpeed(FEEDER_FORWARD_VELOCITY);
         }
     } else if(state.feederState == ROLLER_STATE::OUTTAKE) {
         feederMotor.setPower(FEEDER_REVERSE_POWER);
