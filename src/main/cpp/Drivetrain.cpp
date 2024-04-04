@@ -1120,4 +1120,11 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
             [this] {return isWheelSlip(3);},
             nullptr
         );
+
+        // builder.AddBooleanProperty(
+        //     "B***k shot",
+        //     [this] {return state.backshot;}
+        //     nullptr
+        
+        // )
     }

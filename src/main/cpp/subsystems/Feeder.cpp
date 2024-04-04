@@ -154,7 +154,6 @@ void Feeder::init()
         feederMotor.setPower(0);
         intakeMotor.setPower(0);
         intakeBackMotor.setPower(0);
-        driverGamepad->setRumble(true);
         // leds->setAnimation(0, valor::CANdleSensor::AnimationType::Rainbow, valor::CANdleSensor::RGBColor(255,0,0));
     });
     stageDebounceSensor.setGetter([this] { return (!stageBeamBreak->GetInWindow()); });
@@ -163,6 +162,7 @@ void Feeder::init()
         feederMotor.setPower(FEEDER_INTAKE_POWER);
         intakeMotor.setPower(INTAKE_FORWARD_POWER * .5);
         intakeBackMotor.setPower(INTAKE_FORWARD_POWER * .5);
+        driverGamepad->setRumble(true);
     });
 
     // intakeDebounceSensor.setGetter([this] { return !intakeBeamBreak->GetInWindow(); });
