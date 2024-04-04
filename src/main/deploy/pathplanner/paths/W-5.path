@@ -32,12 +32,12 @@
     },
     {
       "anchor": {
-        "x": 3.4907449995080166,
-        "y": 2.3111757935227595
+        "x": 3.66,
+        "y": 2.54
       },
       "prevControl": {
-        "x": 5.195417181204811,
-        "y": 1.4882456404286564
+        "x": 5.364672181696793,
+        "y": 1.717069846905897
       },
       "nextControl": null,
       "isLocked": false,
@@ -116,6 +116,12 @@
               "data": {
                 "name": "Disable intake"
               }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Set pivot far wall"
+              }
             }
           ]
         }
@@ -182,7 +188,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -48.5,
+    "rotation": -42.0,
     "rotateFast": false
   },
   "reversed": false,

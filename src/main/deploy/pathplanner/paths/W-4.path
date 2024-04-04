@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.4907449995080166,
-        "y": 2.3111757935227595
+        "x": 3.6571496566416553,
+        "y": 2.5422933728750343
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.161529398983642,
-        "y": 1.7596869769208565
+        "x": 4.3279340561172805,
+        "y": 1.9908045562731314
       },
       "isLocked": false,
       "linkedName": "Score wall"
@@ -64,12 +64,12 @@
     },
     {
       "anchor": {
-        "x": 3.4907449995080166,
-        "y": 2.3111757935227595
+        "x": 3.6571496566416553,
+        "y": 2.5422933728750343
       },
       "prevControl": {
-        "x": 4.189691453037603,
-        "y": 1.881722544488019
+        "x": 4.356096110171242,
+        "y": 2.112840123840294
       },
       "nextControl": null,
       "isLocked": false,
@@ -166,6 +166,12 @@
               "data": {
                 "name": "Enable shooter"
               }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Set pivot far wall"
+              }
             }
           ]
         }
@@ -180,13 +186,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -48.5,
+    "rotation": -42.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Pick chain",
   "previewStartingState": {
-    "rotation": -45.0,
+    "rotation": -42.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

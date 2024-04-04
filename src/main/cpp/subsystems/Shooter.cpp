@@ -41,7 +41,7 @@
 #define BACKSHOT_ANG 69.0_deg
 #define AUTO_NEAR_ANG -46.0_deg
 #define AUTO_FAR_LOW_ANG -62.00_deg
-#define AUTO_FAR_WALL_ANG -61.2_deg
+#define AUTO_FAR_WALL_ANG -60.0_deg
 #define AUTO_FAR_HIGH_ANG -58.0_deg
 #define AUTO_SUBWOOFER_ANG -32.0_deg
 
