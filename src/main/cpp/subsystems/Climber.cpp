@@ -27,8 +27,8 @@
 #define CLIMB_K_AFF 0.00f
 #define CONVERSION 14.72f
 
-#define UNLATCH_PULSE_TIME 1000_us
-#define LATCH_PULSE_TIME 2200_us
+#define UNLATCH_PULSE_TIME 2500_us
+#define LATCH_PULSE_TIME 1900_us
 
 #define LATCH_POS 0.55f
 #define UNLATCH_POS 1.0f
@@ -154,7 +154,9 @@ void Climber::assignOutputs()
     if (state.climbState == MANUAL){
         climbMotors->setPower(operatorGamepad->rightStickY(2));
     }
-    servo->SetPulseTime(units::second_t{table->GetNumber("Servo Pos", 500) / 1000}); // Can't cast straight to microseconds
+    double st = table->GetNumber("Servo Pos", 500) / 1000000;
+    if (servo != nullptr)
+        servo->SetPulseTime(units::second_t{st}); // Can't cast straight to microseconds
 }
 
 void Climber::InitSendable(wpi::SendableBuilder& builder)
