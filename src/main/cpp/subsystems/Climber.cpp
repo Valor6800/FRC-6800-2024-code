@@ -82,6 +82,7 @@ void Climber::init()
     servo = new frc::PWM(0, true);
     servo->SetBounds(2000_us, 3_us, 1000_us, 3_us, 500_us);
     table->PutNumber("Servo Pos", 500);
+    table->PutBoolean("Climber tuning", false);
     state.climbState = DISABLE;
     state.latchState = LATCH;
 
@@ -154,9 +155,11 @@ void Climber::assignOutputs()
     if (state.climbState == MANUAL){
         climbMotors->setPower(operatorGamepad->rightStickY(2));
     }
-    double st = table->GetNumber("Servo Pos", 500) / 1000000;
-    if (servo != nullptr)
-        servo->SetPulseTime(units::second_t{st}); // Can't cast straight to microseconds
+    if (table->GetBoolean("Climber tuning", false)) { 
+        double st = table->GetNumber("Servo Pos", 500) / 1000000;
+        if (servo != nullptr)
+            servo->SetPulseTime(units::second_t{st}); // Can't cast straight to microseconds
+    }
 }
 
 void Climber::InitSendable(wpi::SendableBuilder& builder)
