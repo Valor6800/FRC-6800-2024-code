@@ -323,7 +323,7 @@ void Shooter::assessInputs()
 
 void Shooter::analyzeDashboard()
 {
-    state.tuningSetpoint = table->GetNumber("Pivot Setpoint", AMP_ANG.to<double>()) / 360.0;
+    state.tuningSetpoint = table->GetNumber("Pivot Setpoint", AMP_ANG.to<double>());
     state.tuningSpeed = table->GetNumber("Speed Setpoint", AMP_POWER);
     state.tuningOffset = table->GetNumber("Speed Offset Pct", 0.5);
 
