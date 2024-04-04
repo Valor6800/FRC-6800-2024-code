@@ -1121,10 +1121,9 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
             nullptr
         );
 
-        // builder.AddBooleanProperty(
-        //     "B***k shot",
-        //     [this] {return state.backshot;}
-        //     nullptr
-        
-        // )
+        builder.AddBooleanProperty(
+            "B***k shot",
+            [this] {return state.backshot;},
+            nullptr
+        );
     }
