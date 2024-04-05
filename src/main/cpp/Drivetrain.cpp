@@ -528,6 +528,10 @@ void Drivetrain::assignOutputs()
 
 frc::Pose2d Drivetrain::getPoseFromSpeaker() {
     valor::AprilTagsSensor* tagSensor = aprilTagSensors[0];
+    if (state.backshot && aprilTagSensors.size() >= 5) {
+        tagSensor = aprilTagSensors[4];
+    }
+    
     auto climberTable = nt::NetworkTableInstance::GetDefault().GetTable("Climber");
     bool ledsAvailable = !climberTable->GetBoolean("Climber overriding leds", false);
     table->PutNumber("translation norm", tagSensor->getPoseFromAprilTag().Translation().Norm().to<double>());
