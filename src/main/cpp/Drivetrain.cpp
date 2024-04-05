@@ -214,7 +214,7 @@ void Drivetrain::init()
         aprilTagSensors.push_back(new valor::AprilTagsSensor(robot, aprilCam.first, aprilCam.second));
     }
 
-    aprilTagSensors[0]->normalVisionOutlier = 5.5_m;
+    aprilTagSensors[0]->normalVisionOutlier = 6.0_m;
 
     for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
         aprilLime->setPipe(valor::VisionSensor::PIPELINE_0);
@@ -531,7 +531,7 @@ frc::Pose2d Drivetrain::getPoseFromSpeaker() {
     auto climberTable = nt::NetworkTableInstance::GetDefault().GetTable("Climber");
     bool ledsAvailable = !climberTable->GetBoolean("Climber overriding leds", false);
     table->PutNumber("translation norm", tagSensor->getPoseFromAprilTag().Translation().Norm().to<double>());
-    if (tagSensor->getPoseFromAprilTag().Translation().Norm() < 4.7_m) {
+    if (tagSensor->getPoseFromAprilTag().Translation().Norm() < 6.0_m) { // 4.7_m
         if (frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue && (tagSensor->getTagID() == 7 || tagSensor->getTagID() == 8)) {
             if (ledsAvailable)
                 leds->setColor(0, valor::CANdleSensor::LIGHT_BLUE);
