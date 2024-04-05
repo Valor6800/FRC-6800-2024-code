@@ -3,32 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.108658262527752,
-        "y": 7.080577081473897
+        "x": 4.084255444841909,
+        "y": 5.572019226189894
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.9986324223656746,
-        "y": 7.536588040575521
+        "x": 5.737207870812138,
+        "y": 7.636124821799194
       },
       "isLocked": false,
-      "linkedName": "Acrid"
+      "linkedName": "Score stage"
     },
     {
       "anchor": {
-        "x": 8.079310712368532,
-        "y": 7.300023235607814
+        "x": 8.12,
+        "y": 5.64
       },
       "prevControl": {
-        "x": 7.89412146846829,
-        "y": 7.295890553103764
+        "x": 7.107156538596721,
+        "y": 5.924288053407307
       },
       "nextControl": {
-        "x": 8.21741615045042,
-        "y": 7.303105196069743
+        "x": 8.667778776998995,
+        "y": 5.486247748891894
       },
       "isLocked": false,
-      "linkedName": "Northstar blue"
+      "linkedName": "Scorch RED"
     },
     {
       "anchor": {
@@ -36,8 +36,8 @@
         "y": 5.572019226189894
       },
       "prevControl": {
-        "x": 4.211831847087117,
-        "y": 7.497454274187828
+        "x": 5.681739651767591,
+        "y": 7.857997697977378
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,40 +46,19 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.0,
-      "rotationDegrees": 0,
-      "rotateFast": false
-    },
-    {
-      "waypointRelativePos": 0.25,
-      "rotationDegrees": 0.0,
-      "rotateFast": false
-    },
-    {
-      "waypointRelativePos": 1.5,
-      "rotationDegrees": 7.5,
+      "waypointRelativePos": 0.85,
+      "rotationDegrees": -21.0,
       "rotateFast": false
     }
   ],
   "constraintZones": [
     {
       "name": "New Constraints Zone",
-      "minWaypointRelativePos": 1.3,
+      "minWaypointRelativePos": 1.85,
       "maxWaypointRelativePos": 2.0,
       "constraints": {
         "maxVelocity": 2.5,
-        "maxAcceleration": 3.0,
-        "maxAngularVelocity": 720.0,
-        "maxAngularAcceleration": 1600.0
-      }
-    },
-    {
-      "name": "New Constraints Zone",
-      "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 0.05,
-      "constraints": {
-        "maxVelocity": 0.85,
-        "maxAcceleration": 5.0,
+        "maxAcceleration": 2.5,
         "maxAngularVelocity": 720.0,
         "maxAngularAcceleration": 1600.0
       }
@@ -90,7 +69,7 @@
       "name": "Intake",
       "waypointRelativePos": 0.65,
       "command": {
-        "type": "sequential",
+        "type": "parallel",
         "data": {
           "commands": [
             {
@@ -105,7 +84,7 @@
     },
     {
       "name": "Stop shooting",
-      "waypointRelativePos": 0.15,
+      "waypointRelativePos": 0.1,
       "command": {
         "type": "parallel",
         "data": {
@@ -113,13 +92,13 @@
             {
               "type": "named",
               "data": {
-                "name": "Disable full feeder"
+                "name": "Disable shooter"
               }
             },
             {
               "type": "named",
               "data": {
-                "name": "Disable shooter"
+                "name": "Disable feeder"
               }
             },
             {
@@ -134,17 +113,28 @@
     },
     {
       "name": "Disable intake",
-      "waypointRelativePos": 1.3,
+      "waypointRelativePos": 1.25,
       "command": {
-        "type": "sequential",
+        "type": "parallel",
         "data": {
           "commands": [
             {
               "type": "named",
               "data": {
-                "name": "Disable intake"
+                "name": "Disable full feeder"
               }
-            },
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Enable shooter",
+      "waypointRelativePos": 1.4,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
             {
               "type": "named",
               "data": {
@@ -160,6 +150,40 @@
           ]
         }
       }
+    },
+    {
+      "name": "Disable vision",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Set Estimator"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Enable vision",
+      "waypointRelativePos": 1.6,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Set Camera Estimator"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "globalConstraints": {
@@ -169,14 +193,14 @@
     "maxAngularAcceleration": 1600.0
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 0.0,
     "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "SecondPick",
+  "folder": "Pick chain",
   "previewStartingState": {
-    "rotation": 30.0,
+    "rotation": 7.5,
     "velocity": 0
   },
   "useDefaultConstraints": true
