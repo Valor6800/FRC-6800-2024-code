@@ -18,6 +18,9 @@
 #define INTAKE_EXTRA_FORWARD_POWER 0.9f
 #define INTAKE_REVERSE_POWER -1.0f
 
+#define INTAKE_FORWARD_VELOCITY 24.0f
+#define INTAKE_EXTRA_FORWARD_VELOCITY 27.0f
+
 #define FEEDER_FORWARD_POWER 0.3f
 #define FEEDER_INTAKE_POWER 0.1f
 #define FEEDER_REVERSE_POWER -0.5f
@@ -144,6 +147,15 @@ void Feeder::init()
 {
     resetState();
 
+    valor::PIDF intakePID = valor::PIDF();
+    intakePID.P = 0.0006;
+    intakePID.maxVelocity = 70;
+    intakePID.maxAcceleration = 200;
+    intakeMotor.setPIDF(intakePID, 0);
+    intakeMotor.setConversion(1.0, 1.0);
+    intakeBackMotor.setPIDF(intakePID, 0);
+    intakeBackMotor.setConversion(1.0, 1.0);
+
     intakeMotor.setMaxCurrent(80);
     intakeMotor.setVoltageCompensation(10);
 
@@ -151,11 +163,11 @@ void Feeder::init()
     intakeBackMotor.setVoltageCompensation(10);
 
     feederMotor.setVoltageCompensation(10);
-    valor::PIDF pid = valor::PIDF();
-    pid.P = 0.0006;
-    pid.maxVelocity = 32;
-    pid.maxAcceleration = 100;
-    feederMotor.setPIDF(pid, 0);
+    valor::PIDF feederPID = valor::PIDF();
+    feederPID.P = 0.0006;
+    feederPID.maxVelocity = 32;
+    feederPID.maxAcceleration = 100;
+    feederMotor.setPIDF(feederPID, 0);
     feederMotor.setConversion(1.0, 1.0);
 
     feederDebounceSensor.setGetter([this] { return (!feederBeamBreak->GetInWindow()); });
@@ -237,19 +249,19 @@ void Feeder::analyzeDashboard()
 void Feeder::assignOutputs()
 {
     if(state.intakeState == ROLLER_STATE::SHOOT) {
-        intakeMotor.setPower(INTAKE_FORWARD_POWER);
-        intakeBackMotor.setPower(INTAKE_FORWARD_POWER);
+        intakeMotor.setSpeed(INTAKE_FORWARD_VELOCITY);
+        intakeBackMotor.setSpeed(INTAKE_FORWARD_VELOCITY);
     } else if(state.intakeState == ROLLER_STATE::INTAKE) {
         if (state.stageTrip) {
-            intakeMotor.setPower(INTAKE_FORWARD_POWER * .5);
-            intakeBackMotor.setPower(INTAKE_FORWARD_POWER * .5);
+            intakeMotor.setSpeed(INTAKE_FORWARD_VELOCITY * .5);
+            intakeBackMotor.setSpeed(INTAKE_FORWARD_VELOCITY * .5);
         } else if (state.feedTrip) {
             intakeMotor.setPower(0);
             intakeBackMotor.setPower(0);
         } else {
             if (shooter->state.pivotLowered) {
-                intakeMotor.setPower(INTAKE_EXTRA_FORWARD_POWER);
-                intakeBackMotor.setPower(INTAKE_FORWARD_POWER);
+                intakeMotor.setSpeed(INTAKE_EXTRA_FORWARD_VELOCITY);
+                intakeBackMotor.setSpeed(INTAKE_FORWARD_VELOCITY);
             }
         }
     } else if(state.intakeState == ROLLER_STATE::OUTTAKE) {
@@ -259,8 +271,8 @@ void Feeder::assignOutputs()
         intakeMotor.setPower(state.tuningPower);
         intakeBackMotor.setPower(state.tuningPower);
     } else {
-        intakeMotor.setPower(0);
-        intakeBackMotor.setPower(0);
+        intakeMotor.setSpeed(0);
+        intakeBackMotor.setSpeed(0);
     }
     
     if (state.feederState == ROLLER_STATE::SHOOT) {
