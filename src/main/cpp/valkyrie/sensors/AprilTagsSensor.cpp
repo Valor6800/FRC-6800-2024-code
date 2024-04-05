@@ -1,10 +1,12 @@
 #include "valkyrie/sensors/AprilTagsSensor.h"
+#include "frc/geometry/Rotation3d.h"
 #include "units/angle.h"
 #include <array>
 #include "units/length.h"
 #include "units/time.h"
 #include "units/velocity.h"
 #include <cmath>
+#include <span>
 #include <vector>
 
 #define OUTLIER_EDGE 4.0f //meters
@@ -94,6 +96,39 @@ int AprilTagsSensor::getTagID(){
     if (!hasTarget()) return -1;
 
     return limeTable->GetNumber("tid", -1);
+}
+
+frc::Pose3d AprilTagsSensor::getMegaTagPose2(AprilTagsSensor::Orientation orient) {
+
+    if (!hasTarget()) return frc::Pose3d();
+
+    limeTable->PutNumberArray(
+        "robot_orientation_set",
+        std::vector<double>{
+            orient.yaw.to<double>(),
+            orient.yawVel.to<double>(),
+            orient.pitch.to<double>(),
+            orient.pitchVel.to<double>(),
+            orient.roll.to<double>(),
+            orient.rollVel.to<double>()
+        }
+    );
+
+    std::vector<double> mt2Array = limeTable->GetNumberArray("botpose_orb_wpiblue", std::span<double>());
+
+    if (!(mt2Array.size() >= 6)) return frc::Pose3d();
+
+    return frc::Pose3d(
+        units::meter_t{mt2Array[0]},
+        units::meter_t{mt2Array[1]},
+        units::meter_t{mt2Array[2]},
+        frc::Rotation3d(
+            units::degree_t{mt2Array[3]},
+            units::degree_t{mt2Array[4]},
+            units::degree_t{mt2Array[5]}
+        )
+    );
+
 }
 
 void AprilTagsSensor::InitSendable(wpi::SendableBuilder& builder) {
