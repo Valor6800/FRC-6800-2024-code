@@ -18,8 +18,8 @@
 #define INTAKE_EXTRA_FORWARD_POWER 0.9f
 #define INTAKE_REVERSE_POWER -1.0f
 
-#define INTAKE_FORWARD_VELOCITY 24.0f
-#define INTAKE_EXTRA_FORWARD_VELOCITY 27.0f
+#define INTAKE_FORWARD_VELOCITY 70.0f
+#define INTAKE_EXTRA_FORWARD_VELOCITY 80.0f
 
 #define FEEDER_FORWARD_POWER 0.3f
 #define FEEDER_INTAKE_POWER 0.1f
@@ -148,12 +148,15 @@ void Feeder::init()
     resetState();
 
     valor::PIDF intakePID = valor::PIDF();
-    intakePID.P = 0.0006;
-    intakePID.maxVelocity = 70;
+    intakePID.maxVelocity = 90;
     intakePID.maxAcceleration = 200;
+    intakePID.P = 0.000065;
+    // p8: .000025 p9: .00005
+    valor::PIDF backIntakePID = intakePID;
+    backIntakePID.P = 0.00005;
     intakeMotor.setPIDF(intakePID, 0);
     intakeMotor.setConversion(1.0, 1.0);
-    intakeBackMotor.setPIDF(intakePID, 0);
+    intakeBackMotor.setPIDF(backIntakePID, 0);
     intakeBackMotor.setConversion(1.0, 1.0);
 
     intakeMotor.setMaxCurrent(80);
