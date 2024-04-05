@@ -39,8 +39,8 @@
 #define WING_ANG -63.5_deg
 #define POOP_ANG -46.0_deg
 #define BACKSHOT_ANG 69.0_deg
-#define AUTO_NEAR_ANG -46.0_deg
-#define AUTO_FAR_LOW_ANG -61.5_deg
+#define AUTO_NEAR_ANG -46.5_deg
+#define AUTO_FAR_LOW_ANG -60.5_deg
 #define AUTO_FAR_WALL_ANG -61.0_deg
 #define AUTO_FAR_HIGH_ANG -58.0_deg
 #define AUTO_SUBWOOFER_ANG -32.0_deg
