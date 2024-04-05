@@ -520,5 +520,9 @@ void Shooter::InitSendable(wpi::SendableBuilder& builder){
         [this] {return state.calculatingPivotingAngle.to<double>() / 360.0;},
         nullptr
     );
-    
+    builder.AddDoubleProperty(
+        "Battery voltage",
+        [this] {return frc::DriverStation::GetBatteryVoltage();},
+        nullptr
+    );   
 }
