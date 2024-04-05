@@ -83,6 +83,8 @@ public:
 
         bool reverseFlywheels;
         bool pivotLowered;
+
+        bool close;
     } state;
 
 private:

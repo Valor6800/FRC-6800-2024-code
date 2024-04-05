@@ -40,7 +40,7 @@
 #define POOP_ANG -46.0_deg
 #define BACKSHOT_ANG 69.0_deg
 #define AUTO_NEAR_ANG -46.0_deg
-#define AUTO_FAR_LOW_ANG -62.50_deg
+#define AUTO_FAR_LOW_ANG -61.5_deg
 #define AUTO_FAR_WALL_ANG -61.0_deg
 #define AUTO_FAR_HIGH_ANG -58.0_deg
 #define AUTO_SUBWOOFER_ANG -32.0_deg
@@ -50,6 +50,8 @@
 #define AMP_POWER 0.0f // rps
 #define LEFT_SHOOT_POWER 72.0f // rps
 #define RIGHT_SHOOT_POWER 46.0f // rps
+#define LEFT_SUBWOOFER_POWER 60.0f // rps
+#define RIGHT_SUBWOOFER_POWER 40.0f // rps
 #define LEFT_BLOOP_POWER 35.0f
 #define RIGHT_BLOOP_POWER 30.0f
 
@@ -386,6 +388,7 @@ void Shooter::analyzeDashboard()
     leds->setLED(4, color);
 
     state.pivotLowered = pivotMotors->getPosition() * 360 < INTAKE_PIVOT_THRESHOLD.to<double>();
+    state.close = drivetrain->state.distanceFromSpeaker < 1.80_m;
 }
 
 void Shooter::setPivotPosition(double angle)
@@ -407,8 +410,8 @@ void Shooter::assignOutputs()
         setFlyweelSpeeds(state.tuningSpeed * state.tuningOffset, state.tuningSpeed);
     } else if (state.pivotState == PIVOT_STATE::AMP) {
         setFlyweelSpeeds(AMP_POWER, AMP_POWER);
-    } else if (state.pivotState == PIVOT_STATE::SUBWOOFER || state.pivotState == PIVOT_STATE::DISABLED) {
-        setFlyweelSpeeds(LEFT_SHOOT_POWER * 0.85, RIGHT_SHOOT_POWER * 0.85);
+    } else if (state.pivotState == PIVOT_STATE::SUBWOOFER || state.pivotState == PIVOT_STATE::DISABLED || state.close) {
+        setFlyweelSpeeds(LEFT_SUBWOOFER_POWER, RIGHT_SUBWOOFER_POWER);
     } else if (state.pivotState == PIVOT_STATE::ORBIT) {
         setFlyweelSpeeds(LEFT_BLOOP_POWER, RIGHT_BLOOP_POWER);
     } else {
