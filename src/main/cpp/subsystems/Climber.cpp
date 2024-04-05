@@ -189,5 +189,10 @@ void Climber::InitSendable(wpi::SendableBuilder& builder)
         [this] {return state.latchState;},
         nullptr
     );
+    builder.AddDoubleProperty(
+        "Operator right stick",
+        [this] {return operatorGamepad->rightStickY(2);},
+        nullptr
+    );
 }
 
