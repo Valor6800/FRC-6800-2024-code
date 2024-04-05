@@ -3,45 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.995921632685279,
-        "y": 6.454890284238034
+        "x": 4.084255444841909,
+        "y": 5.572019226189894
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.5441363916582,
-        "y": 6.37353878968464
+        "x": 5.737207870812138,
+        "y": 7.636124821799194
       },
       "isLocked": false,
-      "linkedName": "Score amp"
+      "linkedName": "Score stage"
     },
     {
       "anchor": {
         "x": 8.12,
-        "y": 5.64
+        "y": 5.83
       },
       "prevControl": {
-        "x": 7.105101355490902,
-        "y": 5.916861546609651
+        "x": 7.107156538596721,
+        "y": 6.114288053407307
       },
       "nextControl": {
-        "x": 8.471645668262402,
-        "y": 5.544072033103557
+        "x": 8.667778776998995,
+        "y": 5.676247748891894
       },
       "isLocked": false,
-      "linkedName": "Scorch RED"
+      "linkedName": "Scorch BLUE"
     },
     {
       "anchor": {
-        "x": 4.995921632685279,
-        "y": 6.454890284238034
+        "x": 4.084255444841909,
+        "y": 5.572019226189894
       },
       "prevControl": {
-        "x": 6.672331489845271,
-        "y": 6.334672178205757
+        "x": 5.681739651767591,
+        "y": 7.857997697977378
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Score amp"
+      "linkedName": "Score stage"
     }
   ],
   "rotationTargets": [
@@ -54,7 +54,7 @@
   "constraintZones": [
     {
       "name": "New Constraints Zone",
-      "minWaypointRelativePos": 1.4,
+      "minWaypointRelativePos": 1.85,
       "maxWaypointRelativePos": 2.0,
       "constraints": {
         "maxVelocity": 2.5,
@@ -194,7 +194,7 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 11.0,
+    "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,

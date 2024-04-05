@@ -3,62 +3,83 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.995921632685279,
-        "y": 6.454890284238034
+        "x": 4.084255444841909,
+        "y": 5.572019226189894
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.5441363916582,
-        "y": 6.37353878968464
+        "x": 4.932918694666218,
+        "y": 3.291114329976408
       },
       "isLocked": false,
-      "linkedName": "Score amp"
+      "linkedName": "Score stage"
     },
     {
       "anchor": {
-        "x": 8.12,
-        "y": 5.64
+        "x": 8.103851883379441,
+        "y": 4.025089844595199
       },
       "prevControl": {
-        "x": 7.105101355490902,
-        "y": 5.916861546609651
+        "x": 7.774985836459216,
+        "y": 4.429371330049662
       },
       "nextControl": {
-        "x": 8.471645668262402,
-        "y": 5.544072033103557
+        "x": 8.326406902491215,
+        "y": 3.7514985919728785
       },
       "isLocked": false,
-      "linkedName": "Scorch RED"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.995921632685279,
-        "y": 6.454890284238034
+        "x": 5.775968841795901,
+        "y": 4.025089844595199
       },
       "prevControl": {
-        "x": 6.672331489845271,
-        "y": 6.334672178205757
+        "x": 6.4602560736787416,
+        "y": 3.787296295345448
+      },
+      "nextControl": {
+        "x": 5.091681609913061,
+        "y": 4.262883393844948
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.084255444841909,
+        "y": 5.572019226189894
+      },
+      "prevControl": {
+        "x": 4.390234380512164,
+        "y": 4.7437713876195655
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Score amp"
+      "linkedName": "Score stage"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.85,
-      "rotationDegrees": -21.0,
+      "waypointRelativePos": 0.55,
+      "rotationDegrees": -3.784784703755136,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 2.121096396661499,
       "rotateFast": false
     }
   ],
   "constraintZones": [
     {
       "name": "New Constraints Zone",
-      "minWaypointRelativePos": 1.4,
-      "maxWaypointRelativePos": 2.0,
+      "minWaypointRelativePos": 2.4000000000000004,
+      "maxWaypointRelativePos": 3.0,
       "constraints": {
-        "maxVelocity": 2.5,
-        "maxAcceleration": 2.5,
+        "maxVelocity": 2.0,
+        "maxAcceleration": 2.0,
         "maxAngularVelocity": 720.0,
         "maxAngularAcceleration": 1600.0
       }
@@ -92,13 +113,13 @@
             {
               "type": "named",
               "data": {
-                "name": "Disable shooter"
+                "name": "Disable full feeder"
               }
             },
             {
               "type": "named",
               "data": {
-                "name": "Disable feeder"
+                "name": "Disable shooter"
               }
             },
             {
@@ -113,7 +134,7 @@
     },
     {
       "name": "Disable intake",
-      "waypointRelativePos": 1.25,
+      "waypointRelativePos": 1.5,
       "command": {
         "type": "parallel",
         "data": {
@@ -130,7 +151,7 @@
     },
     {
       "name": "Enable shooter",
-      "waypointRelativePos": 1.4,
+      "waypointRelativePos": 1.7,
       "command": {
         "type": "parallel",
         "data": {
@@ -144,41 +165,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Set pivot far low"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Disable vision",
-      "waypointRelativePos": 0,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Set Estimator"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Enable vision",
-      "waypointRelativePos": 1.6,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Set Camera Estimator"
+                "name": "Set pivot far high"
               }
             }
           ]
@@ -194,7 +181,7 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 11.0,
+    "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,
