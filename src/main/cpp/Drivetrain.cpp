@@ -570,14 +570,14 @@ void Drivetrain::getSpeakerLockAngleRPS(){
     double speakerXOffset = table->GetNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET) * redMultiplier;
     double speakerYOffset = table->GetNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET);
 
-    if (state.backshot) {
-        roboYPos = 7.54_m;
-        if (frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue) {
-            roboXPos = 3.06_m;
-        } else {
-            roboXPos = 13.48_m;
-        }
-    }
+    // if (state.backshot) {
+    //     roboYPos = 7.54_m;
+    //     if (frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue) {
+    //         roboXPos = 3.06_m;
+    //     } else {
+    //         roboXPos = 13.48_m;
+    //     }
+    // }
     state.targetAngle = units::radian_t(atan2(
         (roboYPos.to<double>() - (SPEAKER_Y.to<double>() + speakerYOffset)),
         (roboXPos.to<double>() - (speakerX + speakerXOffset))
