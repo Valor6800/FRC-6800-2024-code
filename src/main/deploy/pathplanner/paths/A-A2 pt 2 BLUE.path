@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.12,
-        "y": 5.83
+        "x": 8.32,
+        "y": 5.78
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.4667467889073516,
-        "y": 5.900028563849085
+        "x": 7.666746788907353,
+        "y": 5.850028563849085
       },
       "isLocked": false,
       "linkedName": "Scorch BLUE"

@@ -42,7 +42,7 @@
 #define AUTO_NEAR_ANG -46.5_deg
 #define AUTO_FAR_LOW_ANG -60.5_deg
 #define AUTO_FAR_WALL_ANG -61.0_deg
-#define AUTO_FAR_HIGH_ANG -58.5_deg
+#define AUTO_FAR_HIGH_ANG -58.0_deg
 #define AUTO_SUBWOOFER_ANG -32.0_deg
 
 #define INTAKE_PIVOT_THRESHOLD -64.0_deg
