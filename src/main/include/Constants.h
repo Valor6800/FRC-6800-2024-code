@@ -200,12 +200,12 @@ namespace Constants {
                 }
             }; // Temp value; TODO: Change it
             default: return frc::Pose3d{
-                -13.295_in, //x
-                0_in, //y
-                8.928_in, //z
+                -1_in, //x
+                .675_in, //y
+                23.0675_in, //z
                 frc::Rotation3d{
                     0_deg, 
-                    28.7_deg,
+                    32.3_deg,
                     -180_deg
                 }
             };
@@ -213,9 +213,9 @@ namespace Constants {
 
         /* Back Front Camera Mount
          * 
-         * x: -1.125_in
-         * y: 0_in
-         * z: 21.75_in
+         * x: -1_in
+         * y: +0.675_in
+         * z: 23.0675_in
          * yaw: -180_deg
          * pitch: 32.3_deg
          * roll: 0_deg
