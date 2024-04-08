@@ -393,7 +393,12 @@ void Shooter::analyzeDashboard()
     state.close = drivetrain->state.distanceFromSpeaker < 1.80_m;
 
     units::meter_t y = drivetrain->getCalculatedPose_m().Y();
-    state.reverseFlywheels = y >= SPEAKER_Y;
+    if(frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue){
+        state.reverseFlywheels = y >= SPEAKER_Y;
+    }
+    else{
+        state.reverseFlywheels = (y <= SPEAKER_Y);
+    }
 }
 
 void Shooter::setPivotPosition(double angle)
