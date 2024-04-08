@@ -34,6 +34,8 @@ public:
     void assignOutputs();
 
     void setClimbPID();
+    frc2::CommandPtr upSequence();
+    frc2::CommandPtr downSequence();
 
     void InitSendable(wpi::SendableBuilder& builder);
 
@@ -64,4 +66,7 @@ private:
     frc::PWM *servo;
     Drivetrain *drive;
     valor::CANdleSensor *leds;
+
+    frc2::CommandPtr climbUp = frc2::cmd::Sequence();
+    frc2::CommandPtr climbDown = frc2::cmd::Sequence();
 };
