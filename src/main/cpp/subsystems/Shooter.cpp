@@ -391,9 +391,9 @@ void Shooter::analyzeDashboard()
 
     state.pivotLowered = pivotMotors->getPosition() * 360 < INTAKE_PIVOT_THRESHOLD.to<double>();
     state.close = drivetrain->state.distanceFromSpeaker < 1.80_m;
-    
+
     units::meter_t y = drivetrain->getCalculatedPose_m().Y();
-    state.reverseFlywheels = !(y >= SPEAKER_Y);
+    state.reverseFlywheels = y >= SPEAKER_Y;
 }
 
 void Shooter::setPivotPosition(double angle)
