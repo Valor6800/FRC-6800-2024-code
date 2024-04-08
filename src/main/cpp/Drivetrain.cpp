@@ -592,7 +592,6 @@ void Drivetrain::getSpeakerLockAngleRPS(){
 }
 
 void Drivetrain::getAmpLockAngle(){
-    units::radian_t targetRotAngle;
     units::meter_t roboXPos = calculatedEstimator->GetEstimatedPosition().X();
     units::meter_t roboYPos = calculatedEstimator->GetEstimatedPosition().Y();
     double ampX = (frc::DriverStation::GetAlliance() == frc::DriverStation::kRed ? AMP_RED_X : AMP_BLUE_X).to<double>();

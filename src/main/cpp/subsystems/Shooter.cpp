@@ -12,6 +12,8 @@
 
 #include <frc/DriverStation.h>
 
+#define SPEAKER_Y 5.543042_m
+
 #define PIVOT_ROTATE_K_VEL 0.6f
 #define PIVOT_ROTATE_K_ACC 50.0f
 #define PIVOT_ROTATE_K_P 110.0f //125f
@@ -389,6 +391,13 @@ void Shooter::analyzeDashboard()
 
     state.pivotLowered = pivotMotors->getPosition() * 360 < INTAKE_PIVOT_THRESHOLD.to<double>();
     state.close = drivetrain->state.distanceFromSpeaker < 1.80_m;
+    units::meter_t y = drivetrain->getCalculatedPose_m().Y();
+    if(frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue){
+        state.reverseFlywheels = !(y >= SPEAKER_Y);
+    }
+    else{
+        state.reverseFlywheels = (y >= SPEAKER_Y);
+    }
 }
 
 void Shooter::setPivotPosition(double angle)
