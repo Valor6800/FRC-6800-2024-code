@@ -81,6 +81,8 @@ using namespace pathplanner;
 
 #define TIME_TELEOP_VERT 105.0f
 
+#define MT2_POSE true
+
 Drivetrain::Drivetrain(frc::TimedRobot *_robot, valor::CANdleSensor *_leds) : valor::BaseSubsystem(_robot, "Drivetrain"),
                         rotMaxSpeed(ROT_SPEED_MUL * 2 * M_PI),
                         pigeon(CANIDs::PIGEON_CAN, PIGEON_CAN_BUS),
@@ -526,17 +528,29 @@ frc::Pose2d Drivetrain::getPoseFromSpeaker() {
     auto climberTable = nt::NetworkTableInstance::GetDefault().GetTable("Climber");
     bool ledsAvailable = !climberTable->GetBoolean("Climber overriding leds", false);
     table->PutNumber("translation norm", tagSensor->getPoseFromAprilTag().Translation().Norm().to<double>());
-    if (tagSensor->getPoseFromAprilTag().Translation().Norm() < 6.0_m) { // 4.7_m
+
+    valor::AprilTagsSensor::Orientation orient{
+        pigeon.GetYaw().GetValue(),
+        pigeon.GetPitch().GetValue(),
+        pigeon.GetRoll().GetValue(),
+        pigeon.GetAngularVelocityZWorld().GetValue(),
+        pigeon.GetAngularVelocityXWorld().GetValue(),
+        pigeon.GetAngularVelocityYWorld().GetValue()
+    };
+
+    units::meter_t distanceToTag = tagSensor->getPoseFromAprilTag().Translation().Norm();
+
+    if (distanceToTag < 6.0_m && distanceToTag > 0.0_m) {
         if (frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue && (tagSensor->getTagID() == 7 || tagSensor->getTagID() == 8)) {
             if (ledsAvailable)
                 leds->setColor(0, valor::CANdleSensor::LIGHT_BLUE);
             table->PutBoolean("good to shoot", true);
-            return tagSensor->getSensor().ToPose2d();
+            return MT2_POSE ? tagSensor->getMegaTagPose2(orient).ToPose2d() : tagSensor->getSensor().ToPose2d();
         } else if (frc::DriverStation::GetAlliance() == frc::DriverStation::kRed && (tagSensor->getTagID() == 4 || tagSensor->getTagID() == 3)) {
             if (ledsAvailable)
                 leds->setColor(0, valor::CANdleSensor::LIGHT_BLUE);
             table->PutBoolean("good to shoot", true);
-            return tagSensor->getSensor().ToPose2d();
+            return MT2_POSE ? tagSensor->getMegaTagPose2(orient).ToPose2d() : tagSensor->getSensor().ToPose2d();
         }
         table->PutBoolean("good to shoot", false);
     }
