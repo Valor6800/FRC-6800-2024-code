@@ -13,6 +13,7 @@
 #include <frc/DriverStation.h>
 
 #define SPEAKER_Y 5.543042_m
+#define OFFSET_FLYWHEEL_FLIPPING 0.4f
 
 #define PIVOT_ROTATE_K_VEL 0.6f
 #define PIVOT_ROTATE_K_ACC 50.0f
@@ -393,11 +394,13 @@ void Shooter::analyzeDashboard()
     state.close = drivetrain->state.distanceFromSpeaker < 1.80_m;
 
     units::meter_t y = drivetrain->getCalculatedPose_m().Y();
-    if(frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue){
-        state.reverseFlywheels = y >= SPEAKER_Y;
-    }
-    else{
-        state.reverseFlywheels = (y <= SPEAKER_Y);
+    if(fabs(SPEAKER_Y.to<double>() - y.to<double>()) > OFFSET_FLYWHEEL_FLIPPING){
+        if(frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue){
+            state.reverseFlywheels = y >= SPEAKER_Y;
+        }
+        else{
+            state.reverseFlywheels = (y <= SPEAKER_Y);
+        }
     }
 }
 
