@@ -594,14 +594,20 @@ void Drivetrain::getSpeakerLockAngleRPS(){
 void Drivetrain::getAmpLockAngle(){
     units::meter_t roboXPos = calculatedEstimator->GetEstimatedPosition().X();
     units::meter_t roboYPos = calculatedEstimator->GetEstimatedPosition().Y();
-    double ampX = (frc::DriverStation::GetAlliance() == frc::DriverStation::kRed ? AMP_RED_X : AMP_BLUE_X).to<double>();
-    double redMultiplier = frc::DriverStation::GetAlliance() == frc::DriverStation::kRed ? -1.0 : 1.0;
-    double ampXOffset = table->GetNumber("AMP_X_OFFSET", AMP_X_OFFSET.to<double>()) * redMultiplier;
-    double ampYOffset = table->GetNumber("AMP_Y_OFFSET", AMP_Y_OFFSET.to<double>());
-    state.targetAngle = units::radian_t(atan2(
-        roboYPos.to<double>() - (AMP_Y.to<double>() + ampYOffset), 
-        roboXPos.to<double>() - (ampX + ampXOffset)
-    ));
+    if(roboYPos > SPEAKER_Y){
+        bool isRed = frc::DriverStation::GetAlliance() == frc::DriverStation::kRed;
+        state.targetAngle = isRed ? RED_LOCK_ANGLE : BLUE_LOCK_ANGLE;
+    }
+    else{
+        double ampX = (frc::DriverStation::GetAlliance() == frc::DriverStation::kRed ? AMP_RED_X : AMP_BLUE_X).to<double>();
+        double redMultiplier = frc::DriverStation::GetAlliance() == frc::DriverStation::kRed ? -1.0 : 1.0;
+        double ampXOffset = table->GetNumber("AMP_X_OFFSET", AMP_X_OFFSET.to<double>()) * redMultiplier;
+        double ampYOffset = table->GetNumber("AMP_Y_OFFSET", AMP_Y_OFFSET.to<double>());
+        state.targetAngle = units::radian_t(atan2(
+            roboYPos.to<double>() - (AMP_Y.to<double>() + ampYOffset), 
+            roboXPos.to<double>() - (ampX + ampXOffset)
+        ));
+    }
 }
 
 
