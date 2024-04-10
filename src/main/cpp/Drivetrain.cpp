@@ -370,7 +370,7 @@ void Drivetrain::assessInputs()
         state.manualFlag = false;
     }
     
-    state.backshot = driverGamepad->GetStartButton();
+    state.backshot = driverGamepad->DPadRight();
 
     state.ampAlign = driverGamepad->GetBButton();
     state.isHeadingTrack = (driverGamepad->leftTriggerActive() && !driverGamepad->GetAButton());
@@ -449,16 +449,6 @@ void Drivetrain::analyzeDashboard()
                 doubtX,
                 doubtY
             );
-    }        
-
-    if (driverGamepad && driverGamepad->IsConnected() && driverGamepad->GetStartButton()) {
-        for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
-            if (aprilLime->hasTarget()) {
-                botpose = aprilLime->getSensor().ToPose2d();
-                resetOdometry(botpose);
-                break;
-            }
-        }
     }
 
     state.distanceFromSpeaker = getDistanceFromSpeaker();
