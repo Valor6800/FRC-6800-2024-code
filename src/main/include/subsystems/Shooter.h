@@ -43,6 +43,7 @@ public:
     {
         NOT_SHOOTING,
         SHOOTING,
+        REVERSE,
     };
 
     enum PIVOT_STATE

@@ -50,13 +50,15 @@
 
 #define INTAKE_PIVOT_THRESHOLD -64.0_deg
 
-#define AMP_POWER 0.0f // rps
+#define AMP_POWER -10.0f // rps
 #define LEFT_SHOOT_POWER 72.0f // rps
 #define RIGHT_SHOOT_POWER 46.0f // rps
 #define LEFT_SUBWOOFER_POWER 60.0f // rps
 #define RIGHT_SUBWOOFER_POWER 40.0f // rps
 #define LEFT_BLOOP_POWER 45.0f
 #define RIGHT_BLOOP_POWER 35.0f
+#define LEFT_STRAIGHT_ORBIT_POWER 35.0f
+#define RIGHT_STRAIGHT_ORBIT_POWER 30.0f
 
 Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive, frc::AnalogTrigger* _feederBeamBreak, frc::AnalogTrigger* _feederBeamBreak2, valor::CANdleSensor* _leds) :
     valor::BaseSubsystem(_robot, "Shooter"),
@@ -302,7 +304,9 @@ void Shooter::assessInputs()
         return;
 
     //SHOOT LOGIC
-    if (driverGamepad->rightTriggerActive() ||
+    if (driverGamepad->rightTriggerActive() && driverGamepad->GetBButton()) {
+        state.flywheelState = FLYWHEEL_STATE::REVERSE;
+    } else if (driverGamepad->rightTriggerActive() ||
         driverGamepad->leftTriggerActive() ||
         operatorGamepad->GetStartButton() ||
         driverGamepad->GetXButton() ||
@@ -419,12 +423,14 @@ void Shooter::assignOutputs()
     // Do nothing
     if (state.flywheelState == NOT_SHOOTING) {
         setFlyweelSpeeds(0.0, 0.0);
+    } else if (state.flywheelState == FLYWHEEL_STATE::REVERSE) {
+        setFlyweelSpeeds(AMP_POWER, AMP_POWER);
     } else if (state.pivotState == PIVOT_STATE::TUNING) {
         setFlyweelSpeeds(state.tuningSpeed * state.tuningOffset, state.tuningSpeed);
-    } else if (state.pivotState == PIVOT_STATE::AMP) {
-        setFlyweelSpeeds(AMP_POWER, AMP_POWER);
     } else if (state.pivotState == PIVOT_STATE::SUBWOOFER || state.pivotState == PIVOT_STATE::DISABLED || state.close) {
         setFlyweelSpeeds(LEFT_SUBWOOFER_POWER, RIGHT_SUBWOOFER_POWER);
+    } else if (state.pivotState == PIVOT_STATE::AMP) {
+        setFlyweelSpeeds(0, 0);
     } else if (state.pivotState == PIVOT_STATE::ORBIT) {
         setFlyweelSpeeds(LEFT_BLOOP_POWER, RIGHT_BLOOP_POWER);
     } else {
