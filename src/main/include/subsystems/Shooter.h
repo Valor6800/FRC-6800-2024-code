@@ -90,6 +90,7 @@ public:
 
 private:
     void setPivotPosition(double);
+    std::pair<double, double> getOrbitSpeeds();
 
     Drivetrain *drivetrain;
     valor::PhoenixController* pivotMotors;

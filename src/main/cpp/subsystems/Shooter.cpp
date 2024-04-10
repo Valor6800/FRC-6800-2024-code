@@ -50,13 +50,18 @@
 
 #define INTAKE_PIVOT_THRESHOLD -64.0_deg
 
+#define LOWER_ORBIT_DISTANCE_BOUND 3.0f
+#define UPPER_ORBIT_DISTANCE_BOUND 9.5f
+#define LOWER_ORBIT_SPEED_LEFT 35.0f
+#define LOWER_ORBIT_SPEED_RIGHT 30.0f
+#define UPPER_ORBIT_SPEED_LEFT 45.0f
+#define UPPER_ORBIT_SPEED_RIGHT 35.0f
+
 #define AMP_POWER -10.0f // rps
 #define LEFT_SHOOT_POWER 72.0f // rps
 #define RIGHT_SHOOT_POWER 46.0f // rps
 #define LEFT_SUBWOOFER_POWER 60.0f // rps
 #define RIGHT_SUBWOOFER_POWER 40.0f // rps
-#define LEFT_BLOOP_POWER 45.0f
-#define RIGHT_BLOOP_POWER 35.0f
 #define LEFT_STRAIGHT_ORBIT_POWER 35.0f
 #define RIGHT_STRAIGHT_ORBIT_POWER 30.0f
 
@@ -432,7 +437,7 @@ void Shooter::assignOutputs()
     } else if (state.pivotState == PIVOT_STATE::AMP) {
         setFlyweelSpeeds(0, 0);
     } else if (state.pivotState == PIVOT_STATE::ORBIT) {
-        setFlyweelSpeeds(LEFT_BLOOP_POWER, RIGHT_BLOOP_POWER);
+        setFlyweelSpeeds(UPPER_ORBIT_SPEED_LEFT, UPPER_ORBIT_SPEED_RIGHT);
     } else {
         if (state.reverseFlywheels) {
             setFlyweelSpeeds(RIGHT_SHOOT_POWER, LEFT_SHOOT_POWER);
@@ -477,6 +482,24 @@ void Shooter::assignOutputs()
         setPivotPosition(INTAKE_ANG.to<double>());
     } else {
         setPivotPosition(SUBWOOFER_ANG.to<double>());
+    }
+}
+
+std::pair<double, double> Shooter::getOrbitSpeeds()
+{
+    // @TODO identify distance from amp
+    double distance = drivetrain->state.distanceFromSpeaker.to<double>();
+
+    if (distance > UPPER_ORBIT_DISTANCE_BOUND) {
+        return std::pair<double, double>(UPPER_ORBIT_SPEED_LEFT, UPPER_ORBIT_SPEED_RIGHT);
+    } else if (distance < LOWER_ORBIT_DISTANCE_BOUND) {
+        return std::pair<double, double>(LOWER_ORBIT_SPEED_LEFT, LOWER_ORBIT_SPEED_RIGHT);
+    } else {
+        double slopeLeft = (UPPER_ORBIT_SPEED_LEFT - LOWER_ORBIT_SPEED_LEFT) / (UPPER_ORBIT_DISTANCE_BOUND - LOWER_ORBIT_DISTANCE_BOUND);
+        double speedLeft = slopeLeft * (distance - LOWER_ORBIT_SPEED_LEFT) + LOWER_ORBIT_SPEED_LEFT;
+        double slopeRight = (UPPER_ORBIT_SPEED_RIGHT - LOWER_ORBIT_SPEED_RIGHT) / (UPPER_ORBIT_DISTANCE_BOUND - LOWER_ORBIT_DISTANCE_BOUND);
+        double speedRight = slopeLeft * (distance - LOWER_ORBIT_SPEED_RIGHT) + LOWER_ORBIT_SPEED_RIGHT;
+        return std::pair<double, double>(speedLeft, speedRight);
     }
 }
  
