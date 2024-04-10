@@ -62,8 +62,6 @@
 #define RIGHT_SHOOT_POWER 46.0f // rps
 #define LEFT_SUBWOOFER_POWER 60.0f // rps
 #define RIGHT_SUBWOOFER_POWER 40.0f // rps
-#define LEFT_STRAIGHT_ORBIT_POWER 35.0f
-#define RIGHT_STRAIGHT_ORBIT_POWER 30.0f
 
 Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive, frc::AnalogTrigger* _feederBeamBreak, frc::AnalogTrigger* _feederBeamBreak2, valor::CANdleSensor* _leds) :
     valor::BaseSubsystem(_robot, "Shooter"),
@@ -403,13 +401,21 @@ void Shooter::analyzeDashboard()
     state.close = drivetrain->state.distanceFromSpeaker < 1.80_m;
 
     units::meter_t y = drivetrain->getCalculatedPose_m().Y();
-    if(fabs(SPEAKER_Y.to<double>() - y.to<double>()) > OFFSET_FLYWHEEL_FLIPPING){
-        if(frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue){
-            state.reverseFlywheels = y >= SPEAKER_Y;
+    state.isStraightOrbit = y > SPEAKER_Y;
+
+    if(state.flywheelState == FLYWHEEL_STATE::SHOOTING && state.pivotState != PIVOT_STATE::ORBIT){
+        if(fabs(SPEAKER_Y.to<double>() - y.to<double>()) > OFFSET_FLYWHEEL_FLIPPING){
+            if(frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue){
+                state.reverseFlywheels = y >= SPEAKER_Y;
+            }
+            else{
+                state.reverseFlywheels = (y <= SPEAKER_Y);
+            }
         }
-        else{
-            state.reverseFlywheels = (y <= SPEAKER_Y);
-        }
+    }
+
+    else if(state.flywheelState == FLYWHEEL_STATE::SHOOTING && state.pivotState == PIVOT_STATE::ORBIT){
+        state.reverseFlywheels = frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue;
     }
 }
 
@@ -437,7 +443,12 @@ void Shooter::assignOutputs()
     } else if (state.pivotState == PIVOT_STATE::AMP) {
         setFlyweelSpeeds(0, 0);
     } else if (state.pivotState == PIVOT_STATE::ORBIT) {
-        setFlyweelSpeeds(UPPER_ORBIT_SPEED_LEFT, UPPER_ORBIT_SPEED_RIGHT);
+        if(state.reverseFlywheels){
+            setFlyweelSpeeds(getOrbitSpeeds().second, getOrbitSpeeds().first);
+        } else {
+            setFlyweelSpeeds(getOrbitSpeeds().first, getOrbitSpeeds().second);
+        }
+
     } else {
         if (state.reverseFlywheels) {
             setFlyweelSpeeds(RIGHT_SHOOT_POWER, LEFT_SHOOT_POWER);

@@ -86,6 +86,8 @@ public:
         bool pivotLowered;
 
         bool close;
+
+        bool isStraightOrbit;
     } state;
 
 private:
