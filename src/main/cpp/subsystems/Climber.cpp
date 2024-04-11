@@ -89,25 +89,18 @@ void Climber::init()
     resetState();
 
     climbUp = upSequence();
-    climbDown = downSequence();
 }
 
 void Climber::assessInputs()
 {
     if (driverGamepad == nullptr || !driverGamepad->IsConnected()) return;
 
-    if (driverGamepad->DPadUp() || driverGamepad->DPadDown()){
+    if (driverGamepad->DPadUp()){
         if (climbUp.IsScheduled()){
             climbUp.Cancel();
-        } else if (climbDown.IsScheduled()){
-            climbDown.Cancel();
+        } else{
+            climbUp.Schedule();
         }
-    }
-    if (driverGamepad->DPadUp()){
-        climbUp.Schedule();
-    }
-    if (driverGamepad->DPadDown()){
-        climbDown.Schedule();
     }
 
     if (operatorGamepad == nullptr || !operatorGamepad->IsConnected()) return;
@@ -115,14 +108,11 @@ void Climber::assessInputs()
     if (operatorGamepad->rightStickYActive() && climbUp.IsScheduled()){
         climbUp.Cancel();
     }
-    if (operatorGamepad->rightStickYActive() && climbDown.IsScheduled()){
-        climbDown.Cancel();
-    }
-    if (operatorGamepad->DPadUp() || operatorGamepad->DPadDown()){
+    if (operatorGamepad->DPadUp()){
         if (climbUp.IsScheduled()){
             climbUp.Cancel();
-        } else if (climbDown.IsScheduled()){
-            climbDown.Cancel();
+        } else{
+            climbUp.Schedule();
         }
     }
 
@@ -159,10 +149,8 @@ void Climber::assignOutputs()
         servo->SetPulseTime(LATCH_PULSE_TIME);
     }
 
-    if (state.climbState == EXTEND){
+    if (state.climbState == CLIMB_STATE::EXTEND){
         climbMotors->setPosition(EXTENDED_POS);
-    } else if(state.climbState == RETRACT){
-        climbMotors->setPosition(RETRACTED_POS);
     }
 
     if (state.climbState == MANUAL){
@@ -197,18 +185,6 @@ frc2::CommandPtr Climber::upSequence()
             frc2::InstantCommand(
                 [this]() {
                     state.latchState = Climber::LATCH_STATE::LATCH;
-                }
-            )
-        ).ToPtr();
-}
-
-frc2::CommandPtr Climber::downSequence()
-{
-    return frc2::SequentialCommandGroup(
-            frc2::InstantCommand(
-                [this]() {
-                    // shooter->state.isShooting = false;
-                    state.climbState = Climber::CLIMB_STATE::RETRACT;
                 }
             )
         ).ToPtr();
