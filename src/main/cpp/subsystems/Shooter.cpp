@@ -331,7 +331,7 @@ void Shooter::assessInputs()
             state.pivotState = PIVOT_STATE::AMP;
     } else if (driverGamepad->GetXButton()) {
         state.pivotState = PIVOT_STATE::ORBIT;
-    } else if (driverGamepad->GetStartButton()) {
+    } else if (driverGamepad->DPadRight()) {
         state.pivotState = PIVOT_STATE::BACKSHOT;
     } 
     else {
@@ -467,7 +467,7 @@ void Shooter::assignOutputs()
     } else if(state.pivotState == PIVOT_STATE::AMP){
         setPivotPosition(AMP_ANG.to<double>());
     } else if (state.pivotState == PIVOT_STATE::BACKSHOT) {
-        setPivotPosition(BACKSHOT_ANG.to<double>()); 
+        setPivotPosition(state.calculatingPivotingAngle.to<double>());
     } else if (state.pivotState == PIVOT_STATE::AUTO_FAR_LOW) {
         setPivotPosition(AUTO_FAR_LOW_ANG.to<double>());
     } else if (state.pivotState == PIVOT_STATE::AUTO_FAR_WALL) {
@@ -507,10 +507,18 @@ void Shooter::calculatePivotAngle(){
     double distance = drivetrain->state.distanceFromSpeaker.to<double>();
     distance = fmin(distance, 9.0); // Since the parabola has a positive x^2 term, it'll eventually curve up
 
+
     double A = -0.728; // 0;
     double B = 10.2;
     double C = -49.3; // -21.3;
     double D = 23.0; // 78.5;
+    if (state.pivotState == PIVOT_STATE::BACKSHOT) {
+        A = 1.08;
+        B = -12.2;
+        C = 48.6;
+        D = 0.8;
+    }
+
     double bestPivot = D + (C * distance) + (B * pow(distance, 2)) + (A * pow(distance, 3));
     state.calculatingPivotingAngle = units::degree_t(bestPivot);
 }
