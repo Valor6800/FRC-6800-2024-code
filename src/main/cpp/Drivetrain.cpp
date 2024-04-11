@@ -1134,4 +1134,9 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
             [this] {return state.backshot;},
             nullptr
         );
+        builder.AddDoubleProperty(
+            "distanceToAmp",
+            [this] {return state.distanceFromAmp.to<double>();},
+            nullptr
+        );
     }

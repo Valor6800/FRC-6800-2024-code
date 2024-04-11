@@ -506,9 +506,9 @@ std::pair<double, double> Shooter::getOrbitSpeeds()
         return std::pair<double, double>(LOWER_ORBIT_SPEED_LEFT, LOWER_ORBIT_SPEED_RIGHT);
     } else {
         double slopeLeft = (UPPER_ORBIT_SPEED_LEFT - LOWER_ORBIT_SPEED_LEFT) / (UPPER_ORBIT_DISTANCE_BOUND - LOWER_ORBIT_DISTANCE_BOUND);
-        double speedLeft = slopeLeft * (distance - LOWER_ORBIT_SPEED_LEFT) + LOWER_ORBIT_SPEED_LEFT;
+        double speedLeft = slopeLeft * (distance - LOWER_ORBIT_DISTANCE_BOUND) + LOWER_ORBIT_SPEED_LEFT;
         double slopeRight = (UPPER_ORBIT_SPEED_RIGHT - LOWER_ORBIT_SPEED_RIGHT) / (UPPER_ORBIT_DISTANCE_BOUND - LOWER_ORBIT_DISTANCE_BOUND);
-        double speedRight = slopeLeft * (distance - LOWER_ORBIT_SPEED_RIGHT) + LOWER_ORBIT_SPEED_RIGHT;
+        double speedRight = slopeLeft * (distance - LOWER_ORBIT_DISTANCE_BOUND) + LOWER_ORBIT_SPEED_RIGHT;
         return std::pair<double, double>(speedLeft, speedRight);
     }
 }
@@ -583,6 +583,16 @@ void Shooter::InitSendable(wpi::SendableBuilder& builder){
     builder.AddDoubleProperty(
         "Battery voltage",
         [this] {return frc::DriverStation::GetBatteryVoltage();},
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "orbit speed left",
+        [this] {return getOrbitSpeeds().first;},
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "orbit speed right",
+        [this] {return getOrbitSpeeds().second;},
         nullptr
     );   
 }
