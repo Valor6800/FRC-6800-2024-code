@@ -452,6 +452,7 @@ void Drivetrain::analyzeDashboard()
     }
 
     state.distanceFromSpeaker = getDistanceFromSpeaker();
+    state.distanceFromAmp = getDistanceFromAmp();
 
     auto ppTable = nt::NetworkTableInstance::GetDefault().GetTable("PathPlanner");
     
@@ -547,6 +548,13 @@ frc::Pose2d Drivetrain::getPoseFromSpeaker() {
 units::meter_t Drivetrain::getDistanceFromSpeaker() {
     units::meter_t x = frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue ? getPoseFromSpeaker().X() - SPEAKER_BLUE_X : getPoseFromSpeaker().X() - SPEAKER_RED_X;
     units::meter_t y = getPoseFromSpeaker().Y() - SPEAKER_Y;
+
+    return units::meter_t{sqrtf(powf(x.to<double>(), 2) + powf(y.to<double>(), 2))};
+}
+
+units::meter_t Drivetrain::getDistanceFromAmp(){
+    units::meter_t x = frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue ? calculatedEstimator->GetEstimatedPosition().X() - AMP_BLUE_X : calculatedEstimator->GetEstimatedPosition().X() - AMP_RED_X;
+    units::meter_t y = calculatedEstimator->GetEstimatedPosition().Y() - AMP_Y;
 
     return units::meter_t{sqrtf(powf(x.to<double>(), 2) + powf(y.to<double>(), 2))};
 }

@@ -498,8 +498,7 @@ void Shooter::assignOutputs()
 
 std::pair<double, double> Shooter::getOrbitSpeeds()
 {
-    // @TODO identify distance from amp
-    double distance = drivetrain->state.distanceFromSpeaker.to<double>();
+    double distance = drivetrain->state.distanceFromAmp.to<double>();
 
     if (distance > UPPER_ORBIT_DISTANCE_BOUND) {
         return std::pair<double, double>(UPPER_ORBIT_SPEED_LEFT, UPPER_ORBIT_SPEED_RIGHT);

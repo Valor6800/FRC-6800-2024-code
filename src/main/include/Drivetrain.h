@@ -148,6 +148,7 @@ public:
           double matchStart;
 
           units::meter_t distanceFromSpeaker;
+          units::meter_t distanceFromAmp;
 
           frc::Pose2d visionPose;
           frc::Pose2d prevVisionPose;
@@ -246,6 +247,7 @@ public:
      units::radian_t getAngleError();
      double clampAngleRadianRange(units::radian_t angle, double max);
      units::meter_t getDistanceFromSpeaker();
+     units::meter_t getDistanceFromAmp();
      frc::Pose2d getPoseFromSpeaker();
 
      void setXMode();
