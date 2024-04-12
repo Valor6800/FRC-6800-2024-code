@@ -118,7 +118,7 @@ frc::Pose3d AprilTagsSensor::getMegaTagPose2(AprilTagsSensor::Orientation orient
 
     if (!(mt2Array.size() >= 6)) return frc::Pose3d();
 
-    return frc::Pose3d(
+    megaTag2Pose = frc::Pose3d(
         units::meter_t{mt2Array[0]},
         units::meter_t{mt2Array[1]},
         units::meter_t{mt2Array[2]},
@@ -128,6 +128,7 @@ frc::Pose3d AprilTagsSensor::getMegaTagPose2(AprilTagsSensor::Orientation orient
             units::degree_t{mt2Array[5]}
         )
     );
+    return megaTag2Pose;
 
 }
 
@@ -142,6 +143,18 @@ void AprilTagsSensor::InitSendable(wpi::SendableBuilder& builder) {
             botPose.push_back(currState.X().to<double>());
             botPose.push_back(currState.Y().to<double>());
             botPose.push_back(currState.ToPose2d().Rotation().Degrees().to<double>());
+            return botPose;
+        },
+        nullptr
+    );
+    builder.AddDoubleArrayProperty(
+        "globalPosMegaTag2",
+        [this]
+        {
+            std::vector<double> botPose;
+            botPose.push_back(megaTag2Pose.X().to<double>());
+            botPose.push_back(megaTag2Pose.Y().to<double>());
+            botPose.push_back(megaTag2Pose.ToPose2d().Rotation().Degrees().to<double>());
             return botPose;
         },
         nullptr
