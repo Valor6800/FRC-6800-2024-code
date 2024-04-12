@@ -38,6 +38,7 @@ namespace valor
 
         private:
             frc::Pose3d getGlobalPose() override;
+            frc::Pose3d megaTag2Pose = frc::Pose3d();
             units::meter_t distance{0_m};
             double dp, vp;
             

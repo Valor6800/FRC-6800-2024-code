@@ -81,7 +81,7 @@ using namespace pathplanner;
 
 #define TIME_TELEOP_VERT 105.0f
 
-#define MT2_POSE true
+#define MT2_POSE false
 
 Drivetrain::Drivetrain(frc::TimedRobot *_robot, valor::CANdleSensor *_leds) : valor::BaseSubsystem(_robot, "Drivetrain"),
                         rotMaxSpeed(ROT_SPEED_MUL * 2 * M_PI),
@@ -544,12 +544,12 @@ frc::Pose2d Drivetrain::getPoseFromSpeaker() {
             if (ledsAvailable)
                 leds->setColor(0, valor::CANdleSensor::LIGHT_BLUE);
             table->PutBoolean("good to shoot", true);
-            return MT2_POSE ? tagSensor->getMegaTagPose2(orient).ToPose2d() : tagSensor->getSensor().ToPose2d();
+            return MT2_POSE ? tagSensor->getPoseFromAprilTag().ToPose2d() : tagSensor->getSensor().ToPose2d();
         } else if (frc::DriverStation::GetAlliance() == frc::DriverStation::kRed && (tagSensor->getTagID() == 4 || tagSensor->getTagID() == 3)) {
             if (ledsAvailable)
                 leds->setColor(0, valor::CANdleSensor::LIGHT_BLUE);
             table->PutBoolean("good to shoot", true);
-            return MT2_POSE ? tagSensor->getMegaTagPose2(orient).ToPose2d() : tagSensor->getSensor().ToPose2d();
+            return MT2_POSE ? tagSensor->getPoseFromAprilTag().ToPose2d() : tagSensor->getSensor().ToPose2d();
         }
         table->PutBoolean("good to shoot", false);
     }
