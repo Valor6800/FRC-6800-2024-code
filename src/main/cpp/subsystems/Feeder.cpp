@@ -183,13 +183,19 @@ void Feeder::init()
     });
     stageDebounceSensor.setGetter([this] { return (!stageBeamBreak->GetInWindow()); });
     stageDebounceSensor.setRisingEdgeCallback([this] {
-        table->PutBoolean("Intaking Leds", true);
         frc2::SequentialCommandGroup(
+            frc2::InstantCommand(
+                [this]() {
+                    table->PutBoolean("Intaking Leds", true);
+                }
+            ),
             leds->blinkLeds(),
             leds->blinkLeds(),
             leds->blinkLeds()
-
+                
         ).Schedule();
+        table->PutBoolean("Intaking Leds", false);
+
         state.stageTrip = true;
         feederMotor.setPower(FEEDER_INTAKE_POWER);
         intakeMotor.setPower(INTAKE_FORWARD_POWER * .5);
