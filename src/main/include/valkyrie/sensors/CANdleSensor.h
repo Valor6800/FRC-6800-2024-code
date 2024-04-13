@@ -4,7 +4,10 @@
 #include <frc/TimedRobot.h>
 
 #include "ctre/phoenix/led/CANdle.h"
-
+#include "frc2/command/FunctionalCommand.h"
+#include <frc2/command/SequentialCommandGroup.h>
+#include <frc2/command/InstantCommand.h>
+#include <frc2/command/WaitCommand.h>
 #include "ctre/phoenix/led/ColorFlowAnimation.h"
 #include "ctre/phoenix/led/FireAnimation.h"
 #include "ctre/phoenix/led/LarsonAnimation.h"
@@ -39,6 +42,7 @@ public:
     static const int VALOR_PURPLE = 0xAC41FF;
     static const int RED = 0xFF0000;
     static const int LIGHT_BLUE = 0x00FFF9;
+    static const int BLACK=  0x000000;
 
     /**
      * @brief Declares the type of animation to apply.
@@ -54,6 +58,11 @@ public:
         Strobe,
         Twinkle,
         TwinkleOff
+    };
+
+    enum Blinking{
+        BLINKING,
+        NOTBLINKING
     };
 
     /**
@@ -140,6 +149,7 @@ public:
      */
     void setAnimation(int segment, AnimationType animation, RGBColor color, double speed=1.0);
 
+    frc2::SequentialCommandGroup blinkLeds();
     /**
      * @brief Sets the animation for all segments
      * 
@@ -190,7 +200,6 @@ private:
     ctre::phoenix::led::CANdle candle;
     int ledCount;
     int segments;
-
     std::unordered_map<int, SegmentSettings> segmentMap;
     SegmentSettings allSegments;
 

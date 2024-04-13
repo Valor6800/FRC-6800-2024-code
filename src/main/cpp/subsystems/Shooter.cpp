@@ -376,7 +376,9 @@ void Shooter::analyzeDashboard()
 
     auto climberTable = nt::NetworkTableInstance::GetDefault().GetTable("Climber");
     bool ledsAvailable = !climberTable->GetBoolean("Climber overriding leds", false);
-    if (ledsAvailable) {
+    auto feederTable= nt::NetworkTableInstance::GetDefault().GetTable("Feeder");
+    bool intakeNote=!feederTable->GetBoolean("Intaking Leds", false);
+    if (ledsAvailable && intakeNote) {
         if(leftFlywheelMotor.getSpeed() > 53){
             leds->setColor(1, valor::CANdleSensor::LIGHT_BLUE);
 

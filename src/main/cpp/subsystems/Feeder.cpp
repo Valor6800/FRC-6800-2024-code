@@ -172,7 +172,7 @@ void Feeder::init()
     feederPID.maxAcceleration = 100;
     feederMotor.setPIDF(feederPID, 0);
     feederMotor.setConversion(1.0, 1.0);
-
+    table->PutBoolean("Intaking Leds", false);
     feederDebounceSensor.setGetter([this] { return (!feederBeamBreak->GetInWindow()); });
     feederDebounceSensor.setRisingEdgeCallback([this] {
         state.feedTrip = true;
@@ -183,6 +183,13 @@ void Feeder::init()
     });
     stageDebounceSensor.setGetter([this] { return (!stageBeamBreak->GetInWindow()); });
     stageDebounceSensor.setRisingEdgeCallback([this] {
+        table->PutBoolean("Intaking Leds", true);
+        frc2::SequentialCommandGroup(
+            leds->blinkLeds(),
+            leds->blinkLeds(),
+            leds->blinkLeds()
+
+        ).Schedule();
         state.stageTrip = true;
         feederMotor.setPower(FEEDER_INTAKE_POWER);
         intakeMotor.setPower(INTAKE_FORWARD_POWER * .5);
@@ -247,6 +254,7 @@ void Feeder::analyzeDashboard()
     if (driverGamepad != nullptr && driverGamepad->IsConnected() && !(frc::DriverStation::IsTeleop() && frc::DriverStation::IsEnabled())) {
         driverGamepad->setRumble(false);
     }
+
 }
 
 void Feeder::assignOutputs()

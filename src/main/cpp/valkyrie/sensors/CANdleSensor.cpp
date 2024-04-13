@@ -1,5 +1,8 @@
 #include "valkyrie/sensors/CANdleSensor.h"
-
+#include "frc2/command/FunctionalCommand.h"
+#include <frc2/command/SequentialCommandGroup.h>
+#include <frc2/command/InstantCommand.h>
+#include <frc2/command/WaitCommand.h>
 #include <string>
 
 using namespace valor;
@@ -232,6 +235,38 @@ void CANdleSensor::clearAnimation()
 {
     clearAnimation(-1);
 }
+
+frc2::SequentialCommandGroup CANdleSensor::blinkLeds()
+{
+return frc2::SequentialCommandGroup(
+            frc2::InstantCommand(
+                [this]() {
+                    
+                    setColor(0, LIGHT_BLUE);
+                }
+            ),
+            frc2::WaitCommand(0.25_s),
+            frc2::InstantCommand(
+                [this]() {
+                    setColor(0, RED);
+                    
+                }
+            ),
+            frc2::WaitCommand(0.25_s),
+            frc2::InstantCommand(
+                [this]() {
+                    setColor(0, valor::CANdleSensor::LIGHT_BLUE);
+                    
+                }
+            )
+
+    
+    );
+}
+
+
+
+     
 
 CANdleSensor::AnimationType CANdleSensor::getActiveAnimationType(int segment) {
     segment++;
