@@ -16,28 +16,28 @@
     },
     {
       "anchor": {
-        "x": 7.956983533035354,
-        "y": 0.84
+        "x": 8.44175305697255,
+        "y": 0.33496964671880824
       },
       "prevControl": {
-        "x": 7.326404405080182,
-        "y": 0.9643019958418667
+        "x": 7.811173929017378,
+        "y": 0.45927164256067504
       },
       "nextControl": {
-        "x": 8.491256631848145,
-        "y": 0.7346821904454629
+        "x": 8.976026155785343,
+        "y": 0.22965183716427118
       },
       "isLocked": false,
       "linkedName": "A5"
     },
     {
       "anchor": {
-        "x": 3.66,
-        "y": 2.54
+        "x": 3.624360552251197,
+        "y": 2.5833531311883227
       },
       "prevControl": {
-        "x": 5.364672181696793,
-        "y": 1.717069846905897
+        "x": 5.329032733947988,
+        "y": 1.7604229780942195
       },
       "nextControl": null,
       "isLocked": false,
@@ -178,17 +178,34 @@
           ]
         }
       }
+    },
+    {
+      "name": "Disable vision",
+      "waypointRelativePos": 0.5,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Set Estimator"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.8,
-    "maxAcceleration": 5.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.5,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1600.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -42.0,
+    "rotation": -44.0,
     "rotateFast": false
   },
   "reversed": false,
@@ -197,5 +214,5 @@
     "rotation": -60.0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
