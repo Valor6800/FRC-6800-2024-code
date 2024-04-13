@@ -14,15 +14,16 @@
 #include <frc2/command/WaitCommand.h>
 #include <frc/PWM.h>
 
-#define FORWARD_LIMIT 16.5f
-#define REVERSE_LIMIT 1.0f
-#define EXTENDED_POS 16.0f
+#define FORWARD_LIMIT 68.0f
+#define REVERSE_LIMIT 2.0f
+#define EXTENDED_POS 65.0f
+#define DEADBAND 63.0f
 #define RETRACTED_POS 1.5f
-#define RESTING_POS 0.0f
+#define RESTING_POS 1.5f
 
-#define CLIMB_MAX_SPEED 0.0f
-#define CLIMB_MAX_ACCEL 0.0f
-#define CLIMB_K_P 0.0f
+#define CLIMB_MAX_SPEED 50.0f
+#define CLIMB_MAX_ACCEL 120.0f
+#define CLIMB_K_P 4.0f
 #define CLIMB_K_ERROR 0.00f
 #define CLIMB_K_AFF 0.00f
 #define CONVERSION 14.72f
@@ -69,7 +70,7 @@ void Climber::init()
         valor::NeutralMode::Brake,
         climberI,
         CONVERSION,
-        1.225 * M_PI,
+        1,
         climbPID,
         12.0,
         true,
@@ -94,38 +95,23 @@ void Climber::init()
 void Climber::assessInputs()
 {
     if (driverGamepad == nullptr || !driverGamepad->IsConnected()) return;
-
-    if (driverGamepad->DPadUp()){
-        if (climbUp.IsScheduled()){
-            climbUp.Cancel();
-        } else{
-            climbUp.Schedule();
-        }
-    }
-
     if (operatorGamepad == nullptr || !operatorGamepad->IsConnected()) return;
 
     if (operatorGamepad->rightStickYActive() && climbUp.IsScheduled()){
         climbUp.Cancel();
     }
-    if (operatorGamepad->DPadUp()){
-        if (climbUp.IsScheduled()){
-            climbUp.Cancel();
-        } else{
-            climbUp.Schedule();
-        }
+
+    if ((driverGamepad->DPadUp() || operatorGamepad->DPadUp()) && !climbUp.IsScheduled()){
+        climbUp.Schedule();
     }
 
-    if (operatorGamepad->DPadUp()){
+    if (operatorGamepad->DPadRight()){
         state.latchState = UNLATCH;
     } else if (operatorGamepad->DPadDown()){
         state.latchState = LATCH;
     }
     if (operatorGamepad->rightStickYActive()){
         state.climbState = MANUAL;
-        leds->setAnimation(valor::CANdleSensor::AnimationType::Rainbow, valor::CANdleSensor::RGBColor{0, 0, 0});
-    } else{
-        leds->clearAnimation();
     }
 }
 
@@ -148,9 +134,11 @@ void Climber::assignOutputs()
     } else if(state.latchState == LATCH_STATE::LATCH){
         servo->SetPulseTime(LATCH_PULSE_TIME);
     }
-
     if (state.climbState == CLIMB_STATE::EXTEND){
         climbMotors->setPosition(EXTENDED_POS);
+    }
+    if(state.climbState == CLIMB_STATE::DISABLE){
+        climbMotors->setPower(0);
     }
 
     if (state.climbState == MANUAL){
@@ -166,6 +154,7 @@ void Climber::assignOutputs()
     }
 }
 
+
 frc2::CommandPtr Climber::upSequence()
 {
     return frc2::SequentialCommandGroup(
@@ -175,19 +164,25 @@ frc2::CommandPtr Climber::upSequence()
                 }
             ),
             frc2::WaitCommand(0.5_s),
-            frc2::InstantCommand(
-                [this]() {
-                    // shooter->state.isShooting = false;
+            frc2::FunctionalCommand(
+                [this]() { //onInit
                     state.climbState = Climber::CLIMB_STATE::EXTEND;
-                }
+                },
+                [this](){}, //onExecute
+                [this](bool){ //onEnd
+                    state.climbState = Climber::CLIMB_STATE::DISABLE;
+                },
+                [this](){ //isFinished
+                    return climbMotors->getPosition() >= DEADBAND;
+                },
+                {}
             ),
-            frc2::WaitCommand(0.5_s),
             frc2::InstantCommand(
                 [this]() {
                     state.latchState = Climber::LATCH_STATE::LATCH;
                 }
             )
-        ).ToPtr();
+    ).ToPtr();
 }
 
 void Climber::InitSendable(wpi::SendableBuilder& builder)
