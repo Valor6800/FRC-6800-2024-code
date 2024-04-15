@@ -36,12 +36,12 @@
         "y": 2.232525999774222
       },
       "prevControl": {
-        "x": 6.736174335629921,
-        "y": 1.6137325250701564
+        "x": 7.713984513906528,
+        "y": 1.8860302164325393
       },
       "nextControl": {
-        "x": 8.635089234094488,
-        "y": 2.4525666717622507
+        "x": 8.540753432375979,
+        "y": 2.5632903514232983
       },
       "isLocked": false,
       "linkedName": "A4"
@@ -69,6 +69,11 @@
     {
       "waypointRelativePos": 0.2,
       "rotationDegrees": -64.58721747420853,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 2.3000000000000003,
+      "rotationDegrees": 25.0,
       "rotateFast": false
     }
   ],
