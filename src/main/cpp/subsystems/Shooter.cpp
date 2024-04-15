@@ -43,12 +43,12 @@
 #define POOP_ANG -40.0_deg
 #define BACKSHOT_ANG 69.0_deg
 #define AUTO_NEAR_ANG -46.5_deg
-#define AUTO_FAR_LOW_ANG -60.5_deg
+#define AUTO_FAR_LOW_ANG -63.0_deg
 #define AUTO_FAR_WALL_ANG -61.0_deg
 #define AUTO_FAR_HIGH_ANG -58.0_deg
 #define AUTO_SUBWOOFER_ANG -32.0_deg
 
-#define INTAKE_PIVOT_THRESHOLD -64.0_deg
+#define INTAKE_PIVOT_THRESHOLD -60.0_deg
 
 #define LOWER_ORBIT_DISTANCE_BOUND 3.0f
 #define UPPER_ORBIT_DISTANCE_BOUND 9.5f
@@ -60,6 +60,8 @@
 #define AMP_POWER -10.0f // rps
 #define LEFT_SHOOT_POWER 72.0f // rps
 #define RIGHT_SHOOT_POWER 46.0f // rps
+#define LEFT_FAR_POWER 85.0f
+#define RIGHT_FAR_POWER 57.0f
 #define LEFT_SUBWOOFER_POWER 60.0f // rps
 #define RIGHT_SUBWOOFER_POWER 40.0f // rps
 
@@ -234,6 +236,13 @@ Shooter::Shooter(frc::TimedRobot *_robot, Drivetrain *_drive, frc::AnalogTrigger
             }
         )
     ).ToPtr());
+    pathplanner::NamedCommands::registerCommand("Override flywheels", std::move(
+        frc2::InstantCommand(
+            [this]() {
+                state.flywheelOverride = true;
+            }
+        )
+    ).ToPtr());
 }
 
 void Shooter::resetState()
@@ -244,6 +253,9 @@ void Shooter::resetState()
     state.ignoreLoad = false;
     state.otherSide = false;
     state.reverseFlywheels = false;
+    state.close = false;
+    state.far = false;
+    state.flywheelOverride = false;
 }
 
 void Shooter::init()
@@ -399,6 +411,7 @@ void Shooter::analyzeDashboard()
 
     state.pivotLowered = pivotMotors->getPosition() * 360 < INTAKE_PIVOT_THRESHOLD.to<double>();
     state.close = drivetrain->state.distanceFromSpeaker < 1.80_m;
+    state.far = drivetrain->state.distanceFromSpeaker > 5.0_m;
 
     units::meter_t y = drivetrain->getCalculatedPose_m().Y();
     state.isStraightOrbit = y > SPEAKER_Y;
@@ -450,10 +463,15 @@ void Shooter::assignOutputs()
         }
 
     } else {
+        double rightPower = RIGHT_SHOOT_POWER, leftPower = LEFT_SHOOT_POWER;
+        if (state.far || state.flywheelOverride) {
+            rightPower = RIGHT_FAR_POWER;
+            leftPower = LEFT_FAR_POWER;
+        }
         if (state.reverseFlywheels) {
-            setFlyweelSpeeds(RIGHT_SHOOT_POWER, LEFT_SHOOT_POWER);
+            setFlyweelSpeeds(rightPower, leftPower);
         } else {
-            setFlyweelSpeeds(LEFT_SHOOT_POWER, RIGHT_SHOOT_POWER);
+            setFlyweelSpeeds(leftPower, rightPower);
         }
     }
 
@@ -474,7 +492,7 @@ void Shooter::assignOutputs()
     } else if(state.pivotState == PIVOT_STATE::WING){
         setPivotPosition(WING_ANG.to<double>());
     } else if(state.pivotState == PIVOT_STATE::TRACKING || (state.ignoreLoad && !state.otherSide)){
-        setPivotPosition(state.calculatingPivotingAngle.to<double>());
+        setPivotPosition((state.calculatingPivotingAngle).to<double>());
     } else if(state.pivotState == PIVOT_STATE::AMP){
         setPivotPosition(AMP_ANG.to<double>());
     } else if (state.pivotState == PIVOT_STATE::BACKSHOT) {
@@ -515,18 +533,23 @@ std::pair<double, double> Shooter::getOrbitSpeeds()
  
 void Shooter::calculatePivotAngle(){
     double distance = drivetrain->state.distanceFromSpeaker.to<double>();
+    if (distance > 5.8)
+    {
+        state.calculatingPivotingAngle = -65.25_deg;
+        return ;
+    }
     distance = fmin(distance, 9.0); // Since the parabola has a positive x^2 term, it'll eventually curve up
 
 
-    double A = -0.728; // 0;
-    double B = 10.2;
-    double C = -49.3; // -21.3;
-    double D = 23.0; // 78.5;
+    double A = -0.794; // 0;
+    double B = 10.9;
+    double C = -51.3; // -21.3;
+    double D = 24.8; // 78.5;
     if (state.pivotState == PIVOT_STATE::BACKSHOT) {
         A = 1.08;
         B = -12.2;
         C = 48.6;
-        D = 0.8;
+        D = 0.8 - 1;
     }
 
     double bestPivot = D + (C * distance) + (B * pow(distance, 2)) + (A * pow(distance, 3));
@@ -593,6 +616,11 @@ void Shooter::InitSendable(wpi::SendableBuilder& builder){
     builder.AddDoubleProperty(
         "orbit speed right",
         [this] {return getOrbitSpeeds().second;},
+        nullptr
+    );   
+    builder.AddDoubleProperty(
+        "Overriding flywheels",
+        [this] {return state.flywheelOverride;},
         nullptr
     );   
 }

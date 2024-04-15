@@ -88,6 +88,8 @@ public:
         bool close;
 
         bool isStraightOrbit;
+        bool far;
+        bool flywheelOverride;
     } state;
 
 private:
