@@ -6,6 +6,7 @@
 #include "units/time.h"
 #include "units/velocity.h"
 #include <cmath>
+#include <math.h>
 #include <span>
 #include <vector>
 
@@ -107,10 +108,10 @@ frc::Pose3d AprilTagsSensor::getMegaTagPose2(AprilTagsSensor::Orientation orient
         std::vector<double>{
             orient.yaw.to<double>(),
             orient.yawVel.to<double>(),
-            orient.pitch.to<double>(),
-            orient.pitchVel.to<double>(),
-            orient.roll.to<double>(),
-            orient.rollVel.to<double>()
+            0,
+            0,
+            0,
+            0
         }
     );
 

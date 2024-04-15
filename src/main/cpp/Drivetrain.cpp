@@ -81,7 +81,7 @@ using namespace pathplanner;
 
 #define TIME_TELEOP_VERT 105.0f
 
-#define MT2_POSE false
+#define MT2_POSE true
 
 Drivetrain::Drivetrain(frc::TimedRobot *_robot, valor::CANdleSensor *_leds) : valor::BaseSubsystem(_robot, "Drivetrain"),
                         rotMaxSpeed(ROT_SPEED_MUL * 2 * M_PI),
@@ -530,7 +530,7 @@ frc::Pose2d Drivetrain::getPoseFromSpeaker() {
     table->PutNumber("translation norm", tagSensor->getPoseFromAprilTag().Translation().Norm().to<double>());
 
     valor::AprilTagsSensor::Orientation orient{
-        pigeon.GetYaw().GetValue(),
+        estimator->GetEstimatedPosition().Rotation().Degrees(),
         pigeon.GetPitch().GetValue(),
         pigeon.GetRoll().GetValue(),
         pigeon.GetAngularVelocityZWorld().GetValue(),
@@ -538,6 +538,8 @@ frc::Pose2d Drivetrain::getPoseFromSpeaker() {
         pigeon.GetAngularVelocityYWorld().GetValue()
     };
 
+    tagSensor->getMegaTagPose2(orient);
+    units::meter_t megaTag2DistanceLimit = 5.5_m;
     units::meter_t distanceToTag = tagSensor->getPoseFromAprilTag().Translation().Norm();
 
     if (distanceToTag < 6.0_m && distanceToTag > 0.0_m) {
@@ -545,12 +547,14 @@ frc::Pose2d Drivetrain::getPoseFromSpeaker() {
             if (ledsAvailable)
                 leds->setColor(0, valor::CANdleSensor::LIGHT_BLUE);
             table->PutBoolean("good to shoot", true);
-            return MT2_POSE ? tagSensor->getPoseFromAprilTag().ToPose2d() : tagSensor->getSensor().ToPose2d();
+            // return (MT2_POSE  && distanceToTag > megaTag2DistanceLimit) ? tagSensor->getMegaTagPose2(orient).ToPose2d() : tagSensor->getSensor().ToPose2d();
+            return tagSensor->getSensor().ToPose2d();
         } else if (frc::DriverStation::GetAlliance() == frc::DriverStation::kRed && (tagSensor->getTagID() == 4 || tagSensor->getTagID() == 3)) {
             if (ledsAvailable)
                 leds->setColor(0, valor::CANdleSensor::LIGHT_BLUE);
             table->PutBoolean("good to shoot", true);
-            return MT2_POSE ? tagSensor->getPoseFromAprilTag().ToPose2d() : tagSensor->getSensor().ToPose2d();
+            // return (MT2_POSE && distanceToTag > megaTag2DistanceLimit) ? tagSensor->getMegaTagPose2(orient).ToPose2d() : tagSensor->getSensor().ToPose2d();
+            return tagSensor->getSensor().ToPose2d();
         }
         table->PutBoolean("good to shoot", false);
     }
