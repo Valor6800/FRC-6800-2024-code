@@ -2,7 +2,7 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3471626541054011,
+      "x": 1.35,
       "y": 6.467440337441439
     },
     "rotation": 0.0
@@ -36,9 +36,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Af-A1 BLUE"
+            "name": "Enable full feeder"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Af-A1-A BLUE"
+                }
+              }
+            ]
           }
         },
         {
@@ -62,13 +75,43 @@
         {
           "type": "path",
           "data": {
-            "pathName": "A-A3"
+            "pathName": "A-A3-S"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Reschedule"
+            "name": "Enable full feeder"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Stage-S"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Enable full feeder"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Disable full feeder"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Set pivot load"
           }
         }
       ]

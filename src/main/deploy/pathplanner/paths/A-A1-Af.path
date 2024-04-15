@@ -8,51 +8,51 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.561368995857205,
-        "y": 6.216522782654941
+        "x": 6.86484358096031,
+        "y": 6.993757120796939
       },
       "isLocked": false,
       "linkedName": "Score amp"
     },
     {
       "anchor": {
-        "x": 8.154779905913978,
-        "y": 5.65
+        "x": 8.344485157286288,
+        "y": 7.435728601853616
       },
       "prevControl": {
-        "x": 7.7481733769038446,
-        "y": 5.783337612320303
+        "x": 7.821242685358935,
+        "y": 7.193017655415579
       },
       "nextControl": {
-        "x": 8.688058115771902,
-        "y": 5.4751232133974685
+        "x": 8.602100156457258,
+        "y": 7.555225744421396
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.013154236884284,
-        "y": 6.297874277208335
+        "x": 3.598991360381448,
+        "y": 7.435728601853616
       },
       "prevControl": {
-        "x": 6.689564094044275,
-        "y": 6.177656171176058
+        "x": 5.551602599154277,
+        "y": 7.402612532293931
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Score amp"
+      "linkedName": "Af park"
     }
   ],
   "rotationTargets": [
     {
       "waypointRelativePos": 0.85,
-      "rotationDegrees": -15.0,
+      "rotationDegrees": 25.54,
       "rotateFast": false
     },
     {
       "waypointRelativePos": 1.15,
-      "rotationDegrees": -15.0,
+      "rotationDegrees": 25.53880070280406,
       "rotateFast": false
     }
   ],
@@ -64,6 +64,17 @@
       "constraints": {
         "maxVelocity": 2.5,
         "maxAcceleration": 2.5,
+        "maxAngularVelocity": 720.0,
+        "maxAngularAcceleration": 1600.0
+      }
+    },
+    {
+      "name": "Slower ",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.85,
+      "constraints": {
+        "maxVelocity": 3.8,
+        "maxAcceleration": 3.5,
         "maxAngularVelocity": 720.0,
         "maxAngularAcceleration": 1600.0
       }
@@ -145,12 +156,6 @@
               "data": {
                 "name": "Enable shooter"
               }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "Set pivot far low"
-              }
             }
           ]
         }
@@ -158,7 +163,7 @@
     },
     {
       "name": "Disable vision",
-      "waypointRelativePos": 0.1,
+      "waypointRelativePos": 0.05,
       "command": {
         "type": "parallel",
         "data": {
@@ -167,6 +172,23 @@
               "type": "named",
               "data": {
                 "name": "Set Estimator"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Enable vision",
+      "waypointRelativePos": 1.75,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Set Camera Estimator"
               }
             }
           ]
@@ -182,13 +204,13 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 12.0,
+    "rotation": 44.36916572761821,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Pick chain",
   "previewStartingState": {
-    "rotation": 12.0,
+    "rotation": 7.5,
     "velocity": 0
   },
   "useDefaultConstraints": false

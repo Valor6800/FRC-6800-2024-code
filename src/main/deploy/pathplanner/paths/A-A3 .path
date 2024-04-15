@@ -8,51 +8,61 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.561368995857205,
-        "y": 6.216522782654941
+        "x": 6.806378732910822,
+        "y": 6.690632346795654
       },
       "isLocked": false,
       "linkedName": "Score amp"
     },
     {
       "anchor": {
-        "x": 8.154779905913978,
-        "y": 5.65
+        "x": 8.062905777938292,
+        "y": 4.0469572139231085
       },
       "prevControl": {
-        "x": 7.7481733769038446,
-        "y": 5.783337612320303
+        "x": 7.925534788044972,
+        "y": 4.607154053511858
       },
       "nextControl": {
-        "x": 8.688058115771902,
-        "y": 5.4751232133974685
+        "x": 8.208016145054282,
+        "y": 3.4551993099211895
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.013154236884284,
+        "x": 4.827150302448754,
         "y": 6.297874277208335
       },
       "prevControl": {
-        "x": 6.689564094044275,
-        "y": 6.177656171176058
+        "x": 6.782831899141808,
+        "y": 6.716782350448382
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Score amp"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.85,
-      "rotationDegrees": -15.0,
+      "waypointRelativePos": 0.75,
+      "rotationDegrees": -61.0,
       "rotateFast": false
     },
     {
-      "waypointRelativePos": 1.15,
-      "rotationDegrees": -15.0,
+      "waypointRelativePos": 1.3,
+      "rotationDegrees": -61.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 0.25,
+      "rotationDegrees": -61.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 1.6,
+      "rotationDegrees": 9.0,
       "rotateFast": false
     }
   ],
@@ -158,7 +168,7 @@
     },
     {
       "name": "Disable vision",
-      "waypointRelativePos": 0.1,
+      "waypointRelativePos": 0.2,
       "command": {
         "type": "parallel",
         "data": {
@@ -172,12 +182,29 @@
           ]
         }
       }
+    },
+    {
+      "name": "Enable vision",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Set Camera Estimator"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "globalConstraints": {
     "maxVelocity": 3.8,
     "maxAcceleration": 4.0,
-    "maxAngularVelocity": 720.0,
+    "maxAngularVelocity": 480.0,
     "maxAngularAcceleration": 1600.0
   },
   "goalEndState": {
@@ -188,7 +215,7 @@
   "reversed": false,
   "folder": "Pick chain",
   "previewStartingState": {
-    "rotation": 12.0,
+    "rotation": 7.5,
     "velocity": 0
   },
   "useDefaultConstraints": false

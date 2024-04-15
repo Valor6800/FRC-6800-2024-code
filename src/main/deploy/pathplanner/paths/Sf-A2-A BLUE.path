@@ -3,48 +3,48 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.89,
+        "x": 2.890018068152122,
         "y": 5.572019226189894
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.088346471759494,
-        "y": 5.577685129328591
+        "x": 3.8900180681521217,
+        "y": 5.572019226189894
       },
       "isLocked": false,
       "linkedName": "Rex"
     },
     {
       "anchor": {
-        "x": 5.305305891283079,
-        "y": 6.973272294019993
+        "x": 5.610821814380897,
+        "y": 6.5883302292501575
       },
       "prevControl": {
-        "x": 4.458677089473544,
-        "y": 6.649189411451473
+        "x": 4.658649006572356,
+        "y": 6.527646929012017
       },
       "nextControl": {
-        "x": 6.2198884088161694,
-        "y": 7.323367327398717
+        "x": 6.562994622189439,
+        "y": 6.649013529488298
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.1388336215946,
-        "y": 7.35
+        "x": 8.259628592607879,
+        "y": 5.7274251582285
       },
       "prevControl": {
-        "x": 7.138998047656253,
-        "y": 7.331866465116327
+        "x": 8.111269906886006,
+        "y": 5.616511518436538
       },
       "nextControl": {
-        "x": 9.138669195532945,
-        "y": 7.368133534883676
+        "x": 8.403764695107151,
+        "y": 5.8351819752684655
       },
       "isLocked": false,
-      "linkedName": "Northstar"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -52,8 +52,8 @@
         "y": 6.297874277208335
       },
       "prevControl": {
-        "x": 6.159625110303449,
-        "y": 6.448810031105171
+        "x": 5.943566402685468,
+        "y": 6.810986739240551
       },
       "nextControl": null,
       "isLocked": false,
@@ -63,12 +63,17 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 2.0,
-      "rotationDegrees": 0.0,
-      "rotateFast": true
+      "rotationDegrees": -28.38029930922352,
+      "rotateFast": false
     },
     {
-      "waypointRelativePos": 2.7,
+      "waypointRelativePos": 0.5,
       "rotationDegrees": 0.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 2.5,
+      "rotationDegrees": 7.5,
       "rotateFast": false
     }
   ],
@@ -93,30 +98,7 @@
     },
     {
       "name": "Stop shooting",
-      "waypointRelativePos": 0.2,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Disable feeder"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "Disable shooter"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Stop intaking",
-      "waypointRelativePos": 2.6,
+      "waypointRelativePos": 0.3,
       "command": {
         "type": "parallel",
         "data": {
@@ -126,22 +108,46 @@
               "data": {
                 "name": "Disable full feeder"
               }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Disable shooter"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Set pivot load"
+              }
             }
           ]
         }
       }
     },
     {
-      "name": "Enable shooter",
-      "waypointRelativePos": 2.7,
+      "name": "Disable intake",
+      "waypointRelativePos": 2.3,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {
               "type": "named",
               "data": {
+                "name": "Disable intake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
                 "name": "Enable shooter"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Set pivot far low"
               }
             }
           ]
@@ -157,7 +163,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 7.5,
+    "rotation": 9.0,
     "rotateFast": false
   },
   "reversed": false,

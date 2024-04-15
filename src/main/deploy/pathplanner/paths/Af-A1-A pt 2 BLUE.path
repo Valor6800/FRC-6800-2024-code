@@ -8,32 +8,50 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.861334235784791,
-        "y": 6.884998927516662
+        "x": 8.223446814867804,
+        "y": 7.407780052647779
       },
       "isLocked": false,
       "linkedName": "Northstar blue"
     },
     {
       "anchor": {
-        "x": 4.995921632685279,
-        "y": 6.454890284238034
+        "x": 5.013154236884284,
+        "y": 6.297874277208335
       },
       "prevControl": {
-        "x": 6.043986313811748,
-        "y": 6.730481584154719
+        "x": 4.7772377292711035,
+        "y": 7.6273636722806035
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "Score amp"
     }
   ],
-  "rotationTargets": [],
-  "constraintZones": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 7.5,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0.75,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 2.5,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 720.0,
+        "maxAngularAcceleration": 1600.0
+      }
+    }
+  ],
   "eventMarkers": [
     {
       "name": "Disable intake",
-      "waypointRelativePos": 0.0,
+      "waypointRelativePos": 0.30000000000000004,
       "command": {
         "type": "sequential",
         "data": {
@@ -41,19 +59,19 @@
             {
               "type": "named",
               "data": {
-                "name": "Disable full feeder"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "Set pivot far high"
+                "name": "Disable intake"
               }
             },
             {
               "type": "named",
               "data": {
                 "name": "Enable shooter"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Set pivot far low"
               }
             }
           ]
@@ -62,21 +80,21 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 3.5,
+    "maxVelocity": 3.8,
+    "maxAcceleration": 5.0,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1600.0
   },
   "goalEndState": {
-    "velocity": 0.0,
-    "rotation": 10.3,
+    "velocity": 0,
+    "rotation": 9.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Pick chain",
+  "folder": "SecondPick",
   "previewStartingState": {
-    "rotation": 0.0,
+    "rotation": 30.0,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

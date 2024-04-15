@@ -3,39 +3,62 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.32,
-        "y": 5.78
+        "x": 8.059978313677693,
+        "y": 5.897937656986426
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.666746788907353,
-        "y": 5.850028563849085
+        "x": 8.427285229876043,
+        "y": 5.903698927234352
       },
       "isLocked": false,
       "linkedName": "Scorch BLUE"
     },
     {
       "anchor": {
-        "x": 4.995921632685279,
-        "y": 6.454890284238034
+        "x": 5.013154236884284,
+        "y": 6.297874277208335
       },
       "prevControl": {
-        "x": 6.665804077451492,
-        "y": 6.474704941984625
+        "x": 4.32633537496531,
+        "y": 7.3308761074603135
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "Score amp"
     }
   ],
-  "rotationTargets": [],
-  "constraintZones": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.3500000000000001,
+      "rotationDegrees": 9.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 0.1499999999999999,
+      "rotationDegrees": -21.0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0.30000000000000004,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 2.5,
+        "maxAcceleration": 2.5,
+        "maxAngularVelocity": 720.0,
+        "maxAngularAcceleration": 1600.0
+      }
+    }
+  ],
   "eventMarkers": [
     {
       "name": "Disable intake",
-      "waypointRelativePos": 0.0,
+      "waypointRelativePos": 0.25,
       "command": {
-        "type": "sequential",
+        "type": "parallel",
         "data": {
           "commands": [
             {
@@ -43,11 +66,45 @@
               "data": {
                 "name": "Disable full feeder"
               }
-            },
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Enable shooter",
+      "waypointRelativePos": 0.3999999999999999,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
             {
               "type": "named",
               "data": {
                 "name": "Enable shooter"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Set pivot far low"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Enable vision",
+      "waypointRelativePos": 0.6000000000000001,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Set Camera Estimator"
               }
             }
           ]
@@ -69,7 +126,7 @@
   "reversed": false,
   "folder": "Pick chain",
   "previewStartingState": {
-    "rotation": 0.0,
+    "rotation": 7.5,
     "velocity": 0
   },
   "useDefaultConstraints": true

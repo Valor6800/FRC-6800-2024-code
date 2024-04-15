@@ -2,7 +2,7 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3471626541054011,
+      "x": 1.35,
       "y": 6.467440337441439
     },
     "rotation": 0.0
@@ -32,13 +32,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Set Camera Estimator"
+            "name": "Enable full feeder"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Enable full feeder"
+            "name": "Set Camera Estimator"
           }
         },
         {
@@ -48,7 +48,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Af-A1 BLUE"
+                  "pathName": "Af-A1-A BLUE"
                 }
               }
             ]
@@ -73,15 +73,15 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "A-A3"
-          }
-        },
-        {
           "type": "wait",
           "data": {
             "waitTime": 0.2
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "A-A3-S"
           }
         },
         {

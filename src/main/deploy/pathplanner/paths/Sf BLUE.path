@@ -3,78 +3,33 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.35,
-        "y": 6.467440337441439
+        "x": 1.4,
+        "y": 5.572019226189894
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.3998739175292008,
-        "y": 6.463891767265932
+        "x": 1.4498739175292006,
+        "y": 5.568470656014387
       },
       "isLocked": false,
-      "linkedName": "Start amp"
+      "linkedName": "Start speaker"
     },
     {
       "anchor": {
-        "x": 1.9395598453337846,
-        "y": 6.467440337441439
+        "x": 2.890018068152122,
+        "y": 5.572019226189894
       },
       "prevControl": {
-        "x": 1.875309589897207,
-        "y": 6.434519358466618
-      },
-      "nextControl": {
-        "x": 2.003810100770362,
-        "y": 6.50036131641626
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 3.108658262527752,
-        "y": 7.080577081473897
-      },
-      "prevControl": {
-        "x": 2.2026549683518923,
-        "y": 6.616353006471984
+        "x": 1.8720072819278841,
+        "y": 5.572019226189894
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Acrid"
+      "linkedName": "Rex"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 1.0,
-      "rotationDegrees": 23.0,
-      "rotateFast": false
-    }
-  ],
-  "constraintZones": [
-    {
-      "name": "Let it rotate",
-      "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 1.0,
-      "constraints": {
-        "maxVelocity": 0.8,
-        "maxAcceleration": 5.0,
-        "maxAngularVelocity": 720.0,
-        "maxAngularAcceleration": 1600.0
-      }
-    },
-    {
-      "name": "Slow",
-      "minWaypointRelativePos": 1.55,
-      "maxWaypointRelativePos": 2.0,
-      "constraints": {
-        "maxVelocity": 1.2,
-        "maxAcceleration": 5.0,
-        "maxAngularVelocity": 720.0,
-        "maxAngularAcceleration": 1600.0
-      }
-    }
-  ],
+  "rotationTargets": [],
+  "constraintZones": [],
   "eventMarkers": [
     {
       "name": "Enable shooter",
@@ -101,7 +56,7 @@
     },
     {
       "name": "Feed",
-      "waypointRelativePos": 1.1,
+      "waypointRelativePos": 0.55,
       "command": {
         "type": "sequential",
         "data": {
@@ -136,14 +91,14 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.8,
-    "maxAcceleration": 5.0,
+    "maxVelocity": 1.5,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1600.0
   },
   "goalEndState": {
-    "velocity": 1.5,
-    "rotation": 27.129999999999995,
+    "velocity": 1.0,
+    "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,
@@ -152,5 +107,5 @@
     "rotation": 0.0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

@@ -2,37 +2,31 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3191461563110352,
-      "y": 6.492902755737305
+      "x": 1.4,
+      "y": 5.572019226189894
     },
-    "rotation": 1.8280100756886727e-20
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "Af + Af-A1"
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "Enable full feeder"
+            "name": "Set Estimator"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "A-A2"
+            "pathName": "Sf BLUE"
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "Enable full feeder"
+            "waitTime": 1.0
           }
         },
         {
@@ -56,6 +50,6 @@
       ]
     }
   },
-  "folder": null,
-  "choreoAuto": true
+  "folder": "Comp",
+  "choreoAuto": false
 }
