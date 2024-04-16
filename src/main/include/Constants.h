@@ -205,7 +205,7 @@ namespace Constants {
                 23.0675_in, //z
                 frc::Rotation3d{
                     0_deg, 
-                    32.3_deg,
+                    27_deg,
                     -180_deg
                 }
             };
@@ -329,7 +329,7 @@ namespace Constants {
                 23.915_in, // 21.75 
                 frc::Rotation3d{
                     0_deg,
-                    33.7_deg, //32.7
+                    27_deg, //32.7
                     0_deg
                 }
             };
