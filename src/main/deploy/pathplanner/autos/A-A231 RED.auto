@@ -48,7 +48,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Af-A1-A BLUE"
+                  "pathName": "Af-A2-A BLUE"
                 }
               }
             ]
@@ -63,7 +63,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "A-A3 BLUE "
+            "pathName": "A-A3 RED"
           }
         },
         {
@@ -75,7 +75,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "A-A2 BLUE"
+            "pathName": "A-A1"
           }
         },
         {

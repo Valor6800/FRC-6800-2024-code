@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.561368995857205,
-        "y": 6.216522782654941
+        "x": 6.806378732910822,
+        "y": 6.690632346795654
       },
       "isLocked": false,
       "linkedName": "Score amp"
     },
     {
       "anchor": {
-        "x": 8.177809508772171,
-        "y": 5.796428890155078
+        "x": 8.307235353209444,
+        "y": 4.150871725166874
       },
       "prevControl": {
-        "x": 7.771202979762037,
-        "y": 5.929766502475381
+        "x": 8.169864363316124,
+        "y": 4.711068564755623
       },
       "nextControl": {
-        "x": 8.711087718630095,
-        "y": 5.621552103552546
+        "x": 8.452345720325434,
+        "y": 3.5591138211649547
       },
       "isLocked": false,
       "linkedName": null
@@ -36,8 +36,8 @@
         "y": 6.297874277208335
       },
       "prevControl": {
-        "x": 6.689564094044275,
-        "y": 6.177656171176058
+        "x": 6.968835833577338,
+        "y": 6.716782350448382
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,13 +46,23 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.85,
-      "rotationDegrees": -15.0,
+      "waypointRelativePos": 0.75,
+      "rotationDegrees": -61.0,
       "rotateFast": false
     },
     {
-      "waypointRelativePos": 1.15,
-      "rotationDegrees": -15.0,
+      "waypointRelativePos": 1.3,
+      "rotationDegrees": -61.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 0.25,
+      "rotationDegrees": -61.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 1.6,
+      "rotationDegrees": 9.0,
       "rotateFast": false
     }
   ],
@@ -158,7 +168,7 @@
     },
     {
       "name": "Disable vision",
-      "waypointRelativePos": 0.1,
+      "waypointRelativePos": 0.2,
       "command": {
         "type": "parallel",
         "data": {
@@ -172,12 +182,29 @@
           ]
         }
       }
+    },
+    {
+      "name": "Enable vision",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Set Camera Estimator"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "globalConstraints": {
     "maxVelocity": 3.8,
     "maxAcceleration": 4.0,
-    "maxAngularVelocity": 720.0,
+    "maxAngularVelocity": 480.0,
     "maxAngularAcceleration": 1600.0
   },
   "goalEndState": {
@@ -188,7 +215,7 @@
   "reversed": false,
   "folder": "Pick chain",
   "previewStartingState": {
-    "rotation": 12.0,
+    "rotation": 7.5,
     "velocity": 0
   },
   "useDefaultConstraints": false

@@ -26,7 +26,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Af BLUE"
+            "pathName": "Af RED"
           }
         },
         {
@@ -63,7 +63,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "A-A3 BLUE "
+            "pathName": "A-A2 RED"
           }
         },
         {
@@ -73,15 +73,15 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "A-A2 BLUE"
-          }
-        },
-        {
           "type": "wait",
           "data": {
             "waitTime": 0.2
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "A-A3-S RED"
           }
         },
         {
