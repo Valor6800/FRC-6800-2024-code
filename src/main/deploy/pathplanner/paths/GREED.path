@@ -36,12 +36,12 @@
         "y": 4.587948897758328
       },
       "prevControl": {
-        "x": 1.8674925802315778,
-        "y": 4.133670765149697
+        "x": 1.838360747753467,
+        "y": 4.134701526972936
       },
       "nextControl": {
-        "x": 1.8717470838081145,
-        "y": 5.431310060536788
+        "x": 1.9347775698589593,
+        "y": 5.561836923442367
       },
       "isLocked": false,
       "linkedName": null
@@ -52,12 +52,12 @@
         "y": 5.546821904454621
       },
       "prevControl": {
-        "x": 2.8491731448417585,
-        "y": 5.543837461440238
+        "x": 1.8789098604672905,
+        "y": 5.545280744424336
       },
       "nextControl": {
-        "x": 2.9489948478906225,
-        "y": 5.549806347469004
+        "x": 2.9490839393121857,
+        "y": 5.546897438533435
       },
       "isLocked": false,
       "linkedName": null
@@ -68,8 +68,8 @@
         "y": 7.080577081473897
       },
       "prevControl": {
-        "x": 1.891411350390268,
-        "y": 6.240174642511447
+        "x": 1.5247210165282603,
+        "y": 6.597402120874843
       },
       "nextControl": null,
       "isLocked": false,
@@ -93,22 +93,22 @@
       "rotateFast": false
     },
     {
-      "waypointRelativePos": 2.45,
-      "rotationDegrees": 15.477099154466167,
+      "waypointRelativePos": 2.6,
+      "rotationDegrees": 0.0,
       "rotateFast": false
     },
     {
       "waypointRelativePos": 3.65,
-      "rotationDegrees": 57.542437756321654,
+      "rotationDegrees": 25.860683915512123,
       "rotateFast": false
     },
     {
       "waypointRelativePos": 0.5,
-      "rotationDegrees": -42.80000000000001,
+      "rotationDegrees": -33.75382526978235,
       "rotateFast": false
     },
     {
-      "waypointRelativePos": 0.8,
+      "waypointRelativePos": 0.75,
       "rotationDegrees": 0,
       "rotateFast": false
     }
@@ -163,7 +163,7 @@
       "minWaypointRelativePos": 0.5,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 0.5,
+        "maxVelocity": 0.4,
         "maxAcceleration": 3.5,
         "maxAngularVelocity": 720.0,
         "maxAngularAcceleration": 1600.0
@@ -173,6 +173,28 @@
       "name": "Allow speaker pick",
       "minWaypointRelativePos": 2.2,
       "maxWaypointRelativePos": 2.75,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 3.5,
+        "maxAngularVelocity": 720.0,
+        "maxAngularAcceleration": 1600.0
+      }
+    },
+    {
+      "name": "Allow amp pick",
+      "minWaypointRelativePos": 3.0,
+      "maxWaypointRelativePos": 3.75,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 3.5,
+        "maxAngularVelocity": 720.0,
+        "maxAngularAcceleration": 1600.0
+      }
+    },
+    {
+      "name": "Allow shot 2",
+      "minWaypointRelativePos": 1.3,
+      "maxWaypointRelativePos": 2.0,
       "constraints": {
         "maxVelocity": 1.0,
         "maxAcceleration": 3.5,
@@ -207,7 +229,7 @@
     },
     {
       "name": "Shoot 1",
-      "waypointRelativePos": 2.0,
+      "waypointRelativePos": 2.7,
       "command": {
         "type": "sequential",
         "data": {
@@ -236,7 +258,7 @@
     },
     {
       "name": "Shoot 2",
-      "waypointRelativePos": 3.0,
+      "waypointRelativePos": 3.45,
       "command": {
         "type": "sequential",
         "data": {
