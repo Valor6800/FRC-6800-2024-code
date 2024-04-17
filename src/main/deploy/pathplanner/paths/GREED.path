@@ -99,7 +99,7 @@
     },
     {
       "waypointRelativePos": 3.65,
-      "rotationDegrees": 40.0,
+      "rotationDegrees": 57.542437756321654,
       "rotateFast": false
     },
     {
@@ -148,11 +148,33 @@
       }
     },
     {
-      "name": "Allow wall pick",
+      "name": "Allow pre rotate",
       "minWaypointRelativePos": 0.0,
+      "maxWaypointRelativePos": 0.5,
+      "constraints": {
+        "maxVelocity": 0.7,
+        "maxAcceleration": 3.5,
+        "maxAngularVelocity": 720.0,
+        "maxAngularAcceleration": 1600.0
+      }
+    },
+    {
+      "name": "Allow wall pick",
+      "minWaypointRelativePos": 0.5,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 0.9,
+        "maxVelocity": 0.5,
+        "maxAcceleration": 3.5,
+        "maxAngularVelocity": 720.0,
+        "maxAngularAcceleration": 1600.0
+      }
+    },
+    {
+      "name": "Allow speaker pick",
+      "minWaypointRelativePos": 2.2,
+      "maxWaypointRelativePos": 2.75,
+      "constraints": {
+        "maxVelocity": 1.0,
         "maxAcceleration": 3.5,
         "maxAngularVelocity": 720.0,
         "maxAngularAcceleration": 1600.0

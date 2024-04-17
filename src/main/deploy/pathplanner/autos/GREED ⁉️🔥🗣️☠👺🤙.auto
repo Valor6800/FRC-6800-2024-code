@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.308995050422533,
-      "y": 4.587948897758328
+      "x": 1.3367291599448063,
+      "y": 4.122540536820079
     },
     "rotation": 0.0
   },
@@ -11,6 +11,12 @@
     "type": "sequential",
     "data": {
       "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Set Estimator"
+          }
+        },
         {
           "type": "path",
           "data": {
