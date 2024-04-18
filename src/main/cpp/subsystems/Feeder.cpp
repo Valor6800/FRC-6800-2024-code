@@ -135,6 +135,27 @@ Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _feederBeamBreak, fr
             )
         )
     ).ToPtr());
+    pathplanner::NamedCommands::registerCommand("Unsqueeze", std::move(
+        frc2::SequentialCommandGroup(
+            frc2::InstantCommand(
+                [this]() {
+                    state.feederState = Feeder::ROLLER_STATE::OUTTAKE;
+                }
+            ),
+            frc2::WaitCommand(0.2_s),
+            frc2::InstantCommand(
+                [this]() {
+                    state.feederState = Feeder::ROLLER_STATE::INTAKE;
+                }
+            ),
+            frc2::WaitCommand(0.2_s),
+            frc2::InstantCommand(
+                [this]() {
+                    state.feederState = Feeder::ROLLER_STATE::STAGNANT;
+                }
+            )
+        )
+    ).ToPtr());
 }
 
 void Feeder::resetState()
