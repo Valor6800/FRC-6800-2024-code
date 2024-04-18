@@ -549,7 +549,7 @@ void Shooter::calculatePivotAngle(){
         A = 1.08;
         B = -12.2;
         C = 48.6;
-        D = 0.8;
+        D = 1.8;
     }
 
     double bestPivot = D + (C * distance) + (B * pow(distance, 2)) + (A * pow(distance, 3));

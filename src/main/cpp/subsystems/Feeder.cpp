@@ -142,16 +142,22 @@ Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _feederBeamBreak, fr
                     state.feederState = Feeder::ROLLER_STATE::OUTTAKE;
                 }
             ),
-            frc2::WaitCommand(0.2_s),
+            frc2::WaitCommand(0.5_s),
+            frc2::FunctionalCommand(
+                [this](){
+                    state.feederState = Feeder::ROLLER_STATE::INTAKE;
+                }, 
+                [](){}, 
+                [this](bool _b){
+                    state.feederState = Feeder::ROLLER_STATE::OUTTAKE;
+                }, 
+                [this](){ return state.feedTrip; }, 
+                {this}
+            ),
+            frc2::WaitCommand(0.25_s),
             frc2::InstantCommand(
                 [this]() {
                     state.feederState = Feeder::ROLLER_STATE::INTAKE;
-                }
-            ),
-            frc2::WaitCommand(0.2_s),
-            frc2::InstantCommand(
-                [this]() {
-                    state.feederState = Feeder::ROLLER_STATE::STAGNANT;
                 }
             )
         )
