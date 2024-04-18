@@ -48,12 +48,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "W-3"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "Enable full feeder"
