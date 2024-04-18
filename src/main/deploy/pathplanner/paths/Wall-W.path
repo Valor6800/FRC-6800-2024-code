@@ -20,28 +20,28 @@
         "y": 4.136631496140412
       },
       "prevControl": {
-        "x": 1.9857676083411056,
-        "y": 4.1891503212705885
+        "x": 1.9815351121425981,
+        "y": 4.084029295650993
       },
       "nextControl": {
-        "x": 1.9751055712155037,
-        "y": 4.011477944478544
+        "x": 1.9838583821311786,
+        "y": 4.19709524103733
       },
       "isLocked": false,
       "linkedName": "Score stage near"
     },
     {
       "anchor": {
-        "x": 2.778914859655349,
+        "x": 2.68,
         "y": 4.080337362063614
       },
       "prevControl": {
-        "x": 2.678936183459611,
-        "y": 4.08240238171188
+        "x": 2.6800073655967425,
+        "y": 3.980337362334874
       },
       "nextControl": {
-        "x": 2.878893535851087,
-        "y": 4.078272342415348
+        "x": 2.6799879954476586,
+        "y": 4.243318756907785
       },
       "isLocked": false,
       "linkedName": null
@@ -92,10 +92,10 @@
     {
       "name": "Allow pick n shoot",
       "minWaypointRelativePos": 1.0,
-      "maxWaypointRelativePos": 1.6500000000000001,
+      "maxWaypointRelativePos": 2.0,
       "constraints": {
-        "maxVelocity": 0.4,
-        "maxAcceleration": 4.0,
+        "maxVelocity": 3.8,
+        "maxAcceleration": 1.0,
         "maxAngularVelocity": 720.0,
         "maxAngularAcceleration": 1600.0
       }
