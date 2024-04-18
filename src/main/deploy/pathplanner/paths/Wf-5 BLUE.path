@@ -195,6 +195,40 @@
           ]
         }
       }
+    },
+    {
+      "name": "Disable vision pre",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Set Estimator"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Enable vision pre",
+      "waypointRelativePos": 0.15,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Set Camera Estimator"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "globalConstraints": {
