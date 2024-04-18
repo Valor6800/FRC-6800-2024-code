@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.013154236884284,
-        "y": 6.297874277208335
+        "x": 3.108658262527752,
+        "y": 7.080577081473897
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.561368995857205,
-        "y": 6.216522782654941
+        "x": 3.998632422365674,
+        "y": 7.536588040575521
       },
       "isLocked": false,
-      "linkedName": "Score amp"
+      "linkedName": "Acrid"
     },
     {
       "anchor": {
-        "x": 8.5,
-        "y": 5.556066607628711
+        "x": 8.39,
+        "y": 7.5
       },
       "prevControl": {
-        "x": 8.093393470989867,
-        "y": 5.689404219949014
+        "x": 8.22758126319377,
+        "y": 7.589063399077793
       },
       "nextControl": {
-        "x": 9.033278209857924,
-        "y": 5.3811898210261795
+        "x": 8.552361528933128,
+        "y": 7.410967971241498
       },
       "isLocked": false,
       "linkedName": null
@@ -36,8 +36,8 @@
         "y": 6.297874277208335
       },
       "prevControl": {
-        "x": 6.689564094044275,
-        "y": 6.177656171176058
+        "x": 6.197804843237002,
+        "y": 6.633843251663645
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,24 +46,24 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.85,
-      "rotationDegrees": -15.0,
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 0,
       "rotateFast": false
     },
     {
-      "waypointRelativePos": 1.15,
-      "rotationDegrees": -15.0,
+      "waypointRelativePos": 0.25,
+      "rotationDegrees": 0.0,
       "rotateFast": false
     }
   ],
   "constraintZones": [
     {
       "name": "New Constraints Zone",
-      "minWaypointRelativePos": 1.4,
+      "minWaypointRelativePos": 1.55,
       "maxWaypointRelativePos": 2.0,
       "constraints": {
         "maxVelocity": 2.5,
-        "maxAcceleration": 2.5,
+        "maxAcceleration": 3.0,
         "maxAngularVelocity": 720.0,
         "maxAngularAcceleration": 1600.0
       }
@@ -74,7 +74,7 @@
       "name": "Intake",
       "waypointRelativePos": 0.65,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {
@@ -89,7 +89,7 @@
     },
     {
       "name": "Stop shooting",
-      "waypointRelativePos": 0.1,
+      "waypointRelativePos": 0.15,
       "command": {
         "type": "parallel",
         "data": {
@@ -97,13 +97,13 @@
             {
               "type": "named",
               "data": {
-                "name": "Disable shooter"
+                "name": "Disable full feeder"
               }
             },
             {
               "type": "named",
               "data": {
-                "name": "Disable feeder"
+                "name": "Disable shooter"
               }
             },
             {
@@ -118,28 +118,17 @@
     },
     {
       "name": "Disable intake",
-      "waypointRelativePos": 1.25,
+      "waypointRelativePos": 1.3,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {
               "type": "named",
               "data": {
-                "name": "Disable full feeder"
+                "name": "Disable intake"
               }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Enable shooter",
-      "waypointRelativePos": 1.4,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
+            },
             {
               "type": "named",
               "data": {
@@ -158,7 +147,7 @@
     },
     {
       "name": "Disable vision",
-      "waypointRelativePos": 0.1,
+      "waypointRelativePos": 0.5,
       "command": {
         "type": "parallel",
         "data": {
@@ -181,14 +170,14 @@
     "maxAngularAcceleration": 1600.0
   },
   "goalEndState": {
-    "velocity": 0.0,
+    "velocity": 0,
     "rotation": 12.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Pick chain",
+  "folder": "SecondPick",
   "previewStartingState": {
-    "rotation": 12.0,
+    "rotation": 30.0,
     "velocity": 0
   },
   "useDefaultConstraints": false
