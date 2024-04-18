@@ -3,67 +3,62 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.108658262527752,
-        "y": 7.080577081473897
+        "x": 1.9926160982964327,
+        "y": 4.476462151057984
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.998632422365674,
-        "y": 7.536588040575521
+        "x": 1.9301214634692003,
+        "y": 2.722379383199161
       },
       "isLocked": false,
-      "linkedName": "Acrid"
+      "linkedName": "Score stage near"
     },
     {
       "anchor": {
-        "x": 8.300219670751842,
-        "y": 5.782500457325857
+        "x": 8.44175305697255,
+        "y": 0.33496964671880824
       },
       "prevControl": {
-        "x": 8.137800933945611,
-        "y": 5.87156385640365
+        "x": 7.811173929017378,
+        "y": 0.45927164256067504
       },
       "nextControl": {
-        "x": 8.46258119968497,
-        "y": 5.693468428567355
+        "x": 8.976026155785343,
+        "y": 0.22965183716427118
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "A5"
     },
     {
       "anchor": {
-        "x": 5.013154236884284,
-        "y": 6.297874277208335
+        "x": 3.624360552251197,
+        "y": 2.5833531311883227
       },
       "prevControl": {
-        "x": 6.197804843237002,
-        "y": 6.633843251663645
+        "x": 5.329032733947988,
+        "y": 1.7604229780942195
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Score amp"
+      "linkedName": "Score wall"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.0,
-      "rotationDegrees": -29.41651291030677,
-      "rotateFast": false
-    },
-    {
-      "waypointRelativePos": 0.25,
-      "rotationDegrees": 0.0,
+      "waypointRelativePos": 0.95,
+      "rotationDegrees": -13.247890624337721,
       "rotateFast": false
     }
   ],
   "constraintZones": [
     {
-      "name": "New Constraints Zone",
-      "minWaypointRelativePos": 1.55,
+      "name": "Account for flywheels",
+      "minWaypointRelativePos": 1.8,
       "maxWaypointRelativePos": 2.0,
       "constraints": {
-        "maxVelocity": 2.5,
-        "maxAcceleration": 3.0,
+        "maxVelocity": 2.0,
+        "maxAcceleration": 1.5,
         "maxAngularVelocity": 720.0,
         "maxAngularAcceleration": 1600.0
       }
@@ -71,64 +66,12 @@
   ],
   "eventMarkers": [
     {
-      "name": "Intake",
-      "waypointRelativePos": 0.65,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Enable intake"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Stop shooting",
-      "waypointRelativePos": 0.15,
+      "name": "Enable shooter 2",
+      "waypointRelativePos": 1.6,
       "command": {
         "type": "parallel",
         "data": {
           "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Disable full feeder"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "Disable shooter"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "Set pivot load"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Disable intake",
-      "waypointRelativePos": 1.3,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Disable intake"
-              }
-            },
             {
               "type": "named",
               "data": {
@@ -138,7 +81,30 @@
             {
               "type": "named",
               "data": {
-                "name": "Set pivot far low"
+                "name": "Disable intake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Set pivot far wall"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Enable intake",
+      "waypointRelativePos": 0.55,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Enable intake"
               }
             }
           ]
@@ -164,20 +130,20 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.8,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.5,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1600.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 10.0,
+    "rotation": -44.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "SecondPick",
   "previewStartingState": {
-    "rotation": 30.0,
+    "rotation": 0.0,
     "velocity": 0
   },
   "useDefaultConstraints": false
