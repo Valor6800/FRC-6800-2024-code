@@ -541,15 +541,15 @@ void Shooter::calculatePivotAngle(){
     distance = fmin(distance, 9.0); // Since the parabola has a positive x^2 term, it'll eventually curve up
 
 
-    double A = -0.794; // 0;
-    double B = 10.9;
-    double C = -51.3; // -21.3;
-    double D = 24.8; // 78.5;
+    double A = -0.642;
+    double B = 9.2;
+    double C = -46.2;
+    double D = 20.1; // 78.5;
     if (state.pivotState == PIVOT_STATE::BACKSHOT) {
         A = 1.08;
         B = -12.2;
         C = 48.6;
-        D = 0.8 - 1;
+        D = 0.8;
     }
 
     double bestPivot = D + (C * distance) + (B * pow(distance, 2)) + (A * pow(distance, 3));
