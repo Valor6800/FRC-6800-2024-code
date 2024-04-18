@@ -38,19 +38,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "W-4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Enable full feeder"
+            "pathName": "W-4 SPED"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "W-3"
+            "pathName": "Wall-W"
           }
         },
         {
@@ -69,6 +63,12 @@
           "type": "named",
           "data": {
             "name": "Disable full feeder"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Disable shooter"
           }
         }
       ]

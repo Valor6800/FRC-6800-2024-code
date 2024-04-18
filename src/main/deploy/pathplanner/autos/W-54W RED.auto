@@ -14,13 +14,19 @@
         {
           "type": "named",
           "data": {
+            "name": "Override flywheels"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Set pivot load"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Wf-5 BLUE"
+            "pathName": "Wf-5 RED"
           }
         },
         {
@@ -32,19 +38,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "W-4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Enable full feeder"
+            "pathName": "W-4 SPED"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "W-3"
+            "pathName": "Wall-W"
           }
         },
         {
@@ -63,6 +63,12 @@
           "type": "named",
           "data": {
             "name": "Disable full feeder"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Disable shooter"
           }
         }
       ]

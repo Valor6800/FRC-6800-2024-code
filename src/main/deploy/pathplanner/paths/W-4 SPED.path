@@ -88,19 +88,7 @@
       "rotateFast": false
     }
   ],
-  "constraintZones": [
-    {
-      "name": "Account for flywheels",
-      "minWaypointRelativePos": 3.3,
-      "maxWaypointRelativePos": 4.0,
-      "constraints": {
-        "maxVelocity": 2.0,
-        "maxAcceleration": 1.5,
-        "maxAngularVelocity": 720.0,
-        "maxAngularAcceleration": 1600.0
-      }
-    }
-  ],
+  "constraintZones": [],
   "eventMarkers": [
     {
       "name": "Intake",
@@ -164,29 +152,6 @@
           ]
         }
       }
-    },
-    {
-      "name": "Enable shooter",
-      "waypointRelativePos": 2.9,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Enable shooter"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "Set pivot far wall"
-              }
-            }
-          ]
-        }
-      }
     }
   ],
   "globalConstraints": {
@@ -196,7 +161,7 @@
     "maxAngularAcceleration": 1600.0
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 3.8,
     "rotation": -44.0,
     "rotateFast": false
   },

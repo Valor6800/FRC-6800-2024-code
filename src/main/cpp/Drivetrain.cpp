@@ -542,7 +542,7 @@ frc::Pose2d Drivetrain::getPoseFromSpeaker() {
     units::meter_t megaTag2DistanceLimit = 5.5_m;
     units::meter_t distanceToTag = tagSensor->getPoseFromAprilTag().Translation().Norm();
 
-    if (distanceToTag < 6.0_m && distanceToTag > 0.0_m) {
+    if (distanceToTag < 4.8_m && distanceToTag > 0.0_m) {
         if (frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue && (tagSensor->getTagID() == 7 || tagSensor->getTagID() == 8)) {
             if (ledsAvailable)
                 leds->setColor(0, valor::CANdleSensor::LIGHT_BLUE);
