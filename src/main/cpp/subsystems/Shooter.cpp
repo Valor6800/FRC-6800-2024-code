@@ -55,8 +55,8 @@
 #define UPPER_ORBIT_DISTANCE_BOUND 9.5f
 #define LOWER_ORBIT_SPEED_LEFT 35.0f
 #define LOWER_ORBIT_SPEED_RIGHT 30.0f
-#define UPPER_ORBIT_SPEED_LEFT 45.0f
-#define UPPER_ORBIT_SPEED_RIGHT 40.0f
+#define UPPER_ORBIT_SPEED_LEFT 44.0f
+#define UPPER_ORBIT_SPEED_RIGHT 39.0f
 
 #define AMP_POWER -10.0f // rps
 #define LEFT_SHOOT_POWER 72.0f // rps
@@ -404,7 +404,7 @@ void Shooter::analyzeDashboard()
         }
     }
 
-    int color = 0x000000;
+    int color = 0xAC41FF;
     switch (pivotMotors->getMagnetHealth().value) {
         case 1: 
             color = 0xFF0000;

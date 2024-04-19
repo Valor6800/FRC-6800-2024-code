@@ -474,7 +474,7 @@ void Drivetrain::analyzeDashboard()
     unfilteredPoseTracker.addReading(getPose_m(), frc::Timer::GetFPGATimestamp());
 
     for (int i = 0; i < 4; i++) {
-        int color = 0x000000;
+        int color = 0xAC41FF;
         switch (azimuthControllers[i]->getMagnetHealth().value) {
             case 1: 
                 color = 0xFF0000;
@@ -488,6 +488,8 @@ void Drivetrain::analyzeDashboard()
         }
         leds->setLED(i, color);
     }
+    for (int i = 5; i < 8; i++)
+        leds->setLED(i, 0x000000);
 }
 
 void Drivetrain::assignOutputs()
