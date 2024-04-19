@@ -133,6 +133,23 @@
           ]
         }
       }
+    },
+    {
+      "name": "Set pivot near further",
+      "waypointRelativePos": 1.9,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Set pivot near further"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "globalConstraints": {

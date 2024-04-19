@@ -62,6 +62,7 @@ public:
         AUTO_FAR_HIGH,
         AUTO_FAR_WALL,
         AUTO_NEAR,
+        AUTO_NEAR_FURTHER,
         FORCE_INTAKE,
         AUTO_SUBWOOFER,
     };
