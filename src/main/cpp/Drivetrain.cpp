@@ -33,7 +33,7 @@ using namespace pathplanner;
 #define AMP_Y 8.1026_m
 #define AMP_BLUE_X 1.637157_m
 #define AMP_RED_X 14.499717_m
-#define AMP_Y_OFFSET 0.45085_m
+#define AMP_Y_OFFSET 0.0_m
 #define AMP_X_OFFSET 0.0_m
 
 #define TXRANGE  30.0f
@@ -261,6 +261,8 @@ void Drivetrain::init()
     table->PutNumber("KD_ROTATION", KD_ROTATE);
     table->PutNumber("SPEAKER_X_OFFSET", SPEAKER_X_OFFSET);
     table->PutNumber("SPEAKER_Y_OFFSET", SPEAKER_Y_OFFSET);
+    table->PutNumber("AMP_X_OFFSET", AMP_X_OFFSET.to<double>());
+    table->PutNumber("AMP_Y_OFFSET", AMP_Y_OFFSET.to<double>());
 
     table->PutBoolean("Accepting Vision Measurements", true);
     table->PutBoolean("Pit Mode", false);
