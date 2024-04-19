@@ -140,10 +140,12 @@ Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _feederBeamBreak, fr
             frc2::FunctionalCommand(
                 [this](){
                     state.feederState = Feeder::ROLLER_STATE::INTAKE;
+                    state.intakeState = Feeder::ROLLER_STATE::INTAKE;
                 }, 
                 [](){}, 
                 [this](bool _b){
                     state.feederState = Feeder::ROLLER_STATE::OUTTAKE;
+                    state.intakeState = Feeder::ROLLER_STATE::STAGNANT;
                 }, 
                 [this](){ return state.feedTrip; }, 
                 {this}

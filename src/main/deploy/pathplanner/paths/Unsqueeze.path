@@ -47,6 +47,12 @@
             {
               "type": "named",
               "data": {
+                "name": "Set pivot load"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
                 "name": "Unsqueezed intake"
               }
             }
@@ -56,7 +62,7 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 0.3,
+    "maxVelocity": 0.2,
     "maxAcceleration": 5.0,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1600.0
