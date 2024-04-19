@@ -42,6 +42,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Override flywheels"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [

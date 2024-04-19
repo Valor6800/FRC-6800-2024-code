@@ -42,13 +42,19 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Override flywheels"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Af-A1-A BLUE"
+                  "pathName": "Af-A1-A RED"
                 }
               }
             ]

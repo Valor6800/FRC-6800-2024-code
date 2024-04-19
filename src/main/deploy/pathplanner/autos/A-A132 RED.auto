@@ -26,7 +26,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Af BLUE"
+            "pathName": "Af RED"
           }
         },
         {
@@ -39,6 +39,12 @@
           "type": "named",
           "data": {
             "name": "Set Camera Estimator"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Override flywheels"
           }
         },
         {
