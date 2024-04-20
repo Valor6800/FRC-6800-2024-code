@@ -8,27 +8,27 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.86484358096031,
-        "y": 6.993757120796939
+        "x": 6.580427669680571,
+        "y": 6.945396895821281
       },
       "isLocked": false,
       "linkedName": "Score amp"
     },
     {
       "anchor": {
-        "x": 8.094607180205351,
-        "y": 7.5
+        "x": 8.390437681776264,
+        "y": 7.294070804357825
       },
       "prevControl": {
-        "x": 7.6171604868092295,
-        "y": 7.176370670496931
+        "x": 7.97424780995102,
+        "y": 7.1287330268464135
       },
       "nextControl": {
-        "x": 8.614991556983943,
-        "y": 7.852733926677344
+        "x": 8.958958664232002,
+        "y": 7.5199244400928755
       },
       "isLocked": false,
-      "linkedName": "Northstar blue"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -36,8 +36,8 @@
         "y": 6.297874277208335
       },
       "prevControl": {
-        "x": 6.902993404438776,
-        "y": 6.861653788230898
+        "x": 5.873770273003509,
+        "y": 7.047505550197733
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,20 +46,15 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.85,
-      "rotationDegrees": 25.54,
-      "rotateFast": false
-    },
-    {
       "waypointRelativePos": 1.15,
-      "rotationDegrees": 25.53880070280406,
+      "rotationDegrees": 17.887258546066775,
       "rotateFast": false
     }
   ],
   "constraintZones": [
     {
       "name": "New Constraints Zone",
-      "minWaypointRelativePos": 1.4,
+      "minWaypointRelativePos": 1.3,
       "maxWaypointRelativePos": 2.0,
       "constraints": {
         "maxVelocity": 2.5,
@@ -80,7 +75,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Enable intake"
+                "name": "Unsqueezed intake"
               }
             }
           ]
@@ -158,7 +153,7 @@
     },
     {
       "name": "Disable vision",
-      "waypointRelativePos": 0.2,
+      "waypointRelativePos": 0,
       "command": {
         "type": "parallel",
         "data": {
@@ -175,7 +170,7 @@
     },
     {
       "name": "Enable vision",
-      "waypointRelativePos": 0.0,
+      "waypointRelativePos": 1.6,
       "command": {
         "type": "parallel",
         "data": {
@@ -193,13 +188,13 @@
   ],
   "globalConstraints": {
     "maxVelocity": 3.8,
-    "maxAcceleration": 4.0,
+    "maxAcceleration": 5.0,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1600.0
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 12.0,
+    "rotation": 9.0,
     "rotateFast": false
   },
   "reversed": false,
@@ -208,5 +203,5 @@
     "rotation": 7.5,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }
