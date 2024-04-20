@@ -32,7 +32,7 @@ using namespace pathplanner;
 
 #define AMP_Y 8.1026_m
 #define AMP_BLUE_X 1.637157_m
-#define AMP_RED_X 14.499717_m
+#define AMP_RED_X 14.899717_m
 #define AMP_Y_OFFSET 0.0_m
 #define AMP_X_OFFSET 0.0_m
 
