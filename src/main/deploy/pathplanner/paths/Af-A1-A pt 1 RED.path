@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 8.094607180205351,
-        "y": 7.5
+        "x": 8.39,
+        "y": 7.3
       },
       "prevControl": {
-        "x": 7.93218844339912,
-        "y": 7.589063399077793
+        "x": 8.22758126319377,
+        "y": 7.389063399077793
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Northstar blue"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
@@ -35,19 +35,7 @@
       "rotateFast": false
     }
   ],
-  "constraintZones": [
-    {
-      "name": "New Constraints Zone",
-      "minWaypointRelativePos": 1,
-      "maxWaypointRelativePos": 1.5,
-      "constraints": {
-        "maxVelocity": 2.5,
-        "maxAcceleration": 3.0,
-        "maxAngularVelocity": 720.0,
-        "maxAngularAcceleration": 1600.0
-      }
-    }
-  ],
+  "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.8,

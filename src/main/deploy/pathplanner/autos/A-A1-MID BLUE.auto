@@ -2,7 +2,7 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3471626541054011,
+      "x": 1.35,
       "y": 6.467440337441439
     },
     "rotation": 0.0
@@ -32,13 +32,19 @@
         {
           "type": "named",
           "data": {
+            "name": "Enable full feeder"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Set Camera Estimator"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Enable full feeder"
+            "name": "Override flywheels"
           }
         },
         {
@@ -48,7 +54,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Af-A1-A pt 1 BLUE"
+                  "pathName": "Af-A1-A BLUE"
                 }
               }
             ]
@@ -57,7 +63,31 @@
         {
           "type": "named",
           "data": {
-            "name": "Reschedule"
+            "name": "Enable full feeder"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "A-A1 pt 1 BLUE"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Disable full feeder"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Disable shooter"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Set pivot load"
           }
         }
       ]

@@ -2,7 +2,7 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3471626541054011,
+      "x": 1.35,
       "y": 6.467440337441439
     },
     "rotation": 0.0
@@ -26,7 +26,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Af BLUE"
+            "pathName": "Af RED"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Enable full feeder"
           }
         },
         {
@@ -38,7 +44,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Enable full feeder"
+            "name": "Override flywheels"
           }
         },
         {
@@ -48,7 +54,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Af-A1 BLUE"
+                  "pathName": "Af-A1-A RED"
                 }
               }
             ]
@@ -63,55 +69,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "A-A2 BLUE"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Enable full feeder"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "A-A3-S BLUE"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Enable full feeder"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Stage-S"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.2
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Enable full feeder"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.2
+            "pathName": "A-A1 pt 1 RED"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Disable full feeder"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Disable shooter"
           }
         },
         {
