@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.998632422365674,
-        "y": 7.536588040575521
+        "x": 4.895939881969854,
+        "y": 8.144583496374201
       },
       "isLocked": false,
       "linkedName": "Acrid"
@@ -64,6 +64,17 @@
       "constraints": {
         "maxVelocity": 2.5,
         "maxAcceleration": 3.0,
+        "maxAngularVelocity": 720.0,
+        "maxAngularAcceleration": 1600.0
+      }
+    },
+    {
+      "name": "Allow shot",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.05,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 4.0,
         "maxAngularVelocity": 720.0,
         "maxAngularAcceleration": 1600.0
       }
