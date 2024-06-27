@@ -4,6 +4,7 @@
 #include <frc/AnalogOutput.h>
 #include <frc/AnalogTrigger.h>
 #include "frc/AnalogTriggerType.h"
+#include "frc2/command/FunctionalCommand.h"
 #include "valkyrie/controllers/NeutralMode.h"
 #include "Constants.h"
 #include "frc/AnalogTriggerOutput.h"
@@ -141,21 +142,35 @@ Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _feederBeamBreak, fr
                 [this](){
                     state.feederState = Feeder::ROLLER_STATE::INTAKE;
                     state.intakeState = Feeder::ROLLER_STATE::INTAKE;
-                }, 
-                [](){}, 
+                },
+                [](){},
                 [this](bool _b){
-                    state.feederState = Feeder::ROLLER_STATE::OUTTAKE;
-                    state.intakeState = Feeder::ROLLER_STATE::STAGNANT;
-                }, 
-                [this](){ return state.feedTrip; }, 
+                    state.feederState = Feeder::ROLLER_STATE::STAGNANT;
+                    state.feederState = Feeder::ROLLER_STATE::STAGNANT;
+                },
+                [this](){ return state.feedTrip;},
                 {this}
-            ),
-            frc2::WaitCommand(0.5_s),
-            frc2::InstantCommand(
-                [this]() {
-                    state.feederState = Feeder::ROLLER_STATE::INTAKE;
-                }
             )
+            //frc2::FunctionalCommand(
+            //    [this](){
+            //        state.feederState = Feeder::ROLLER_STATE::INTAKE;
+            //        state.intakeState = Feeder::ROLLER_STATE::INTAKE;
+            //    }, 
+            //    [](){}, 
+            //    [this](bool _b){
+            //        frc2::WaitCommand(0.5_s);
+            //        state.feederState = Feeder::ROLLER_STATE::OUTTAKE;
+            //        state.intakeState = Feeder::ROLLER_STATE::STAGNANT;
+            //    }, 
+            //    [this](){ return state.feedTrip; }, 
+            //    {this}
+            //),
+            //frc2::WaitCommand(0.5_s),
+            //frc2::InstantCommand(
+            //    [this]() {
+            //        state.feederState = Feeder::ROLLER_STATE::INTAKE;
+            //    }
+            //)
         )
     ).ToPtr());
 }
