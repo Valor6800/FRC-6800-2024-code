@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.094607180205351,
-        "y": 7.5
+        "x": 8.09,
+        "y": 7.25
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.23271261828724,
-        "y": 7.503081960461929
+        "x": 8.228105438081888,
+        "y": 7.253081960461929
       },
       "isLocked": false,
       "linkedName": "Northstar blue"
