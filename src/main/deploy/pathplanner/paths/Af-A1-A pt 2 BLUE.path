@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 8.09,
-        "y": 7.25
+        "y": 7.38
       },
       "prevControl": null,
       "nextControl": {
         "x": 8.234136102499273,
-        "y": 7.357756817039966
+        "y": 7.4877568170399655
       },
       "isLocked": false,
       "linkedName": "Northstar blue"
