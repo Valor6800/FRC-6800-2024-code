@@ -158,7 +158,6 @@ Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _feederBeamBreak, fr
             //    }, 
             //    [](){}, 
             //    [this](bool _b){
-            //        frc2::WaitCommand(0.5_s);
             //        state.feederState = Feeder::ROLLER_STATE::OUTTAKE;
             //        state.intakeState = Feeder::ROLLER_STATE::STAGNANT;
             //    }, 
@@ -171,6 +170,28 @@ Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _feederBeamBreak, fr
             //        state.feederState = Feeder::ROLLER_STATE::INTAKE;
             //    }
             //)
+        )
+    ).ToPtr());
+    pathplanner::NamedCommands::registerCommand("Unsqueezed intake TEST", std::move(
+        frc2::SequentialCommandGroup(
+            frc2::FunctionalCommand(
+               [this](){
+                   state.feederState = Feeder::ROLLER_STATE::INTAKE;
+                   state.intakeState = Feeder::ROLLER_STATE::INTAKE;
+               }, 
+               [](){}, 
+               [this](bool _b){
+                   state.feederState = Feeder::ROLLER_STATE::OUTTAKE;
+                   state.intakeState = Feeder::ROLLER_STATE::STAGNANT;
+               }, 
+               [this](){ return state.feedTrip; }, 
+               {this}
+            ),
+            frc2::InstantCommand(
+               [this]() {
+                   state.feederState = Feeder::ROLLER_STATE::INTAKE;
+               }
+            )
         )
     ).ToPtr());
 }
@@ -260,6 +281,30 @@ void Feeder::assessInputs()
         state.intakeState = ROLLER_STATE::STAGNANT;
         state.feederState = ROLLER_STATE::STAGNANT;
     }
+
+    // if (operatorGamepad->GetYButton() && USE_UNJAM) {
+        
+    //     frc2::SequentialCommandGroup(
+    //         frc2::FunctionalCommand(
+    //            [this](){
+    //                state.feederState = Feeder::ROLLER_STATE::INTAKE;
+    //                state.intakeState = Feeder::ROLLER_STATE::INTAKE;
+    //            }, 
+    //            [](){}, 
+    //            [this](bool _b){
+    //                state.feederState = Feeder::ROLLER_STATE::OUTTAKE;
+    //                state.intakeState = Feeder::ROLLER_STATE::STAGNANT;
+    //            }, 
+    //            [this](){ return state.feedTrip; }, 
+    //            {this}
+    //         ),
+    //         frc2::InstantCommand(
+    //            [this]() {
+    //                state.feederState = Feeder::ROLLER_STATE::INTAKE;
+    //            }
+    //         )
+    //     ).Schedule();
+    // }
 }
 
 void Feeder::analyzeDashboard()
