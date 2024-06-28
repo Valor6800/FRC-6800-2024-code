@@ -43,7 +43,9 @@ public:
         MANUAL,
         DISABLE,
         EXTEND,
-        RETRACT
+        RETRACT,
+        EXTEND_PWR,
+        RETRACT_PWR
     };
 
     enum LATCH_STATE
