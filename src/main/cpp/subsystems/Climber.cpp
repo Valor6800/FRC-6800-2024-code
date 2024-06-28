@@ -101,9 +101,9 @@ void Climber::assessInputs()
         climbUp.Cancel();
     }
 
-    if ((driverGamepad->DPadUp() || operatorGamepad->DPadUp()) && !climbUp.IsScheduled()){
-        climbUp.Schedule();
-    }
+    // if ((driverGamepad->DPadUp() || operatorGamepad->DPadUp()) && !climbUp.IsScheduled()){
+    //     climbUp.Schedule();
+    // }
 
     if (operatorGamepad->DPadRight()){
         state.latchState = UNLATCH;
@@ -112,6 +112,18 @@ void Climber::assessInputs()
     }
     if (operatorGamepad->rightStickYActive()){
         state.climbState = MANUAL;
+    }
+
+    if (driverGamepad->DPadLeft()) {
+        state.latchState = LATCH;
+    } else if (driverGamepad->DPadRight()) {
+        state.latchState = UNLATCH;
+    }
+
+    if (driverGamepad->DPadUp()) {
+        state.climbState = EXTEND_PWR;
+    } else if (driverGamepad->DPadDown()) {
+        state.climbState = RETRACT_PWR;
     }
 }
 
@@ -139,6 +151,12 @@ void Climber::assignOutputs()
     }
     if(state.climbState == CLIMB_STATE::DISABLE){
         climbMotors->setPower(0);
+    }
+
+    if (state.climbState == EXTEND_PWR && state.latchState == UNLATCH) {
+        climbMotors->setPower(.75);
+    } else if (state.climbState == RETRACT_PWR && state.latchState == LATCH) {
+        climbMotors->setPower(-.75);
     }
 
     if (state.climbState == MANUAL){

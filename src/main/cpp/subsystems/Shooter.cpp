@@ -350,9 +350,9 @@ void Shooter::assessInputs()
             state.pivotState = PIVOT_STATE::AMP;
     } else if (driverGamepad->GetXButton()) {
         state.pivotState = PIVOT_STATE::ORBIT;
-    } else if (driverGamepad->DPadRight()) {
-        state.pivotState = PIVOT_STATE::BACKSHOT;
-    } 
+    } //else if (driverGamepad->DPadRight()) {
+    //     state.pivotState = PIVOT_STATE::BACKSHOT;
+    // } 
     else {
         state.pivotState = PIVOT_STATE::LOAD;
     }

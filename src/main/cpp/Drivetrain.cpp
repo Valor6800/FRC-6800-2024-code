@@ -368,13 +368,13 @@ void Drivetrain::assessInputs()
     if (driverGamepad->GetBackButtonPressed()) {
         resetGyro();
     }
-    if (driverGamepad->DPadDown()){ // All 4 back buttons are mapped to this as of 3/8/2024
-        state.manualFlag = true; 
-    } else {
-        state.manualFlag = false;
-    }
+    // if (driverGamepad->DPadDown()){ // All 4 back buttons are mapped to this as of 3/8/2024
+    //     state.manualFlag = true; 
+    // } else {
+    //     state.manualFlag = false;
+    // }
     
-    state.backshot = driverGamepad->DPadRight();
+    // state.backshot = driverGamepad->DPadRight();
 
     state.ampAlign = driverGamepad->GetBButton();
     state.isHeadingTrack = (driverGamepad->leftTriggerActive() && !driverGamepad->GetAButton());
