@@ -48,6 +48,12 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "W-3 BLUE"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "Enable full feeder"
