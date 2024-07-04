@@ -14,7 +14,6 @@
 #include "units/acceleration.h"
 #include "units/length.h"
 #include "units/velocity.h"
-#include "valkyrie/sensors/AprilTagsSensor.h"
 #include "units/length.h"
 #include "valkyrie/sensors/VisionSensor.h"
 #include <frc2/command/InstantCommand.h>
@@ -165,14 +164,9 @@ void Drivetrain::configSwerveModule(int i)
     azimuthControllers.push_back(new SwerveAzimuthMotor(CANIDs::AZIMUTH_CANS[i],
                                                       valor::NeutralMode::Brake,
                                                       Constants::swerveAzimuthsReversals()[i],
-                                                      AZIMUTH_GEAR_RATIO,
-                                                      1.0,
-                                                      azimuthPID,
-                                                      8.0,
-                                                      false,
                                                       PIGEON_CAN_BUS));
     
-    azimuthControllers[i]->enableFOC(true);
+    //azimuthControllers[i]->enableFOC(true);
     azimuthControllers[i]->setupCANCoder(CANIDs::CANCODER_CANS[i], Constants::swerveZeros()[i], false, PIGEON_CAN_BUS);
 
     valor::PIDF drivePID;
@@ -185,13 +179,8 @@ void Drivetrain::configSwerveModule(int i)
     driveControllers.push_back(new SwerveDriveMotor(CANIDs::DRIVE_CANS[i],
                                                     valor::NeutralMode::Coast,
                                                     Constants::swerveDrivesReversals()[i],
-                                                    1.0,
-                                                    conversion,
-                                                    drivePID,
-                                                    12.0,
-                                                    true,
                                                     PIGEON_CAN_BUS));
-    driveControllers[i]->enableFOC(true);
+    //driveControllers[i]->enableFOC(true);
     driveControllers[i]->setOpenLoopRamp(1.0);
 
     driveMaxSpeed = driveControllers[i]->getMaxMotorSpeed() / 60.0 / conversion;
@@ -212,18 +201,16 @@ void Drivetrain::resetState()
 void Drivetrain::init()
 {
 
-    for (std::pair<const char*, frc::Pose3d> aprilCam : Constants::aprilCameras) {
-        aprilTagSensors.push_back(new valor::AprilTagsSensor(robot, aprilCam.first, aprilCam.second));
-    }
+    //for (std::pair<const char*, frc::Pose3d> aprilCam : Constants::aprilCameras) {
+    //    aprilTagSensors.push_back(new valor::AprilTagsSensor(robot, aprilCam.first, aprilCam.second));
+    //}
 
-    aprilTagSensors[0]->normalVisionOutlier = 5.5_m;
-    gamePieceCamera = new valor::GamePieceSensor(robot, Constants::gamePieceCam.first, Constants::gamePieceCam.second, calculatedEstimator);
+    //aprilTagSensors[0]->normalVisionOutlier = 5.5_m;
 
-    gamePieceCamera->setPipe(valor::VisionSensor::PIPELINE_0);
 
-    for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
-        aprilLime->setPipe(valor::VisionSensor::PIPELINE_0);
-    }
+    //for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
+    //    aprilLime->setPipe(valor::VisionSensor::PIPELINE_0);
+    //}
 
     for (int i = 0; i < SWERVE_COUNT; i++)
     {
@@ -243,6 +230,11 @@ void Drivetrain::init()
     kinematics = new frc::SwerveDriveKinematics<SWERVE_COUNT>(motorLocations);
     estimator = new frc::SwerveDrivePoseEstimator<SWERVE_COUNT>(*kinematics, pigeon.GetRotation2d(), getModuleStates(), frc::Pose2d{0_m, 0_m, 0_rad});
     calculatedEstimator = new frc::SwerveDrivePoseEstimator<SWERVE_COUNT>(*kinematics, pigeon.GetRotation2d(), getModuleStates(), frc::Pose2d{0_m, 0_m, 0_rad});
+
+
+    gamePieceCamera = new valor::GamePieceSensor(robot, Constants::gamePieceCam.first, Constants::gamePieceCam.second, calculatedEstimator);
+
+    gamePieceCamera->setPipe(valor::VisionSensor::PIPELINE_0);
 
     xPIDF.P = KPX;
     xPIDF.I = KIX;
@@ -439,24 +431,24 @@ void Drivetrain::analyzeDashboard()
     
     visionAcceptanceRadius = (units::meter_t) table->GetNumber("Vision Acceptance", VISION_ACCEPTANCE.to<double>());
 
-    for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
-            aprilLime->applyVisionMeasurement(
-                calculatedEstimator,
-                getRobotSpeeds(),
-                table->GetBoolean("Accepting Vision Measurements", true),
-                doubtX,
-                doubtY
-            );
-    }        
+    //for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
+    //        aprilLime->applyVisionMeasurement(
+    //            calculatedEstimator,
+    //            getRobotSpeeds(),
+    //            table->GetBoolean("Accepting Vision Measurements", true),
+    //            doubtX,
+    //            doubtY
+    //        );
+    //}        
 
     if (driverGamepad && driverGamepad->IsConnected() && driverGamepad->GetStartButton()) {
-        for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
-            if (aprilLime->hasTarget()) {
-                botpose = aprilLime->getSensor().ToPose2d();
-                resetOdometry(botpose);
-                break;
-            }
-        }
+        //for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
+        //    if (aprilLime->hasTarget()) {
+        //        botpose = aprilLime->getSensor().ToPose2d();
+        //        resetOdometry(botpose);
+        //        break;
+        //    }
+        //}
     }
 
     state.distanceFromSpeaker = getDistanceFromSpeaker();
@@ -509,20 +501,20 @@ void Drivetrain::assignOutputs()
 }
 
 frc::Pose2d Drivetrain::getPoseFromSpeaker() {
-    valor::AprilTagsSensor* tagSensor = aprilTagSensors[0];
-    table->PutNumber("translation norm", tagSensor->getPoseFromAprilTag().Translation().Norm().to<double>());
-    if (tagSensor->getPoseFromAprilTag().Translation().Norm() < 4.7_m) {
-        if (frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue && (tagSensor->getTagID() == 7 || tagSensor->getTagID() == 8)) {
-            //leds->setColor(1, valor::CANdleSensor::LIGHT_BLUE);
-            table->PutBoolean("good to shoot", true);
-            return tagSensor->getSensor().ToPose2d();
-        } else if (frc::DriverStation::GetAlliance() == frc::DriverStation::kRed && (tagSensor->getTagID() == 4 || tagSensor->getTagID() == 3)) {
-            //leds->setColor(1, valor::CANdleSensor::LIGHT_BLUE);
-            table->PutBoolean("good to shoot", true);
-            return tagSensor->getSensor().ToPose2d();
-        }
-        table->PutBoolean("good to shoot", false);
-    }
+    //valor::AprilTagsSensor* tagSensor = aprilTagSensors[0];
+    //table->PutNumber("translation norm", tagSensor->getPoseFromAprilTag().Translation().Norm().to<double>());
+    //if (tagSensor->getPoseFromAprilTag().Translation().Norm() < 4.7_m) {
+    //    if (frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue && (tagSensor->getTagID() == 7 || tagSensor->getTagID() == 8)) {
+    //        //leds->setColor(1, valor::CANdleSensor::LIGHT_BLUE);
+    //        table->PutBoolean("good to shoot", true);
+    //        return tagSensor->getSensor().ToPose2d();
+    //    } else if (frc::DriverStation::GetAlliance() == frc::DriverStation::kRed && (tagSensor->getTagID() == 4 || tagSensor->getTagID() == 3)) {
+    //        //leds->setColor(1, valor::CANdleSensor::LIGHT_BLUE);
+    //        table->PutBoolean("good to shoot", true);
+    //        return tagSensor->getSensor().ToPose2d();
+    //    }
+    //    table->PutBoolean("good to shoot", false);
+    //}
     //leds->setColor(1, valor::CANdleSensor::RED);
     return calculatedEstimator->GetEstimatedPosition();
 }
@@ -567,27 +559,27 @@ units::radian_t Drivetrain::getAngleError(){
 }
 
 void Drivetrain::setAlignmentAngle(Alignment align) {
-    bool isRed = frc::DriverStation::GetAlliance() == frc::DriverStation::kRed;
+    //bool isRed = frc::DriverStation::GetAlliance() == frc::DriverStation::kRed;
 
-    if (align == Alignment::AMP) state.targetAngle = BLUE_AMP_ROT_ANGLE;
-    else if (align == Alignment::TRAP){
-        for(valor::AprilTagsSensor* aprilLime :  aprilTagSensors){
-            if(aprilLime->getTagID() == 16){
-                // state.targetAngle = units::radian_t(BLUE_RIGHT_TRAP_ROT_ANGLE);
-            }
-            else if(aprilLime->getTagID() == 15){
-                // state.targetAngle = units::radian_t(BLUE_LEFT_TRAP_ROT_ANGLE);
-            }
-            else if(aprilLime->getTagID() == 14){
-                // state.targetAngle = units::radian_t(BLUE_CENTER_TRAP_ROT_ANGLE);
-            }
-        }
-        state.targetAngle = 0_deg;
-    }
-    else if (align == Alignment::SOURCE)
-        state.targetAngle = isRed ? RED_SOURCE_ROT_ANGLE : BLUE_SOURCE_ROT_ANGLE;
-    else 
-        state.targetAngle = isRed ? RED_LOCK_ANGLE : BLUE_LOCK_ANGLE;
+    //if (align == Alignment::AMP) state.targetAngle = BLUE_AMP_ROT_ANGLE;
+    //else if (align == Alignment::TRAP){
+    //    for(valor::AprilTagsSensor* aprilLime :  aprilTagSensors){
+    //        if(aprilLime->getTagID() == 16){
+    //            // state.targetAngle = units::radian_t(BLUE_RIGHT_TRAP_ROT_ANGLE);
+    //        }
+    //        else if(aprilLime->getTagID() == 15){
+    //            // state.targetAngle = units::radian_t(BLUE_LEFT_TRAP_ROT_ANGLE);
+    //        }
+    //        else if(aprilLime->getTagID() == 14){
+    //            // state.targetAngle = units::radian_t(BLUE_CENTER_TRAP_ROT_ANGLE);
+    //        }
+    //    }
+    //    state.targetAngle = 0_deg;
+    //}
+    //else if (align == Alignment::SOURCE)
+    //    state.targetAngle = isRed ? RED_SOURCE_ROT_ANGLE : BLUE_SOURCE_ROT_ANGLE;
+    //else 
+    //    state.targetAngle = isRed ? RED_LOCK_ANGLE : BLUE_LOCK_ANGLE;
 }
 
 double Drivetrain::clampAngleRadianRange(units::radian_t angle, double max){
@@ -714,38 +706,38 @@ void Drivetrain::angleLock(){
     
 }
 
-frc2::FunctionalCommand* Drivetrain::getResetOdom() {
-    return new frc2::FunctionalCommand(
-        [&]{ // onBegin
-            for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
-                aprilLime->setPipe(valor::VisionSensor::PIPELINE_0);
-            }
-
-            state.startTimestamp = frc::Timer::GetFPGATimestamp();
-        },
-        [&]{ // continuously running
-            table->PutNumber("resetting maybe", true);
-
-            for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
-                if (aprilLime->hasTarget() && (aprilLime->getSensor().ToPose2d().X() > 0_m && aprilLime->getSensor().ToPose2d().Y() > 0_m)) {
-                    table->PutNumber("resetting odom", table->GetNumber("resetting odom", 0) + 1);
-                    //aprilLime->applyVisionMeasurement(estimator);
-                    table->PutBoolean("resetting", true);
-                    break;
-                } else {
-                    table->PutBoolean("resetting", false);
-                }
-            }
-        },
-        [&](bool){ // onEnd
-                
-        },
-        [&]{ // isFinished
-            return (frc::Timer::GetFPGATimestamp() - state.startTimestamp) > 1.0_s;
-        },
-        {}
-    );
-}
+//frc2::FunctionalCommand* Drivetrain::getResetOdom() {
+//    return new frc2::FunctionalCommand(
+//        [&]{ // onBegin
+//            for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
+//                aprilLime->setPipe(valor::VisionSensor::PIPELINE_0);
+//            }
+//
+//            state.startTimestamp = frc::Timer::GetFPGATimestamp();
+//        },
+//        [&]{ // continuously running
+//            table->PutNumber("resetting maybe", true);
+//
+//            for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
+//                if (aprilLime->hasTarget() && (aprilLime->getSensor().ToPose2d().X() > 0_m && aprilLime->getSensor().ToPose2d().Y() > 0_m)) {
+//                    table->PutNumber("resetting odom", table->GetNumber("resetting odom", 0) + 1);
+//                    //aprilLime->applyVisionMeasurement(estimator);
+//                    table->PutBoolean("resetting", true);
+//                    break;
+//                } else {
+//                    table->PutBoolean("resetting", false);
+//                }
+//            }
+//        },
+//        [&](bool){ // onEnd
+//                
+//        },
+//        [&]{ // isFinished
+//            return (frc::Timer::GetFPGATimestamp() - state.startTimestamp) > 1.0_s;
+//        },
+//        {}
+//    );
+//}
 
 void Drivetrain::setXMode(){
     drive(static_cast<units::velocity::meters_per_second_t>(0),static_cast<units::velocity::meters_per_second_t>(0),static_cast<units::angular_velocity::radians_per_second_t>(0),true);

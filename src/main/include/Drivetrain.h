@@ -66,7 +66,7 @@ public:
       * * valor::PhoenixController
       * * valor::NeoController
       */
-     typedef valor::PhoenixController SwerveDriveMotor;
+     typedef valor::NeoController SwerveDriveMotor;
 
      /**
       * @brief Quick way to select the azimuth motor controller
@@ -74,7 +74,7 @@ public:
       * * valor::PhoenixController
       * * valor::NeoController
       */
-     typedef valor::PhoenixController SwerveAzimuthMotor;
+     typedef valor::NeoController SwerveAzimuthMotor;
 
      /**
       * @brief Construct a new Drivetrain object
@@ -293,7 +293,7 @@ private:
 
      bool swerveNoError;
      
-     std::vector<valor::AprilTagsSensor*> aprilTagSensors;
+     //std::vector<valor::AprilTagsSensor*> aprilTagSensors;
 
      valor::GamePieceSensor* gamePieceCamera;
 

@@ -10,7 +10,7 @@
 #include "valkyrie/Gamepad.h"
 
 #include "Drivetrain.h"
-#include "subsystems/Shooter.h"
+//#include "subsystems/Shooter.h"
 #include "valkyrie/sensors/CANdleSensor.h"
 
 #include "valkyrie/Auto.h"
@@ -20,8 +20,8 @@
 
 #include <frc/livewindow/LiveWindow.h>
 
-#include <subsystems/Shooter.h>
-#include "subsystems/Feeder.h"
+//#include <subsystems/Shooter.h>
+//#include "subsystems/Feeder.h"
 
 #include <fstream>
 #include "frc/DigitalInput.h"

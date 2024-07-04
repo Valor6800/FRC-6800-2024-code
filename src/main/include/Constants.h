@@ -187,14 +187,14 @@ namespace Constants {
         static frc::Pose3d mintCameraPosition(){ switch (teamNumber) {
             case ALPHA_TEAM_NUMBER: return frc::Pose3d();
             case SIDE_SWIPE_TEAM_NUMBER: return frc::Pose3d{
-                0.2921_m, //x
-                -0.16906875_m, //y
-                0.28575_m, //z
+                13.25_in, 
+                10.75_in,
+                20.5_in,
                 frc::Rotation3d{
-                    -180_deg, 
-                    28_deg,
+                    0_deg,
+                    -26.8_deg,
                     0_deg
-                }
+                } 
             }; // Temp value; TODO: Change it
             default: return frc::Pose3d{
                 -13.295_in, //x
@@ -258,12 +258,12 @@ namespace Constants {
                 }
             };
             case SIDE_SWIPE_TEAM_NUMBER: return frc::Pose3d{
-                -0.0635_m,
-                0.3175_m,
-                0.6731_m,
+                13.25_in,
+                10.75_in,
+                22_in,
                 frc::Rotation3d{
                     0_deg,
-                    28_deg,
+                    4.7_deg,
                     0_deg
                 }
             }; // Temp value; TODO: Change it
@@ -286,7 +286,7 @@ namespace Constants {
         };
         static std::pair<const char*, frc::Pose3d> gamePieceCam{
 
-            "limelight-lemon", lemonCameraPosition()
+            "limelight-minty", mintCameraPosition()
         };
 }
 #pragma GCC diagnostic pop

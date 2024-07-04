@@ -18,7 +18,6 @@ frc::Pose3d GamePieceSensor::getGlobalPose() {
 
     updateRelative();
 
-    return frc::Pose3d();
     if (!hasTarget() || estimator->GetEstimatedPosition().X() == 0.0_m || estimator->GetEstimatedPosition().Y() == 0.0_m) return frc::Pose3d();
     
 
@@ -31,8 +30,11 @@ frc::Pose3d GamePieceSensor::getGlobalPose() {
     units::meter_t currentRobotX = estimator->GetEstimatedPosition().X(); //Get robot X from odom
     units::meter_t currentRobotY = estimator->GetEstimatedPosition().Y(); //Get robot Y from odom
 
-    units::meter_t globalX = units::meter_t(cos(theta.convert<units::degree>().to<double>() * relativePose.x.to<double>()) - (sin(theta.convert<units::degree>().to<double>() * relativePose.y.to<double>()))) + currentRobotX;
-    units::meter_t globalY = units::meter_t(sin(theta.convert<units::degree>().to<double>() * relativePose.x.to<double>()) + (cos(theta.convert<units::angle::degree>().to<double>() * relativePose.y.to<double>()))) + currentRobotY;
+    units::degree_t t1 = theta.convert<units::degree>() * relativePose.x.to<double>();
+    units::degree_t t2 = theta.convert<units::degree>() * relativePose.y.to<double>();
+
+    units::meter_t globalX = units::meter_t(cos(t1.convert<units::radian>().to<double>()) - sin(t2.convert<units::radian>().to<double>())) + currentRobotX;
+    units::meter_t globalY = units::meter_t(sin(t1.convert<units::radian>().to<double>()) + cos(t2.convert<units::radian>().to<double>())) + currentRobotY;
 
     return frc::Pose3d(
        globalX,
@@ -59,9 +61,8 @@ void GamePieceSensor::InitSendable(wpi::SendableBuilder& builder) {
         [this] {
             frc::Pose2d gamePos = getSensor().ToPose2d();
             std::vector<double> gamePosVector{
-                gamePos.X().to<double>(),
                 gamePos.Y().to<double>(),
-                gamePos.Rotation().Degrees().to<double>()
+                gamePos.X().to<double>(),
             };
             return gamePosVector;
         },
@@ -71,7 +72,10 @@ void GamePieceSensor::InitSendable(wpi::SendableBuilder& builder) {
         "Relative Pos",
         [this]
         {
-            return std::vector<double>{relativePose.x.to<double>(), relativePose.y.to<double>()};
+            return std::vector<double>{
+                relativePose.x.to<double>(), // Fd
+                relativePose.y.to<double>() // lt and rt
+            };
         },
         nullptr
     );
