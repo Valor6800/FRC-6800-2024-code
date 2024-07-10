@@ -31,8 +31,8 @@ frc::Pose3d GamePieceSensor::getGlobalPose() {
     units::meter_t currentRobotX = estimator->GetEstimatedPosition().X(); //Get robot X from odom
     units::meter_t currentRobotY = estimator->GetEstimatedPosition().Y(); //Get robot Y from odom
 
-    units::degree_t t1 = theta.convert<units::degree>() * relativePoseFromCamera.x.to<double>();
-    units::degree_t t2 = theta.convert<units::degree>() * relativePoseFromCamera.y.to<double>();
+    units::degree_t t1 = theta.convert<units::degree>() * relativePoseFromCenter.x.to<double>();
+    units::degree_t t2 = theta.convert<units::degree>() * relativePoseFromCenter.y.to<double>();
 
     units::meter_t globalX = units::meter_t(cos(t1.convert<units::radian>().to<double>()) - sin(t2.convert<units::radian>().to<double>())) + currentRobotX;
     units::meter_t globalY = units::meter_t(sin(t1.convert<units::radian>().to<double>()) + cos(t2.convert<units::radian>().to<double>())) + currentRobotY;
@@ -55,39 +55,38 @@ void GamePieceSensor::updateRelative() {
 }
 
 void GamePieceSensor::updateRelativeToCenter() {
-    units::meter_t cameraToGamePiece{
-        sqrtf(powf(relativePoseFromCamera.x.to<double>(), 2) +
-              powf(relativePoseFromCamera.y.to<double>(), 2))
-    }; 
-
-    units::meter_t robotToCamera{
-        sqrtf(powf(cameraPose.X().to<double>(), 2) +
-              powf(cameraPose.Y().to<double>(), 2))
+    units::meter_t cameraToRobot{
+        sqrtf(powf(cameraPose.X().to<double>(), 2) + powf(cameraPose.Y().to<double>(), 2))
+    };
+    units::radian_t theta2{
+        atan2f(cameraPose.Y().to<double>(), cameraPose.X().to<double>())
+    };
+    units::radian_t alpha{
+        -tx.convert<units::radian>() + cameraPose.Rotation().Y() + theta2
     };
 
-    units::radian_t camYaw = cameraPose.Rotation().Y();
-    units::radian_t alpha{ atan2f(cameraPose.Y().to<double>(), cameraPose.X().to<double>()) };
-
-    double a {cameraToGamePiece.to<double>()};
-    double b {robotToCamera.to<double>()};
-    double gcr {
-        camYaw.to<double>() - ty.convert<units::radians>().to<double>() + (M_PI / 2) - alpha.to<double>()
+    // gp -> gamePiece
+    units::meter_t gpToCamera{
+        sqrtf(powf(relativePoseFromCamera.x.to<double>(), 2) + powf(relativePoseFromCamera.y.to<double>(), 2))
     };
 
-    units::meter_t robotToGamePiece{
-        sqrtf(powf(a, 2) + powf(b, 2) - (2 * a * b * cosf(gcr)))
+    units::meter_t gpToRobot{
+        sqrtf(powf(gpToCamera.to<double>(), 2) + powf(cameraToRobot.to<double>(), 2) - ( 2 * gpToCamera.to<double>() * cameraToRobot.to<double>() * cosf(alpha.to<double>())))
     };
 
-    units::radian_t grc {
-        asinf((a * sinf(gcr)) / robotToGamePiece.to<double>())
+    units::radian_t beta {
+        (M_PI / 2) - theta2.to<double>()
     };
 
-    relativePoseFromCenter.x = 
-        sinf((((units::radian_t)((M_PI / 2) - alpha.to<double>())) + grc).to<double>()) * robotToGamePiece;
+    units::radian_t beta2 {
+        asinf((gpToCamera.to<double>() * sinf(alpha.to<double>())) / gpToRobot.to<double>())
+    };
 
-    relativePoseFromCenter.y = 
-        cosf((((units::radian_t)((M_PI / 2) - alpha.to<double>())) + grc).to<double>()) * robotToGamePiece;
+    
+    units::radian_t beta3 { beta + beta2 };
 
+    relativePoseFromCenter.x = gpToRobot * sinf(beta3.to<double>());
+    relativePoseFromCenter.y = gpToRobot * cosf(beta3.to<double>());
 }
 
 void GamePieceSensor::InitSendable(wpi::SendableBuilder& builder) {
@@ -106,12 +105,23 @@ void GamePieceSensor::InitSendable(wpi::SendableBuilder& builder) {
         nullptr
     );
     builder.AddDoubleArrayProperty(
-        "Relative Pos",
+        "Relative Pos From Camera",
         [this]
         {
             return std::vector<double>{
                 relativePoseFromCamera.x.to<double>(), // Fd
                 relativePoseFromCamera.y.to<double>() // lt and rt
+            };
+        },
+        nullptr
+    );
+    builder.AddDoubleArrayProperty(
+        "Relative Pos From Center",
+        [this]
+        {
+            return std::vector<double>{
+                relativePoseFromCenter.x.to<double>(), // Fd
+                relativePoseFromCenter.y.to<double>() // lt and rt
             };
         },
         nullptr
