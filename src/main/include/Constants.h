@@ -189,7 +189,7 @@ namespace Constants {
             case SIDE_SWIPE_TEAM_NUMBER: return frc::Pose3d{
                 13.25_in, 
                 10.75_in,
-                20.5_in,
+                24.5_in,
                 frc::Rotation3d{
                     0_deg,
                     -26.8_deg,

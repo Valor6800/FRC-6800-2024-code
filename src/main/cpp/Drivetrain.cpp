@@ -193,7 +193,7 @@ void Drivetrain::configSwerveModule(int i)
 void Drivetrain::resetState()
 {
     resetDriveEncoders();
-    resetOdometry(frc::Pose2d{0_m, 0_m, 0_rad});
+    resetOdometry(frc::Pose2d{(54_ft + 1_in) - 119_in, (26_ft + 7_in) - 34_in, units::angle::radian_t(-M_PI/2)});
     state.manualFlag = false;
     state.pitMode = false;
 }

@@ -17,29 +17,25 @@ GamePieceSensor::GamePieceSensor(frc::TimedRobot* robot, const char *name, frc::
 
 frc::Pose3d GamePieceSensor::getGlobalPose() {
 
+
+    if (!hasTarget()) return frc::Pose3d();
+
     updateRelative();
 
-    if (!hasTarget() || estimator->GetEstimatedPosition().X() == 0.0_m || estimator->GetEstimatedPosition().Y() == 0.0_m) return frc::Pose3d();
+    if (estimator->GetEstimatedPosition().X() == 0.0_m || estimator->GetEstimatedPosition().Y() == 0.0_m) return frc::Pose3d();
     
 
-    units::degree_t robotTheta = estimator->GetEstimatedPosition().Rotation().Degrees(); //Get robot theta from pigeon
-    units::degree_t theta = 0_deg;
+    units::radian_t robotTheta = estimator->GetEstimatedPosition().Rotation().Radians(); //Get robot theta from pigeon
 
-    if (robotTheta < 0_deg) theta = robotTheta + 360_deg;
-    else if (robotTheta > 0_deg) theta = robotTheta - 360_deg;
+    units::meter_t robotX = estimator->GetEstimatedPosition().X(); //Get robot X from odom
+    units::meter_t robotY = estimator->GetEstimatedPosition().Y(); //Get robot Y from odom
 
-    units::meter_t currentRobotX = estimator->GetEstimatedPosition().X(); //Get robot X from odom
-    units::meter_t currentRobotY = estimator->GetEstimatedPosition().Y(); //Get robot Y from odom
-
-    units::degree_t t1 = theta.convert<units::degree>() * relativePoseFromCenter.x.to<double>();
-    units::degree_t t2 = theta.convert<units::degree>() * relativePoseFromCenter.y.to<double>();
-
-    units::meter_t globalX = units::meter_t(cos(t1.convert<units::radian>().to<double>()) - sin(t2.convert<units::radian>().to<double>())) + currentRobotX;
-    units::meter_t globalY = units::meter_t(sin(t1.convert<units::radian>().to<double>()) + cos(t2.convert<units::radian>().to<double>())) + currentRobotY;
+    units::meter_t globalX = -sin(robotTheta.to<double>()) * relativePoseFromCenter.y + cos(robotTheta.to<double>()) * relativePoseFromCenter.x + robotX;
+    units::meter_t globalY = cos(robotTheta.to<double>()) * relativePoseFromCenter.y + sin(robotTheta.to<double>()) * relativePoseFromCenter.x + robotY;
 
     return frc::Pose3d(
-       globalX,
        globalY,
+       globalX,
        0_m,
        frc::Rotation3d()
     );
@@ -55,38 +51,9 @@ void GamePieceSensor::updateRelative() {
 }
 
 void GamePieceSensor::updateRelativeToCenter() {
-    units::meter_t cameraToRobot{
-        sqrtf(powf(cameraPose.X().to<double>(), 2) + powf(cameraPose.Y().to<double>(), 2))
-    };
-    units::radian_t theta2{
-        atan2f(cameraPose.Y().to<double>(), cameraPose.X().to<double>())
-    };
-    units::radian_t alpha{
-        -tx.convert<units::radian>() + cameraPose.Rotation().Y() + theta2
-    };
+    relativePoseFromCenter.x = relativePoseFromCamera.x * cos(cameraPose.Rotation().Z().to<double>()) - relativePoseFromCamera.y * sin(cameraPose.Rotation().Z().to<double>()) + cameraPose.X();
+    relativePoseFromCenter.y = relativePoseFromCamera.x * sin(cameraPose.Rotation().Z().to<double>()) + relativePoseFromCamera.y * cos(cameraPose.Rotation().Z().to<double>()) + cameraPose.Y();
 
-    // gp -> gamePiece
-    units::meter_t gpToCamera{
-        sqrtf(powf(relativePoseFromCamera.x.to<double>(), 2) + powf(relativePoseFromCamera.y.to<double>(), 2))
-    };
-
-    units::meter_t gpToRobot{
-        sqrtf(powf(gpToCamera.to<double>(), 2) + powf(cameraToRobot.to<double>(), 2) - ( 2 * gpToCamera.to<double>() * cameraToRobot.to<double>() * cosf(alpha.to<double>())))
-    };
-
-    units::radian_t beta {
-        (M_PI / 2) - theta2.to<double>()
-    };
-
-    units::radian_t beta2 {
-        asinf((gpToCamera.to<double>() * sinf(alpha.to<double>())) / gpToRobot.to<double>())
-    };
-
-    
-    units::radian_t beta3 { beta + beta2 };
-
-    relativePoseFromCenter.x = gpToRobot * sinf(beta3.to<double>());
-    relativePoseFromCenter.y = gpToRobot * cosf(beta3.to<double>());
 }
 
 void GamePieceSensor::InitSendable(wpi::SendableBuilder& builder) {
