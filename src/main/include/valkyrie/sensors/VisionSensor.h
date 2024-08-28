@@ -1,6 +1,7 @@
 #pragma once
 
 #include "networktables/NetworkTableInstance.h"
+#include "units/angle.h"
 #include "units/time.h"
 #include "units/velocity.h"
 #include "valkyrie/sensors/BaseSensor.h"
@@ -49,7 +50,8 @@ class VisionSensor : public valor::BaseSensor<frc::Pose3d> {
         
 
     protected:
-        double tx, ty, tv;
+        double tv;
+        units::degree_t tx, ty;
         int pipe;
 
         units::millisecond_t getTotalLatency();

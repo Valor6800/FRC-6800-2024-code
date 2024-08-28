@@ -3,14 +3,24 @@
 #include <array>
 #include "units/length.h"
 #include "units/time.h"
+#include "units/velocity.h"
 #include <cmath>
+#include <vector>
 
 #define OUTLIER_EDGE 4.0f //meters
+#define DP 0.1f
+#define VP 0.2f
 
 using namespace valor;
 
 AprilTagsSensor::AprilTagsSensor(frc::TimedRobot* robot, const char *name, frc::Pose3d _cameraPose) : valor::VisionSensor(robot, name, _cameraPose) {
-   setGetter([this](){return getGlobalPose();});
+    setGetter([this](){return getGlobalPose();});
+    dp = DP;
+    vp = VP;
+    limeTable->PutNumber("dp", dp);
+    limeTable->PutNumber("vp", vp);
+    limeTable->PutNumber("new doubt x", 0);
+    limeTable->PutNumber("new doubt y", 0);
 }
 
 frc::Pose3d AprilTagsSensor::getGlobalPose() {
@@ -33,20 +43,50 @@ frc::Pose3d AprilTagsSensor::getGlobalPose() {
     );
 }
 
-void AprilTagsSensor::applyVisionMeasurement(frc::SwerveDrivePoseEstimator<4> *estimator, units::meter_t acceptanceRadius, double doubtX, double doubtY, double doubtRot) {
-    if (!hasTarget()) return;
+frc::Pose3d AprilTagsSensor::getPoseFromAprilTag() {
+    if (!hasTarget()) return frc::Pose3d();
+
+    std::vector<double> botToTargetPose = limeTable->GetNumberArray("botpose_targetspace", std::span<const double>());
+
+    return frc::Pose3d(
+        (units::meter_t) botToTargetPose[0],
+        (units::meter_t) botToTargetPose[1],
+        (units::meter_t) botToTargetPose[2],
+        frc::Rotation3d(
+            (units::degree_t) botToTargetPose[3],
+            (units::degree_t) botToTargetPose[4],
+            (units::degree_t) botToTargetPose[5]
+        )
+    ); 
+}
+
+void AprilTagsSensor::applyVisionMeasurement(frc::SwerveDrivePoseEstimator<4> *estimator, units::velocity::meters_per_second_t speed, bool accept, double doubtX, double doubtY, double doubtRot) {
+    if (!hasTarget() || !accept) return;
+    dp = limeTable->GetNumber("dp", dp);
+    vp = limeTable->GetNumber("vp", vp);
  
     //std::vector<double> botToTargetPose = limeTable->GetNumberArray("botpose_targetspace", std::span<const double>());
     //if (botToTargetPose.size() == 6) distance = units::meter_t(sqrtf(powf(botToTargetPose[0], 2) + powf(botToTargetPose[1], 2)));
     //else distance = 0_m; return;
-
-    if (distance >= acceptanceRadius) return;
+    double newDoubtX = doubtX + (distance.to<double>() * dp) + (vp * speed.to<double>());
+    double newDoubtY = doubtY + (distance.to<double>() * dp) + (vp * speed.to<double>());
+    if (distance >= normalVisionOutlier) return;
     units::millisecond_t totalLatency = getTotalLatency();
 
+    frc::Pose2d tGone = frc::Pose2d{
+        currState.ToPose2d().X(),
+        currState.ToPose2d().Y(),
+        estimator->GetEstimatedPosition().Rotation()
+    };
+    limeTable->PutNumber("new doubt x", newDoubtX);
+    limeTable->PutNumber("new doubt y", newDoubtY);
+
+    if (tGone.X() == 0.0_m || tGone.Y() == 0.0_m)
+        return;
     estimator->AddVisionMeasurement(
-        currState.ToPose2d(),  
+        tGone,  
         frc::Timer::GetFPGATimestamp() - totalLatency,
-        {doubtX, doubtY, doubtRot}
+        {newDoubtX, newDoubtY, 999999999999.9}
     );
 }
 
@@ -71,8 +111,8 @@ void AprilTagsSensor::InitSendable(wpi::SendableBuilder& builder) {
         },
         nullptr
     );
-    builder.AddDoubleProperty("tx", [this]{ return tx;}, nullptr);
-    builder.AddDoubleProperty("ty", [this]{ return ty;}, nullptr);
+    builder.AddDoubleProperty("tx", [this]{ return tx.to<double>();}, nullptr);
+    builder.AddDoubleProperty("ty", [this]{ return ty.to<double>();}, nullptr);
     builder.AddBooleanProperty("hasTarget", [this]{ return hasTarget();}, nullptr);
     builder.AddBooleanProperty("limeTableExist", [this] {return limeTable != nullptr;}, nullptr);
     builder.AddDoubleArrayProperty(
@@ -95,4 +135,5 @@ void AprilTagsSensor::InitSendable(wpi::SendableBuilder& builder) {
     );
     builder.AddDoubleProperty("totalLatency", [this] {return getTotalLatency().to<double>();}, nullptr);
     builder.AddDoubleProperty("distanceFromTarget", [this] {return distance.to<double>();}, nullptr);
+    builder.AddDoubleProperty("Vision acceptance outlier", [this] {return normalVisionOutlier.to<double>();}, nullptr);
 }

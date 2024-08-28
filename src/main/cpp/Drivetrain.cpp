@@ -9,7 +9,7 @@
 #include <string>
 #include "Constants.h"
 #include "units/length.h"
-#include "valkyrie/sensors/AprilTagsSensor.h"
+//#include "valkyrie/sensors/AprilTagsSensor.h"
 #include "units/length.h"
 #include "valkyrie/sensors/VisionSensor.h"
 #include "frc/geometry/Pose3d.h"
@@ -149,19 +149,19 @@ void Drivetrain::resetState()
 {
     resetDriveEncoders();
     pullSwerveModuleZeroReference();
-    resetOdometry(frc::Pose2d{0_m, 0_m, 0_rad});
+    resetOdometry(frc::Pose2d{(56_ft + 1_in) - 119.5_in, (26_ft + 7_in) - 32_in, units::angle::radian_t(-M_PI / 2)});
 }
 
 void Drivetrain::init()
 {
 
-    for (std::pair<const char*, frc::Pose3d> aprilCam : Constants::aprilCameras) {
-        aprilTagSensors.push_back(new valor::AprilTagsSensor(robot, aprilCam.first, aprilCam.second));
-    }
+    //for (std::pair<const char*, frc::Pose3d> aprilCam : Constants::aprilCameras) {
+    //    aprilTagSensors.push_back(new valor::AprilTagsSensor(robot, aprilCam.first, aprilCam.second));
+    //}
 
-    for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
-        aprilLime->setPipe(valor::VisionSensor::PIPELINE_0);
-    }
+    //for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
+    //    aprilLime->setPipe(valor::VisionSensor::PIPELINE_0);
+    //}
 
     for (int i = 0; i < SWERVE_COUNT; i++)
     {
@@ -211,6 +211,8 @@ void Drivetrain::init()
     state.lock = false;
 
     resetState();
+    gpSensor = new valor::GamePieceSensor(robot, "limelight-minty", Constants::mintCameraPosition(), calculatedEstimator);
+    gpSensor->setPipe(valor::VisionSensor::PIPELINE_0);
 
     AutoBuilder::configureHolonomic(
         [this](){ return getPose_m(); }, // Robot pose supplier
@@ -332,18 +334,18 @@ void Drivetrain::analyzeDashboard()
     doubtRot = table->GetNumber("DoubtRot", 1.0);
     visionAcceptanceRadius = (units::meter_t) table->GetNumber("Vision Acceptance", VISION_ACCEPTANCE.to<double>());
 
-    for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
-        aprilLime->applyVisionMeasurement(calculatedEstimator, visionAcceptanceRadius, doubtX, doubtY);
-    }
+    //for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
+    //    aprilLime->applyVisionMeasurement(calculatedEstimator, visionAcceptanceRadius, doubtX, doubtY);
+    //}
 
     if (driverGamepad && driverGamepad->IsConnected() && driverGamepad->GetStartButton()) {
-        for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
-            if (aprilLime->hasTarget()) {
-                botpose = aprilLime->getSensor().ToPose2d();
-                resetOdometry(botpose);
-                break;
-            }
-        }
+        //for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
+        //    if (aprilLime->hasTarget()) {
+        //        botpose = aprilLime->getSensor().ToPose2d();
+        //        resetOdometry(botpose);
+        //        break;
+        //    }
+        //}
     }
 }
 
@@ -401,17 +403,17 @@ void Drivetrain::setAlignmentAngle(Alignment align){
     if(frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue){
         if (align == Alignment::AMP) state.targetAngle = units::radian_t(BLUE_AMP_ROT_ANGLE);
         else if (align == Alignment::TRAP){
-            for(valor::AprilTagsSensor* aprilLime :  aprilTagSensors){
-                if(aprilLime->getTagID() == 16){
-                    state.targetAngle = units::radian_t(BLUE_RIGHT_TRAP_ROT_ANGLE);
-                }
-                else if(aprilLime->getTagID() == 15){
-                    state.targetAngle = units::radian_t(BLUE_LEFT_TRAP_ROT_ANGLE);
-                }
-                else if(aprilLime->getTagID() == 14){
-                    state.targetAngle = units::radian_t(BLUE_CENTER_TRAP_ROT_ANGLE);
-                }
-            }
+            //for(valor::AprilTagsSensor* aprilLime :  aprilTagSensors){
+            //    if(aprilLime->getTagID() == 16){
+            //        state.targetAngle = units::radian_t(BLUE_RIGHT_TRAP_ROT_ANGLE);
+            //    }
+            //    else if(aprilLime->getTagID() == 15){
+            //        state.targetAngle = units::radian_t(BLUE_LEFT_TRAP_ROT_ANGLE);
+            //    }
+            //    else if(aprilLime->getTagID() == 14){
+            //        state.targetAngle = units::radian_t(BLUE_CENTER_TRAP_ROT_ANGLE);
+            //    }
+            //}
         }
         else if (align == Alignment::SOURCE) state.targetAngle = units::radian_t(BLUE_SOURCE_ROT_ANGLE);
         else state.targetAngle = units::radian_t(BLUE_LOCK_ANGLE);
@@ -419,17 +421,17 @@ void Drivetrain::setAlignmentAngle(Alignment align){
     else{
         if(align == Alignment::AMP) state.targetAngle = units::radian_t(RED_AMP_ROT_ANGLE);
         else if (align == Alignment::TRAP){
-            for(valor::AprilTagsSensor* aprilLime :  aprilTagSensors){
-                if(aprilLime->getTagID() == 12){
-                    state.targetAngle = units::radian_t(RED_RIGHT_TRAP_ROT_ANGLE);
-                }
-                else if(aprilLime->getTagID() == 11){
-                    state.targetAngle = units::radian_t(RED_LEFT_TRAP_ROT_ANGLE);
-                }
-                else if(aprilLime->getTagID() == 13){
-                    state.targetAngle = units::radian_t(RED_CENTER_TRAP_ROT_ANGLE);
-                }
-            }
+            //for(valor::AprilTagsSensor* aprilLime :  aprilTagSensors){
+            //    if(aprilLime->getTagID() == 12){
+            //        state.targetAngle = units::radian_t(RED_RIGHT_TRAP_ROT_ANGLE);
+            //    }
+            //    else if(aprilLime->getTagID() == 11){
+            //        state.targetAngle = units::radian_t(RED_LEFT_TRAP_ROT_ANGLE);
+            //    }
+            //    else if(aprilLime->getTagID() == 13){
+            //        state.targetAngle = units::radian_t(RED_CENTER_TRAP_ROT_ANGLE);
+            //    }
+            //}
         }
         else if (align == Alignment::SOURCE) state.targetAngle = units::radian_t(RED_SOURCE_ROT_ANGLE);
         else state.targetAngle = units::radian_t(RED_LOCK_ANGLE);
@@ -552,25 +554,25 @@ void Drivetrain::angleLock(){
 frc2::FunctionalCommand* Drivetrain::getResetOdom() {
     return new frc2::FunctionalCommand(
         [&]{ // onBegin
-            for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
-                aprilLime->setPipe(valor::VisionSensor::PIPELINE_0);
-            }
+            //for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
+            //    aprilLime->setPipe(valor::VisionSensor::PIPELINE_0);
+            //}
 
             state.startTimestamp = frc::Timer::GetFPGATimestamp();
         },
         [&]{ // continuously running
             table->PutNumber("resetting maybe", true);
 
-            for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
-                if (aprilLime->hasTarget() && (aprilLime->getSensor().ToPose2d().X() > 0_m && aprilLime->getSensor().ToPose2d().Y() > 0_m)) {
-                    table->PutNumber("resetting odom", table->GetNumber("resetting odom", 0) + 1);
-                    aprilLime->applyVisionMeasurement(estimator, (units::meter_t) table->GetNumber("Vision Acceptance", VISION_ACCEPTANCE.to<double>()));
-                    table->PutBoolean("resetting", true);
-                    break;
-                } else {
-                    table->PutBoolean("resetting", false);
-                }
-            }
+            //for (valor::AprilTagsSensor* aprilLime : aprilTagSensors) {
+            //    if (aprilLime->hasTarget() && (aprilLime->getSensor().ToPose2d().X() > 0_m && aprilLime->getSensor().ToPose2d().Y() > 0_m)) {
+            //        table->PutNumber("resetting odom", table->GetNumber("resetting odom", 0) + 1);
+            //        aprilLime->applyVisionMeasurement(estimator, (units::meter_t) table->GetNumber("Vision Acceptance", VISION_ACCEPTANCE.to<double>()));
+            //        table->PutBoolean("resetting", true);
+            //        break;
+            //    } else {
+            //        table->PutBoolean("resetting", false);
+            //    }
+            //}
         },
         [&](bool){ // onEnd
                 
@@ -669,6 +671,22 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
                 pose.push_back(getPose_m().Y().to<double>());
                 pose.push_back(getPose_m().Rotation().Degrees().to<double>());
                 return pose;
+            },
+            nullptr
+        );
+        builder.AddBooleanProperty(
+            "estimatorPose_existence",
+            [this] 
+            { 
+                return estimator != nullptr;
+            },
+            nullptr
+        );
+        builder.AddBooleanProperty(
+            "calculatedPose_existence",
+            [this] 
+            { 
+                return calculatedEstimator != nullptr;
             },
             nullptr
         );

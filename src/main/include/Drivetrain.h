@@ -1,5 +1,6 @@
 #pragma once
 
+#include "valkyrie/sensors/GamePieceSensor.h"
 #include "frc/geometry/Pose3d.h"
 #include "units/length.h"
 #include "valkyrie/sensors/AprilTagsSensor.h"
@@ -243,6 +244,7 @@ public:
      frc2::InstantCommand* getSetXMode();
 
      void setDriveMotorNeutralMode(valor::NeutralMode mode);
+     valor::GamePieceSensor* gpSensor;
 
 private:
      
@@ -281,8 +283,8 @@ private:
 
      bool swerveNoError;
      
-     std::vector<valor::AprilTagsSensor*> aprilTagSensors;
-
+     //std::vector<valor::AprilTagsSensor*> aprilTagSensors;
+     
      double doubtX, doubtY, doubtRot;
      units::meter_t visionAcceptanceRadius;
 };
