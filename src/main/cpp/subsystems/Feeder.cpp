@@ -150,7 +150,7 @@ Feeder::Feeder(frc::TimedRobot *_robot, frc::AnalogTrigger* _feederBeamBreak, fr
                 [this](){ return state.feedTrip; }, 
                 {this}
             ),
-            frc2::WaitCommand(0.5_s),
+            frc2::WaitCommand(0.3_s),
             frc2::InstantCommand(
                 [this]() {
                     state.feederState = Feeder::ROLLER_STATE::INTAKE;
