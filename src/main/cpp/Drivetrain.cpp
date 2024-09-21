@@ -1,17 +1,31 @@
 #include "Drivetrain.h"
+#include <algorithm>
 #include <frc/DriverStation.h>
 #include <iostream>
 #include <math.h>
-#include <pathplanner/lib/auto/AutoBuilder.h>
-#include <pathplanner/lib/util/HolonomicPathFollowerConfig.h>
-#include <pathplanner/lib/util/PIDConstants.h>
-#include <pathplanner/lib/util/ReplanningConfig.h>
+#include <memory>
 #include <string>
 #include "Constants.h"
+#include "frc/geometry/Translation2d.h"
+#include "frc/kinematics/ChassisSpeeds.h"
+#include "frc2/command/FunctionalCommand.h"
+#include "frc2/command/InstantCommand.h"
+#include "frc2/command/SequentialCommandGroup.h"
+#include "pathplanner/lib/auto/AutoBuilder.h"
+#include "pathplanner/lib/path/ConstraintsZone.h"
+#include "pathplanner/lib/path/EventMarker.h"
+#include "pathplanner/lib/path/PathConstraints.h"
+#include "pathplanner/lib/path/PathPlannerPath.h"
+#include "pathplanner/lib/path/RotationTarget.h"
+#include "pathplanner/lib/auto/NamedCommands.h"
+#include "pathplanner/lib/util/HolonomicPathFollowerConfig.h"
+#include "units/angular_acceleration.h"
+#include "units/angular_velocity.h"
 #include "units/length.h"
 //#include "valkyrie/sensors/AprilTagsSensor.h"
 #include "units/length.h"
 #include "valkyrie/sensors/VisionSensor.h"
+#include <pathplanner/lib/commands/FollowPathHolonomic.h>
 #include "frc/geometry/Pose3d.h"
 #include "frc/geometry/Rotation3d.h"
 #include "units/angle.h"
@@ -149,7 +163,7 @@ void Drivetrain::resetState()
 {
     resetDriveEncoders();
     pullSwerveModuleZeroReference();
-    resetOdometry(frc::Pose2d{(56_ft + 1_in) - 119.5_in, (26_ft + 7_in) - 32_in, units::angle::radian_t(-M_PI / 2)});
+    resetOdometry(frc::Pose2d{(54_ft + 1_in) / 2, 75_in, units::radian_t{M_PI / 2.0}});
 }
 
 void Drivetrain::init()
@@ -190,7 +204,7 @@ void Drivetrain::init()
     yPIDF.I = KIY;
     yPIDF.D = KDY;
 
-    thetaPIDF.P = KPT;
+    thetaPIDF.P = KPT / 5.0;
     thetaPIDF.I = KIT;
     thetaPIDF.D = KDT;
 
@@ -219,7 +233,7 @@ void Drivetrain::init()
         [this](frc::Pose2d pose){ resetOdometry(pose); }, // Method to reset odometry (will be called if your auto has a starting pose)
         [this](){ return getRobotRelativeSpeeds(); }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         [this](frc::ChassisSpeeds speeds){ driveRobotRelative(speeds); }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-        HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+        HolonomicPathFollowerConfig(// HolonomicPathFollowerConfig, this should likely live in your Constants class
             PIDConstants(xPIDF.P, xPIDF.I, xPIDF.D), // Translation PID constants
             PIDConstants(thetaPIDF.P, thetaPIDF.I, thetaPIDF.D), // Rotation PID constants
             units::meters_per_second_t{driveMaxSpeed}, // Max module speed, in m/s
@@ -238,6 +252,16 @@ void Drivetrain::init()
             return false;
         },
         this // Reference to this subsystem to set requirements
+    );
+
+    pathplanner::NamedCommands::registerCommand(
+        "Hello World",
+        std::move(helloWorld).ToPtr()
+    );
+
+    pathplanner::NamedCommands::registerCommand(
+        "goToNote",
+        returnPath() // WARNING: only for gamePieces for now
     );
 }
 
@@ -289,12 +313,69 @@ void Drivetrain::assessInputs()
 
 }
 
+std::shared_ptr<pathplanner::PathPlannerPath> Drivetrain::genPathToNote(frc::Pose2d notePos) {
+    if (!gpSensor->hasTarget()) {return nullptr;}
+    std::vector<frc::Translation2d> waypoints = PathPlannerPath::bezierFromPoses(
+        std::vector<frc::Pose2d>{
+            calculatedEstimator->GetEstimatedPosition(),
+            notePos
+        }
+    );
+    PathConstraints constraints(
+        2.0_mps, 1.0_mps_sq,
+        units::degrees_per_second_t(45),
+        units::degrees_per_second_squared_t(720 / 4.0)
+    );
+
+    std::vector<EventMarker> events{
+        EventMarker(.9, std::move(helloWorld).ToPtr())
+    };
+
+    return std::shared_ptr<PathPlannerPath>(
+        new PathPlannerPath(
+            waypoints,
+            std::vector<RotationTarget>(),
+            std::vector<ConstraintsZone>(),
+            events,
+            constraints,
+            GoalEndState(0_mps, frc::Rotation2d(90_deg)),
+            false
+        )
+    );
+}
+
+frc2::CommandPtr Drivetrain::returnPath() { // WARNING: only for game pieces now
+    if (!gpSensor->hasTarget()) {
+        return frc2::CommandPtr(frc2::InstantCommand([](){}));
+    }
+
+    state.detected = true;
+
+    return FollowPathHolonomic(
+        genPathToNote(gpSensor->getSensor().ToPose2d()),
+        [this](){ return calculatedEstimator->GetEstimatedPosition(); },
+        [this](){ return getRobotRelativeSpeeds(); },
+        [this](frc::ChassisSpeeds speeds) { driveRobotRelative(speeds); },
+        HolonomicPathFollowerConfig(// HolonomicPathFollowerConfig, this should likely live in your Constants class
+            PIDConstants(xPIDF.P, xPIDF.I, xPIDF.D), // Translation PID constants
+            PIDConstants(thetaPIDF.P, thetaPIDF.I, thetaPIDF.D), // Rotation PID constants
+            units::meters_per_second_t{driveMaxSpeed}, // Max module speed, in m/s
+            Constants::driveBaseRadius(), // Drive base radius in meters. Distance from robot center to furthest module.
+            ReplanningConfig() // Default path replanning config. See the API for the options here
+        ),
+        [](){return false;},
+        {this}
+    ).ToPtr();
+
+}
+
 void Drivetrain::calculateCarpetPose()
 {
     calculatedEstimator->UpdateWithTime(frc::Timer::GetFPGATimestamp(),
         getPigeon(),
         getModuleStates()
     );
+    
     frc::Pose2d newPose = calculatedEstimator->GetEstimatedPosition();
     units::meter_t deltaX = newPose.X() - previousPose.X();
     double factor = deltaX < units::meter_t{0} ? 1.05 : 1;
@@ -591,6 +672,7 @@ void Drivetrain::setXMode(){
     azimuthControllers[2]->setPosition(std::round(azimuthControllers[2]->getPosition()) - 0.375);
     azimuthControllers[3]->setPosition(std::round(azimuthControllers[3]->getPosition()) - 0.125);
     setDriveMotorNeutralMode(valor::NeutralMode::Brake);
+    
 }
 
 void Drivetrain::setDriveMotorNeutralMode(valor::NeutralMode mode) {
@@ -608,183 +690,208 @@ frc2::InstantCommand* Drivetrain::getSetXMode(){
 }
 
 void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
-    {
-        builder.SetSmartDashboardType("Subsystem");
+{
+    builder.SetSmartDashboardType("Subsystem");
 
-        builder.AddDoubleProperty(
-            "xSpeed",
-            [this] { return state.xSpeed; },
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "ySpeed",
-            [this] { return state.ySpeed; },
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "rotSpeed",
-            [this] { return state.rot; },
-            nullptr
-        );
+    builder.AddDoubleArrayProperty(
+        "accel",
+        [this] {
+            return std::vector<double>{
+                pigeon.GetAccelerationX().GetValue().to<double>(),
+                pigeon.GetAccelerationY().GetValue().to<double>(),
+                pigeon.GetAccelerationZ().GetValue().to<double>()
+            };
+        },
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "xSpeed",
+        [this] { return state.xSpeed; },
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "ySpeed",
+        [this] { return state.ySpeed; },
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "rotSpeed",
+        [this] { return state.rot; },
+        nullptr
+    );
 
-        builder.AddDoubleProperty(
-            "xSpeedMPS",
-            [this] { return state.xSpeedMPS.to<double>(); },
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "ySpeedMPS",
-            [this] { return state.ySpeedMPS.to<double>(); },
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "rotSpeedMPS",
-            [this] { return state.rotRPS.to<double>(); },
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "x",
-            [this] { return getPose_m().X().to<double>(); },
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "y",
-            [this] { return getPose_m().Y().to<double>(); },
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "theta",
-            [this] { return getPose_m().Rotation().Degrees().to<double>(); },
-            nullptr
-        );
-        builder.AddBooleanProperty(
-            "swerveGood",
-            [this] { return swerveNoError; },
-            nullptr
-        );
-        builder.AddDoubleArrayProperty(
-            "pose",
-            [this] 
-            { 
-                std::vector<double> pose;
-                pose.push_back(getPose_m().X().to<double>());
-                pose.push_back(getPose_m().Y().to<double>());
-                pose.push_back(getPose_m().Rotation().Degrees().to<double>());
-                return pose;
-            },
-            nullptr
-        );
-        builder.AddBooleanProperty(
-            "estimatorPose_existence",
-            [this] 
-            { 
-                return estimator != nullptr;
-            },
-            nullptr
-        );
-        builder.AddBooleanProperty(
-            "calculatedPose_existence",
-            [this] 
-            { 
-                return calculatedEstimator != nullptr;
-            },
-            nullptr
-        );
-        builder.AddDoubleArrayProperty(
-            "calculatedPose",
-            [this] 
-            { 
-                frc::Pose2d estimatedPose = calculatedEstimator->GetEstimatedPosition();
-                std::vector<double> pose;
-                pose.push_back(estimatedPose.X().to<double>());
-                pose.push_back(estimatedPose.Y().to<double>());
-                pose.push_back(estimatedPose.Rotation().Degrees().to<double>());
-                return pose;
-            },
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "pigeonPitch",
-            [this]
-            {
-                return pigeon.GetPitch().GetValueAsDouble();
-            },
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "pigeoYaw",
-            [this]
-            {
-                return pigeon.GetYaw().GetValueAsDouble();
-            },
-            nullptr
-        );
-        builder.AddDoubleProperty(
-            "pigeonRoll",
-            [this]
-            {
-                return pigeon.GetRoll().GetValueAsDouble();
-            },
-            nullptr
-        );
-        builder.AddIntegerProperty(
-            "stage",
-            [this]
-            {
-                return state.stage;
-            },
-            nullptr
-        );
-        builder.AddIntegerProperty(
-            "xVelocity",
-            [this]
-            {
-                return getRobotRelativeSpeeds().vx.to<double>();
-            },
-            nullptr
-        );
-        builder.AddIntegerProperty(
-            "yVelocity",
-            [this]
-            {
-                return getRobotRelativeSpeeds().vy.to<double>();
-            },
-            nullptr
-        );
-        builder.AddDoubleArrayProperty(
-            "swerve states",
-            [this] 
-            { 
-                std::vector<double> states;
-                states.push_back(swerveModules[0]->getState().angle.Degrees().to<double>());
-                states.push_back(swerveModules[0]->getState().speed.to<double>());
-                states.push_back(swerveModules[1]->getState().angle.Degrees().to<double>());
-                states.push_back(swerveModules[1]->getState().speed.to<double>());
-                states.push_back(swerveModules[2]->getState().angle.Degrees().to<double>());
-                states.push_back(swerveModules[2]->getState().speed.to<double>());
-                states.push_back(swerveModules[3]->getState().angle.Degrees().to<double>());
-                states.push_back(swerveModules[3]->getState().speed.to<double>());
-                return states;
-            },
-            nullptr
-        );
+    builder.AddDoubleProperty(
+        "xSpeedMPS",
+        [this] { return state.xSpeedMPS.to<double>(); },
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "ySpeedMPS",
+        [this] { return state.ySpeedMPS.to<double>(); },
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "rotSpeedMPS",
+        [this] { return state.rotRPS.to<double>(); },
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "x",
+        [this] { return getPose_m().X().to<double>(); },
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "y",
+        [this] { return getPose_m().Y().to<double>(); },
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "theta",
+        [this] { return getPose_m().Rotation().Degrees().to<double>(); },
+        nullptr
+    );
+    builder.AddBooleanProperty(
+        "swerveGood",
+        [this] { return swerveNoError; },
+        nullptr
+    );
+    builder.AddDoubleArrayProperty(
+        "pose",
+        [this] 
+        { 
+            std::vector<double> pose;
+            pose.push_back(getPose_m().X().to<double>());
+            pose.push_back(getPose_m().Y().to<double>());
+            pose.push_back(getPose_m().Rotation().Degrees().to<double>());
+            return pose;
+        },
+        nullptr
+    );
+    builder.AddBooleanProperty(
+        "estimatorPose_existence",
+        [this] 
+        { 
+            return estimator != nullptr;
+        },
+        nullptr
+    );
+    builder.AddBooleanProperty(
+        "calculatedPose_existence",
+        [this] 
+        { 
+            return calculatedEstimator != nullptr;
+        },
+        nullptr
+    );
+    builder.AddDoubleArrayProperty(
+        "calculatedPose",
+        [this] 
+        { 
+            frc::Pose2d estimatedPose = calculatedEstimator->GetEstimatedPosition();
+            std::vector<double> pose;
+            pose.push_back(estimatedPose.X().to<double>());
+            pose.push_back(estimatedPose.Y().to<double>());
+            pose.push_back(estimatedPose.Rotation().Degrees().to<double>());
+            return pose;
+        },
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "pigeonPitch",
+        [this]
+        {
+            return pigeon.GetPitch().GetValueAsDouble();
+        },
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "pigeoYaw",
+        [this]
+        {
+            return pigeon.GetYaw().GetValueAsDouble();
+        },
+        nullptr
+    );
+    builder.AddDoubleProperty(
+        "pigeonRoll",
+        [this]
+        {
+            return pigeon.GetRoll().GetValueAsDouble();
+        },
+        nullptr
+    );
+    builder.AddIntegerProperty(
+        "stage",
+        [this]
+        {
+            return state.stage;
+        },
+        nullptr
+    );
+    builder.AddIntegerProperty(
+        "xVelocity",
+        [this]
+        {
+            return getRobotRelativeSpeeds().vx.to<double>();
+        },
+        nullptr
+    );
+    builder.AddIntegerProperty(
+        "yVelocity",
+        [this]
+        {
+            return getRobotRelativeSpeeds().vy.to<double>();
+        },
+        nullptr
+    );
+    builder.AddDoubleArrayProperty(
+        "swerve states",
+        [this] 
+        { 
+            std::vector<double> states;
+            states.push_back(swerveModules[0]->getState().angle.Degrees().to<double>());
+            states.push_back(swerveModules[0]->getState().speed.to<double>());
+            states.push_back(swerveModules[1]->getState().angle.Degrees().to<double>());
+            states.push_back(swerveModules[1]->getState().speed.to<double>());
+            states.push_back(swerveModules[2]->getState().angle.Degrees().to<double>());
+            states.push_back(swerveModules[2]->getState().speed.to<double>());
+            states.push_back(swerveModules[3]->getState().angle.Degrees().to<double>());
+            states.push_back(swerveModules[3]->getState().speed.to<double>());
+            return states;
+        },
+        nullptr
+    );
 
-        builder.AddDoubleProperty(
-            "targetAngle",
-            [this] {return (units::degree_t(state.targetAngle)).to<double>();},
-            nullptr
-        );
+    // INFO: Temporary vals{
+    builder.AddBooleanProperty(
+        "hello",
+        [this] {return state.hello;},
+        nullptr
+    );
 
-        builder.AddDoubleProperty(
-            "errorAngle",
-            [this] {return (units::degree_t(getAngleError()).to<double>());},
-            nullptr
-        );
+    builder.AddBooleanProperty(
+        "detectedVal",
+        [this] {return state.detected;},
+        nullptr
+    );
+    //}
 
-        builder.AddDoubleProperty(
-            "errorAngleRPS",
-            [this] {return (state.angleRPS).to<double>();},
-            nullptr
-        );
-    }
+    builder.AddDoubleProperty(
+        "targetAngle",
+        [this] {return (units::degree_t(state.targetAngle)).to<double>();},
+        nullptr
+    );
+
+    builder.AddDoubleProperty(
+        "errorAngle",
+        [this] {return (units::degree_t(getAngleError()).to<double>());},
+        nullptr
+    );
+
+    builder.AddDoubleProperty(
+        "errorAngleRPS",
+        [this] {return (state.angleRPS).to<double>();},
+        nullptr
+    );
+}
 

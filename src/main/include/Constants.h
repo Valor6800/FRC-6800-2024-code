@@ -166,12 +166,12 @@ namespace Constants {
         static frc::Pose3d mintCameraPosition(){ switch (teamNumber) {
             case ALPHA_TEAM_NUMBER: return frc::Pose3d();
             case SIDE_SWIPE_TEAM_NUMBER: return frc::Pose3d{
-                13.25_in, //x
-                10.75_in, //y
-                25.5_in, //z
+                10_in, //x
+                -8_in, //y
+                11.8_in, //z
                 frc::Rotation3d{
                     0_deg, 
-                    -21.6_deg,
+                    -6.8_deg,
                     0_deg
                 }
             }; // Temp value; TODO: Change it

@@ -1,5 +1,10 @@
 #pragma once
 
+#include <pathplanner/lib/auto/AutoBuilder.h>
+#include <pathplanner/lib/util/HolonomicPathFollowerConfig.h>
+#include <pathplanner/lib/util/PIDConstants.h>
+#include <pathplanner/lib/util/ReplanningConfig.h>
+#include "pathplanner/lib/path/PathPlannerPath.h"
 #include "valkyrie/sensors/GamePieceSensor.h"
 #include "frc/geometry/Pose3d.h"
 #include "units/length.h"
@@ -165,8 +170,11 @@ public:
           frc::Pose2d prevPose;
 
           units::second_t startTimestamp; // generic
+          bool hello = false;
+          bool detected = false;
+
      } state;
-     
+    
      
      /**
       * Drive the robot with given x, y and rotational velocities using open loop velocity control
@@ -246,6 +254,10 @@ public:
      void setDriveMotorNeutralMode(valor::NeutralMode mode);
      valor::GamePieceSensor* gpSensor;
 
+     std::shared_ptr<pathplanner::PathPlannerPath> genPathToNote(frc::Pose2d point);
+
+    frc2::CommandPtr returnPath();
+     frc2::InstantCommand helloWorld{[this](){state.hello=true;}};
 private:
      
      double driveMaxSpeed;
