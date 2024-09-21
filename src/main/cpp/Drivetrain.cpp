@@ -1,16 +1,14 @@
 #include "Drivetrain.h"
-#include <algorithm>
 #include <frc/DriverStation.h>
-#include <iostream>
 #include <math.h>
 #include <memory>
 #include <string>
 #include "Constants.h"
+#include "frc/Timer.h"
 #include "frc/geometry/Translation2d.h"
 #include "frc/kinematics/ChassisSpeeds.h"
 #include "frc2/command/FunctionalCommand.h"
 #include "frc2/command/InstantCommand.h"
-#include "frc2/command/SequentialCommandGroup.h"
 #include "pathplanner/lib/auto/AutoBuilder.h"
 #include "pathplanner/lib/path/ConstraintsZone.h"
 #include "pathplanner/lib/path/EventMarker.h"
@@ -22,12 +20,11 @@
 #include "units/angular_acceleration.h"
 #include "units/angular_velocity.h"
 #include "units/length.h"
-//#include "valkyrie/sensors/AprilTagsSensor.h"
 #include "units/length.h"
+#include "units/time.h"
 #include "valkyrie/sensors/VisionSensor.h"
 #include <pathplanner/lib/commands/FollowPathHolonomic.h>
 #include "frc/geometry/Pose3d.h"
-#include "frc/geometry/Rotation3d.h"
 #include "units/angle.h"
 
 using namespace pathplanner;
@@ -163,7 +160,7 @@ void Drivetrain::resetState()
 {
     resetDriveEncoders();
     pullSwerveModuleZeroReference();
-    resetOdometry(frc::Pose2d{(54_ft + 1_in) / 2, 75_in, units::radian_t{M_PI / 2.0}});
+    resetOdometry(frc::Pose2d{8.34_mi, 0.75_m, units::radian_t{M_PI / 2.0}});
 }
 
 void Drivetrain::init()
@@ -257,6 +254,11 @@ void Drivetrain::init()
     pathplanner::NamedCommands::registerCommand(
         "Hello World",
         std::move(helloWorld).ToPtr()
+    );
+
+    pathplanner::NamedCommands::registerCommand(
+        "checkGamePiece",
+        checkGamePiece().ToPtr() // WARNING: only for gamePieces for now
     );
 
     pathplanner::NamedCommands::registerCommand(
@@ -367,6 +369,18 @@ frc2::CommandPtr Drivetrain::returnPath() { // WARNING: only for game pieces now
         {this}
     ).ToPtr();
 
+}
+
+frc2::FunctionalCommand Drivetrain::checkGamePiece() {
+
+    units::second_t startTime = frc::GetTime();
+    return frc2::FunctionalCommand(
+        [&startTime](){startTime = frc::GetTime();},
+        [](){},
+        [this](bool x){state.detected = gpSensor->hasTarget();},
+        [this, startTime](){return gpSensor->hasTarget() || startTime - frc::GetTime() >= .5_s;},
+        {this}
+    );
 }
 
 void Drivetrain::calculateCarpetPose()

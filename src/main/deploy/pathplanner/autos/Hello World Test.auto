@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 8.24,
-      "y": 1.91
+      "x": 8.34,
+      "y": 0.7489697984762701
     },
     "rotation": 90.0
   },
@@ -15,6 +15,18 @@
           "type": "path",
           "data": {
             "pathName": "Example Path"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "checkGamePiece"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "goToNote"
           }
         }
       ]

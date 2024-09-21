@@ -4,6 +4,7 @@
 #include <pathplanner/lib/util/HolonomicPathFollowerConfig.h>
 #include <pathplanner/lib/util/PIDConstants.h>
 #include <pathplanner/lib/util/ReplanningConfig.h>
+#include "frc2/command/CommandPtr.h"
 #include "pathplanner/lib/path/PathPlannerPath.h"
 #include "valkyrie/sensors/GamePieceSensor.h"
 #include "frc/geometry/Pose3d.h"
@@ -256,7 +257,10 @@ public:
 
      std::shared_ptr<pathplanner::PathPlannerPath> genPathToNote(frc::Pose2d point);
 
-    frc2::CommandPtr returnPath();
+     frc2::CommandPtr returnPath();
+
+     frc2::FunctionalCommand checkGamePiece();
+
      frc2::InstantCommand helloWorld{[this](){state.hello=true;}};
 private:
      
