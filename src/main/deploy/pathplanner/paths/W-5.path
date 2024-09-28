@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 8.44175305697255,
-        "y": 0.33496964671880824
+        "x": 8.373419823762724,
+        "y": 0.9409741896406872
       },
       "prevControl": {
-        "x": 7.390305472704871,
-        "y": 0.4838769328788263
+        "x": 7.321972239495046,
+        "y": 1.0898814758007052
       },
       "nextControl": {
-        "x": 9.346687067591096,
-        "y": 0.2068117911192241
+        "x": 9.27835383438127,
+        "y": 0.8128163340411031
       },
       "isLocked": false,
       "linkedName": "A5"
@@ -160,13 +160,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -42.0,
+    "rotation": -42.5,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Pick chain",
   "previewStartingState": {
-    "rotation": -42.0,
+    "rotation": -42.5,
     "velocity": 0
   },
   "useDefaultConstraints": true
