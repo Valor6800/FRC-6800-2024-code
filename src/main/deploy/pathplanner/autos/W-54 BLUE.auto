@@ -48,18 +48,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "W-3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Enable full feeder"
-          }
-        },
-        {
           "type": "wait",
           "data": {
             "waitTime": 0.2
