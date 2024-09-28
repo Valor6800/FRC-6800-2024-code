@@ -6,6 +6,7 @@
 #include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/WaitCommand.h>
+#include <frc/DriverStation.h>
 // 
 #include <filesystem>
 
@@ -104,8 +105,23 @@ std::vector<std::string> listDirectory(std::string path_name){
     return files;
 }
 
+std::vector<std::string> filterOutStringsContaining(std::vector<std::string> v, std::string word) {
+    std::vector<std::string> n;
+    for (std::string s : v) {
+        if (s.find(word) == std::string::npos) {
+            n.push_back(s);
+        }
+    }
+    return n;
+}
+
 void Auto::fillAutoList(){
-    for (std::string path : listDirectory(AUTOS_PATH)){
+    // std::vector<std::string> availableAutos = filterOutStringsContaining(
+    //     listDirectory(AUTOS_PATH), 
+    //     frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue ? "RED" : "BLUE"
+    // );
+    std::vector<std::string> availableAutos = listDirectory(AUTOS_PATH);
+    for (std::string path : availableAutos){
         m_chooser.AddOption(makeFriendlyName(removeFileType(path)), removeFileType(path));
     }
     frc::SmartDashboard::PutData(&m_chooser);
