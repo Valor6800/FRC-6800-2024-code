@@ -1,0 +1,49 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.7522949572447178,
+      "y": 4.417067566339995
+    },
+    "rotation": -60.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Override flywheels"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Set pivot load"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Wf-5 RED"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "W-5pt1"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Comp",
+  "choreoAuto": false
+}

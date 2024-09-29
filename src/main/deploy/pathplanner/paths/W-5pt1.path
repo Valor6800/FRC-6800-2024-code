@@ -1,0 +1,70 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.624360552251197,
+        "y": 2.5833531311883227
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.295144951726823,
+        "y": 2.0318643145864197
+      },
+      "isLocked": false,
+      "linkedName": "Score wall"
+    },
+    {
+      "anchor": {
+        "x": 8.373419823762724,
+        "y": 0.9409741896406872
+      },
+      "prevControl": {
+        "x": 7.321972239495046,
+        "y": 1.0898814758007052
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "A5"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.9,
+      "rotationDegrees": -18.118838265447685,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Account for flywheels",
+      "minWaypointRelativePos": 1,
+      "maxWaypointRelativePos": 1.5,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 1.5,
+        "maxAngularVelocity": 720.0,
+        "maxAngularAcceleration": 1600.0
+      }
+    }
+  ],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.8,
+    "maxAcceleration": 5.0,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 1600.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -13.324531261890833,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Pick chain",
+  "previewStartingState": {
+    "rotation": -42.5,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
