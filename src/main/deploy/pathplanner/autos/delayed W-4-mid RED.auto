@@ -12,6 +12,18 @@
     "data": {
       "commands": [
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Override flywheels"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "Set pivot load"
@@ -20,31 +32,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Wf-4 BLUE"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Enable full feeder"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "W-5"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Enable full feeder"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "W-3"
+            "pathName": "Wf-4 RED"
           }
         },
         {
@@ -63,6 +51,12 @@
           "type": "named",
           "data": {
             "name": "Disable full feeder"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "W-5pt1"
           }
         }
       ]
