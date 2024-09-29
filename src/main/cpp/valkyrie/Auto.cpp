@@ -116,11 +116,10 @@ std::vector<std::string> filterOutStringsContaining(std::vector<std::string> v, 
 }
 
 void Auto::fillAutoList(){
-    // std::vector<std::string> availableAutos = filterOutStringsContaining(
-    //     listDirectory(AUTOS_PATH), 
-    //     frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue ? "RED" : "BLUE"
-    // );
-    std::vector<std::string> availableAutos = listDirectory(AUTOS_PATH);
+    std::vector<std::string> availableAutos = filterOutStringsContaining(
+        listDirectory(AUTOS_PATH), 
+        frc::DriverStation::GetAlliance() == frc::DriverStation::kBlue ? "RED" : "BLUE"
+    );
     for (std::string path : availableAutos){
         m_chooser.AddOption(makeFriendlyName(removeFileType(path)), removeFileType(path));
     }

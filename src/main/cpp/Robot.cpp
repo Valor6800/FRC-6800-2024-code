@@ -81,6 +81,11 @@ void Robot::DisabledInit() { }
 
 void Robot::DisabledPeriodic() { 
     valorAuto.preloadSelectedAuto();
+    auto curAlliance = frc::DriverStation::GetAlliance();
+    if (curAlliance != lastSelectedAlliance)
+        valorAuto.fillAutoList();
+    if (curAlliance.has_value())
+        lastSelectedAlliance = curAlliance.value();
 }
 
 /**
