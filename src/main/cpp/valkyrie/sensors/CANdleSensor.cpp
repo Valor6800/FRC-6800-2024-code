@@ -290,4 +290,12 @@ void CANdleSensor::InitSendable(wpi::SendableBuilder& builder)
         "Max Animations",
         [this] {return candle.GetMaxSimultaneousAnimationCount();},
         nullptr);
+    builder.AddDoubleProperty(
+        "5V Voltage",
+        [this] {return candle.Get5VRailVoltage();},
+        nullptr);
+    builder.AddDoubleProperty(
+        "Bus Voltage",
+        [this] {return candle.GetBusVoltage();},
+        nullptr);
 }
