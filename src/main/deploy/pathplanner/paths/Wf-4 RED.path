@@ -48,16 +48,16 @@
     },
     {
       "anchor": {
-        "x": 3.624360552251197,
-        "y": 2.5833531311883227
+        "x": 3.66,
+        "y": 2.144545827553194
       },
       "prevControl": {
-        "x": 5.8402389706747,
-        "y": 0.8568870105083346
+        "x": 5.875878418423502,
+        "y": 0.41807970687320584
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Score wall"
+      "linkedName": "Score wall red"
     }
   ],
   "rotationTargets": [
