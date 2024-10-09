@@ -29,6 +29,9 @@
 
 using namespace pathplanner;
 
+#define WIDTH_OF_FIELD (26_ft + 7_in)
+#define LENGTH_OF_FIELD (54_ft + 1_in)
+
 #define SPEAKER_Y 5.543042_m
 #define SPEAKER_BLUE_X 0.0_m
 #define SPEAKER_RED_X 16.4846_m
@@ -160,7 +163,7 @@ void Drivetrain::resetState()
 {
     resetDriveEncoders();
     pullSwerveModuleZeroReference();
-    resetOdometry(frc::Pose2d{8.34_mi, 0.75_m, units::radian_t{M_PI / 2.0}});
+    resetOdometry(frc::Pose2d{(LENGTH_OF_FIELD / 2.0) - 150_cm, WIDTH_OF_FIELD - 96_cm, units::radian_t{-M_PI / 2.0}});
 }
 
 void Drivetrain::init()
@@ -222,7 +225,7 @@ void Drivetrain::init()
     state.lock = false;
 
     resetState();
-    gpSensor = new valor::GamePieceSensor(robot, "limelight-minty", Constants::mintCameraPosition(), calculatedEstimator);
+    gpSensor = new valor::GamePieceSensor(robot, "limelight-mint", Constants::mintCameraPosition(), calculatedEstimator);
     gpSensor->setPipe(valor::VisionSensor::PIPELINE_0);
 
     AutoBuilder::configureHolonomic(

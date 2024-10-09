@@ -171,7 +171,7 @@ namespace Constants {
                 11.8_in, //z
                 frc::Rotation3d{
                     0_deg, 
-                    -6.8_deg,
+                    -8.6_deg,
                     0_deg
                 }
             }; // Temp value; TODO: Change it
