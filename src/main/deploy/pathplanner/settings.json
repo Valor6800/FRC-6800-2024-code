@@ -21,14 +21,14 @@
   "defaultMaxAccel": 5.0,
   "defaultMaxAngVel": 720.0,
   "defaultMaxAngAccel": 1600.0,
-  "robotMass": 56.669,
-  "robotMOI": 5.351,
+  "robotMass": 62.463,
+  "robotMOI": 6.516315,
   "robotWheelbase": 0.586,
   "robotTrackwidth": 0.586,
   "driveWheelRadius": 0.051,
   "driveGearing": 5.51,
-  "maxDriveSpeed": 4.5,
+  "maxDriveSpeed": 4.75,
   "driveMotorType": "krakenX60",
   "driveCurrentLimit": 60.0,
-  "wheelCOF": 1.6
+  "wheelCOF": 1.43
 }
