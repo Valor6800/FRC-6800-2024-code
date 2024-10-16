@@ -116,7 +116,7 @@ namespace Constants {
         }};
         static units::meter_t driveBaseRadius(){ switch (teamNumber){
             case ALPHA_TEAM_NUMBER: return 0.36_m; 
-            case SIDE_SWIPE_TEAM_NUMBER: return 0.3_m; // Temp value; TODO: Change it
+            case SIDE_SWIPE_TEAM_NUMBER: return 0.58_m; // Temp value; TODO: Change it
             default: return 0.3_m; // Temp number; TODO: Change it
         }};
 
@@ -171,7 +171,7 @@ namespace Constants {
                 11.8_in, //z
                 frc::Rotation3d{
                     0_deg, 
-                    -8.6_deg,
+                    -20.6_deg,
                     0_deg
                 }
             }; // Temp value; TODO: Change it

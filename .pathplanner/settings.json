@@ -1,0 +1,12 @@
+{
+  "robotWidth": 0.598,
+  "robotLength": 0.598,
+  "holonomicMode": true,
+  "pathFolders": [],
+  "autoFolders": [],
+  "defaultMaxVel": 4.0,
+  "defaultMaxAccel": 2.0,
+  "defaultMaxAngVel": 600.0,
+  "defaultMaxAngAccel": 720.0,
+  "maxModuleSpeed": 5.0
+}

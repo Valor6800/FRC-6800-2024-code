@@ -17,6 +17,7 @@
 #include "pathplanner/lib/path/RotationTarget.h"
 #include "pathplanner/lib/auto/NamedCommands.h"
 #include "pathplanner/lib/util/HolonomicPathFollowerConfig.h"
+#include "units/acceleration.h"
 #include "units/angular_acceleration.h"
 #include "units/angular_velocity.h"
 #include "units/length.h"
@@ -230,7 +231,7 @@ void Drivetrain::init()
 
     AutoBuilder::configureHolonomic(
         [this](){ return getPose_m(); }, // Robot pose supplier
-        [this](frc::Pose2d pose){ resetOdometry(pose); }, // Method to reset odometry (will be called if your auto has a starting pose)
+        [this](frc::Pose2d pose){ resetOdometry(pose); autoStartingPose = pose; }, // Method to reset odometry (will be called if your auto has a starting pose)
         [this](){ return getRobotRelativeSpeeds(); }, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         [this](frc::ChassisSpeeds speeds){ driveRobotRelative(speeds); }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         HolonomicPathFollowerConfig(// HolonomicPathFollowerConfig, this should likely live in your Constants class
@@ -238,7 +239,7 @@ void Drivetrain::init()
             PIDConstants(thetaPIDF.P, thetaPIDF.I, thetaPIDF.D), // Rotation PID constants
             units::meters_per_second_t{driveMaxSpeed}, // Max module speed, in m/s
             Constants::driveBaseRadius(), // Drive base radius in meters. Distance from robot center to furthest module.
-            ReplanningConfig() // Default path replanning config. See the API for the options here
+            ReplanningConfig(false, false) // Default path replanning config. See the API for the options here
         ),
         []() {
             // Boolean supplier that controls when the path will be mirrored for the red alliance
@@ -350,11 +351,15 @@ std::shared_ptr<pathplanner::PathPlannerPath> Drivetrain::genPathToNote(frc::Pos
 }
 
 frc2::CommandPtr Drivetrain::returnPath() { // WARNING: only for game pieces now
+    if (!frc::DriverStation::IsEnabled()) {
+        ran = true;
+        return frc2::CommandPtr(frc2::InstantCommand([](){}));
+    }
+
     if (!gpSensor->hasTarget()) {
         return frc2::CommandPtr(frc2::InstantCommand([](){}));
     }
 
-    state.detected = true;
 
     return FollowPathHolonomic(
         genPathToNote(gpSensor->getSensor().ToPose2d()),
@@ -380,7 +385,7 @@ frc2::FunctionalCommand Drivetrain::checkGamePiece() {
     return frc2::FunctionalCommand(
         [&startTime](){startTime = frc::GetTime();},
         [](){},
-        [this](bool x){state.detected = gpSensor->hasTarget();},
+        [this, startTime](bool x){state.detected = gpSensor->hasTarget(); state.detectionTime = startTime - frc::GetTime();},
         [this, startTime](){return gpSensor->hasTarget() || startTime - frc::GetTime() >= .5_s;},
         {this}
     );
@@ -714,9 +719,20 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
         "accel",
         [this] {
             return std::vector<double>{
-                pigeon.GetAccelerationX().GetValue().to<double>(),
-                pigeon.GetAccelerationY().GetValue().to<double>(),
-                pigeon.GetAccelerationZ().GetValue().to<double>()
+                pigeon.GetAccelerationX().GetValue().convert<units::meters_per_second_squared>().to<double>(),
+                pigeon.GetAccelerationY().GetValue().convert<units::meters_per_second_squared>().to<double>(),
+                pigeon.GetAccelerationZ().GetValue().convert<units::meters_per_second_squared>().to<double>()
+            };
+        },
+        nullptr
+    );
+    builder.AddDoubleArrayProperty(
+        "Rotational Velocity",
+        [this] {
+            return std::vector<double>{
+                pigeon.GetAngularVelocityXDevice().GetValue().to<double>(),
+                pigeon.GetAngularVelocityYDevice().GetValue().to<double>(),
+                pigeon.GetAngularVelocityZDevice().GetValue().to<double>()
             };
         },
         nullptr
@@ -879,6 +895,17 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
         nullptr
     );
 
+    builder.AddDoubleArrayProperty(
+        "Auto Starting Pose",
+        [this] {
+            std::vector<double> pose;
+            pose.push_back(autoStartingPose.X().to<double>());
+            pose.push_back(autoStartingPose.Y().to<double>());
+            pose.push_back(autoStartingPose.Rotation().Degrees().to<double>());
+            return pose;
+        },
+        nullptr
+    );
     // INFO: Temporary vals{
     builder.AddBooleanProperty(
         "hello",
@@ -891,6 +918,19 @@ void Drivetrain::InitSendable(wpi::SendableBuilder& builder)
         [this] {return state.detected;},
         nullptr
     );
+
+    builder.AddBooleanProperty(
+        "ran",
+        [this] {return ran;},
+        nullptr
+    );
+
+    builder.AddDoubleProperty(
+        "Detection Time",
+        [this] {return state.detectionTime.to<double>();},
+        nullptr
+    );
+
     //}
 
     builder.AddDoubleProperty(

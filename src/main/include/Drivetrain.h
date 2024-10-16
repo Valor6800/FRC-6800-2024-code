@@ -6,6 +6,7 @@
 #include <pathplanner/lib/util/ReplanningConfig.h>
 #include "frc2/command/CommandPtr.h"
 #include "pathplanner/lib/path/PathPlannerPath.h"
+#include "units/time.h"
 #include "valkyrie/sensors/GamePieceSensor.h"
 #include "frc/geometry/Pose3d.h"
 #include "units/length.h"
@@ -173,8 +174,12 @@ public:
           units::second_t startTimestamp; // generic
           bool hello = false;
           bool detected = false;
+          units::second_t detectionTime;
 
      } state;
+
+     bool ran = false;
+     frc::Pose2d autoStartingPose;
     
      
      /**
