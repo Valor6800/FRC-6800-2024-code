@@ -36,6 +36,8 @@ public:
     void enableFOC(bool enableFOC);
     void setSpeed(double);
     void setPower(double);
+    void setVoltage(units::volt_t);
+    units::volt_t getVoltage();
 
     void setupFollower(int, bool = false);
     

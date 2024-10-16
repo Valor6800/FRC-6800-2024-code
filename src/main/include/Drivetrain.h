@@ -42,6 +42,7 @@
 #include <frc2/command/WaitCommand.h>
 #include <frc/TimedRobot.h>
 #include <frc2/command/FunctionalCommand.h>
+#include <frc2/command/sysid/SysIdRoutine.h>
 
 #include <rev/CANSparkMax.h>
 #include <ctre/phoenix6/Pigeon2.hpp>
@@ -184,6 +185,11 @@ public:
      void drive(units::velocity::meters_per_second_t vx_mps, units::velocity::meters_per_second_t vy_mps, units::angular_velocity::radians_per_second_t omega_radps, bool isFOC);
      void driveRobotRelative(frc::ChassisSpeeds speeds);
 
+     void setSysIdVoltage(units::volt_t voltage);
+     void logSysId(frc::sysid::SysIdRoutineLog* log);
+     frc2::CommandPtr quaistaticSysid(frc2::sysid::Direction direction);
+     frc2::CommandPtr dynamicSysid(frc2::sysid::Direction direction);
+
      void resetGyro();
 
      /**
@@ -305,4 +311,7 @@ private:
 
      bool swerveNoError;
      valor::CANdleSensor *leds;
+
+     frc2::sysid::SysIdRoutine sysid;
+     frc2::CommandPtr sysIdRunner;
 };
