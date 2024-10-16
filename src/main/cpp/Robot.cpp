@@ -33,10 +33,10 @@ Robot::Robot() :
 
     pathplanner::NamedCommands::registerCommand("Reschedule", std::move(
         frc2::InstantCommand([this](){
-            if (feeder.state.stageTrip)
-                autoCommands.push_back(valorAuto.getAuto("A1-"));
-            else
-                autoCommands.push_back(valorAuto.getAuto("A1-2"));
+            // if (feeder.state.stageTrip)
+            //     autoCommands.push_back(valorAuto.getAuto("A1-"));
+            // else
+            //     autoCommands.push_back(valorAuto.getAuto("A1-2"));
             autoCommands.back().Schedule();
         })
     ).ToPtr());
@@ -59,8 +59,8 @@ void Robot::RobotInit() {
     frc::DataLogManager::Start();
 
     valorAuto.fillAutoList();
-    valorAuto.preloadAuto("A1-");
-    valorAuto.preloadAuto("A1-2");
+    // valorAuto.preloadAuto("A1-");
+    // valorAuto.preloadAuto("A1-2");
 }
 /**
  * This function is called every robot packet, no matter the mode. Use
