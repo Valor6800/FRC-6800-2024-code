@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "A-A1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "A1-A"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Enable feeder"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Disable feeder"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
