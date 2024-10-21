@@ -9,10 +9,14 @@
 
 using namespace valor;
 
-GamePieceSensor::GamePieceSensor(frc::TimedRobot* robot, const char *name, frc::Pose3d _cameraPose, frc::SwerveDrivePoseEstimator<4>* estimator) : valor::VisionSensor(robot, name, _cameraPose),
-    estimator(estimator)
+GamePieceSensor::GamePieceSensor(frc::TimedRobot* robot, const char *name, frc::Pose3d _cameraPose) : valor::VisionSensor(robot, name, _cameraPose),
+    estimator(NULL)
 {
     setGetter([this](){return getGlobalPose();});
+}
+
+void GamePieceSensor::setEstimator(frc::SwerveDrivePoseEstimator<4>* e) {
+    estimator = e;
 }
 
 frc::Pose3d GamePieceSensor::getGlobalPose() {
@@ -21,7 +25,8 @@ frc::Pose3d GamePieceSensor::getGlobalPose() {
 
     updateRelative();
 
-    if (estimator == nullptr || estimator->GetEstimatedPosition().X() == 0.0_m || estimator->GetEstimatedPosition().Y() == 0.0_m) return frc::Pose3d();
+    if (estimator == NULL) return frc::Pose3d();
+    if (estimator->GetEstimatedPosition().X() == 0.0_m || estimator->GetEstimatedPosition().Y() == 0.0_m) return frc::Pose3d();
     
     units::meter_t globalX, globalY = 0_m;
 

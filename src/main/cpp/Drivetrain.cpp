@@ -222,6 +222,7 @@ void Drivetrain::init()
         aprilLime->setPipe(valor::VisionSensor::PIPELINE_0);
     }
 
+
     for (int i = 0; i < SWERVE_COUNT; i++)
     {
         configSwerveModule(i);
@@ -272,6 +273,9 @@ void Drivetrain::init()
 
     state.useCalculatedEstimator = true;
 
+    chocoSensor = new valor::GamePieceSensor(robot, Constants::objectCameras.first, Constants::objectCameras.second);
+    chocoSensor->setPipe(valor::VisionSensor::PIPELINE_1);
+    chocoSensor->setEstimator(calculatedEstimator);
     /*
      * 3.8m/s, 5m/s^2, ~125lbs Apr. 2
      */

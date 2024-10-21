@@ -337,10 +337,14 @@ namespace Constants {
 
         static std::vector<std::pair<const char*, frc::Pose3d>> aprilCameras{
                     std::pair("limelight-mint", mintCameraPosition()),
-                    std::pair("limelight-lemon", lemonCameraPosition()),
-                    std::pair("limelight-choco", chocolateCameraPosition()),
+                    //std::pair("limelight-lemon", lemonCameraPosition()),
+                    //std::pair("limelight-choco", chocolateCameraPosition()),
                     std::pair("limelight-vanilla", vanillaCameraPosition()),
                     std::pair("limelight-mango", mangoCameraPosition())
+        };
+
+        static std::pair<const char*, frc::Pose3d> objectCameras{
+                    std::pair("limelight-choco", chocolateCameraPosition())
         };
 }
 #pragma GCC diagnostic pop
