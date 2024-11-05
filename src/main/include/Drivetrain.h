@@ -34,6 +34,9 @@
 #include <frc/trajectory/TrajectoryGenerator.h>
 #include <frc/smartdashboard/SendableChooser.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <networktables/StructTopic.h>
+#include "networktables/NetworkTableInstance.h"
+
 
 #include <frc2/command/SwerveControllerCommand.h>
 #include <frc2/command/Command.h>
@@ -172,7 +175,14 @@ public:
 
           bool backshot;
      } state;
-     
+
+     struct PoseStruct {
+
+          double x;
+          double y;
+          double rotation;
+     };
+
      
      /**
       * Drive the robot with given x, y and rotational velocities using open loop velocity control
@@ -282,6 +292,7 @@ private:
      std::vector<valor::Swerve<SwerveAzimuthMotor, SwerveDriveMotor> *> swerveModules;
      std::vector<SwerveAzimuthMotor *> azimuthControllers;
      std::vector<SwerveDriveMotor *> driveControllers;
+     nt::StructPublisher<frc::Pose2d> m_posePublisher;
 
      wpi::array<frc::Translation2d, SWERVE_COUNT> motorLocations;
 

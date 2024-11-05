@@ -239,6 +239,7 @@ void Drivetrain::init()
     kinematics = new frc::SwerveDriveKinematics<SWERVE_COUNT>(motorLocations);
     estimator = new frc::SwerveDrivePoseEstimator<SWERVE_COUNT>(*kinematics, pigeon.GetRotation2d(), getModuleStates(), frc::Pose2d{0_m, 0_m, 0_rad});
     calculatedEstimator = new frc::SwerveDrivePoseEstimator<SWERVE_COUNT>(*kinematics, pigeon.GetRotation2d(), getModuleStates(), frc::Pose2d{0_m, 0_m, 0_rad});
+    
 
     xPIDF.P = KPX;
     xPIDF.I = KIX;
@@ -246,12 +247,12 @@ void Drivetrain::init()
 
     thetaPIDF.P = KPT;
     thetaPIDF.I = KIT;
-    thetaPIDF.D = KDT;
+    thetaPIDF.D = KDT;  
 
     state.lock = false;
     state.pitMode = false;
 
-    table->PutNumber("Vision Std", 3.0);
+    table->PutNumber("Vision Std", 3.0); 
 
     table->PutNumber("Vision Acceptance", VISION_ACCEPTANCE.to<double>() );
 
@@ -485,6 +486,17 @@ void Drivetrain::analyzeDashboard()
     }
     for (int i = 5; i < 8; i++)
         leds->setLED(i, 0x000000);
+
+    
+ if (state.useCalculatedEstimator) {
+        m_posePublisher.Set(calculatedEstimator->GetEstimatedPosition());
+    } else {
+        m_posePublisher.Set(estimator->GetEstimatedPosition());
+    }
+
+//nt::StructPublisher<frc::Pose2d> publisher = nt::NetworkTableInstance::GetDefault().GetStructTopic<frc::Pose2d>("/MyPose").Publish();
+
+//publisher.Set(frc::Pose2d());
 }
 
 void Drivetrain::assignOutputs()
