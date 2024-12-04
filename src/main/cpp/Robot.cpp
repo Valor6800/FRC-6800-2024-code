@@ -1,139 +1,98 @@
 #include "Robot.h"
-#include "frc/AnalogTriggerType.h"
+#include "frc/smartdashboard/SmartDashboard.h"
 
-#include <frc/smartdashboard/SmartDashboard.h>
-#include <frc2/command/CommandScheduler.h>
-#include <frc/RobotController.h>
-#include <Constants.h>
-
-#include <pathplanner/lib/auto/NamedCommands.h>
-
-#include <ctime>
-#define AUTO_DOUBTX 3.0f;
-#define AUTO_DOUBTY 3.0f;
-#define TELE_DOUBTX 0.75f;
-#define TELE_DOUBTY 0.75f;
-
-#define LED_COUNT 86
-#define SEGMENTS 2
-
-Robot::Robot() : 
-    leds(this, LED_COUNT, SEGMENTS, CANIDs::CANDLE, ""),
-    drivetrain(this, &leds),
-    valorAuto(),
-    feederBeamBreak(AnalogPorts::FEEDER_BEAM_BREAK_PORT),
-    stageBeamBreak(AnalogPorts::STAGE_BEAM_BREAK_PORT),  
-    shooter(this, &drivetrain, &feederBeamBreak, &stageBeamBreak, &leds),
-    feeder(this, &feederBeamBreak, &stageBeamBreak, &leds, &shooter),
-    climber(this, &leds)
-{
-    frc::TimedRobot();
-    feederBeamBreak.SetLimitsVoltage(4, 14);
-    stageBeamBreak.SetLimitsVoltage(4, 14);
-
-    pathplanner::NamedCommands::registerCommand("Reschedule", std::move(
-        frc2::InstantCommand([this](){
-            if (feeder.state.stageTrip)
-                autoCommands.push_back(valorAuto.getAuto("A1-"));
-            else
-                autoCommands.push_back(valorAuto.getAuto("A1-2"));
-            autoCommands.back().Schedule();
-        })
-    ).ToPtr());
-}
+// Constructor initializes the motors and the drivetrain
+Robot::Robot()
+    : leftRear{1, rev::CANSparkMax::MotorType::kBrushed},
+      leftFront{2, rev::CANSparkMax::MotorType::kBrushed},
+      rightRear{3, rev::CANSparkMax::MotorType::kBrushed},
+      rightFront{4, rev::CANSparkMax::MotorType::kBrushed},
+      m_launchWheel{6, rev::CANSparkMax::MotorType::kBrushed},
+      m_feedWheel{5, rev::CANSparkMax::MotorType::kBrushed},
+      m_climber{7, rev::CANSparkMax::MotorType::kBrushless},
+      m_rollerClaw{8, rev::CANSparkMax::MotorType::kBrushed},
+      m_driverController{0},
+      m_manipController{1},
+      m_drivetrain{leftFront, rightFront} {}
 
 void Robot::RobotInit() {
-    drivetrain.setGamepads(&gamepadOperator, &gamepadDriver);
-    drivetrain.resetState();
+  // Apply current limits to motors
+  leftRear.SetSmartCurrentLimit(DRIVE_CURRENT_LIMIT_A);
+  leftFront.SetSmartCurrentLimit(DRIVE_CURRENT_LIMIT_A);
+  rightRear.SetSmartCurrentLimit(DRIVE_CURRENT_LIMIT_A);
+  rightFront.SetSmartCurrentLimit(DRIVE_CURRENT_LIMIT_A);
 
-    shooter.setGamepads(&gamepadOperator, &gamepadDriver);
-    shooter.resetState();
+  // Set rear motors to follow front motors
+  leftRear.Follow(leftFront);
+  rightRear.Follow(rightFront);
 
-    feeder.setGamepads(&gamepadOperator, &gamepadDriver);
-    feeder.resetState();
+  // Invert motors as necessary
+  leftFront.SetInverted(true);
+  rightFront.SetInverted(false);
 
-    climber.setGamepads(&gamepadOperator, &gamepadDriver);
-    climber.resetState();
+  // Set motor idle modes
+  m_rollerClaw.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+  m_climber.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
 
-    frc::LiveWindow::EnableAllTelemetry();
-    frc::DataLogManager::Start();
-
-    valorAuto.fillAutoList();
-    valorAuto.preloadAuto("A1-");
-    valorAuto.preloadAuto("A1-2");
-}
-/**
- * This function is called every robot packet, no matter the mode. Use
- * this for items like diagnostics that you want to run during disabled,
- * autonomous, teleoperated and test.
- *
- * <p> This runs after the mode specific periodic functions, but before
- * LiveWindow and SmartDashboard integrated updating.
- */
-void Robot::RobotPeriodic() { frc2::CommandScheduler::GetInstance().Run(); }
-
-/**
- * This function is called once each time the robot enters Disabled mode. You
- * can use it to reset any subsystem information you want to clear when the
- * robot is disabled.
- */
-void Robot::DisabledInit() { }
-
-void Robot::DisabledPeriodic() { 
-    valorAuto.preloadSelectedAuto();
+  // Set current limits for launcher and feeder
+  m_feedWheel.SetSmartCurrentLimit(FEEDER_CURRENT_LIMIT_A);
+  m_launchWheel.SetSmartCurrentLimit(LAUNCHER_CURRENT_LIMIT_A);
+  m_feedWheel.SetInverted(true);
+  m_launchWheel.SetInverted(true);
 }
 
-/**
- * This autonomous runs the autonomous command selected by your {@link
- * RobotContainer} class.
- */
-void Robot::AutonomousInit() {
-    drivetrain.resetState();
-    drivetrain.state.matchStart = frc::Timer::GetFPGATimestamp().to<double>();
-    drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Brake);
-    drivetrain.doubtX = AUTO_DOUBTX;
-    drivetrain.doubtY = AUTO_DOUBTY;
+void Robot::RobotPeriodic() {
+  frc::SmartDashboard::PutNumber("Time (seconds)", static_cast<double>(m_timer.Get()));
 
-    feeder.resetState();
-    shooter.resetState();
-    climber.resetState();
-
-    autoCommands.clear();
-    autoCommands.push_back(valorAuto.getSelectedAuto());
-    autoCommands.back().Schedule();
-}
-
-void Robot::AutonomousExit() {
-    drivetrain.state.xPose = true;
-}
-
-void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
-    drivetrain.setDriveMotorNeutralMode(valor::NeutralMode::Coast);
-    drivetrain.teleopStart = frc::Timer::GetFPGATimestamp().to<double>();
-    drivetrain.doubtX = TELE_DOUBTX;
-    drivetrain.doubtY = TELE_DOUBTY;
-
-    shooter.resetState();
-    feeder.resetState();
-    climber.resetState();
-
-    if (autoCommands.size() > 0)
-        autoCommands.back().Cancel();
+  // Set idle modes to coast during teleop
+  leftRear.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+  leftFront.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+  rightRear.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+  rightFront.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
 }
 
-/**
- * This function is called periodically during operator control.
- */
-void Robot::TeleopPeriodic() {}
+void Robot::TeleopPeriodic() {
+  // Handle launcher control
+  if (m_manipController.GetRawButton(1)) {
+    m_launchWheel.Set(LAUNCHER_SPEED);
+  } else if (m_manipController.GetRawButtonReleased(1)) {
+    m_launchWheel.Set(0);
+  }
 
-/**
- * This function is called periodically during test mode.
- */
-void Robot::TestPeriodic() {}
+  // Handle feeder control
+  if (m_manipController.GetRawButton(6)) {
+    m_feedWheel.Set(FEEDER_OUT_SPEED);
+  } else if (m_manipController.GetRawButtonReleased(6)) {
+    m_feedWheel.Set(0);
+  }
+
+  // Handle claw control
+  if (m_manipController.GetRawButton(3)) {
+    m_rollerClaw.Set(CLAW_OUTPUT_POWER);
+  } else if (m_manipController.GetRawButton(4)) {
+    m_rollerClaw.Set(-CLAW_OUTPUT_POWER);
+  } else {
+    m_rollerClaw.Set(0);
+  }
+
+  // Handle climber control
+  if (m_manipController.GetPOV() == 0) {
+    m_climber.Set(CLIMBER_OUTPUT_POWER);
+  } else if (m_manipController.GetPOV() == 180) {
+    m_climber.Set(-CLIMBER_OUTPUT_POWER);
+  } else {
+    m_climber.Set(0);
+  }
+
+  // Drive control
+  m_drivetrain.ArcadeDrive(-m_driverController.GetRawAxis(1), -m_driverController.GetRawAxis(4));
+}
 
 #ifndef RUNNING_FRC_TESTS
-int main() { return frc::StartRobot<Robot>(); }
+int main() {
+  return frc::StartRobot<Robot>();
+}
 #endif

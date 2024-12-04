@@ -1,60 +1,57 @@
-#pragma once
+#ifndef ROBOT_H
+#define ROBOT_H
 
-#include <frc/TimedRobot.h>
-#include <frc2/command/Command.h>
-#include <frc2/command/Commands.h>
+#include "frc/TimedRobot.h"
+#include "frc/Joystick.h"
+#include <rev/CANSparkMax.h>
+#include "rev/CANSparkMax.h"
+#include "frc/smartdashboard/SmartDashboard.h"
+#include "frc/drive/DifferentialDrive.h"
+#include "rev/CANSparkMax.h"
+#include "rev/CANSparkMaxLowLevel.h"
 
-#include "Constants.h"
-#include "frc/AnalogTrigger.h"
-#include "frc/AnalogTriggerOutput.h"
-#include "valkyrie/Gamepad.h"
-
-#include "Drivetrain.h"
-#include "subsystems/Shooter.h"
-#include "valkyrie/sensors/CANdleSensor.h"
-
-#include "valkyrie/Auto.h"
-
-#include <frc/DriverStation.h>
-#include <frc/DataLogManager.h>
-
-#include <frc/livewindow/LiveWindow.h>
-
-#include <subsystems/Shooter.h>
-#include "subsystems/Feeder.h"
-#include "subsystems/Climber.h"
-
-#include <fstream>
-#include "frc/DigitalInput.h"
-
+// Robot class declaration
 class Robot : public frc::TimedRobot {
-    public:
-        Robot();
+ public:
+  Robot();
+  void RobotInit() override;
+  void RobotPeriodic() override;
+  void TeleopInit() override;
+  void TeleopPeriodic() override;
 
-        void RobotInit() override;
-        void RobotPeriodic() override;
-        void DisabledInit() override;
-        void DisabledPeriodic() override;
-        void AutonomousInit() override;
-        void AutonomousPeriodic() override;
-        void TeleopInit() override;
-        void TeleopPeriodic() override;
-        void TestPeriodic() override;
-        void AutonomousExit() override;
-        
-    private:
-        valor::Gamepad gamepadOperator{OIConstants::GAMEPAD_OPERATOR_LOCATION};
-        valor::Gamepad gamepadDriver{OIConstants::GAMEPAD_BASE_LOCATION};
+ private:
+  // Motor controllers
+  rev::CANSparkMax leftRear;
+  rev::CANSparkMax leftFront;
+  rev::CANSparkMax rightRear;
+  rev::CANSparkMax rightFront;
+  rev::CANSparkMax m_launchWheel;
+  rev::CANSparkMax m_feedWheel;
+  rev::CANSparkMax m_rollerClaw;
+  rev::CANSparkMax m_climber;
 
-        std::vector<frc2::CommandPtr> autoCommands;
+  // Joystick controllers
+  frc::Joystick m_driverController;
+  frc::Joystick m_manipController;
 
-        valor::CANdleSensor leds;
-        Drivetrain drivetrain;
-        valor::Auto valorAuto;
-        frc::AnalogTrigger feederBeamBreak;
-        frc::AnalogTrigger stageBeamBreak;
-        
-        Shooter shooter;
-        Feeder feeder;
-        Climber climber;
+  // Differential drive system
+  frc::DifferentialDrive m_drivetrain;
+
+  //time
+  frc::Timer m_timer;
+
+  // Constants for current limit
+  static constexpr int DRIVE_CURRENT_LIMIT_A = 60;
+  static constexpr int FEEDER_CURRENT_LIMIT_A = 60;
+  static constexpr int LAUNCHER_CURRENT_LIMIT_A = 60;
+
+  static constexpr double FEEDER_OUT_SPEED = 1.0;
+  static constexpr double FEEDER_IN_SPEED = -0.4;
+  static constexpr double LAUNCHER_SPEED = 1.0;
+  static constexpr double LAUNCHER_AMP_SPEED = 0.17;
+  static constexpr double CLAW_OUTPUT_POWER = 0.5;
+  static constexpr double CLAW_STALL_POWER = 0.1;
+  static constexpr double CLIMBER_OUTPUT_POWER = 1.0;
 };
+
+#endif  // ROBOT_H
