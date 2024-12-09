@@ -9,7 +9,6 @@
 
 Robot::Robot() : 
     drivetrain(this), 
-    valorAuto(), 
     beamBreak(DIOPorts::BEAM_BREAK_PORT), 
     shooter(this),
     feeder(this, &beamBreak)
@@ -30,7 +29,7 @@ void Robot::RobotInit() {
     frc::LiveWindow::EnableAllTelemetry();
     frc::DataLogManager::Start();
 
-    valorAuto.fillAutoList();
+    // valorAuto.fillAutoList();
 
 }
 /**
@@ -64,8 +63,8 @@ void Robot::AutonomousInit() {
 
     feeder.resetState();
 
-    autoCommand = valorAuto.getCurrentAuto();
-    autoCommand.Schedule();
+    // autoCommand = valorAuto.getCurrentAuto();
+    // autoCommand.Schedule();
 }
 
 void Robot::AutonomousExit() {

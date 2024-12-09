@@ -8,7 +8,6 @@
 #include "valkyrie/Gamepad.h"
 
 #include "Drivetrain.h"
-#include "valkyrie/Auto.h"
 
 #include <frc/DriverStation.h>
 #include <frc/DataLogManager.h>
@@ -47,7 +46,6 @@ class Robot : public frc::TimedRobot {
         frc2::CommandPtr autoCommand = frc2::cmd::Sequence();
 
         Drivetrain drivetrain;
-        valor::Auto valorAuto;
         frc::DigitalInput beamBreak;  
           
         Shooter shooter;
